@@ -1,0 +1,1622 @@
+/*
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   This resource file contains all the resources for CertManUI.
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME CMUI
+
+//  INCLUDES
+#include <eikon.rh>
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.hrh>
+#include <avkon.mbg>
+#include <bldvariant.hrh>
+#include <avkon.loc>
+#include <certmanui.loc>
+#include "Certmanui.hrh"
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+
+// RESOURCE DEFINITIONS
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main_authority
+//     CertManUI Authority View Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_main_authority
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_authority;
+     cba=r_certmanui_options_open_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main_personal
+//     CertManUI Personal View Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_main_personal
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_personal;
+     cba=r_certmanui_options_open_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_trust
+//     CertManUI Trust View Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_trust
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_trust;
+     cba=r_certmanui_options_change_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main
+//     CertManUI Personal View Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_main
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_main;
+     cba=r_certmanui_options_open_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main_trusted_site
+//     CertManUI Trusted site certificate View
+//     Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_main_trusted_site
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_trusted_sites;
+     cba=r_certmanui_options_open_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main_device
+//     CertManUI Device certificate View Menubar & Soft keys
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_certmanui_view_main_device
+     {
+     hotkeys=r_certmanui_hotkeys;
+     menubar=r_certmanui_menubar_view_device;
+     cba=r_certmanui_options_open_back;
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_hotkeys
+//     CertManUI hotkeys
+//
+//----------------------------------------------------
+//
+RESOURCE HOTKEYS r_certmanui_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EAknCmdExit; key='e'; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_authority
+//     Menubar for Authority certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_authority
+    {
+     titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_menu_authority; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_personal
+//     Menubar for Personal certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_personal
+    {
+     titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_menu_personal; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_trust
+//     Menubar for Trust view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_trust
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_trust_menu; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_main
+//     Menubar for main view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_main
+    {
+     titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_menu_main; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_device
+//     Menubar for Device certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_device
+    {
+     titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_menu_device; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_view_trusted_sites
+//     Menubar for Trusted site certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_view_trusted_sites
+    {
+     titles=
+        {
+        MENU_TITLE { menu_pane = r_certmanui_view_menu_trusted_sites; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menubar_options_marked
+//     OK-Options menubar for views
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_certmanui_menubar_options_marked
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_certmanui_menupane_options_marked; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_menu_authority
+//     Menu pane for Authority certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_menu_authority
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppViewDtls;
+            txt = qtn_cm_option_view_details;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppDelete;
+            txt = qtn_fldr_delete;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppTrustSet;
+            txt = qtn_cm_option_trust_settings;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            cascade = r_certmanui_menu_pane_mark_unmark;
+            command = ECertManUICmdMarkUnmark;
+            txt = qtn_options_list;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_menu_main
+//     Menu pane for main view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_menu_main
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppOpen;
+            txt = qtn_fldr_open;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command=EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certmanui_menu_pane__unmark
+//    Mark/unmark sub-menu pane for certmanui views
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_menu_pane_mark_unmark
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdMark;
+            txt = qtn_options_list_mark_one;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdUnmark;
+            txt = qtn_options_list_unmark_one;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdMarkAll;
+            txt = qtn_options_list_mark_all;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdUnmarkAll;
+            txt = qtn_options_list_unmark_all;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_menu_personal
+//     Menu pane for Personal certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_menu_personal
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppViewDtls;
+            txt = qtn_cm_option_view_details;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppDelete;
+            txt = qtn_fldr_delete;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdMoveToDevice;
+            txt = qtn_cm_option_move_to_device_certificates;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            cascade = r_certmanui_menu_pane_mark_unmark;
+            command = ECertManUICmdMarkUnmark;
+            txt = qtn_options_list;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_menu_device
+//     Menu pane for Device certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_menu_device
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppViewDtls;
+            txt = qtn_cm_option_view_details;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppDelete;
+            txt = qtn_fldr_delete;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdMoveToPersonal;
+            txt = qtn_cm_option_move_to_personal_certificates;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            cascade = r_certmanui_menu_pane_mark_unmark;
+            command = ECertManUICmdMarkUnmark;
+            txt = qtn_options_list;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_menu_trusted_sites
+//     Menu pane for Trusted site certificate view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_menu_trusted_sites
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppViewDtls;
+            txt = qtn_cm_option_view_details;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppDelete;
+            txt = qtn_fldr_delete;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            cascade = r_certmanui_menu_pane_mark_unmark;
+            command = ECertManUICmdMarkUnmark;
+            txt = qtn_options_list;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_menupane_options_marked
+//     For marked certificate views
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_menupane_options_marked
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppDelete;
+            txt = qtn_fldr_delete;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command=ECertManUICmdMoveToDevice;
+            txt = qtn_cm_option_move_to_device_certificates;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command=ECertManUICmdMoveToPersonal;
+            txt = qtn_cm_option_move_to_personal_certificates;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdMark;
+            txt = qtn_options_list_mark_one;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdUnmark;
+            txt = qtn_options_list_unmark_one;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdMarkAll;
+            txt = qtn_options_list_mark_all;
+            },
+        MENU_ITEM
+            {
+            command = ECertManUICmdUnmarkAll;
+            txt = qtn_options_list_unmark_all;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_trust_menu
+//     Menu pane for Trust view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_certmanui_view_trust_menu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ECertManUICmdAppChangeTrust;
+            txt = qtn_cm_option_change_trust;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//  r_gs_certmanui_caption
+//
+// CertManUI view caption for plugin
+//----------------------------------------------------
+//
+RESOURCE TBUF r_gs_certmanui_caption
+    {
+    buf = qtn_set_certmanui_security;
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_title
+//     CertManUI title
+//
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_certmanui_view_title
+    {
+    txt = qtn_cm_title;
+    }
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////// TEXT RESOURCES //////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------
+//
+//     r_text_resource_main_view_authority
+//     item for Authority certificates
+//     used in main list view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_main_view_authority
+    {
+    buf = " \t"qtn_cm_list_text_authority;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_main_view_trusted
+//     item for Trusted site certificates
+//     used in main list view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_main_view_trusted
+    {
+    buf = " \t"qtn_cm_list_text_trusted;
+    }
+
+
+//----------------------------------------------------
+//
+//     r_text_resource_main_view_personal
+//     item for Personal certificates
+//     used in main list view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_main_view_personal
+    {
+    buf = " \t"qtn_cm_list_text_personal;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_main_view_device
+//     item for Device certificates
+//     used in main list view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_main_view_device
+    {
+    buf = " \t"qtn_cm_list_text_device;
+    }
+
+//----------------------------------------------------
+//
+//     r_confirmation_query_delete_cert
+//     Delete certificate confirmation query text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_confirmation_query_delete_cert
+    {
+    buf = qtn_query_common_conf_delete;
+    }
+
+//----------------------------------------------------
+//
+//     r_confirmation_query_delete_cert_no_label
+//     Delete certificate confirmation query text
+//     for certificate that has no label.
+//     The confirmation in only "Delete certificate?"
+//     and it does not dontain any "No label" or "No subject" string
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_confirmation_query_delete_cert_no_label
+    {
+    buf = qtn_query_conf_delete_no_label;
+    }
+
+//----------------------------------------------------
+//
+//     r_confirmation_query_delete_cert_plural
+//     Delete certificate confirmation query text
+//     for deleting multiple certificates
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_confirmation_query_delete_cert_plural
+    {
+    buf = qtn_fldr_del_items_query_cm;
+    }
+
+//----------------------------------------------------
+//
+//     r_info_note_text_certificate_read_only
+//     Certificate read-only info note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_info_note_text_certificate_read_only
+    {
+    buf = qtn_fldr_cant_delete_item;
+    }
+
+//----------------------------------------------------
+//
+//     r_info_note_text_certificate_read_only_no_label
+//     Certificate read-only info note text
+//     for certificates that have no name
+//     The note in only "Can't delete certificate"
+//     and it does not dontain any "No label" or "No subject" string
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_info_note_text_certificate_read_only_no_label
+    {
+    buf = qtn_cant_delete_item_no_label;
+    }
+
+//----------------------------------------------------
+//
+//     r_info_note_text_certificate_read_only_multiple
+//     Certificate read-only info note text
+//     for multiple read-only certificates
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_info_note_text_certificate_read_only_multiple
+    {
+    buf = qtn_fldr_cant_delete_items;
+    }
+
+//----------------------------------------------------
+//
+//     r_warning_note_text_certificate_expired
+//     Certificate expired information note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_warning_note_text_certificate_expired
+    {
+    buf = qtn_cm_expired;
+    }
+
+//----------------------------------------------------
+//
+//     r_warning_note_text_certificate_not_valid_yet
+//     Certificate not yet valid information note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_warning_note_text_certificate_not_valid_yet
+    {
+    buf = qtn_cm_not_valid_yet;
+    }
+
+//----------------------------------------------------
+//
+//     r_warning_note_text_certificate_corrupted
+//     Certificate corrupted information note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_warning_note_text_certificate_corrupted
+    {
+    buf = qtn_cm_corrupted;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_authority_empty_list
+//     Empty Authority certificate list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_authority_empty_list
+    {
+    buf = qtn_authority_empty_list;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_trusted_empty_list
+//     Empty Trusdted site certificate list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_trusted_empty_list
+    {
+    buf = qtn_trusted_empty_list;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_personal_empty_list
+//     Empty Personal certificate list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_personal_empty_list
+    {
+    buf = qtn_personal_empty_list;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_device_empty_list
+//     Empty Device certificate list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_device_empty_list
+    {
+    buf = qtn_device_empty_list;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_trust_settings_empty_list
+//     Empty Trust settings list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_trust_settings_empty_list
+    {
+    buf = qtn_cm_empty_trust_settings;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_no_subject_list
+//     Certificate has no subject
+//     used in main certificate list view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_no_subject_list
+    {
+    buf = " \t"qtn_cm_no_subject_list;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_no_subject_details
+//     Certificate has no subject
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_no_subject_details
+    {
+    buf = qtn_cm_no_subject_details;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_digital_signing
+//     Key usage is digital signing
+//     used in client certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_details_view_digital_signing
+    {
+    buf = qtn_cm_digital_signing;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_digital_signing
+//     Key usage is digital signing
+//     used in client certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_details_view_client_authentication
+    {
+    buf = qtn_cm_client_authentication;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_unknown
+//     Certificate algorithm is unknown
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_text_resource_details_view_unknown
+    {
+    buf = qtn_cm_algorithm_unknown;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_location_phone_memory
+//     Certificate location is phone memory
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_text_resource_details_view_location_phone_memory
+    {
+    buf = qtn_cm_phone_memory;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_location_smart_card
+//     Certificate location is smart card
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_text_resource_details_view_location_smart_card
+    {
+    buf = qtn_cm_smart_card;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_cert_format_x509
+//     Certificate format is x509
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_text_resource_details_view_cert_format_x509
+    {
+    buf = qtn_cm_cert_format_x509;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_no_private_key
+//     No private key available
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_details_view_no_private_key
+    {
+    buf = qtn_cm_no_private_key;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_details_view_not_defined
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_text_resource_details_view_not_defined
+    {
+    buf = qtn_cm_not_defined;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_no_label_details
+//     Certificate has no label
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_no_label_details
+    {
+    buf = qtn_cm_no_label_details;
+    }
+
+//----------------------------------------------------
+//
+//     r_text_resource_view_no_subject_title
+//     Certificate has no subject
+//     used in trust settings view title
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_no_subject_title
+    {
+    buf = qtn_cm_no_subject_title;
+    }
+
+// ----- All the resource strings needed for the Certificate Details View -------
+
+RESOURCE TBUF r_text_resource_details_view_site
+    {
+    buf = qtn_cm_site;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_sites
+    {
+    buf = qtn_cm_sites;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_header
+    {
+    buf = qtn_cm_details_heading;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_label
+    {
+    buf = qtn_cm_label;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_issuer
+    {
+    buf = qtn_cm_issuer;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_subject
+    {
+    buf = qtn_cm_subject;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_key_usage
+    {
+    buf = qtn_cm_key_usage;
+    }
+
+RESOURCE TBUF r_qtn_sn_key_length_label
+    {
+    buf = qtn_sn_key_length_label;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_validity_period
+    {
+    buf = qtn_cm_validity_period;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_valid_from
+    {
+    buf = qtn_cm_valid_from;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_valid_until
+    {
+    buf = qtn_cm_valid_until;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_certificate_location
+    {
+    buf = qtn_cm_certificate_location;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_cert_format
+    {
+    buf = qtn_cm_cert_format;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_private_key_location
+    {
+    buf = qtn_cm_key_location;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_algorithm
+    {
+    buf = qtn_cm_algorithm;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_serial_number
+    {
+    buf = qtn_cm_serial_number;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_fingerprint
+    {
+    buf = qtn_cm_fingerprint;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_fingerprint_md5
+    {
+    buf = qtn_cm_fingerprint_md;
+    }
+
+RESOURCE TBUF r_text_resource_details_view_public_key
+    {
+    buf = qtn_cm_public_key;
+    }
+
+// Certificate details algorithm names
+RESOURCE TBUF r_text_resource_details_view_algorithm_RSA
+    {
+    buf = qtn_cm_algorithm_rsa;
+    }
+RESOURCE TBUF r_text_resource_details_view_algorithm_DSA
+    {
+    buf = qtn_cm_algorithm_dsa;
+    }
+RESOURCE TBUF r_text_resource_details_view_algorithm_DH
+    {
+    buf = qtn_cm_algorithm_dh;
+    }
+RESOURCE TBUF r_text_resource_details_view_algorithm_MD2
+    {
+    buf = qtn_cm_algorithm_md2;
+    }
+RESOURCE TBUF r_text_resource_details_view_algorithm_MD5
+    {
+    buf = qtn_cm_algorithm_md5;
+    }
+RESOURCE TBUF r_text_resource_details_view_algorithm_SHA1
+    {
+    buf = qtn_cm_algorithm_sha1;
+    }
+
+//----------------------------------------------------
+//
+//     r_error_note_text_cacerts_db_corrupted
+//     Cacerts.dat certificate database corrupted error note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_error_note_text_cacerts_db_corrupted
+    {
+    buf = qtn_memlo_database_corrupted;
+    }
+
+//----------------------------------------------------
+//
+//     r_error_note_text_internal_error
+//     Internal error text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_error_note_text_internal_error
+    {
+    buf = qtn_cm_internal_error;
+    }
+
+//----------------------------------------------------
+//
+//     r_warning_note_text_certificate_not_trusted
+//     Certificate not trusted information note text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_warning_note_text_certificate_not_trusted
+    {
+    buf = qtn_cm_not_trusted;
+    }
+
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_conf_move_to_device
+//     Confirmation query text shown before moving
+//     certificate to Device certificates
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_conf_move_to_device
+    {
+    buf = qtn_cm_conf_move_to_device;
+    }
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_conf_move_to_personal
+//     Confirmation query text shown before moving
+//     certificate to Personal certificates
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_conf_move_to_personal
+    {
+    buf = qtn_cm_conf_move_to_personal;
+    }
+
+
+//////////////////////// DIALOGS //////////////////////////////////////////
+
+// ---------------------------------------------------------
+//
+//     r_certmanui_confirmation_query_yes_no
+//     Delete certificate confirmation query
+//
+// ---------------------------------------------------------
+//
+RESOURCE DIALOG r_certmanui_confirmation_query_yes_no
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = "";
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------
+//
+//     r_certmanui_wait_note
+//     Display wait note
+//
+// ---------------------------------------------------------
+//
+RESOURCE DIALOG r_certmanui_wait_note
+    {
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = ECertManUIWaitNote;
+            control= AVKON_NOTE
+                {
+                layout = EWaitLayout;
+                singular_label = qtn_gen_note_processing;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------
+//
+//     r_certmanui_delete_wait_dialog
+//     Display delete wait note
+//
+// ---------------------------------------------------------
+//
+RESOURCE DIALOG r_certmanui_delete_wait_note
+    {
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = ECertManUIDeleteNote;
+            control= AVKON_NOTE
+                {
+                layout = EWaitLayout;
+                singular_label = qtn_fldr_deleting_wait_note;
+                imagefile = AVKON_BITMAP_FILE;
+                imageid = EMbmAvkonQgn_note_erased;
+                imagemask = EMbmAvkonQgn_note_erased_mask;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_message_query_details_view
+//     Certificate Management Details view query
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_message_query_details_view
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+//-----------------------------------------------------------------------------
+//
+//  r_certmanui_view_trust_settings_listbox
+//  Items in CertManUI trust settings view
+//
+//-----------------------------------------------------------------------------
+//
+RESOURCE ARRAY r_certmanui_view_trust_settings_listbox
+     {
+    items =
+        {
+        LBUF
+            {//WAP connection
+            txt = " \t"qtn_cm_lipri_wap_connection"\t\t";
+            },
+        LBUF
+            {//mail and image connection
+            txt = " \t"qtn_cm_lipri_mail_image_conn"\t\t";
+            },
+        LBUF
+            {//Native installer
+            txt = " \t"qtn_cm_lipri_native_installing"\t\t";
+            },
+        LBUF
+            {//Java installer
+            txt = " \t"qtn_cm_lipri_java_installing"\t\t";
+            },
+        LBUF
+            {//OCSP validation
+            txt = " \t"qtn_cm_lipri_ocsp"\t\t";
+            },
+        LBUF
+            {//VPN
+            txt = " \t"qtn_cm_lipri_vpn"\t\t";
+            }
+        };
+    }
+
+//-----------------------------------------------------------------------------
+//
+//  r_certmanui_trust_settings_values
+//  Values in CertManUI trust settings view
+//
+//-----------------------------------------------------------------------------
+//
+RESOURCE ARRAY r_certmanui_trust_settings_values
+    {
+    items =
+        {
+        LBUF
+            {
+            txt = qtn_cm_trust_value_yes;
+            },
+        LBUF
+            {
+            txt = qtn_cm_trust_value_no;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//      r_certmanui_view_trust_yes_no_setting_page_lbx
+//     CertManUI Trust View Yes No Setting Page Listbox
+//
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_certmanui_view_trust_yes_no_setting_page_lbx
+     {
+    items =
+        {
+        LBUF
+            {
+            txt = qtn_cm_trust_value_yes;
+            },
+        LBUF
+            {
+            txt = qtn_cm_trust_value_no;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_setting_listbox
+//     Common listbox editor resource for setting pages.
+//
+//----------------------------------------------------
+//
+RESOURCE LISTBOX r_setting_listbox
+    {
+    flags = EEikListBoxMultipleSelection;
+    }
+
+//----------------------------------------------------
+//
+//     r_cm_navi_pane_trust_settings
+//     Certificate Management Trust Settings view navi pane text
+//
+//----------------------------------------------------
+//
+RESOURCE NAVI_LABEL r_cm_navi_pane_trust_settings
+    {
+    txt = qtn_cm_title_trust_settings;
+    }
+
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_trust_yes_no_setting_page
+//     CertManUI Trust View Yes No Setting Page
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_certmanui_view_trust_yes_no_setting_page
+    {
+    number = EAknSettingPageNoOrdinalDisplayed;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL;
+    type = EAknSetListBox;
+    editor_resource_id = r_setting_listbox;
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_certificate_listbox_mark_icons
+//     Mark, unmark icons for certificate list
+//
+//----------------------------------------------------
+//
+RESOURCE AKN_ICON_ARRAY r_certmanui_certificate_listbox_mark_icons
+     {
+     bmpfile = AVKON_BITMAP_FILE;
+     icons =
+          {
+          AKN_ICON {
+                    iconId = EMbmAvkonQgn_indi_marked_add;
+                    maskId = EMbmAvkonQgn_indi_marked_add_mask;
+                    }
+          };
+     }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_main_title
+//     CertManUI main title
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_certmanui_view_main_title
+    {
+    buf = qtn_cm_title;
+    }
+
+//----------------------------------------------------
+//
+//    r_certmanui_options_open_back
+//    Text association with MSK ( OPEN )
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certmanui_options_open_back
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt = text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=ECertManUICmdAppViewDtls;
+            txt = qtn_msk_open;
+            }
+        };
+    }
+
+
+//----------------------------------------------------
+//
+//    r_certmanui_options_context_back
+//    Text association with MSK ( context )
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certmanui_options_context_back
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt = text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyContextOptions;
+            txt = text_softkey_option;
+            }
+        };
+    }
+
+
+//----------------------------------------------------
+//
+//    r_certmanui_options_open_back
+//    Text association with MSK ( OPTIONS )
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certmanui_options_back
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt = text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certmanui_options_change_back
+//    Text association with MSK ( CHANGE )
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certmanui_options_change_back
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt = text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=ECertManUICmdAppChangeTrust;
+            txt = qtn_msk_change;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_title_authority
+//     CertManUI Authority certificates view title
+//
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_certmanui_view_title_authority
+    {
+    txt = qtn_cm_title_authority;
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_title_trusted_site
+//     CertManUI Trusted Site certificates view title
+//
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_certmanui_view_title_trusted_site
+    {
+    txt = qtn_cm_title_trusted;
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_title_personal
+//     CertManUI Personal certificates view title
+//
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_certmanui_view_title_personal
+    {
+    txt = qtn_cm_title_personal;
+    }
+
+//----------------------------------------------------
+//
+//     r_certmanui_view_title_device
+//     CertManUI Device certificates view title
+//
+//----------------------------------------------------
+//
+RESOURCE TITLE_PANE r_certmanui_view_title_device
+    {
+    txt = qtn_cm_title_device;
+    }
+
+// End of File

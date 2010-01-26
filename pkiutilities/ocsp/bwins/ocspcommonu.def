@@ -1,0 +1,5 @@
+EXPORTS
+	?NewL@COcspPolicy@@SAPAV1@XZ @ 1 NONAME ; class COcspPolicy * COcspPolicy::NewL(void)
+	?IsHttpGETMethodEnabled@COcspPolicy@@QBEHXZ @ 2 NONAME ; int COcspPolicy::IsHttpGETMethodEnabled(void) const
+	?IsGenerateResponseForMissingUriEnabled@COcspPolicy@@QBEHXZ @ 3 NONAME ; int COcspPolicy::IsGenerateResponseForMissingUriEnabled(void) const
+

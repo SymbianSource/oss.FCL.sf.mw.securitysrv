@@ -1,0 +1,5 @@
+EXPORTS
+	?E32Dll@@YAHW4TDllReason@@@Z @ 1 NONAME ; int E32Dll(enum TDllReason)
+	?NewL@CCertManUIKeeper@@SAPAV1@ABVTRect@@VTUid@@@Z @ 2 NONAME ; class CCertManUIKeeper * CCertManUIKeeper::NewL(class TRect const &, class TUid)
+	?NewLC@CCertManUIKeeper@@SAPAV1@ABVTRect@@VTUid@@@Z @ 3 NONAME ; class CCertManUIKeeper * CCertManUIKeeper::NewLC(class TRect const &, class TUid)
+

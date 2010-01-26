@@ -1,0 +1,55 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Contains information for building project & dll
+*
+*/
+
+
+#include <platform_paths.hrh>
+TARGET WIMCLIENT.dll
+TARGETTYPE dll
+UID             0x1000008d 0x101f79d5
+
+CAPABILITY      CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+//MACRO           __WIM_ENABLE_TRACES
+//#define         __WIM_ENABLE_TRACES
+
+SOURCE          ../src/WimClient.cpp
+SOURCE          ../src/WimMgmt.cpp
+SOURCE          ../src/WimCertMgmt.cpp
+SOURCE          ../src/WimPin.cpp
+SOURCE          ../src/WimSecModuleMgr.cpp
+SOURCE          ../src/WimSecModule.cpp
+SOURCE          ../src/WimCertConverter.cpp
+SOURCE          ../src/WimKeyDetails.cpp
+SOURCE          ../src/WimCert.cpp
+SOURCE          ../src/ProvSC.cpp
+SOURCE          ../src/WimTrustSettingsAPI.cpp
+SOURCE          ../src/WimTrustSettingsMgmt.cpp
+SOURCE          ../src/JavaUtils.cpp
+
+
+USERINCLUDE     ../inc
+USERINCLUDE     ../../inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         c32.lib efsrv.lib ctframework.lib
+LIBRARY         Wimutil.lib
+LIBRARY         euser.lib
+
+SMPSAFE
+

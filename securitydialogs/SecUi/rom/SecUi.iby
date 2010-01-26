@@ -1,0 +1,38 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+#ifndef __SECUI_IBY__
+#define __SECUI_IBY__
+
+//Secui
+file=ABI_DIR\BUILD_DIR\SecUi.dll                        SHARED_LIB_DIR\SecUi.dll
+
+//Security Notifier
+file=ABI_DIR\BUILD_DIR\SecurityNotifier.dll             SHARED_LIB_DIR\SecurityNotifier.dll
+
+//Notifier wrapper
+ECOM_PLUGIN(Securitynotifierwrapper.dll,102071FA.rsc)
+
+//Security Observer
+#ifndef RD_STARTUP_CHANGE
+
+file=ABI_DIR\BUILD_DIR\SecurityObserver.exe             PROGRAMS_DIR\SecurityObserver.exe
+
+#endif //RD_STARTUP_CHANGE
+
+#endif//__SECUI_IBY__

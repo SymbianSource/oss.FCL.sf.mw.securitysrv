@@ -1,0 +1,19 @@
+EXPORTS
+	_ZN12CWimCertInfo10SetCDFRefsEh @ 1 NONAME
+	_ZN12CWimCertInfo12InternalizeLER16TWimCertInfoPckg @ 2 NONAME
+	_ZN12CWimCertInfo15AddTrustedUsageEP7HBufC16 @ 3 NONAME
+	_ZN12CWimCertInfo19AddExtendedKeyUsageEP7HBufC16 @ 4 NONAME
+	_ZN12CWimCertInfo4NewLEP11CCTCertInfo5TBuf8ILi20EE6RArrayIP7HBufC16Eh @ 5 NONAME
+	_ZNK12CWimCertInfo11GetCertHashER5TBuf8ILi20EE @ 6 NONAME
+	_ZNK12CWimCertInfo12ExternalizeLEv @ 7 NONAME
+	_ZNK12CWimCertInfo12TrustedUsageEv @ 8 NONAME
+	_ZNK12CWimCertInfo16ExtendedKeyUsageEv @ 9 NONAME
+	_ZNK12CWimCertInfo7CDFRefsEv @ 10 NONAME
+	_ZNK12CWimCertInfo7CctCertEv @ 11 NONAME
+	_ZTI12CWimCertInfo @ 12 NONAME DATA 12 ; #<TI>#
+	_ZTI14CWimDummyToken @ 13 NONAME DATA 32 ; #<TI>#
+	_ZTI18CWimDummyTokenType @ 14 NONAME DATA 12 ; #<TI>#
+	_ZTV12CWimCertInfo @ 15 NONAME DATA 20 ; #<VT>#
+	_ZTV14CWimDummyToken @ 16 NONAME DATA 112 ; #<VT>#
+	_ZTV18CWimDummyTokenType @ 17 NONAME DATA 92 ; #<VT>#
+

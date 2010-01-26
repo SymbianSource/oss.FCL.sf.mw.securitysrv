@@ -1,0 +1,58 @@
+/*
+* Copyright (c) 2000 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Notifier plug-in for Security application
+*               (KUidNotifierPlugIn is 0x10005522)
+*
+*/
+
+#include <platform_paths.hrh>
+
+TARGET          securitynotifier.dll
+TARGETTYPE      dll
+UID		0x101fdfae 0x10005987
+
+VENDORID VID_DEFAULT
+CAPABILITY CAP_GENERAL_DLL
+
+SOURCEPATH	../Src
+SOURCE          SecurityNotifier.cpp
+  
+USERINCLUDE     ../Inc  
+MW_LAYER_SYSTEMINCLUDE ../../../inc
+
+
+
+LANG SC
+
+LIBRARY euser.lib    
+LIBRARY eiksrv.lib
+LIBRARY secui.lib
+LIBRARY etel.lib
+LIBRARY etelmm.lib
+LIBRARY commonengine.lib
+LIBRARY	ws32.lib
+LIBRARY	cone.lib
+LIBRARY	sysutil.lib
+LIBRARY centralrepository.lib
+LIBRARY eikcore.lib
+LIBRARY scpclient.lib // SCP server
+
+#if defined(WINSCW)
+DEFFILE ../BWinsCw/SecurityNotifierU.def
+#endif
+LIBRARY                 featmgr.lib
+
+SMPSAFE
+
+//End of File

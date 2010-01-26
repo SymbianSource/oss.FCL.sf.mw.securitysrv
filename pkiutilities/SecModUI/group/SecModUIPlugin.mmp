@@ -1,0 +1,110 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project specification file.
+*
+*/
+
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET            SecModUI.dll
+TARGETTYPE        PLUGIN
+UID  0x10009D8D   0x101F8668
+
+CAPABILITY        CAP_ECOM_PLUGIN
+VENDORID          VID_DEFAULT
+
+// Resource file location
+SOURCEPATH        ../data
+
+
+START RESOURCE    101F8668.rss
+TARGET            SecModUI.rsc
+END
+
+
+// Resource file
+START RESOURCE    SecModUI.rss
+HEADER
+TARGETPATH        RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+SOURCEPATH        ../src
+SOURCE            SecModUIContainerBase.cpp
+SOURCE            SecModUIContainerMain.cpp
+SOURCE            SecModUIViewBase.cpp
+SOURCE            SecModUIViewMain.cpp
+SOURCE            SecModUIViewCode.cpp
+SOURCE            SecModUIContainerCode.cpp
+SOURCE            SecModUIViewAccess.cpp
+SOURCE            SecModUIContainerAccess.cpp
+SOURCE            SecModUIViewSignature.cpp
+SOURCE            SecModUIContainerSignature.cpp
+SOURCE            SecModUIModel.cpp
+SOURCE            SecModUISyncWrapper.cpp
+SOURCE            SecModUIPlugin.cpp
+SOURCE            SecModUIPluginContainer.cpp
+SOURCE            SecModUIPluginImplementationTable.cpp
+
+
+USERINCLUDE       .
+USERINCLUDE       ../inc
+
+APP_LAYER_SYSTEMINCLUDE
+
+
+LIBRARY           euser.lib
+LIBRARY           cone.lib
+LIBRARY           eikcore.lib
+LIBRARY           eikcoctl.lib
+LIBRARY           avkon.lib
+LIBRARY           aknskins.lib
+LIBRARY           bafl.lib
+
+// Dependencies
+LIBRARY           crypto.lib
+LIBRARY           certstore.lib       // TCertManClientInfo::Id
+LIBRARY           commonengine.lib    // StringLoader.h
+LIBRARY           eikctl.lib          // markable icons
+LIBRARY           efsrv.lib           // needed by CertManUI debug logger
+LIBRARY           SysUtil.lib         // For FFS Space checking
+LIBRARY           commonui.lib        // for CErrorUI
+LIBRARY           CTFramework.lib     // CCertAttributeFilter
+LIBRARY           X509.lib
+LIBRARY           pkixcert.lib        // Validation
+LIBRARY           x509certnameparser.lib    // parsing of label
+LIBRARY           hash.lib
+LIBRARY           Featmgr.lib         // feature manager support
+LIBRARY           aknnotify.lib
+LIBRARY           ecom.lib
+LIBRARY           GSFramework.lib
+LIBRARY           GSEcomPlugin.lib
+LIBRARY           hlplch.lib          // for "Help" options menu
+
+
+// Turn logging on/off
+// #define _SECMODUI_LOGGING_ON
+
+#ifdef _SECMODUI_LOGGING_ON
+MACRO _SECMODUI_LOG_
+LIBRARY         flogger.lib
+#else
+DEBUGLIBRARY    flogger.lib
+#endif
+
+SMPSAFE
+

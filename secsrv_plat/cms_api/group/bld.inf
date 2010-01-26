@@ -1,0 +1,56 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  File that exports the files belonging to 
+:                CMS API
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+../inc/MCMSModule.h     MW_LAYER_PLATFORM_EXPORT_PATH(MCMSModule.h)
+../inc/CCMSX509Validity.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509Validity.h)
+../inc/CCMSX509AttributeCertificate.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509AttributeCertificate.h)
+../inc/CCMSSignerInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSSignerInfo.h)
+../inc/CCMSX509GeneralNames.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509GeneralNames.h)
+../inc/CCMSAuthenticatedData.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSAuthenticatedData.h)
+../inc/CCMSOriginatorPublicKey.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSOriginatorPublicKey.h)
+../inc/CCMSRecipientInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSRecipientInfo.h)
+../inc/CCMSOriginatorInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSOriginatorInfo.h)
+../inc/CCMSKeyAgreeRecipientInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSKeyAgreeRecipientInfo.h)
+../inc/CCMSX509GeneralName.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509GeneralName.h)
+../inc/CCMSX509AttributeCertificateInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509AttributeCertificateInfo.h)
+../inc/CCMSX509SubjectPublicKeyInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509SubjectPublicKeyInfo.h)
+../inc/CCMSAttribute.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSAttribute.h)
+../inc/CCMSX509Certificate.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509Certificate.h)
+../inc/CCMSX509Signed.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509Signed.h)
+../inc/CCMSX509CertificateList.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509CertificateList.h)
+../inc/CCMSKeyTransRecipientInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSKeyTransRecipientInfo.h)
+../inc/CCMSKeyIdentifier.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSKeyIdentifier.h)
+../inc/CCMSEncapsulatedContentInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSEncapsulatedContentInfo.h)
+../inc/CCMSX509IssuerSerial.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509IssuerSerial.h)
+../inc/CCMSContentInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSContentInfo.h)
+../inc/CCMSSequence.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSSequence.h)
+../inc/CCMSRecipientEncryptedKey.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSRecipientEncryptedKey.h)
+../inc/CCMSX509AlgorithmIdentifier.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSX509AlgorithmIdentifier.h)
+../inc/CCMSIssuerAndSerialNumber.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSIssuerAndSerialNumber.h)
+../inc/CCMSKEKRecipientInfo.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSKEKRecipientInfo.h)
+../inc/CCMSCertificateChoices.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSCertificateChoices.h)
+../inc/CCMSSignedData.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSSignedData.h)
+../inc/CCMSOriginatorIdentifierOrKey.h     MW_LAYER_PLATFORM_EXPORT_PATH(CCMSOriginatorIdentifierOrKey.h)

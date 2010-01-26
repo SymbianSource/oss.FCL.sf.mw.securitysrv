@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE SystemDefinition SYSTEM "sysdef_1_4_0.dtd" [
+  <!ENTITY layer_real_source_path "sf/mw/securitysrv" >
+]>
+
+<SystemDefinition name="securitysrv" schema="1.4.0">
+  <systemModel>
+    <layer name="mw_layer">
+      <module name="securitysrv">
+        <unit name="securitysrv" unitID="sedo.securitysrv" bldFile="&layer_real_source_path;/group" mrp="" />
+      </module>
+      <module name="">
+        <unit unitID="sedo.securitysrv.pkiutilities.Certificates" bldFile="&layer_real_source_path;/pkiutilities/Certificates/group" mrp="" filter="sf_build" name="sedo_securitysrv_pkiutilities_Certificates" />
+      </module>
+      <module name="">
+        <unit unitID="sedo.securitysrv.pkiutilities.Certificates_OEM" bldFile="&layer_real_source_path;/pkiutilities/Certificates_OEM/group" mrp="" filter="oem_build" name="sedo_securitysrv_pkiutilities_Certificates_OEM" />
+      </module> 
+    </layer>
+    <layer name="api_test_layer">
+      <module name="securitysrv_test">
+        <unit unitID="sedo.securitysrv_test" mrp="" bldFile="&layer_real_source_path;/tsrc/group" name="securitysrv_test" />
+      </module>
+    </layer>
+  </systemModel>
+</SystemDefinition>
+

@@ -1,0 +1,93 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition for Security Dialog Notifier Plugin
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET          CTSecDialogImpl.dll
+TARGETTYPE      DLL
+UID   0x101fdfae 0x10207446
+
+CAPABILITY      CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+SOURCEPATH  ../data
+START RESOURCE  CTsecdlgs.rss
+HEADER
+TARGET CTSecDlgs.rsc
+TARGETPATH      RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+SYSTEMINCLUDE ../../CertmanUi/INC
+SYSTEMINCLUDE ../../CertSaver/inc
+SYSTEMINCLUDE ../../DeviceToken/Inc
+SYSTEMINCLUDE ../../../inc              // securityservices/inc directory
+MW_LAYER_SYSTEMINCLUDE
+
+
+USERINCLUDE ../NotifInc
+USERINCLUDE ../ClientInc
+
+SOURCEPATH  ../NotifSrc
+
+SOURCE    DllMain.cpp
+SOURCE    CTSecuritydialognotifier.cpp
+SOURCE    CTpinquerydialog.cpp
+SOURCE    CTQueryDialog.cpp
+SOURCE    CTSigntextdialog.cpp
+SOURCE    CTSelectcertificatedialog.cpp
+SOURCE    CTPinPinQueryDialog.cpp
+SOURCE    CTCertificateQuery.cpp
+SOURCE    CTSecurityDialogsAO.cpp
+SOURCE    CTNoTrustQuery.cpp
+SOURCE    CTInvalidCertNote.cpp
+
+LIBRARY   EUSER.LIB
+LIBRARY   EIKSRV.LIB
+LIBRARY   CONE.LIB
+LIBRARY   BAFL.LIB
+LIBRARY   EFSRV.LIB
+LIBRARY   AVKON.LIB
+LIBRARY   EIKDLG.LIB
+LIBRARY   EIKCORE.LIB
+LIBRARY   EIKCOCTL.LIB
+LIBRARY   COMMONENGINE.LIB
+LIBRARY   EIKSRVUI.lib
+LIBRARY   apmime.lib
+LIBRARY   CommonUI.lib
+LIBRARY   ctframework.lib
+LIBRARY   certstore.lib
+LIBRARY   X509.lib
+LIBRARY   x509certnameparser.lib    // parsing of label
+LIBRARY   hash.lib
+LIBRARY   crypto.lib
+LIBRARY   aknlayout.lib
+LIBRARY   X500.lib
+LIBRARY   DevTokenClient.lib
+
+DEBUGLIBRARY     flogger.lib
+
+#if defined(ARMCC)
+    DEFFILE ../eabi/CTSecDilogImpl.DEF
+#elif defined( WINSCW )
+    DEFFILE ../BWINSCW/CTSecDilogImpl.DEF
+#endif
+
+SMPSAFE
+

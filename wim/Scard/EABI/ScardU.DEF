@@ -1,0 +1,82 @@
+EXPORTS
+	_Z11StartThreadv @ 1 NONAME
+	_ZN10CScardComm4NewLEP6RScardR27TScardConnectionRequirementR4TBufILi32EER14TRequestStatusl @ 2 NONAME
+	_ZN10CScardCommD0Ev @ 3 NONAME
+	_ZN10CScardCommD1Ev @ 4 NONAME
+	_ZN10CScardCommD2Ev @ 5 NONAME
+	_ZN14CScardListener16ListenCardEventsERK4TBufILi32EE @ 6 NONAME
+	_ZN14CScardListener4RunLEv @ 7 NONAME
+	_ZN14CScardListener8DoCancelEv @ 8 NONAME
+	_ZN14CScardListenerC2EP6RScard @ 9 NONAME
+	_ZN14CScardListenerD0Ev @ 10 NONAME
+	_ZN14CScardListenerD1Ev @ 11 NONAME
+	_ZN14CScardListenerD2Ev @ 12 NONAME
+	_ZN17CScardReaderQuery11ListGroupsLEP13CArrayFixFlatI4TBufILi32EEE @ 13 NONAME
+	_ZN17CScardReaderQuery12ListReadersLEP13CArrayFixFlatI4TBufILi32EEERKS2_ @ 14 NONAME
+	_ZN17CScardReaderQuery4NewLEv @ 15 NONAME
+	_ZN17CScardReaderQueryD0Ev @ 16 NONAME
+	_ZN17CScardReaderQueryD1Ev @ 17 NONAME
+	_ZN17CScardReaderQueryD2Ev @ 18 NONAME
+	_ZN20CScardNotifyRegistry15NotifyCardEventE19TScardServiceStatuss @ 19 NONAME
+	_ZN27TScardConnectionRequirement12NewCardsOnlyEi @ 20 NONAME
+	_ZN27TScardConnectionRequirement12SetAIDBytesLER6TDesC8 @ 21 NONAME
+	_ZN27TScardConnectionRequirement12SetExcludedLER4TBufILi32EE @ 22 NONAME
+	_ZN27TScardConnectionRequirement12SetExplicitLER4TBufILi32EE @ 23 NONAME
+	_ZN27TScardConnectionRequirement14ClearAIDBytesLEv @ 24 NONAME
+	_ZN27TScardConnectionRequirement14ClearExcludedLEv @ 25 NONAME
+	_ZN27TScardConnectionRequirement14ClearExplicitLEv @ 26 NONAME
+	_ZN27TScardConnectionRequirement14NewReadersOnlyEi @ 27 NONAME
+	_ZN27TScardConnectionRequirement7SetATRLER5TBuf8ILi33EE @ 28 NONAME
+	_ZN27TScardConnectionRequirement9ClearATRLEv @ 29 NONAME
+	_ZN27TScardConnectionRequirementC1Ev @ 30 NONAME
+	_ZN27TScardConnectionRequirementC2Ev @ 31 NONAME
+	_ZN6RScard4NewLEv @ 32 NONAME
+	_ZN6RScardD0Ev @ 33 NONAME
+	_ZN6RScardD1Ev @ 34 NONAME
+	_ZN6RScardD2Ev @ 35 NONAME
+	_ZNK10CScardComm13ManageChannelE20TScChannelManagementaR5TDes8R14TRequestStatusl @ 36 NONAME
+	_ZNK10CScardComm14CancelTransmitEv @ 37 NONAME
+	_ZNK10CScardComm14TransmitToCardERK6TDesC8R5TDes8R14TRequestStatusla @ 38 NONAME
+	_ZNK10CScardComm16GetCapabilitiesLElR5TDes8l @ 39 NONAME
+	_ZNK10CScardComm5ScardEv @ 40 NONAME
+	_ZNK10CScardComm7GetATRLER5TBuf8ILi33EE @ 41 NONAME
+	_ZTI10CScardComm @ 42 NONAME DATA 12 ; #<TI>#
+	_ZTI12CScardServer @ 43 NONAME DATA 32 ; #<TI>#
+	_ZTI13CScardSession @ 44 NONAME DATA 12 ; #<TI>#
+	_ZTI14CScardListener @ 45 NONAME DATA 12 ; #<TI>#
+	_ZTI14CScardNotifier @ 46 NONAME DATA 12 ; #<TI>#
+	_ZTI15CScardConnector @ 47 NONAME DATA 12 ; #<TI>#
+	_ZTI16CScardEventStack @ 48 NONAME DATA 12 ; #<TI>#
+	_ZTI17CScardReaderQuery @ 49 NONAME DATA 12 ; #<TI>#
+	_ZTI18CScardCommandTimer @ 50 NONAME DATA 12 ; #<TI>#
+	_ZTI18CScardMessageStack @ 51 NONAME DATA 12 ; #<TI>#
+	_ZTI19CScardAccessControl @ 52 NONAME DATA 12 ; #<TI>#
+	_ZTI20CScardChannelManager @ 53 NONAME DATA 12 ; #<TI>#
+	_ZTI20CScardNotifyRegistry @ 54 NONAME DATA 32 ; #<TI>#
+	_ZTI20CScardReaderRegistry @ 55 NONAME DATA 12 ; #<TI>#
+	_ZTI21CScardConnectionTimer @ 56 NONAME DATA 12 ; #<TI>#
+	_ZTI22CScardResourceRegistry @ 57 NONAME DATA 12 ; #<TI>#
+	_ZTI24CScardConnectionRegistry @ 58 NONAME DATA 12 ; #<TI>#
+	_ZTI27CScardAccessControlRegistry @ 59 NONAME DATA 12 ; #<TI>#
+	_ZTI6RScard @ 60 NONAME DATA 24 ; #<TI>#
+	_ZTV10CScardComm @ 61 NONAME DATA 20 ; #<VT>#
+	_ZTV12CScardServer @ 62 NONAME DATA 56 ; #<VT>#
+	_ZTV13CScardSession @ 63 NONAME DATA 52 ; #<VT>#
+	_ZTV14CScardListener @ 64 NONAME DATA 36 ; #<VT>#
+	_ZTV14CScardNotifier @ 65 NONAME DATA 32 ; #<VT>#
+	_ZTV15CScardConnector @ 66 NONAME DATA 52 ; #<VT>#
+	_ZTV16CScardEventStack @ 67 NONAME DATA 20 ; #<VT>#
+	_ZTV17CScardReaderQuery @ 68 NONAME DATA 20 ; #<VT>#
+	_ZTV18CScardCommandTimer @ 69 NONAME DATA 32 ; #<VT>#
+	_ZTV18CScardMessageStack @ 70 NONAME DATA 20 ; #<VT>#
+	_ZTV19CScardAccessControl @ 71 NONAME DATA 32 ; #<VT>#
+	_ZTV20CScardChannelManager @ 72 NONAME DATA 20 ; #<VT>#
+	_ZTV20CScardNotifyRegistry @ 73 NONAME DATA 36 ; #<VT>#
+	_ZTV20CScardReaderRegistry @ 74 NONAME DATA 20 ; #<VT>#
+	_ZTV21CScardConnectionTimer @ 75 NONAME DATA 32 ; #<VT>#
+	_ZTV22CScardResourceRegistry @ 76 NONAME DATA 20 ; #<VT>#
+	_ZTV24CScardConnectionRegistry @ 77 NONAME DATA 20 ; #<VT>#
+	_ZTV27CScardAccessControlRegistry @ 78 NONAME DATA 20 ; #<VT>#
+	_ZTV6RScard @ 79 NONAME DATA 16 ; #<VT>#
+	_ZThn4_N20CScardNotifyRegistry15NotifyCardEventE19TScardServiceStatuss @ 80 NONAME ; #<thunk>#
+

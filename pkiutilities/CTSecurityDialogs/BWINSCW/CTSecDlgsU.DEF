@@ -1,0 +1,3 @@
+EXPORTS
+	?CreateNoteL@PKIDialogFactory@@SAPAVMPKIDialog@@XZ @ 1 NONAME ; class MPKIDialog * PKIDialogFactory::CreateNoteL(void)
+

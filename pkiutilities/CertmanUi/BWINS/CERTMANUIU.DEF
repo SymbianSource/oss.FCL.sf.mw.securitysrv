@@ -1,0 +1,5 @@
+EXPORTS
+	?E32Dll@@YAHW4TDllReason@@@Z @ 1 NONAME ; int __cdecl E32Dll(enum TDllReason)
+	?NewL@CCertManUIKeeper@@SAPAV1@ABVTRect@@VTUid@@@Z @ 2 NONAME ; public: static class CCertManUIKeeper * __cdecl CCertManUIKeeper::NewL(class TRect const &,class TUid)
+	?NewLC@CCertManUIKeeper@@SAPAV1@ABVTRect@@VTUid@@@Z @ 3 NONAME ; public: static class CCertManUIKeeper * __cdecl CCertManUIKeeper::NewLC(class TRect const &,class TUid)
+

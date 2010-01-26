@@ -1,0 +1,269 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Localisation strings of Security Module UI
+*
+*/
+
+
+
+// LOCALISATION STRINGS
+
+
+//d: Command in general settings security folder, opens Security Module view
+//l: title_pane_t2/opt9
+//w:
+//r:3.0
+#define qtn_wim_settings "Security module"
+
+//d:Title of main view
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+#define qtn_wim_title "Security module"
+
+//d:Command in options menu.
+//d:Opens highlighted item
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_options_open "Open"
+
+//d:Command in options menu.
+//d:Views details of the highlighted token
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_opt_details "Module info"
+
+//d:Command in options menu.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_cm_options_delete_keystore "Delete keystore"
+
+//d:Command in options menu.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_sett_opt_unblock "Unblock"
+
+//d:Command in options menu.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_options_close_code "Close access code"
+
+//d:WIM Main view empty list placeholder text
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_no_wims "(no security modules)"
+
+//d:Selection list item
+//d:
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_list_text_access_code "Access code"
+
+//d:Selection list item
+//d:
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_wim_list_text_signature_codes "Signing codes"
+
+//d:Setting item title
+//d:
+//l:list_setting_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_pin_request "Access code request"
+
+//d:Setting value text
+//d:
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_request_on "On"
+
+//d:Setting value text
+//d:
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_request_off "Off"
+
+//d:Setting item title
+//d:
+//l:list_setting_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_sett_status "Status"
+
+//d:Setting value text
+//d:
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_opt_open "Open"
+
+//d:Setting value text
+//d:
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_status_closed "Closed"
+
+//d:Setting value text
+//d:
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_code_status_blocked "Blocked"
+
+//d:Wait note text shown when retrieving data from Security Module
+//l:popup_note_wait_window
+//w:
+//r:3.0
+#define qtn_wim_retrieving_data "Retrieving data from the Security Module."
+
+//d:Setting item title
+//d:Shown if Security Module has no label
+//l:list_double_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_no_label_list "(no label)"
+
+//d:Security Module details heading
+//l:heading_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_info_header "Module Info"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_name "Name:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_card_version "Version:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_security_module_location "Security module location:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+#define qtn_wim_sett_pin_g "Access code:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+#define qtn_wim_key_pin	"Signing code:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_serial_nro "Serial number:"
+
+//d:Details view field names.
+//l:main_list_empty_pane
+//w:
+//r:3.0
+#define qtn_wim_manuf "Manufacturer:"
+
+//d:Details view field value.
+//d:Used in module info message popup,
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_pin_g_no_label_details "Access code"
+
+//d:Details view field value.
+//d:Used in module info message popup,
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_pin_nr_no_label_details "Signing code %N"
+
+//d:Confirmation query text when deleting keys
+//l:popup_note_window
+//w:
+//r:2.8
+#define qtn_cm_confirm_delete_keys "All private keys will be deleted. Continue?"
+
+//d:Phone keystore title pane text
+//l:title_pane_t2/opt9
+//w:
+//r:3.0
+#define qtn_keystore_title_phone_keystore "Phone keystore"
+
+//d:Details view changeable item value
+//l:list_double_pane_t1
+//w:
+//r:3.0
+#define qtn_keystore_list_text_phone_keystore "Phone keystore"
+
+//d:Access code view navi pane text
+//l:navi_text_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_navi_text_access_codes "Access code"
+
+//d:Signature code view navi pane text
+//l:navi_text_pane_t1
+//w:
+//r:3.0
+#define qtn_wim_navi_text_signature_codes "Signing codes"
+
+//d:Confirmation note shown after code change
+//d:
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_wim_info_pin_changed "Code changed"
+
+//d:Information note shown if key is in use when trying to delete keystore.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_keystore_info_unable_to_delete "Key is currently in use. Unable to delete. Close applications and try again."
+
+//d:Setting value text
+//d:
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_secmod_status_value_blocked "Blocked"
+
+//d:Setting item title
+//l:list_setting_pane_t1
+//w:
+//r:3.0
+#define qtn_secmod_title_phone_keystore_code "Phone keystore code"
+
+//d: Middle soft key label for unblock
+//l:  control_pane_t3/opt7
+//w:
+//r:3.2
+#define qtn_msk_unblock "Unblock"
+
+// End of File

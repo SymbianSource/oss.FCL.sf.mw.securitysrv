@@ -1,0 +1,44 @@
+EXPORTS
+	?AddAuthorisationSchemeL@COCSPParameters@@QAEXPAVMOCSPAuthorisationScheme@@@Z @ 1 NONAME ; void COCSPParameters::AddAuthorisationSchemeL(class MOCSPAuthorisationScheme *)
+	?AddCertificateL@COCSPParameters@@QAEXABVCX509Certificate@@0@Z @ 2 NONAME ; void COCSPParameters::AddCertificateL(class CX509Certificate const &, class CX509Certificate const &)
+	?AddCertificatesL@COCSPParameters@@QAEXABVCX509CertChain@@@Z @ 3 NONAME ; void COCSPParameters::AddCertificatesL(class CX509CertChain const &)
+	?ArchiveCutoff@COCSPResponse@@QBEPBVTTime@@XZ @ 4 NONAME ; class TTime const * COCSPResponse::ArchiveCutoff(void) const
+	?CancelCheck@COCSPClient@@QAEXXZ @ 5 NONAME ; void COCSPClient::CancelCheck(void)
+	?CertCount@COCSPRequest@@QBEHXZ @ 6 NONAME ; int COCSPRequest::CertCount(void) const
+	?CertCount@COCSPResponse@@QBEHXZ @ 7 NONAME ; int COCSPResponse::CertCount(void) const
+	?CertInfo@COCSPRequest@@QBEABVCOCSPRequestCertInfo@@I@Z @ 8 NONAME ; class COCSPRequestCertInfo const & COCSPRequest::CertInfo(unsigned int) const
+	?CertInfo@COCSPResponse@@QBEABVCOCSPResponseCertInfo@@I@Z @ 9 NONAME ; class COCSPResponseCertInfo const & COCSPResponse::CertInfo(unsigned int) const
+	?Check@COCSPClient@@QAEXAAVTRequestStatus@@@Z @ 10 NONAME ; void COCSPClient::Check(class TRequestStatus &)
+	?Issuer@COCSPRequestCertInfo@@QBEABVCX509Certificate@@XZ @ 11 NONAME ; class CX509Certificate const & COCSPRequestCertInfo::Issuer(void) const
+	?NewL@COCSPClient@@SAPAV1@PBVCOCSPParameters@@@Z @ 12 NONAME ; class COCSPClient * COCSPClient::NewL(class COCSPParameters const *)
+	?NewL@COCSPParameters@@SAPAV1@XZ @ 13 NONAME ; class COCSPParameters * COCSPParameters::NewL(void)
+	?NewLC@COCSPDirectAuthorisationScheme@@SAPAV1@ABVTUid@@AAVMCertStore@@@Z @ 14 NONAME ; class COCSPDirectAuthorisationScheme * COCSPDirectAuthorisationScheme::NewLC(class TUid const &, class MCertStore &)
+	?NewLC@COCSPParameters@@SAPAV1@XZ @ 15 NONAME ; class COCSPParameters * COCSPParameters::NewLC(void)
+	?NextUpdate@COCSPResponseCertInfo@@QBEPBVTTime@@XZ @ 16 NONAME ; class TTime const * COCSPResponseCertInfo::NextUpdate(void) const
+	?Nonce@COCSPRequest@@QBEPBVTDesC8@@XZ @ 17 NONAME ; class TDesC8 const * COCSPRequest::Nonce(void) const
+	?Outcome@COCSPClient@@QBEABVTOCSPOutcome@@H@Z @ 18 NONAME ; class TOCSPOutcome const & COCSPClient::Outcome(int) const
+	?ProducedAt@COCSPResponse@@QBE?AVTTime@@XZ @ 19 NONAME ; class TTime COCSPResponse::ProducedAt(void) const
+	?Request@COCSPClient@@QBEABVCOCSPRequest@@H@Z @ 20 NONAME ; class COCSPRequest const & COCSPClient::Request(int) const
+	?Response@COCSPClient@@QBEPBVCOCSPResponse@@H@Z @ 21 NONAME ; class COCSPResponse const * COCSPClient::Response(int) const
+	?RevocationTime@COCSPResponseCertInfo@@QBEPBVTTime@@XZ @ 22 NONAME ; class TTime const * COCSPResponseCertInfo::RevocationTime(void) const
+	?SetMaxStatusAgeL@COCSPParameters@@QAEXI@Z @ 23 NONAME ; void COCSPParameters::SetMaxStatusAgeL(unsigned int)
+	?SetTimeLeewayL@COCSPParameters@@QAEXI@Z @ 24 NONAME ; void COCSPParameters::SetTimeLeewayL(unsigned int)
+	?SetTransport@COCSPParameters@@QAEXPAVMOCSPTransport@@@Z @ 25 NONAME ; void COCSPParameters::SetTransport(class MOCSPTransport *)
+	?SetURIL@COCSPParameters@@QAEXABVTDesC8@@H@Z @ 26 NONAME ; void COCSPParameters::SetURIL(class TDesC8 const &, int)
+	?SetUseNonce@COCSPParameters@@QAEXH@Z @ 27 NONAME ; void COCSPParameters::SetUseNonce(int)
+	?SetValidationTimeL@COCSPParameters@@QAEXABVTTime@@@Z @ 28 NONAME ; void COCSPParameters::SetValidationTimeL(class TTime const &)
+	?Status@COCSPResponseCertInfo@@QBE?AW4TResult@OCSP@@XZ @ 29 NONAME ; enum OCSP::TResult COCSPResponseCertInfo::Status(void) const
+	?Subject@COCSPRequestCertInfo@@QBEABVCX509Certificate@@XZ @ 30 NONAME ; class CX509Certificate const & COCSPRequestCertInfo::Subject(void) const
+	?SummaryResult@COCSPClient@@QBE?AW4TResult@OCSP@@XZ @ 31 NONAME ; enum OCSP::TResult COCSPClient::SummaryResult(void) const
+	?ThisUpdate@COCSPResponseCertInfo@@QBE?AVTTime@@XZ @ 32 NONAME ; class TTime COCSPResponseCertInfo::ThisUpdate(void) const
+	?TransactionCount@COCSPClient@@QBEHXZ @ 33 NONAME ; int COCSPClient::TransactionCount(void) const
+	?AddAllAuthorisationSchemesL@COCSPParameters@@QAEXABVTUid@@AAVMCertStore@@@Z @ 34 NONAME ; void COCSPParameters::AddAllAuthorisationSchemesL(class TUid const &, class MCertStore &)
+	?NewLC@COCSPCaDirectAuthorisationScheme@@SAPAV1@XZ @ 35 NONAME ; class COCSPCaDirectAuthorisationScheme * COCSPCaDirectAuthorisationScheme::NewLC(void)
+	?NewLC@COCSPDelegateAuthorisationScheme@@SAPAV1@AAVMCertStore@@@Z @ 36 NONAME ; class COCSPDelegateAuthorisationScheme * COCSPDelegateAuthorisationScheme::NewLC(class MCertStore &)
+	?SetTimeout@COCSPParameters@@QAEXH@Z @ 37 NONAME ; void COCSPParameters::SetTimeout(int)
+	?SetRetryCount@COCSPParameters@@QAEXI@Z @ 38 NONAME ; void COCSPParameters::SetRetryCount(unsigned int)
+	?SetOCSPCheckForResponderCert@COCSPParameters@@QAEXH@Z @ 39 NONAME ; void COCSPParameters::SetOCSPCheckForResponderCert(int)
+	?CertsAvailableForOCSPCheck@COCSPClient@@QAEHXZ @ 40 NONAME ; int COCSPClient::CertsAvailableForOCSPCheck(void)
+	?SetCheckCertsWithAiaOnly@COCSPParameters@@QAEXH@Z @ 41 NONAME ; void COCSPParameters::SetCheckCertsWithAiaOnly(int)
+	?SetUseAIA@COCSPParameters@@QAEXH@Z @ 42 NONAME ; void COCSPParameters::SetUseAIA(int)
+

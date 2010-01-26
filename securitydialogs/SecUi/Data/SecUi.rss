@@ -1,0 +1,1527 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource file
+*    
+*
+*
+*/
+
+
+
+NAME SECU
+
+#include <eikon.rh>
+#include <eikcore.rsg>
+
+#include <avkon.loc>
+#include <secui.loc>
+#include <secui.hrh>
+
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.hrh>
+#include <avkon.mbg>
+
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF16 { buf="SecUi"; }
+
+
+#define ESecUiNoteFlags (EEikDialogFlagWait | EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNotifyEsc)
+#define ESecUiQueryFlags (EGeneralQueryFlags | EEikDialogFlagNotifyEsc)
+
+RESOURCE AVKON_SETTING_PAGE r_autolock_setting_page
+    { 
+    label= qtn_set_autolock;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type =  EAknSetListBox;
+    editor_resource_id= r_autolock_listbox;
+    }
+
+RESOURCE LISTBOX r_autolock_listbox
+    {
+    array_id = r_autolock_lbx;
+    flags = EEikListBoxMultipleSelection;
+    }
+
+//As SecUi loads one resource file manualy in Secui.cpp and because in CDMA we have
+//only this one difference in list box it's easier and cleaner to do the variation 
+//here than having a variation in mmp with a cdma resource file and feature manager in Secui.cpp
+#ifdef __PROTOCOL_CDMA
+
+    RESOURCE ARRAY r_autolock_lbx
+        {
+        items =
+            {
+            LBUF
+                {//autolock off
+                txt = qtn_set_autolock_off;
+                },
+            LBUF
+                {//Power up only
+                txt = qtn_set_lock_on_power_up_only;
+                },
+            LBUF
+                {//user defined (timed and on power up)
+                txt = qtn_set_timed_and_on_power_up;
+                }
+            };      
+        }
+
+#else //If GSM:
+
+    RESOURCE ARRAY r_autolock_lbx
+        {
+        items =
+            {
+            LBUF
+                {//autolock off
+                txt = qtn_set_autolock_off;
+                },
+            LBUF
+                {//user defined
+                txt = qtn_set_autolock_defined;
+                }
+            };      
+    }
+
+#endif //__PROTOCOL_CDMA
+#ifdef RD_REMOTELOCK
+RESOURCE AVKON_SETTING_PAGE r_remotelock_setting_page
+    {
+    label              = qtn_set_remotelock_status;
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type               = EAknSetListBox;
+    editor_resource_id = r_remotelock_listbox;
+    }
+
+RESOURCE LISTBOX r_remotelock_listbox
+    {
+    array_id = r_remotelock_lbx;
+    flags    = EEikListBoxMultipleSelection;
+    }
+
+RESOURCE ARRAY r_remotelock_lbx
+    {
+    items =
+        {
+        LBUF
+            {// Remote Lock enable
+            txt = qtn_set_remotelock_on;
+            },
+        LBUF
+            {// Remote Lock disable
+            txt = qtn_set_remotelock_off;
+            }
+        };
+    }
+
+// Note texts
+RESOURCE TBUF r_remotelock_note_code_error           { buf = qtn_set_remotelock_note_code_error;     }
+RESOURCE TBUF r_remotelock_note_invalid_code         { buf = qtn_set_remotelock_note_invalid_code;   }
+
+// Query prompts
+RESOURCE TBUF r_remotelock_code_prompt               { buf = qtn_set_remotelock_code_prompt;         }
+RESOURCE TBUF r_remotelock_code_confirm_prompt       { buf = qtn_set_remotelock_code_confirm_prompt; }
+
+#endif //RD_REMOTELOCK
+
+
+RESOURCE AVKON_SETTING_PAGE r_fdn_setting_page
+    { 
+    label= text_menu_fdn;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type =  EAknSetListBox;
+    editor_resource_id= r_fdn_listbox;
+    }
+
+RESOURCE LISTBOX r_fdn_listbox
+    {
+    array_id = r_fdn_lbx;
+    flags = EEikListBoxMultipleSelection;
+    }
+
+
+RESOURCE ARRAY r_fdn_lbx
+    {
+    items =
+        {
+        LBUF
+            {//fnd on
+            txt = text_fdn_on;
+            },
+        LBUF
+            {//off
+            txt = text_fdn_off;
+            }
+
+        };  
+    
+    }
+
+
+RESOURCE AVKON_SETTING_PAGE r_pin_setting_page
+    { 
+    label= text_pin_code_cntrl;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type =  EAknSetListBox;
+    editor_resource_id= r_pin_listbox;
+    }
+
+RESOURCE LISTBOX r_pin_listbox
+    {
+    array_id = r_pin_lbx;
+    flags = EEikListBoxMultipleSelection;
+    }
+
+
+RESOURCE ARRAY r_pin_lbx
+    {
+	items =
+		{
+		LBUF
+			{//pin code request on
+			txt = text_pin_code_on;
+			},
+		LBUF
+			{//off
+			txt = text_pin_code_off;
+			}
+
+		};	
+	
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_upin_setting_page
+	{ 
+	label= qtn_set_upin_code_req;
+	softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+	type =  EAknSetListBox;
+	editor_resource_id= r_upin_listbox;
+	}
+
+RESOURCE LISTBOX r_upin_listbox
+	{
+	array_id = r_upin_lbx;
+	flags = EEikListBoxMultipleSelection;
+	}
+
+
+RESOURCE ARRAY r_upin_lbx
+    {
+	items =
+		{
+		LBUF
+			{//upin code request on
+			txt = text_pin_code_on;
+			},
+		LBUF
+			{//off
+			txt = text_pin_code_off;
+			}
+
+		};	
+	
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_code_in_use_setting_page
+	{ 
+	label= qtn_set_code_in_use;
+	softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+	type =  EAknSetListBox;
+	editor_resource_id= r_code_listbox;
+	}
+
+RESOURCE LISTBOX r_code_listbox
+	{
+	array_id = r_code_lbx;
+	flags = EEikListBoxMultipleSelection;
+	}
+
+
+RESOURCE ARRAY r_code_lbx
+    {
+	items =
+		{
+		LBUF
+			{//Pin code
+			txt = qtn_set_pin;
+			},
+		LBUF
+			{//Upin code
+			txt = qtn_set_upin;
+			}
+
+		};	
+	
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_security_setting_page
+    { 
+    label= qtn_set_sim_change_sec;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type =  EAknSetListBox;
+    editor_resource_id= r_security_listbox;
+    }
+
+RESOURCE LISTBOX r_security_listbox
+    {
+    array_id = r_security_lbx;
+    flags = EEikListBoxMultipleSelection;
+    }
+
+
+RESOURCE ARRAY r_security_lbx
+    {
+    items =
+        {
+        LBUF
+            {//sim change security on 
+            txt = qtn_set_sim_change_sec_on;
+            },
+        LBUF
+            {//off
+            txt = qtn_set_sim_change_sec_off;
+            }
+
+        };  
+    
+    }
+
+
+
+RESOURCE CBA r_softkeys_call_empty
+{
+buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyCall;
+            txt = text_softkey_call;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyEmpty;
+            txt = text_softkey_empty;
+            }
+        };
+}
+
+RESOURCE DIALOG r_upin_request_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_enter_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+
+RESOURCE DIALOG r_upuk_request_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_enter_upuk;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PUK_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_upin_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_enter_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_new_upin_code_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_set_new_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_new_upin_code_request_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_set_new_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_verify_new_upin_code_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_verify_new_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_verify_new_upin_code_request_query
+	{
+	flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+	buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+					layout = EPinLayout;
+					label = qtn_verify_new_upin;
+					control = SECRETED
+				{ 
+ 						num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+						};
+				};
+			}
+		};
+	}
+
+
+RESOURCE DIALOG r_pin_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_puk_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_simcd_enter_puk;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PUK_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_puk2_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_simcd_enter_puk2;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PUK2_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+
+
+RESOURCE DIALOG r_security_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_set_enter_sec_code;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_SECURITY_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+
+
+RESOURCE DIALOG r_autolock_time_query
+    {
+    flags=ESecUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = ENumberLayout;
+                    label = qtn_set_autolock_define_time;
+                    control = AVKON_INTEGER_EDWIN
+                        {
+                        maxlength = 3;
+                        min=0;
+                        max=999;
+                        unset_value = 0;
+                        };
+                };
+            }
+        };
+    }
+//This is used when KFeatureIdSapDeviceLockEnhancements is defined   
+RESOURCE DIALOG r_sap_autolock_time_query
+    {
+    flags=ESecUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = ENumberLayout;
+                    label = qtn_set_autolock_define_time;
+                    control = AVKON_INTEGER_EDWIN
+                        {
+                        maxlength = 4;
+                        min=0;
+                        max=1440;
+                        unset_value = 0;
+                        };
+                };
+            }
+        };
+    }
+
+#ifdef RD_REMOTELOCK
+RESOURCE DIALOG r_remotelock_code_query
+    {
+    flags   = ESecUiQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY 
+                {
+                layout  = ECodeLayout;
+                label   = qtn_set_remotelock_code_prompt;
+                control = SECRETED
+                    {
+                    num_letters = SEC_REMOTELOCK_CODE_MAX_LENGTH;
+                    };
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_verify_remotelock_code_query
+    {
+    flags   = ESecUiQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY 
+                {
+                layout  = ECodeLayout;
+                label   = qtn_set_remotelock_code_confirm_prompt;
+                control = SECRETED
+                    {
+                    num_letters = SEC_REMOTELOCK_CODE_MAX_LENGTH;
+                    };
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_remotelock_codes_dont_match
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_set_remotelock_note_code_error;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_remotelock_invalid_code
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_set_remotelock_note_invalid_code;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+#endif // RD_REMOTELOCK
+
+
+RESOURCE DIALOG r_pin_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_pin2_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_pin2;
+                    control = SECRETED
+                        { 
+                        num_letters=SEC_C_PIN2_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_security_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_set_enter_sec_code;
+                    control = SECRETED
+                        { 
+                        num_letters=SEC_C_SECURITY_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_new_pin_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_new_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_new_pin_code_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_new_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+
+
+RESOURCE DIALOG r_verify_new_pin_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_verify_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_verify_new_pin_code_request_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_verify_pin;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_new_pin2_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_new_pin2;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN2_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_verify_new_pin2_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = text_verify_pin2;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_PIN2_CODE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+
+RESOURCE DIALOG r_new_security_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_set_new_sec_code;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_verify_new_security_code_query
+    {
+    flags=ESecUiQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY 
+                { 
+                    layout = EPinLayout;
+                    label = qtn_set_verify_sec_code;
+                    control = SECRETED
+                { 
+                        num_letters=SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH;
+                        };
+                };
+            }
+        };
+    }
+
+
+
+RESOURCE DIALOG r_confirmation_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralQuery;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_code_accepted;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_security_code_changed_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralQuery;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_set_new_sec_code_changed;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+
+
+
+RESOURCE DIALOG r_pin_code_changed_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralQuery;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_pin_changed;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_upin_code_changed_note
+	{
+	flags=ESecUiNoteFlags;
+	buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtNote;
+			id=EGeneralQuery;
+			control= AVKON_NOTE 
+				{ 
+					layout = EGeneralLayout;
+					singular_label = qtn_set_upin_changed;
+					animation = R_QGN_NOTE_OK_ANIM;
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_pin2_code_changed_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralQuery;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_pin2_changed;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_codes_dont_match
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_codes_do_not_match;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_code_error
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_code_error;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+
+
+RESOURCE DIALOG r_pin_not_allowed
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_pin_code_cntrl_set;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_upin_not_allowed
+	{
+	flags=ESecUiNoteFlags;
+	buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+		{
+		DLG_LINE
+			{
+	    	type=EAknCtNote;
+			id=EGeneralNote;
+			control= AVKON_NOTE 
+				{ 
+	                layout = EGeneralLayout;
+					singular_label = qtn_set_upin_on;
+					animation = R_QGN_NOTE_ERROR_ANIM;
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_upin_rejected
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_error_upin_rejected;
+                    animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_pin2_rejected
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_pin2_rejected;
+                    animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+
+
+RESOURCE DIALOG r_sec_blocked
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_set_sec_code_error_wait;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_pin2_blocked_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_simcd_enter_puk2;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_pin_blocked_note
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_simcd_enter_puk;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_sim_on
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_sim_lock_closed;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_sim_off
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_sim_lock_opened;
+                    animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_sim_not_allowed
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_sim_lock_not_done;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_sim_allready_on
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_sim_lock_already_closed;
+                    animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_sim_allready_off
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_sim_lock_already_open;
+                    animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_operation_not_allowed
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = text_not_allowed;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_insert_sim
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_su_note_insert_sim;
+                    animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+    
+RESOURCE DIALOG r_emergency_calls_only
+    {
+    flags=ESecUiNoteFlags;
+    buttons=R_AVKON_SOFTKEYS_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtNote;
+            id=EGeneralNote;
+            control= AVKON_NOTE 
+                { 
+                    layout = EGeneralLayout;
+                    singular_label = qtn_emerg_emergency_only;
+                    animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+    
+#ifdef __SAP_TERMINAL_CONTROL_FW
+    
+RESOURCE TBUF r_secui_text_autolock_must_be_active
+    {   
+    buf = qtn_set_autolock_must_be_active;
+    }
+
+RESOURCE TBUF r_secui_text_enter_sec_code
+    {   
+     buf = qtn_set_enter_sec_code;
+    }
+    
+RESOURCE TBUF r_secui_text_enter_new_sec_code
+    {   
+      buf = qtn_set_new_sec_code;
+    }
+ 
+RESOURCE TBUF r_secui_text_verify_new_sec_code
+    {   
+      buf = qtn_set_verify_sec_code;
+    }                   
+      
+ 
+#endif // __SAP_TERMINAL_CONTROL_FW
+
+//Remaining attempt resource buffers
+
+RESOURCE TBUF r_secui_remaining_pin_attempts
+    {
+      buf = qtn_simcd_attempt_count_pin;
+    }   
+
+RESOURCE TBUF r_secui_remaining_pin2_attempts
+    {
+      buf = qtn_simcd_attempt_count_pin2;
+    }
+
+RESOURCE TBUF r_secui_remaining_upin_attempts
+    {
+      buf = qtn_simcd_attempt_count_upin;
+    }
+
+RESOURCE TBUF r_secui_remaining_puk_attempts
+    {
+      buf = qtn_simcd_attempt_count_puk;
+    }   
+
+RESOURCE TBUF r_secui_remaining_puk2_attempts
+    {
+      buf = qtn_simcd_attempt_count_puk2;
+    }
+
+RESOURCE TBUF r_secui_remaining_upuk_attempts
+    {
+      buf = qtn_simcd_attempt_count_upuk;
+    }
+
+RESOURCE TBUF r_secui_final_pin_attempt
+    {
+      buf = qtn_simcd_final_attempt_pin;
+    }   
+
+RESOURCE TBUF r_secui_final_pin2_attempt
+    {
+      buf = qtn_simcd_final_attempt_pin2;
+    }
+
+RESOURCE TBUF r_secui_final_upin_attempt
+    {
+      buf = qtn_simcd_final_attempt_upin;
+    }
+
+RESOURCE TBUF r_secui_final_puk_attempt
+    {
+      buf = qtn_simcd_final_attempt_puk;
+    }   
+
+RESOURCE TBUF r_secui_final_puk2_attempt
+    {
+      buf = qtn_simcd_final_attempt_puk2;
+    }
+
+RESOURCE TBUF r_secui_final_upuk_attempt
+    {
+      buf = qtn_simcd_final_attempt_upuk;
+    }
+    
+// end of file

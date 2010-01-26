@@ -1,0 +1,13 @@
+component	securitysrv_ocsp
+source	\sf\mw\securitysrv\pkiutilities\ocsp
+binary	\sf\mw\securitysrv\pkiutilities\ocsp\group all
+exports	\sf\mw\securitysrv\pkiutilities\ocsp\group
+
+notes_source	\component_defs\release.src
+
+ipr E
+ipr T       \sf\mw\securitysrv\pkiutilities\ocsp\test
+
+
+  
+

@@ -1,0 +1,44 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition file for DevTokenDevCertStorePlugin
+*
+*/
+
+
+#include <platform_paths.hrh>
+TARGET      DevCertStore.dll
+TARGETTYPE  PLUGIN
+UID         0x10009D8D 0x101FB667
+
+CAPABILITY  ALL -TCB
+VENDORID    VID_DEFAULT
+
+
+START RESOURCE ../Data/101FB667.rss
+TARGET DevCertStore.rsc
+END
+
+SOURCEPATH  ../Src/Certstore/DevECOMPlugin
+SOURCE      DevTokenDevCertStorePlugin.cpp
+
+USERINCLUDE ../Inc
+
+SYSTEMINCLUDE /epoc32/include/ecom      // cryptotokenregistryinfo.rh needs this
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY euser.lib
+LIBRARY DevTokenClient.lib
+
+SMPSAFE
+

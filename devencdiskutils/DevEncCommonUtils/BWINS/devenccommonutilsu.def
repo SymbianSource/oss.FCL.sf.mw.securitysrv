@@ -1,0 +1,33 @@
+EXPORTS
+	?NewSessionL@@YAPAVCDevEncSessionBase@@XZ @ 1 NONAME ; class CDevEncSessionBase * NewSessionL(void)
+	?SetDrive@CDevEncSession@@UAEXW4TDriveNumber@@@Z @ 2 NONAME ; void CDevEncSession::SetDrive(enum TDriveNumber)
+	?StartDiskWipe@CDevEncSession@@UAEHXZ @ 3 NONAME ; int CDevEncSession::StartDiskWipe(void)
+	?DriveLetter@CDevEncDiskUtils@@SAHHAAVTDes16@@@Z @ 4 NONAME ; int CDevEncDiskUtils::DriveLetter(int, class TDes16 &)
+	?DeleteTestFile@CDevEncDiskUtils@@SAXXZ @ 5 NONAME ; void CDevEncDiskUtils::DeleteTestFile(void)
+	?CreateSetKey@CDevEncKeyUtils@@QBEXAAVTRequestStatus@@H@Z @ 6 NONAME ; void CDevEncKeyUtils::CreateSetKey(class TRequestStatus &, int) const
+	??0CDevEncKeyUtils@@QAE@XZ @ 7 NONAME ; CDevEncKeyUtils::CDevEncKeyUtils(void)
+	?DriveNumber@CDevEncSession@@UBE?AW4TDriveNumber@@XZ @ 8 NONAME ; enum TDriveNumber CDevEncSession::DriveNumber(void) const
+	?WriteTestFile@CDevEncDiskUtils@@SAXXZ @ 9 NONAME ; void CDevEncDiskUtils::WriteTestFile(void)
+	?ResetKey@CDevEncKeyUtils@@QBEXAAVTRequestStatus@@@Z @ 10 NONAME ; void CDevEncKeyUtils::ResetKey(class TRequestStatus &) const
+	?VerifyTestFile@CDevEncDiskUtils@@SAXXZ @ 11 NONAME ; void CDevEncDiskUtils::VerifyTestFile(void)
+	?Connected@CDevEncSession@@UBEHXZ @ 12 NONAME ; int CDevEncSession::Connected(void) const
+	?DiskStatus@CDevEncSession@@UBEHAAH@Z @ 13 NONAME ; int CDevEncSession::DiskStatus(int &) const
+	?NewL@CMmcObserver@@SAPAV1@PAVMMemoryCardObserver@@PAVRFs@@@Z @ 14 NONAME ; class CMmcObserver * CMmcObserver::NewL(class MMemoryCardObserver *, class RFs *)
+	?Progress@CDevEncSession@@UBEHAAH@Z @ 15 NONAME ; int CDevEncSession::Progress(int &) const
+	??0CDevEncSession@@QAE@XZ @ 16 NONAME ; CDevEncSession::CDevEncSession(void)
+	??0CDevEncSession@@QAE@W4TDriveNumber@@@Z @ 17 NONAME ; CDevEncSession::CDevEncSession(enum TDriveNumber)
+	?Connect@CDevEncSession@@UAEHXZ @ 18 NONAME ; int CDevEncSession::Connect(void)
+	?SetDevEncControlL@CDevEncSession@@UAEHH@Z @ 19 NONAME ; int CDevEncSession::SetDevEncControlL(int)
+	?Close@CDevEncSession@@UAEXXZ @ 20 NONAME ; void CDevEncSession::Close(void)
+	?DiskFinalize@CDevEncDiskUtils@@SAHW4TDriveNumber@@@Z @ 21 NONAME ; int CDevEncDiskUtils::DiskFinalize(enum TDriveNumber)
+	?DrivePath@CDevEncDiskUtils@@SAXAAVTDes16@@W4TDriveNumber@@@Z @ 22 NONAME ; void CDevEncDiskUtils::DrivePath(class TDes16 &, enum TDriveNumber)
+	?GetDevEncControlL@CDevEncSession@@UAEHAAH@Z @ 23 NONAME ; int CDevEncSession::GetDevEncControlL(int &)
+	?StartDiskDecrypt@CDevEncSession@@UAEHXZ @ 24 NONAME ; int CDevEncSession::StartDiskDecrypt(void)
+	?SetKey@CDevEncKeyUtils@@QBEXAAVTRequestStatus@@ABVTDesC8@@1@Z @ 25 NONAME ; void CDevEncKeyUtils::SetKey(class TRequestStatus &, class TDesC8 const &, class TDesC8 const &) const
+	?StartObserver@CMmcObserver@@QAEXXZ @ 26 NONAME ; void CMmcObserver::StartObserver(void)
+	?CreateSetKey@CDevEncKeyUtils@@QBEXAAVTRequestStatus@@AAPAVHBufC8@@ABVTDesC8@@H@Z @ 27 NONAME ; void CDevEncKeyUtils::CreateSetKey(class TRequestStatus &, class HBufC8 * &, class TDesC8 const &, int) const
+	?StartDiskEncrypt@CDevEncSession@@UAEHXZ @ 28 NONAME ; int CDevEncSession::StartDiskEncrypt(void)
+	?NewL@CDiskStatusObserver@@SAPAV1@PAVMDiskStatusObserver@@W4TDriveNumber@@@Z @ 29 NONAME ; class CDiskStatusObserver * CDiskStatusObserver::NewL(class MDiskStatusObserver *, enum TDriveNumber)
+	?Connect@CDevEncKeyUtils@@QAEHXZ @ 30 NONAME ; int CDevEncKeyUtils::Connect(void)
+	?Close@CDevEncKeyUtils@@QAEXXZ @ 31 NONAME ; void CDevEncKeyUtils::Close(void)
+

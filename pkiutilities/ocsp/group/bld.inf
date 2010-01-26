@@ -1,0 +1,236 @@
+// Copyright (c) 2001-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description: Online Certificate Status Protocol ( OCSP )
+// 
+//
+
+/**
+ @file
+*/
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+// specify the source file followed by its destination here
+// copy will be used to copy the source file to its destination
+// If there's no destination then the source file will be copied
+// to the same name in /epoc32/include
+
+../inc/ocsppolicy.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsppolicy.h)
+../inc/ocsp_v2.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsp.h)
+../inc/ocsptransport_v2.h				SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsptransport.h)
+../inc/ocsprequestandresponse.h     			SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsprequestandresponse.h)
+
+// ROMKIT includes
+../inc/ocsp.iby					/epoc32/rom/include/ocsp.iby
+
+PRJ_MMPFILES
+
+#ifndef TOOLS
+#ifndef TOOLS2
+
+
+#ifndef WINC
+ocspcommon.mmp
+ocsp.mmp
+../transport/ocsptransport.mmp
+#endif	//	WINC
+
+#endif	//	TOOLS2
+#endif	//	TOOLS
+
+PRJ_TESTMMPFILES
+// specify the .mmp files required for building any test programs here
+//
+// you can specify "manual" to denote that a test should be listed in a generated
+// batch file for running a group of tests which require user input during testing.
+// you can specify "support" to denote that a file is a test support file and shouldn't
+// be listed in a batch file for running a group of tests
+// By default, each test will be listed in a batch file for running a group of tests
+// which can be left to run without requiring watching over by the person running the tests,
+// i.e. tests where no user input is required.  The default will apply if neither "manual"
+// or "support" is specified.
+
+#ifndef TOOLS
+../test/resign/resign.mmp
+../test/tocsphttpfilter/tocsphttpfilter.mmp
+../test/tocsp.mmp
+#endif	//	TOOLS
+
+
+PRJ_TESTEXPORTS
+
+
+//
+// OCSP tests - Begin
+
+../test/scripts/XCert.txt          	/epoc32/winscw/c/system/tocsp/scripts/xcert.txt
+../test/scripts/XCert-logging.txt		/epoc32/winscw/c/system/tocsp/scripts/xcert-logging.txt
+../test/scripts/OpenSSL-logging.txt    /epoc32/winscw/c/system/tocsp/scripts/openssl-logging.txt
+../test/scripts/Valicert.txt	    	/epoc32/winscw/c/system/tocsp/scripts/valicert.txt
+../test/scripts/CertCo.txt	        	/epoc32/winscw/c/system/tocsp/scripts/certco.txt
+../test/scripts/SmartTrust.txt	    	/epoc32/winscw/c/system/tocsp/scripts/smarttrust.txt
+
+
+// OCSP Central repository - for newpolicy test - only on emulator.
+../test/scripts/2002b28b-new.txt	/epoc32/winscw/c/system/tocsp/scripts/2002b28b-new.txt
+
+../test/scripts/setupOcspPolicy.bat	/epoc32/winscw/c/system/tocsp/scripts/setupocsppolicy.bat
+../test/scripts/setupOcspPolicy_urel.bat	/epoc32/winscw/c/system/tocsp/scripts/setupocsppolicy_urel.bat
+
+../test/scripts/openssl-ocspsupport.txt     	/epoc32/winscw/c/system/tocsp/scripts/openssl-ocspsupport.txt
+../test/scripts/openssl-ocspsupport-oom.txt    /epoc32/winscw/c/system/tocsp/scripts/openssl-ocspsupport-oom.txt
+
+
+../test/scripts/openssl.script        		/epoc32/winscw/c/system/tocsp/scripts/openssl.script
+../test/scripts/openssl.ini        		/epoc32/winscw/c/system/tocsp/scripts/openssl.ini
+
+../test/scripts/XCert-local.script		/epoc32/winscw/c/system/tocsp/scripts/xcert-local.script
+../test/scripts/XCert-local.ini		/epoc32/winscw/c/system/tocsp/scripts/xcert-local.ini
+
+../test/scripts/XCert-oom.script			/epoc32/winscw/c/system/tocsp/scripts/xcert-oom.script
+../test/scripts/XCert-oom.ini			/epoc32/winscw/c/system/tocsp/scripts/xcert-oom.ini
+
+../test/scripts/OpenSSL-local.script 	        /epoc32/winscw/c/system/tocsp/scripts/openssl-local.script
+../test/scripts/OpenSSL-local.ini  	        /epoc32/winscw/c/system/tocsp/scripts/openssl-local.ini
+
+../test/scripts/Error.script    	    	        /epoc32/winscw/c/system/tocsp/scripts/error.script
+../test/scripts/Error.ini    	    	        /epoc32/winscw/c/system/tocsp/scripts/error.ini
+
+../test/scripts/DefaultPolicy.script		/epoc32/winscw/c/system/tocsp/scripts/defaultpolicy.script
+../test/scripts/DefaultPolicy.ini		/epoc32/winscw/c/system/tocsp/scripts/defaultpolicy.ini
+
+../test/scripts/NewPolicy.script			/epoc32/winscw/c/system/tocsp/scripts/newpolicy.script
+../test/scripts/NewPolicyTEF.ini			/epoc32/winscw/c/system/tocsp/scripts/newpolicytef.ini
+
+../test/scripts/httpinterface.script				/epoc32/winscw/c/system/tocsp/scripts/httpinterface.script
+../test/scripts/httpinterface.ini				/epoc32/winscw/c/system/tocsp/scripts/httpinterface.ini
+
+
+../test/responses/response.n1	/epoc32/winscw/c/system/tocsp/responses/response.n1
+../test/responses/response.n2	/epoc32/winscw/c/system/tocsp/responses/response.n2
+../test/responses/response.000	/epoc32/winscw/c/system/tocsp/responses/response.000
+../test/responses/response.001	/epoc32/winscw/c/system/tocsp/responses/response.001
+../test/responses/response.002	/epoc32/winscw/c/system/tocsp/responses/response.002
+../test/responses/response.003	/epoc32/winscw/c/system/tocsp/responses/response.003
+../test/responses/response.004	/epoc32/winscw/c/system/tocsp/responses/response.004
+../test/responses/response.005	/epoc32/winscw/c/system/tocsp/responses/response.005
+../test/responses/response.006	/epoc32/winscw/c/system/tocsp/responses/response.006
+../test/responses/response.007	/epoc32/winscw/c/system/tocsp/responses/response.007
+../test/responses/response.008	/epoc32/winscw/c/system/tocsp/responses/response.008
+../test/responses/response.009	/epoc32/winscw/c/system/tocsp/responses/response.009
+../test/responses/response.010	/epoc32/winscw/c/system/tocsp/responses/response.010
+../test/responses/response.011	/epoc32/winscw/c/system/tocsp/responses/response.011
+../test/responses/response.012	/epoc32/winscw/c/system/tocsp/responses/response.012
+../test/responses/response.013	/epoc32/winscw/c/system/tocsp/responses/response.013
+../test/responses/response.014	/epoc32/winscw/c/system/tocsp/responses/response.014
+../test/responses/response.015	/epoc32/winscw/c/system/tocsp/responses/response.015
+../test/responses/response.016	/epoc32/winscw/c/system/tocsp/responses/response.016
+../test/responses/response.018	/epoc32/winscw/c/system/tocsp/responses/response.018
+../test/responses/vs_explicit_version.dat /epoc32/winscw/c/system/tocsp/responses/vs_explicit_version.dat
+../test/responses/response.019	/epoc32/winscw/c/system/tocsp/responses/response.019
+../test/responses/response.020	/epoc32/winscw/c/system/tocsp/responses/response.020
+../test/responses/response.021	/epoc32/winscw/c/system/tocsp/responses/response.021
+../test/responses/response.022	/epoc32/winscw/c/system/tocsp/responses/response.022
+../test/responses/response.023	/epoc32/winscw/c/system/tocsp/responses/response.023
+../test/responses/response.024	/epoc32/winscw/c/system/tocsp/responses/response.024
+../test/responses/response.025	/epoc32/winscw/c/system/tocsp/responses/response.025
+../test/responses/response.026	/epoc32/winscw/c/system/tocsp/responses/response.026
+../test/responses/response.027	/epoc32/winscw/c/system/tocsp/responses/response.027
+../test/responses/response.028	/epoc32/winscw/c/system/tocsp/responses/response.028
+../test/responses/response.029	/epoc32/winscw/c/system/tocsp/responses/response.029
+../test/responses/response.030	/epoc32/winscw/c/system/tocsp/responses/response.030
+../test/responses/response.031	/epoc32/winscw/c/system/tocsp/responses/response.031
+../test/responses/response.032	/epoc32/winscw/c/system/tocsp/responses/response.032
+../test/responses/response.033	/epoc32/winscw/c/system/tocsp/responses/response.033
+../test/responses/response.034	/epoc32/winscw/c/system/tocsp/responses/response.034
+../test/responses/response.035	/epoc32/winscw/c/system/tocsp/responses/response.035
+
+../test/responses/XCert_00_Good_RSA_XCert.rsp              /epoc32/winscw/c/system/tocsp/responses/xcert_00_good_rsa_xcert.rsp
+../test/responses/XCert_01_Revoked_RSA_XCert.rsp           /epoc32/winscw/c/system/tocsp/responses/xcert_01_revoked_rsa_xcert.rsp
+../test/responses/XCert_02_Suspended_RSA_XCert.rsp         /epoc32/winscw/c/system/tocsp/responses/xcert_02_suspended_rsa_xcert.rsp
+../test/responses/XCert_03_Unknown_RSA_XCert.rsp           /epoc32/winscw/c/system/tocsp/responses/xcert_03_unknown_rsa_xcert.rsp
+../test/responses/XCert_04_Good_DSA_XCert.rsp              /epoc32/winscw/c/system/tocsp/responses/xcert_04_good_dsa_xcert.rsp
+../test/responses/XCert_05_Revoked_DSA_XCert.rsp           /epoc32/winscw/c/system/tocsp/responses/xcert_05_revoked_dsa_xcert.rsp
+../test/responses/XCert_06_Suspended_DSA_XCert.rsp         /epoc32/winscw/c/system/tocsp/responses/xcert_06_suspended_dsa_xcert.rsp
+../test/responses/XCert_07_Unknown_DSA_XCert.rsp           /epoc32/winscw/c/system/tocsp/responses/xcert_07_unknown_dsa_xcert.rsp
+../test/responses/XCert_08_All_RSA_XCert.rsp               /epoc32/winscw/c/system/tocsp/responses/xcert_08_all_rsa_xcert.rsp
+../test/responses/XCert_09_All_DSA_XCert.rsp               /epoc32/winscw/c/system/tocsp/responses/xcert_09_all_dsa_xcert.rsp
+../test/responses/XCert_10_Expired_Subject_and_Issuer.rsp  /epoc32/winscw/c/system/tocsp/responses/xcert_10_expired_subject_and_issuer.rsp
+../test/responses/XCert_11_Expired_Signing.rsp             /epoc32/winscw/c/system/tocsp/responses/xcert_11_expired_signing.rsp
+../test/responses/XCert_12_Expired_Subject.rsp             /epoc32/winscw/c/system/tocsp/responses/xcert_12_expired_subject.rsp
+../test/responses/XCert_14_Expired_subject_valid_time.rsp  /epoc32/winscw/c/system/tocsp/responses/xcert_14_expired_subject_valid_time.rsp
+../test/responses/XCert_15_Expired_unspecified.rsp         /epoc32/winscw/c/system/tocsp/responses/xcert_15_expired_unspecified.rsp
+../test/responses/XCert_16_ThisUpdateTooEarly.rsp          /epoc32/winscw/c/system/tocsp/responses/xcert_16_thisupdatetooearly.rsp
+../test/responses/XCert_20_Nonce_Off.rsp                   /epoc32/winscw/c/system/tocsp/responses/xcert_20_nonce_off.rsp
+../test/responses/XCert_22_BadSig_DSA_XCert.rsp            /epoc32/winscw/c/system/tocsp/responses/xcert_22_badsig_dsa_xcert.rsp
+../test/responses/XCert_23_ResultCombination1.rsp          /epoc32/winscw/c/system/tocsp/responses/xcert_23_resultcombination1.rsp
+../test/responses/XCert_24_ResultCombination2.rsp          /epoc32/winscw/c/system/tocsp/responses/xcert_24_resultcombination2.rsp
+../test/responses/XCert_25_ResultCombination3.rsp          /epoc32/winscw/c/system/tocsp/responses/xcert_25_resultcombination3.rsp
+../test/responses/XCert_26_ResultCombination4.rsp          /epoc32/winscw/c/system/tocsp/responses/xcert_26_resultcombination4.rsp
+../test/responses/Error_00_Single_R5.rsp            		/epoc32/winscw/c/system/tocsp/responses/error_00_single_r5.rsp
+../test/responses/Error_01_Double_R5.rsp            		/epoc32/winscw/c/system/tocsp/responses/error_01_double_r5.rsp
+
+../test/responses/ca_1ext_usage_not_ocspsigning_resp.dat	/epoc32/winscw/c/system/tocsp/responses/ca_1ext_usage_not_ocspsigning_resp.dat
+../test/responses/ca_2ext_usage_not_ocspsigning_resp.dat	/epoc32/winscw/c/system/tocsp/responses/ca_2ext_usage_not_ocspsigning_resp.dat
+../test/responses/ca_2ext_usage_ocspsigning_bad_sign_resp.dat	/epoc32/winscw/c/system/tocsp/responses/ca_2ext_usage_ocspsigning_bad_sign_resp.dat
+../test/responses/ca_2ext_usage_ocspsigning_bad_name_resp.dat	/epoc32/winscw/c/system/tocsp/responses/ca_2ext_usage_ocspsigning_bad_name_resp.dat
+../test/responses/ca_2ext_usage_ocspsigning_resp.dat		/epoc32/winscw/c/system/tocsp/responses/ca_2ext_usage_ocspsigning_resp.dat
+../test/responses/ca_no_ext_usage_resp.dat					/epoc32/winscw/c/system/tocsp/responses/ca_no_ext_usage_resp.dat
+../test/responses/multi_cert_resp.dat						/epoc32/winscw/c/system/tocsp/responses/multi_cert_resp.dat
+../test/responses/no_cert_resp.dat							/epoc32/winscw/c/system/tocsp/responses/no_cert_resp.dat
+../test/responses/no_certresp_signedby_delegate.dat		/epoc32/winscw/c/system/tocsp/responses/no_certresp_signedby_delegate.dat
+../test/responses/multiple_response.dat					/epoc32/winscw/c/system/tocsp/responses/multiple_response.dat
+../test/responses/wrong_ca_cert_resp.dat					/epoc32/winscw/c/system/tocsp/responses/wrong_ca_cert_resp.dat
+../test/responses/ca_delg_wrong_key.dat					/epoc32/winscw/c/system/tocsp/responses/ca_delg_wrong_key.dat
+
+../test/responses/ca_direct_good_wrong_key.dat		/epoc32/winscw/c/system/tocsp/responses/ca_direct_good_wrong_key.dat
+../test/responses/ca_direct_multi_cert_inc_right.dat	/epoc32/winscw/c/system/tocsp/responses/ca_direct_multi_cert_inc_right.dat
+../test/responses/ca_direct_multi_cert_no_right.dat	/epoc32/winscw/c/system/tocsp/responses/ca_direct_multi_cert_no_right.dat
+../test/responses/ca_direct_revoked.dat		/epoc32/winscw/c/system/tocsp/responses/ca_direct_revoked.dat
+../test/responses/ca_direct_wrong_cert.dat		/epoc32/winscw/c/system/tocsp/responses/ca_direct_wrong_cert.dat
+../test/responses/ca_direct_wrong_resp_name.dat	/epoc32/winscw/c/system/tocsp/responses/ca_direct_wrong_resp_name.dat
+
+../test/responses/openssl/response01.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response01.dat
+../test/responses/openssl/response02.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response02.dat
+../test/responses/openssl/response03.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response03.dat
+../test/responses/openssl/response04.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response04.dat
+../test/responses/openssl/response05.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response05.dat
+../test/responses/openssl/response06.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response06.dat
+../test/responses/openssl/response07.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response07.dat
+../test/responses/openssl/response08.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response08.dat
+../test/responses/openssl/response09.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response09.dat
+../test/responses/openssl/response10.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response10.dat
+../test/responses/openssl/response11.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response11.dat
+../test/responses/openssl/response12.dat		/epoc32/winscw/c/system/tocsp/responses/openssl/response12.dat
+../test/responses/openssl/no_aia_no_ocspext.dat	/epoc32/winscw/c/system/tocsp/responses/openssl/no_aia_no_ocspext.dat
+
+../test/requests/openssl/request01.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request01.dat
+../test/requests/openssl/request02.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request02.dat
+../test/requests/openssl/request03.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request03.dat
+../test/requests/openssl/request04.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request04.dat
+../test/requests/openssl/request05.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request05.dat
+../test/requests/openssl/request06.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request06.dat
+../test/requests/openssl/request07.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request07.dat
+../test/requests/openssl/request08.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request08.dat
+../test/requests/openssl/request09.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request09.dat
+../test/requests/openssl/request10.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request10.dat
+../test/requests/openssl/request11.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request11.dat
+../test/requests/openssl/request12.dat			/epoc32/winscw/c/system/tocsp/requests/openssl/request12.dat
+
+// OCSP tests - end
+
+// ROMKIT includes
+../inc/ocsptests.iby 		/epoc32/rom/include/ocsptests.iby
+

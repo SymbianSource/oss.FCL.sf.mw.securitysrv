@@ -1,0 +1,52 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains UID constants for Wim implementations
+*
+*/
+
+
+#ifndef WIMIMPLEMENTATIONUID_HRH
+#define WIMIMPLEMENTATIONUID_HRH
+
+#define WIM_IMPLEMENTATION_UID  0x101F79D9		// Wim card
+#define WIM_PIN_G_UID			0x101F79DA		// PIN-G
+#define WIM_PIN_NR_UID			0x101F79DB		// PIN-NR
+
+// Some defines of useful values for attributes to simplify
+// writing resource files
+
+// True
+#define CT_TRUE 1,0,0,0
+// False
+#define CT_FALSE 0,0,0,0
+// A number between 0 and 255
+#define CT_NUM8(x) x,0,0,0
+
+// Attribute UIDs.
+#define CT_SOFTWARE 0x7b, 0x52, 0x1f, 0x10
+#define CT_REMOVABLE 0x7c, 0x52, 0x1f, 0x10
+#define CT_ACCESS_CONTROLLED 0x7d, 0x52, 0x1f, 0x10
+#define CT_MAX_TOKEN_COUNT 0x7e, 0x52, 0x1f, 0x10
+#define CT_MIN_TOKEN_COUNT 0x7f, 0x52, 0x1f, 0x10
+
+// Interface UIDs
+#define CT_CERT_STORE 0x1B, 0x50, 0x1F, 0x10
+#define CT_WRITEABLE_CERT_STORE 0xFB, 0x20, 0x20, 0x10
+//#define CT_KEY_STORE 0x1d, 0x50, 0x1f, 0x10 depricated
+#define CT_KEY_STORE 0x34, 0x73, 0x1f, 0x10
+#define CT_AUTHENTICATION_OBJECT 0xAE, 0x51, 0x1F, 0x10
+
+#endif // WIMIMPLEMENTATIONUID_HRH
+
+// End of File

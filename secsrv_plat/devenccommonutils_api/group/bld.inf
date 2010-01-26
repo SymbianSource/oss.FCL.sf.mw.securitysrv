@@ -1,0 +1,36 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  File that exports the files belonging to 
+:                FOTA Engine API
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+
+../inc/DevEncDiskUtils.h			MW_LAYER_PLATFORM_EXPORT_PATH(DevEncDiskUtils.h)
+../inc/DevEncSession.h  			MW_LAYER_PLATFORM_EXPORT_PATH(DevEncSession.h )
+../inc/DevEncMmcObserver.h 			MW_LAYER_PLATFORM_EXPORT_PATH(DevEncMmcObserver.h)
+../inc/MmcInfo.h				MW_LAYER_PLATFORM_EXPORT_PATH(MmcInfo.h)
+../inc/DevEncKeyUtils.h				MW_LAYER_PLATFORM_EXPORT_PATH(DevEncKeyUtils.h)
+../inc/DevEncDiskStatusObserver.h 	MW_LAYER_PLATFORM_EXPORT_PATH(DevEncDiskStatusObserver.h)
+../inc/DevEncConstants.h			MW_LAYER_PLATFORM_EXPORT_PATH(DevEncConstants.h)
+../inc/DevEncExternalCRKeys.h MW_LAYER_PLATFORM_EXPORT_PATH(DevEncExternalCRKeys.h)
+../inc/DevEncProtectedPSKey.h       MW_LAYER_PLATFORM_EXPORT_PATH(DevEncProtectedPSKey.h)
+../inc/DevEncSessionBase.h  			MW_LAYER_PLATFORM_EXPORT_PATH(DevEncSessionBase.h )

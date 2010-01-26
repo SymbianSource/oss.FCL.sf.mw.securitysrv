@@ -1,0 +1,35 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   The header file of DevTokenImplementationUID
+*
+*/
+
+
+
+#ifndef DEVTOKENIMPLEMENTATIONUID_HRH
+#define DEVTOKENIMPLEMENTATIONUID_HRH
+
+//Implementation UID of Device Token CertStore
+#define DEVCERTSTORE_IMPLEMENTATION_UID 0x101FB668  
+
+//Implementation UID of Trust server CertStore
+#define TRUSRVCERTSTORE_IMPLEMENTATION_UID  0x101FB66F
+
+//Implementation UID of Device Token KeyStore
+#define DEVCERTKEYSTORE_IMPLEMENTATION_UID  0x101FB66A
+
+#endif // DEVTOKENIMPLEMENTATIONUID_HRH
+
+// EOF
+

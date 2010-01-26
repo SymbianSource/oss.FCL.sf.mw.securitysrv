@@ -1,0 +1,8 @@
+EXPORTS
+	_ZN18COCSPTransportHttp4NewLERK6TDesC8Rm @ 1 NONAME
+	_ZN21COCSPTransportDefault4NewLERm @ 2 NONAME
+	_ZTI18COCSPTransportHttp @ 3 NONAME ; #<TI>#
+	_ZTI21COCSPTransportDefault @ 4 NONAME ; #<TI>#
+	_ZTV18COCSPTransportHttp @ 5 NONAME ; #<VT>#
+	_ZTV21COCSPTransportDefault @ 6 NONAME ; #<VT>#
+

@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is project specification file for the X509CertNameParser.
+*               The X509CertNameParser is an algorithm for collecting certificate
+*               information.
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+TARGET          X509CertNameParser.dll
+TARGETTYPE      dll
+UID             0x1000008d 0x101F857E
+SOURCEPATH      ../src
+SOURCE          ../src/X509CertNameParser.cpp
+USERINCLUDE     . ../inc
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY     euser.lib
+LIBRARY			X500.lib
+LIBRARY			X509.lib
+LIBRARY			bafl.lib
+LIBRARY			InetProtUtil.lib
+
+LANG			SC
+
+CAPABILITY		CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+#if defined(ARMCC)
+deffile ../EABI/ 
+#elif defined( WINSCW )
+deffile ../BWINSCW/ 
+#elif defined( WINS )
+deffile ../BWINS/ 
+#else
+deffile ../BMARM/ 
+#endif
+
+SMPSAFE
+

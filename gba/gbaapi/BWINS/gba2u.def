@@ -1,0 +1,10 @@
+EXPORTS
+	?Bootstrap@CGbaUtility@@QAEHUTGBABootstrapInputParams@@AAUTGBABootstrapOutputParams@@@Z @ 1 NONAME ; int CGbaUtility::Bootstrap(struct TGBABootstrapInputParams, struct TGBABootstrapOutputParams &)
+	?Bootstrap@CGbaUtility@@QAEXUTGBABootstrapInputParams@@AAUTGBABootstrapOutputParams@@AAVTRequestStatus@@@Z @ 2 NONAME ; void CGbaUtility::Bootstrap(struct TGBABootstrapInputParams, struct TGBABootstrapOutputParams &, class TRequestStatus &)
+	?CancelBootstrap@CGbaUtility@@QAEHXZ @ 3 NONAME ; int CGbaUtility::CancelBootstrap(void)
+	?NewL@CGbaUtility@@SAPAV1@AAVMGbaObserver@@@Z @ 4 NONAME ; class CGbaUtility * CGbaUtility::NewL(class MGbaObserver &)
+	?NewL@CGbaUtility@@SAPAV1@XZ @ 5 NONAME ; class CGbaUtility * CGbaUtility::NewL(void)
+	?NewLC@CGbaUtility@@SAPAV1@AAVMGbaObserver@@@Z @ 6 NONAME ; class CGbaUtility * CGbaUtility::NewLC(class MGbaObserver &)
+	?NewLC@CGbaUtility@@SAPAV1@XZ @ 7 NONAME ; class CGbaUtility * CGbaUtility::NewLC(void)
+	?SetBSFAddress@CGbaUtility@@QAEHABVTDesC8@@@Z @ 8 NONAME ; int CGbaUtility::SetBSFAddress(class TDesC8 const &)
+

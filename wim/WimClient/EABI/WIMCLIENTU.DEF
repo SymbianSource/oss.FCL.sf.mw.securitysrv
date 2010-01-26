@@ -1,0 +1,142 @@
+EXPORTS
+	_ZN11CWimOMAProv10InitializeER14TRequestStatus @ 1 NONAME
+	_ZN11CWimOMAProv13CancelGetSizeEv @ 2 NONAME
+	_ZN11CWimOMAProv14CancelRetrieveEv @ 3 NONAME
+	_ZN11CWimOMAProv16CancelInitializeEv @ 4 NONAME
+	_ZN11CWimOMAProv4NewLEv @ 5 NONAME
+	_ZN11CWimOMAProv7GetSizeERiRK8TOMATypeR14TRequestStatus @ 6 NONAME
+	_ZN11CWimOMAProv8RetrieveERK8TOMATypeR5TDes8R14TRequestStatus @ 7 NONAME
+	_ZN11CWimOMAProvD0Ev @ 8 NONAME
+	_ZN11CWimOMAProvD1Ev @ 9 NONAME
+	_ZN11CWimOMAProvD2Ev @ 10 NONAME
+	_ZN13CWimSecModule10CloseAfterEv @ 11 NONAME
+	_ZN13CWimSecModule11TokenNumberEv @ 12 NONAME
+	_ZN13CWimSecModule12ManufacturerEv @ 13 NONAME
+	_ZN13CWimSecModule12SerialNumberEv @ 14 NONAME
+	_ZN13CWimSecModule13PinNrEntriesLERPK13CArrayPtrFlatI7CWimPinE @ 15 NONAME
+	_ZN13CWimSecModule13PinNrEntriesLERPK13CArrayPtrFlatI7CWimPinER14TRequestStatus @ 16 NONAME
+	_ZN13CWimSecModule13SetCloseAfterEj @ 17 NONAME
+	_ZN13CWimSecModule13TimeRemainingEv @ 18 NONAME
+	_ZN13CWimSecModule15NotifyOnRemovalER14TRequestStatus @ 19 NONAME
+	_ZN13CWimSecModule21CancelNotifyOnRemovalEv @ 20 NONAME
+	_ZN13CWimSecModule4NewLEm @ 21 NONAME
+	_ZN13CWimSecModule5CloseEv @ 22 NONAME
+	_ZN13CWimSecModule5LabelEv @ 23 NONAME
+	_ZN13CWimSecModule6IsOpenEv @ 24 NONAME
+	_ZN13CWimSecModule7VersionEv @ 25 NONAME
+	_ZN13CWimSecModuleD0Ev @ 26 NONAME
+	_ZN13CWimSecModuleD1Ev @ 27 NONAME
+	_ZN13CWimSecModuleD2Ev @ 28 NONAME
+	_ZN14CWimKeyDetails10CancelListEv @ 29 NONAME
+	_ZN14CWimKeyDetails10CancelSignEv @ 30 NONAME
+	_ZN14CWimKeyDetails10GetKeyListER13RPointerArrayI10CCTKeyInfoER13CArrayFixFlatIhER14TRequestStatus @ 31 NONAME
+	_ZN14CWimKeyDetails12CancelExportEv @ 32 NONAME
+	_ZN14CWimKeyDetails16ExportPublicKeyLER6TDesC8RP6HBufC8R14TRequestStatus @ 33 NONAME
+	_ZN14CWimKeyDetails4NewLER8MCTToken @ 34 NONAME
+	_ZN14CWimKeyDetails4SignERK6TDesC8RS0_RP6HBufC8R14TRequestStatus @ 35 NONAME
+	_ZN14CWimKeyDetailsD0Ev @ 36 NONAME
+	_ZN14CWimKeyDetailsD1Ev @ 37 NONAME
+	_ZN14CWimKeyDetailsD2Ev @ 38 NONAME
+	_ZN16CWimSecModuleMgr10CancelListEv @ 39 NONAME
+	_ZN16CWimSecModuleMgr10GetEntriesER14RCPointerArrayI7HBufC16ER14TRequestStatus @ 40 NONAME
+	_ZN16CWimSecModuleMgr16WimLabelByIndexLEi @ 41 NONAME
+	_ZN16CWimSecModuleMgr22WimTokenNumberByIndexLEi @ 42 NONAME
+	_ZN16CWimSecModuleMgr23GetWimSecModuleByIndexLEi @ 43 NONAME
+	_ZN16CWimSecModuleMgr4NewLEv @ 44 NONAME
+	_ZN16CWimSecModuleMgr8WimCountEv @ 45 NONAME
+	_ZN16CWimSecModuleMgrD0Ev @ 46 NONAME
+	_ZN16CWimSecModuleMgrD1Ev @ 47 NONAME
+	_ZN16CWimSecModuleMgrD2Ev @ 48 NONAME
+	_ZN17CWimCertConverter12CancelRemoveEv @ 49 NONAME
+	_ZN17CWimCertConverter13CancelRestoreEv @ 50 NONAME
+	_ZN17CWimCertConverter14AddCertificateERK7TDesC1618TCertificateFormat21TCertificateOwnerTypeRK5TBuf8ILi20EES8_RK6TDesC8R14TRequestStatus @ 51 NONAME
+	_ZN17CWimCertConverter14CancelRetrieveEv @ 52 NONAME
+	_ZN17CWimCertConverter20CancelAddCertificateEv @ 53 NONAME
+	_ZN17CWimCertConverter20RetrieveCertByIndexLEiR5TDes8R14TRequestStatus @ 54 NONAME
+	_ZN17CWimCertConverter4NewLER8MCTToken @ 55 NONAME
+	_ZN17CWimCertConverter7RemoveLEiR14TRequestStatus @ 56 NONAME
+	_ZN17CWimCertConverter7RestoreER13RPointerArrayI12CWimCertInfoER14TRequestStatus @ 57 NONAME
+	_ZN17CWimCertConverterD0Ev @ 58 NONAME
+	_ZN17CWimCertConverterD1Ev @ 59 NONAME
+	_ZN17CWimCertConverterD2Ev @ 60 NONAME
+	_ZN20CWimTrustSettingsAPI11CancelDoingEv @ 61 NONAME
+	_ZN20CWimTrustSettingsAPI16GetTrustSettingsERK12CWimCertInfoRiR6RArrayI4TUidER14TRequestStatus @ 62 NONAME
+	_ZN20CWimTrustSettingsAPI16SetApplicabilityERK12CWimCertInfoRK6RArrayI4TUidER14TRequestStatus @ 63 NONAME
+	_ZN20CWimTrustSettingsAPI19RemoveTrustSettingsERK12CWimCertInfoR14TRequestStatus @ 64 NONAME
+	_ZN20CWimTrustSettingsAPI23SetDefaultTrustSettingsERK12CWimCertInfoiR14TRequestStatus @ 65 NONAME
+	_ZN20CWimTrustSettingsAPI4NewLEv @ 66 NONAME
+	_ZN20CWimTrustSettingsAPI5CloseEv @ 67 NONAME
+	_ZN20CWimTrustSettingsAPI8SetTrustERK12CWimCertInfoiR14TRequestStatus @ 68 NONAME
+	_ZN20CWimTrustSettingsAPID0Ev @ 69 NONAME
+	_ZN20CWimTrustSettingsAPID1Ev @ 70 NONAME
+	_ZN20CWimTrustSettingsAPID2Ev @ 71 NONAME
+	_ZN7CWimPin10UnblockPinER14TRequestStatus @ 72 NONAME
+	_ZN7CWimPin14EnablePinQueryER14TRequestStatus @ 73 NONAME
+	_ZN7CWimPin15CancelChangePinEv @ 74 NONAME
+	_ZN7CWimPin15CancelVerifyPinEv @ 75 NONAME
+	_ZN7CWimPin15DisablePinQueryER14TRequestStatus @ 76 NONAME
+	_ZN7CWimPin16CancelUnblockPinEv @ 77 NONAME
+	_ZN7CWimPin20CancelEnablePinQueryEv @ 78 NONAME
+	_ZN7CWimPin21CancelDisablePinQueryEv @ 79 NONAME
+	_ZN7CWimPin4NewLE7TWimPinmR7TDesC16 @ 80 NONAME
+	_ZN7CWimPin5LabelEv @ 81 NONAME
+	_ZN7CWimPin9ChangePinER14TRequestStatus @ 82 NONAME
+	_ZN7CWimPin9PinNumberEv @ 83 NONAME
+	_ZN7CWimPin9PinStatusEv @ 84 NONAME
+	_ZN7CWimPin9VerifyPinER14TRequestStatus @ 85 NONAME
+	_ZN7CWimPinD0Ev @ 86 NONAME
+	_ZN7CWimPinD1Ev @ 87 NONAME
+	_ZN7CWimPinD2Ev @ 88 NONAME
+	_ZN8CWimCert10InitializeER14TRequestStatus @ 89 NONAME
+	_ZN8CWimCert15CancelGetExtrasEv @ 90 NONAME
+	_ZN8CWimCert16CancelInitializeEv @ 91 NONAME
+	_ZN8CWimCert4NewLEv @ 92 NONAME
+	_ZN8CWimCert9GetExtrasERK6TDesC8R14RCPointerArrayI7HBufC16ER13TCertLocationR14TRequestStatus @ 93 NONAME
+	_ZN8CWimCertD0Ev @ 94 NONAME
+	_ZN8CWimCertD1Ev @ 95 NONAME
+	_ZN8CWimCertD2Ev @ 96 NONAME
+	_ZTI10RWimClient @ 97 NONAME ; #<TI>#
+	_ZTI11CWimOMAProv @ 98 NONAME ; #<TI>#
+	_ZTI12RWimCertMgmt @ 99 NONAME ; #<TI>#
+	_ZTI13CWimSecModule @ 100 NONAME ; #<TI>#
+	_ZTI14CWimKeyDetails @ 101 NONAME ; #<TI>#
+	_ZTI16CWimSecModuleMgr @ 102 NONAME ; #<TI>#
+	_ZTI17CWimCertConverter @ 103 NONAME ; #<TI>#
+	_ZTI20CWimTrustSettingsAPI @ 104 NONAME ; #<TI>#
+	_ZTI21RWimTrustSettingsMgmt @ 105 NONAME ; #<TI>#
+	_ZTI7CWimPin @ 106 NONAME ; #<TI>#
+	_ZTI8CWimCert @ 107 NONAME ; #<TI>#
+	_ZTI8RWimMgmt @ 108 NONAME ; #<TI>#
+	_ZTV10RWimClient @ 109 NONAME ; #<VT>#
+	_ZTV11CWimOMAProv @ 110 NONAME ; #<VT>#
+	_ZTV12RWimCertMgmt @ 111 NONAME ; #<VT>#
+	_ZTV13CWimSecModule @ 112 NONAME ; #<VT>#
+	_ZTV14CWimKeyDetails @ 113 NONAME ; #<VT>#
+	_ZTV16CWimSecModuleMgr @ 114 NONAME ; #<VT>#
+	_ZTV17CWimCertConverter @ 115 NONAME ; #<VT>#
+	_ZTV20CWimTrustSettingsAPI @ 116 NONAME ; #<VT>#
+	_ZTV21RWimTrustSettingsMgmt @ 117 NONAME ; #<VT>#
+	_ZTV7CWimPin @ 118 NONAME ; #<VT>#
+	_ZTV8CWimCert @ 119 NONAME ; #<VT>#
+	_ZTV8RWimMgmt @ 120 NONAME ; #<VT>#
+	_ZN13CWimJavaUtils10GetACFSizeERiRK6TDesC8R14TRequestStatus @ 121 NONAME
+	_ZN13CWimJavaUtils10InitializeER14TRequestStatus @ 122 NONAME
+	_ZN13CWimJavaUtils11GetACIFSizeERiR14TRequestStatus @ 123 NONAME
+	_ZN13CWimJavaUtils15GetAuthObjsInfoERK6RArrayIiERS0_I14TJavaPINParamsER14TRequestStatus @ 124 NONAME
+	_ZN13CWimJavaUtils16CancelGetACFSizeEv @ 125 NONAME
+	_ZN13CWimJavaUtils16CancelInitializeEv @ 126 NONAME
+	_ZN13CWimJavaUtils17CancelGetACIFSizeEv @ 127 NONAME
+	_ZN13CWimJavaUtils18RetrieveACFContentER5TDes8RK6TDesC8R14TRequestStatus @ 128 NONAME
+	_ZN13CWimJavaUtils19RetrieveACIFContentER5TDes8R14TRequestStatus @ 129 NONAME
+	_ZN13CWimJavaUtils21CancelGetAuthObjsInfoEv @ 130 NONAME
+	_ZN13CWimJavaUtils23RetrieveWimLabelAndPathER5TDes8S1_R14TRequestStatus @ 131 NONAME
+	_ZN13CWimJavaUtils24CancelRetrieveACFContentEv @ 132 NONAME
+	_ZN13CWimJavaUtils25CancelRetrieveACIFContentEv @ 133 NONAME
+	_ZN13CWimJavaUtils29CancelRetrieveWimLabelAndPathEv @ 134 NONAME
+	_ZN13CWimJavaUtils4NewLEv @ 135 NONAME
+	_ZN13CWimJavaUtilsD0Ev @ 136 NONAME
+	_ZN13CWimJavaUtilsD1Ev @ 137 NONAME
+	_ZN13CWimJavaUtilsD2Ev @ 138 NONAME
+	_ZTI13CWimJavaUtils @ 139 NONAME ; #<TI>#
+	_ZTV13CWimJavaUtils @ 140 NONAME ; #<VT>#
+

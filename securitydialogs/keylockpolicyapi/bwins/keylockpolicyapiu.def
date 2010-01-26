@@ -1,0 +1,15 @@
+EXPORTS
+	??1CKeyLockPolicyApi@@UAE@XZ @ 1 NONAME ; CKeyLockPolicyApi::~CKeyLockPolicyApi(void)
+	?AddKeyCombination@CKeyLockPolicyApi@@QAEHKK@Z @ 2 NONAME ; int CKeyLockPolicyApi::AddKeyCombination(unsigned long, unsigned long)
+	?ClearKeycombinations@CKeyLockPolicyApi@@QAEHXZ @ 3 NONAME ; int CKeyLockPolicyApi::ClearKeycombinations(void)
+	?DisableKeyguardFeature@CKeyLockPolicyApi@@QAEHXZ @ 4 NONAME ; int CKeyLockPolicyApi::DisableKeyguardFeature(void)
+	?EnableKeyguardFeature@CKeyLockPolicyApi@@QAEHXZ @ 5 NONAME ; int CKeyLockPolicyApi::EnableKeyguardFeature(void)
+	?GetKeyCombination@CKeyLockPolicyApi@@QAEHHAAK0@Z @ 6 NONAME ; int CKeyLockPolicyApi::GetKeyCombination(int, unsigned long &, unsigned long &)
+	?GetLastPrimaryKey@CKeyLockPolicyApi@@QAEIXZ @ 7 NONAME ; unsigned int CKeyLockPolicyApi::GetLastPrimaryKey(void)
+	?HandleKeyEventL@CKeyLockPolicyApi@@QAEHABUTKeyEvent@@W4TEventCode@@@Z @ 8 NONAME ; int CKeyLockPolicyApi::HandleKeyEventL(struct TKeyEvent const &, enum TEventCode)
+	?HasConfiguration@CKeyLockPolicyApi@@QAEHXZ @ 9 NONAME ; int CKeyLockPolicyApi::HasConfiguration(void)
+	?KeyguardAllowed@CKeyLockPolicyApi@@SAHXZ @ 10 NONAME ; int CKeyLockPolicyApi::KeyguardAllowed(void)
+	?NewL@CKeyLockPolicyApi@@SAPAV1@W4TLockPolicyType@@@Z @ 11 NONAME ; class CKeyLockPolicyApi * CKeyLockPolicyApi::NewL(enum TLockPolicyType)
+	?PrimaryKeyPressed@CKeyLockPolicyApi@@QAEHXZ @ 12 NONAME ; int CKeyLockPolicyApi::PrimaryKeyPressed(void)
+	?RemoveKeyCombination@CKeyLockPolicyApi@@QAEHKK@Z @ 13 NONAME ; int CKeyLockPolicyApi::RemoveKeyCombination(unsigned long, unsigned long)
+

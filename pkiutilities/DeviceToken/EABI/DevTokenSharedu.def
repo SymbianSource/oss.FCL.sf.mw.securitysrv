@@ -1,0 +1,71 @@
+EXPORTS
+	_Z12ExternalizeLRK8TIntegerR12RWriteStream @ 1 NONAME
+	_Z16EncryptAndStoreLRK8TIntegerR12RWriteStreamP13MKeyEncryptor @ 2 NONAME
+	_Z18DecryptAndCreateLCR11RReadStreamR8RIntegerP13MKeyEncryptor @ 3 NONAME
+	_Z8CreateLCR11RReadStreamR8RInteger @ 4 NONAME
+	_ZN16CDevTokenKeyInfo12SetUsePolicyERK15TSecurityPolicy @ 5 NONAME
+	_ZN16CDevTokenKeyInfo19SetManagementPolicyERK15TSecurityPolicy @ 6 NONAME
+	_ZN16CDevTokenKeyInfo20SetPKCS8AttributeSetEP6HBufC8 @ 7 NONAME
+	_ZN16CDevTokenKeyInfo4NewLER11RReadStream @ 8 NONAME
+	_ZN17CDevTokenCertInfo4NewLER11RReadStream @ 9 NONAME
+	_ZN17CDevTokenCertInfo4NewLERK7TDesC1618TCertificateFormat21TCertificateOwnerTypeiPK5TBuf8ILi20EES8_i @ 10 NONAME
+	_ZN17CDevTokenCertInfo4NewLERK7TDesC1618TCertificateFormat21TCertificateOwnerTypeiPK5TBuf8ILi20EES8_ii @ 11 NONAME
+	_ZN17CDevTokenCertInfo4NewLERKS_ @ 12 NONAME
+	_ZN17CDevTokenCertInfo5NewLCER11RReadStream @ 13 NONAME
+	_ZN17CDevTokenCertInfo5NewLCERK7TDesC1618TCertificateFormat21TCertificateOwnerTypeiPK5TBuf8ILi20EES8_i @ 14 NONAME
+	_ZN17CDevTokenCertInfo5NewLCERK7TDesC1618TCertificateFormat21TCertificateOwnerTypeiPK5TBuf8ILi20EES8_ii @ 15 NONAME
+	_ZN17CDevTokenCertInfo5NewLCERKS_ @ 16 NONAME
+	_ZN17CDevTokenDHParams4NewLERK8TIntegerS2_ @ 17 NONAME
+	_ZN17CDevTokenDHParams5TakeGEv @ 18 NONAME
+	_ZN17CDevTokenDHParams5TakeNEv @ 19 NONAME
+	_ZN17CDevTokenDHParamsC1E8RIntegerS0_ @ 20 NONAME
+	_ZN17CDevTokenDHParamsC2E8RIntegerS0_ @ 21 NONAME
+	_ZN17CDevTokenDHParamsD0Ev @ 22 NONAME
+	_ZN17CDevTokenDHParamsD1Ev @ 23 NONAME
+	_ZN17CDevTokenDHParamsD2Ev @ 24 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK12CDHPublicKey @ 25 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK12CKeyInfoBase @ 26 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK13CDSASignature @ 27 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK13CRSASignature @ 28 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK13RPointerArrayI16CDevTokenKeyInfoE @ 29 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK13RPointerArrayI17CDevTokenCertInfoE @ 30 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK13RPointerArrayI7HBufC16E @ 31 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK17CDevTokenDHParams @ 32 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK20CCertAttributeFilter @ 33 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK6RArrayI19TCertificateAppInfoE @ 34 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK6RArrayI4TUidE @ 35 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK8TInteger @ 36 NONAME
+	_ZN22DevTokenDataMarshaller4SizeERK9MCertInfo @ 37 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R13RPointerArrayI7HBufC16E @ 38 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R6RArrayI19TCertificateAppInfoE @ 39 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R6RArrayI4TUidE @ 40 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R8MCTTokenR14RMPointerArrayI11CCTCertInfoE @ 41 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R8MCTTokenR21MDevTokenKeyInfoArray @ 42 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R8MCTTokenRP10CCTKeyInfo @ 43 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R8MCTTokenRP11CCTCertInfo @ 44 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8R8RInteger @ 45 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP12CDHPublicKey @ 46 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP13CDSASignature @ 47 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP13CRSASignature @ 48 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP16CDevTokenKeyInfo @ 49 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP17CDevTokenCertInfo @ 50 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP17CDevTokenDHParams @ 51 NONAME
+	_ZN22DevTokenDataMarshaller5ReadLERK6TDesC8RP20CCertAttributeFilter @ 52 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK12CKeyInfoBaseR5TDes8 @ 53 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK13RPointerArrayI16CDevTokenKeyInfoER5TDes8 @ 54 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK13RPointerArrayI17CDevTokenCertInfoER5TDes8 @ 55 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK13RPointerArrayI7HBufC16ER5TDes8 @ 56 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK6RArrayI19TCertificateAppInfoER5TDes8 @ 57 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK6RArrayI4TUidER5TDes8 @ 58 NONAME
+	_ZN22DevTokenDataMarshaller5WriteERK9MCertInfoR5TDes8 @ 59 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK12CDHPublicKeyR5TDes8 @ 60 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK13CDSASignatureR5TDes8 @ 61 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK13CRSASignatureR5TDes8 @ 62 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK17CDevTokenDHParamsR5TDes8 @ 63 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK20CCertAttributeFilterR5TDes8 @ 64 NONAME
+	_ZN22DevTokenDataMarshaller6WriteLERK8TIntegerR5TDes8 @ 65 NONAME
+	_ZTI17CDevTokenDHParams @ 66 NONAME ; #<TI>#
+	_ZTI8TNullBuf @ 67 NONAME ; #<TI>#
+	_ZTV17CDevTokenDHParams @ 68 NONAME ; #<VT>#
+	_ZTV8TNullBuf @ 69 NONAME ; #<VT>#
+

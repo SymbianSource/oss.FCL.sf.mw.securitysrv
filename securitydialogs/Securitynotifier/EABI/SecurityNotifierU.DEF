@@ -1,0 +1,5 @@
+EXPORTS
+	_Z13NotifierArrayv @ 1 NONAME
+	_ZTI17CSecurityNotifier @ 2 NONAME ; #<TI>#
+	_ZTV17CSecurityNotifier @ 3 NONAME ; #<VT>#
+

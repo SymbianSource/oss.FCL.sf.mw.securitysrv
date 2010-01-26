@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource file for the ES System Application
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME    ESSA // 4 letter ID
+
+//  INCLUDES
+#include <eikon.rh>
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+
+//  CONSTANTS  
+
+//  MACROS
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+//RESOURCE TBUF { buf = "DevEncStarter"; }
+
+RESOURCE EIK_APP_INFO
+    {
+    status_pane = r_devencstarter_status_pane;
+    }
+
+// ---------------------------------------------------------
+//
+//  r_devencstarter_status_pane
+//  Define status pane of DevEncStarter.
+//
+// ---------------------------------------------------------
+//
+RESOURCE STATUS_PANE_APP_MODEL r_devencstarter_status_pane
+    {
+    layout = R_AVKON_STATUS_PANE_LAYOUT_EMPTY;
+    }

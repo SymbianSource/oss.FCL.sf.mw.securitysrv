@@ -1,0 +1,56 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for RemoteLock
+*
+*/
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET              RLock.exe
+TARGETTYPE          exe
+UID                 0x00000000 0x101FB653
+
+VENDORID            VID_DEFAULT
+CAPABILITY          CAP_APPLICATION DiskAdmin
+
+USERINCLUDE         ../Inc
+USERINCLUDE         ../../Inc
+APP_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH          ../Src
+SOURCE              RemoteLock.cpp
+SOURCE              RLLockObserver.cpp
+
+
+START RESOURCE      ../../Data/RemoteLock.rss
+HEADER
+TARGETPATH          APP_RESOURCE_DIR
+LANGUAGE_IDS
+END
+
+LIBRARY             euser.lib 
+LIBRARY             msgs.lib 
+LIBRARY             RLockSettings.lib
+LIBRARY             efsrv.lib       
+LIBRARY             smcm.lib
+LIBRARY             gsmu.lib 
+LIBRARY             bafl.lib 
+LIBRARY             platformEnv.lib
+LIBRARY             charconv.lib
+LIBRARY             centralrepository.lib
+LIBRARY             CenRepNotifHandler.lib
+LIBRARY             CommonEngine.lib
+
+SMPSAFE

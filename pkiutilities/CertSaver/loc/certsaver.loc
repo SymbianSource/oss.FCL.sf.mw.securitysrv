@@ -1,0 +1,246 @@
+/*
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Localization strings for CertSaver
+*
+*/
+
+
+
+// LOCALISATION STRINGS
+
+//d:Heading of save-confirmation query pop up.
+//d:This popup is shown to query if user wants to
+//d:save received certificate.
+//l:heading_pane_t1
+#define qtn_wmlsec_query_downl_cert    "Received certificate:"
+
+//d:Softkey in certificate details popup.
+//d:Discards certificate (cancels operation).
+//l:control_pane_t1/opt7
+#define text_wmls_list_disc_recvd_cert    "Discard"
+
+//d:Item in save-confirmation query pop up.
+//d:This represents to whom the certificate
+//d:has been issued to.
+//l:popup_info_list_pane_t1
+#define qtn_wmlsec_cert_subject    "Subject:\n%U"
+
+//d:Item in save-confirmation query pop up.
+//d:Tells who issued the certificate.
+//l:popup_info_list_pane_t1
+#define qtn_wmlsec_scert_issuer    "Issuer:\n%U"
+
+//d:Item in save-confirmation query popup.
+//d:Tells the time period in witch the certificate
+//d:is valid.
+//d:%U is the validity period in format "date - date"
+//d:where dates are in R_QTN_DATE_USUAL_WITH_ZERO-format.
+//l:popup_info_list_pane_t1
+#define qtn_wmlsec_cert_validity    "Validity:\n%U"
+
+//d:Item in save-confirmation query pop up.
+//d:Fingerprint (hash) of the whole certificate.
+//l:popup_info_list_pane_t1
+#define qtn_wmlsec_scert_fingerp    "Fingerprint:\n%U"
+
+//d:Text shown when certificate is succesfully added to database.
+//l:popup_note_window
+#define qtn_wmlsec_certificate_saved    "Certificate saved"
+
+//d:Text show when user presses text_wmls_list_disc_recvd_cert
+//d:in certificate details dialog.
+//l:popup_note_window
+#define qtn_wmlsec_certificate_discarded    "Certificate discarded"
+
+//d:Text shown when certificate tried to save is not of supported type.
+//d:Certificate could be a x.509 certificate, for example. Download
+//d:of x.509 certificates is not supported in N7650.
+//l:popup_note_window
+#define qtn_wmlsec_cert_unsupported    "Certificate unsupported. Not saved."
+
+//d:Text shown when certificate tried to be save is corrupted in some way.
+//d:Certificate could have invalid fingerprint etc.
+//l:popup_note_window
+#define qtn_wmlsec_cert_corrupted    "Certificate corrupted."
+
+//d:Text shown when downloaded certificate is expired, eg. its validity
+//d:period has expired. Note! This error could be interpreted as certificate
+//d:being corrupted. This is the only type of corrupted certificate for
+//d:what a specific error note is displayed.
+//l:popup_note_window
+#define qtn_wmlsec_dload_expired_cert    "Downloaded certificate is expired"
+
+//d:Text shown when downloaded certificate is already in database.
+//d:Old certificate remains in database and downloaeded certificate is
+//d:discarded.
+//l:popup_note_window
+#define qtn_wmlsec_cert_duplicate    "Certificate already exists. Not saved."
+
+//d:Applications long caption string. Short one is not
+//d:given as it has no use.
+//l:title_pane_t2/opt9
+#define qtn_certsaver_app_title    "Certificate Saver"
+
+//d:Text in data query dialog when label for downloaded certificate is asked
+//d:from user.
+//l:popup_query_data_window
+#define qtn_certsaver_enter_label    "Label:"
+
+//d:Warning note displayed to user when he/she is about to save downloaded
+//d:certificate.
+//l:popup_note_window
+#define qtn_httpsec_save_rootcertificate  "Adding a new certificate might be security risk. Save anyway?"
+
+//d:Text shown when label of the certificate is already in database.
+//d:Label is queried again from user.
+//l:popup_note_window
+#define qtn_cm_label_already_exist   "Label already exist. Insert new label."
+
+//d:Heading of multiselection list query pop up.
+//d:Popup is shown to query trusted applications
+//d:of the saved certificate.
+//l:heading_pane_t1
+#define qtn_cm_select_trusted_apps    "Select trusted applications:"
+
+//d:Heading of PKCS#12 file contents message query
+//d:This popup is shown when user has opened PKCS#12 file.
+//l:heading_pane_t1
+#define qtn_cm_header_pkcs12_file_contains    "The file contains:"
+
+//d:Item PKCS#12 file contents message query
+//d:Number of private keys in PKCS#12 file.
+//l:popup_info_list_pane_t1
+#define qtn_cm_private_keys    "%N private keys"
+
+//d:Item PKCS#12 file contents message query
+//d:Number of personal certificates in PKCS#12 file.
+//l:popup_info_list_pane_t1
+#define qtn_cm_personal_certificates    "%N personal certificates"
+
+//d:Item PKCS#12 file contents message query
+//d:Number of authority certificates in PKCS#12 file.
+//l:popup_info_list_pane_t1
+#define qtn_cm_authority_certificates    "%N authority certificates"
+
+//d:Text show after user has discarded PKCS#12 file
+//d:in PKCS#12 file content dialog.
+//l:popup_note_window
+#define qtn_cm_pkcs12_discarded    "Not saved"
+
+//d:Text shown when private key tried to be saved is corrupted in some way.
+//l:popup_note_window
+#define qtn_cm_private_key_corrupted    "The private key is corrupted."
+
+//d:Text shown when the type of the key is not supported.
+//l:popup_note_window
+#define qtn_cm_key_type_not_supported    "The key type is not supported."
+
+//d:Text shown when the type of the key is not supported.
+//l:popup_note_window
+#define qtn_cm_keystore_corrupted    "The keystore is corrupted."
+
+//d:Text shown when the type of the key is not supported.
+//l:popup_note_window
+#define qtn_cm_pkcs12_file_corrupted    "The file is corrupted."
+
+//d:Heading of PKCS#12 saving completed message query
+//d:This popup is shown when contents of PKCS#12 is saved succesfully.
+//l:heading_pane_t1
+#define qtn_cm_header_saved    "Saved:"
+
+//d:PKCS#12 password query prompt
+//l:popup_query_data_window
+//w:
+//r:3.0
+#define qtn_cm_title_p12_password   "Password for %U:"
+
+//d:Incorrect password error note
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_cm_incorrect_password   "Incorrect password"
+
+//d:Information note shown if nothing was saved
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_cm_pkcs12_saving_failed "The contents could not be saved"
+
+//d:Text shown when validity period of the private key is expired.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_cm_pkcs12_expired    "Not saved. Validity period expired."
+
+//d:Text shown when the format of the PKCS#12 is not supported.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_cm_pkcs12_format_not_supported "The file format is not supported."
+
+//d:Selectable item in the trust setting multiselection list pop-up query
+//l:list_single_graphic_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_cm_list_mail_image_conn "Internet"
+
+//d:Selectable item in the trust setting multiselection list pop-up query
+//l:list_single_graphic_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_cm_list_ocsp "Online certicate checking"
+
+//d:Selectable item in the trust setting multiselection list pop-up query
+//l:list_single_graphic_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_cm_list_vpn "VPN"
+
+//d:Item PKCS#12 file contents message query
+//d:Shown when one private key
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_cm_one_private_key    "1 private key"
+
+//d:Item PKCS#12 file contents message query
+//d:Shown when one personal certificate
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_cm_one_personal_certificate   "1 personal certificate"
+
+//d:Item PKCS#12 file contents message query
+//d:Shown when one authority certificate
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_cm_one_authority_certificate    "1 authority certificate"
+
+//d:Heading text for Trusted site warning query
+//l:heading_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_save_trustedsite_certificate_warning_title   "Warning"
+
+//d:Confirmation query for Trusted site warning query
+//d:%U stands for the name of the site of the certificate.
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_cm_save_trustedsite_certificate_warning_text    "Certificate will be added as a Trusted site certificate. Future connections to site %U will be made without certificate warning. Save anyway?"
+
+// End of File

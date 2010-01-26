@@ -1,0 +1,82 @@
+<action>
+	<actionname>Creating a CertificateAppInfoManager</actionname>
+	<actiontype>initappmanager</actiontype>
+	<actionbody></actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+
+<action>
+	<actionname>Adding SW Install applicability</actionname>
+	<actiontype>addclient</actiontype>
+	<actionbody>
+		<name>Application Controller</name>
+		<uid>268452523</uid>
+	</actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+<action>
+	<actionname>Adding TLS applicability</actionname>
+	<actiontype>addclient</actiontype>
+	<actionbody>
+		<name>Internet</name>
+		<uid>268441661</uid>
+	</actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+<action>
+	<actionname>Adding MIDlet Installation applicability</actionname>
+	<actiontype>addclient</actiontype>
+	<actionbody>
+		<name>Java installer</name>
+		<uid>270506792</uid>
+	</actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+<action>
+	<actionname>Adding OCSP applicability</actionname>
+	<actiontype>addclient</actiontype>
+	<actionbody>
+		<name>OCSP</name>
+		<uid>268478646</uid>
+	</actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+<action>
+	<actionname>Adding VPN applicability</actionname>
+	<actiontype>addclient</actiontype>
+	<actionbody>
+		<name>VPN</name>
+		<uid>270498195</uid>
+	</actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>
+<action>
+	<actionname>Retrieving the clients</actionname>
+	<actiontype>getclients</actiontype>
+	<actionbody></actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+		<uid>268452523 268441661 270506792 268478646 270498195</uid>
+	</actionresult>
+</action>
+
+<action>
+	<actionname>Deleting the CertificateAppInfoManager</actionname>
+	<actiontype>deleteappmanager</actiontype>
+	<actionbody></actionbody>
+	<actionresult>
+		<return>KErrNone</return>
+	</actionresult>
+</action>

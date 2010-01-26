@@ -1,0 +1,52 @@
+/*
+* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project build file
+*
+*/
+
+
+#include <platform_paths.hrh>
+// Uncomment MACRO and define below to enable trace logging
+//MACRO           __WIM_ENABLE_TRACES
+//#define         __WIM_ENABLE_TRACES
+
+TARGET          SwimReader.dll
+TARGETTYPE      dll
+UID             0x1000086e 0x101F79DF
+
+CAPABILITY      CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+SOURCE          SwimApduReqHeader.cpp
+SOURCE          SwimApduRespHeader.cpp
+SOURCE          SwimLauncher.cpp
+SOURCE          SwimReaderIF.cpp
+SOURCE          SwimEtelApdu.cpp
+SOURCE          SwimReader.cpp
+SOURCE          SwimSysAgentObserver.cpp
+
+USERINCLUDE     ../inc
+USERINCLUDE     ../../inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         euser.lib
+LIBRARY         etel.lib etelmm.lib // Etel
+LIBRARY         customapi.lib       // CustomAPI
+
+DEBUGLIBRARY    flogger.lib
+
+SMPSAFE
+

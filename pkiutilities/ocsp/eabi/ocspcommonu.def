@@ -1,0 +1,5 @@
+EXPORTS
+	_ZN11COcspPolicy4NewLEv @ 1 NONAME
+	_ZNK11COcspPolicy22IsHttpGETMethodEnabledEv @ 2 NONAME
+	_ZNK11COcspPolicy38IsGenerateResponseForMissingUriEnabledEv @ 3 NONAME
+

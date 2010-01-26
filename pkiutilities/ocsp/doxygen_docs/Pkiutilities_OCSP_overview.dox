@@ -1,0 +1,140 @@
+/**
+
+@page overview_OCSP  OCSP -- Online Certificate Status Protocol 
+\n
+
+@section overview_of_ocsp Overview of OCSP
+
+OCSP is a simple request/response protocol.
+
+To establish whether a given @ref certificate or list of certificates has been revoked, a client forms an OCSP request 
+and sends this to an OCSP server. The server maintains revocation information in the form of, say, 
+@ref CRL "Certificate Revocation Lists" (CRLs). The server replies to the client with a signed OCSP response, stating for each certificate whether the 
+status is \b Good, \b Revoked, or \b Unknown. This response in turn is checked to ensure that it is valid, and that it 
+is from an entity trusted for performing revocation checking.
+
+The Symbian platform provides the ability to validate and manage @ref X509_certificate "X.509 certificates".  This ability is integrated into 
+the software installation process to provide 'Secure Software Install' certificate checking at installation time to 
+verify the identity of the software supplier.
+
+Secure Software Install (see below: @ref SWI) needs to be able to check whether certificates have been revoked. The 
+rationale for this is that if a developer certificate has been revoked because it has been compromised, or used 
+maliciously, we should be able to ensure that packages signed by that certificate are not accepted by the platform.
+
+This requirement is satisfied by:
+@li The implementation of the Online Certificate Status Protocol.  OCSP is an Internet protocol that is defined in
+<A HREF="http://www.ietf.org/rfc/rfc2560.txt">RFC2560</A>.
+The OCSP module forms part of the @ref X509_certificate "X.509 certificate" management code
+@li The integration of revocation checking into the Secure Software Installation process.
+
+<hr>
+
+@section ocsp_protocol The OCSP Protocol
+
+The OCSP protocol comes in two parts: the request and the response, each given in @ref ASN "ASN.1" @ref DER notation. 
+
+In its simplest form, an OCSP request consists of one or more identifiers for the certificates whose status is in question.
+The request is sent to a server identified by a @ref URI. 
+
+In its simplest form, the response consists of a status indication for each certificate identifier in the request. The 
+whole response being signed with a key pair trusted as authoritative by the client.  Alternatively, an unsigned error code
+may be returned.
+
+When a response has been received, it is then validated to see if it can be trusted.
+OCSP is transport-neutral: the @ref URI of the server indicates the scheme required; currently, only HTTP is 
+supported.
+
+@section locating_the_ocsp_server Locating the OCSP Server
+
+When performing revocation checking, it is necessary to know where to send a request.  In addition, the server to which 
+the request is sent may not actually be the server to which is authoritative to answer the request, but may act as a proxy 
+client and the destination server.  In an OCSP request, this behaviour is requested by adding a serviceLocator extension 
+containing the @ref URI.
+
+The situation is complicated by the fact that there may be a serviceLocator extension for each @ref certificate in the request, 
+and so it is syntactically possible for the request to be split into multiple parts, with each part routed to a different 
+OCSP responder. The intermediate server collates the individual responses into one and returns this to the client.  This 
+response is signed only by the intermediate server, so it is this server the client must trust. 
+There are 3 possible scenarios for the arrangement of OCSP responders:
+
+@li Single OCSP responder.  
+One OCSP server contains the revocation information for all certificates that will be checked. 
+One request containing all certificates to be checked is sent to the responder, which replies with a single response: \n\n
+@image html Certman_OCSP_singleserver.png 
+\n\n
+
+@li Multiple OCSP responders using an intermediate OCSP server to route requests to the appropriate one. One request is 
+sent to the intermediate server, which sends multiple individual requests to the destination responders.  The responses 
+are collated, and one response is sent back to the client: \n\n
+@image html Certman_OCSP_multiservers1.png 
+\n\n
+
+@li Multiple OCSP responders without an intermediate server.  The client does the work of sending each request to the 
+appropriate responder.  The client collates the responses received: \n\n
+@image html Certman_OCSP_multiservers2.png 
+\n\n
+ 
+
+Which scenario is appropriate depends on the nature of the @ref PKI, and the availability of OCSP responders that will act
+as intermediates and route requests appropriately.
+
+@section outcome_result Outcome result
+
+If the response passes all validation, the outcome result is determined by applying the following rules to the certificate statuses in the response:
+@li If any certificate was 'revoked', the result is \b 'Revoked'
+@li If all certificates were 'valid', the result is \b 'Good'
+@li Otherwise, the result is \b 'Unknown'.
+
+@note
+A certificate status of 'Good' does not indicate that the @ref certificate may be trusted.  It merely indicates that 
+the certificate has not been revoked.  The normal validation of that @ref certificate (or the chain in which it lies) must 
+still be performed.
+
+
+<hr> 
+
+@section SWI OCSP Integration with Secure Software Install
+
+Software Install may be configured to check revocation status of certificates or not. Software Install supplies the OCSP 
+client with a default URI for the OCSP server. Both of these are controlled by a user preference.  
+Currently, Software Install uses the direct authorisation scheme to validate OCSP responders, with a UID allocated for 
+Software Install OCSP signing. 
+
+Embedded packages are verified using the same logic as is used for the outer package.
+
+@subsection installing_software Installing software
+
+Software Install first validates the @ref certificate in the install file by using the certificate validation module. 
+@li If revocation checking is switched off, a warning is displayed giving options to do revocation checking anyway, 
+continue without revocation checking, or cancel installation 
+@li If revocation checking is switched on, or the user requests it, all certificates in the chain except the root will 
+be checked for revocation, while Software Install displays appropriate feedback to the user about the owner(s) of 
+the certificate(s) being checked.
+ 
+Future implementations may check multiple certificates with a single OCSP request, however at present, one network access 
+is made for every certificate checked; each one has the potential to generate a warning or error. 
+
+@li If the OCSP client indicates that no certificates have been revoked and the operation completed successfully with 
+no errors or warnings, the software can be installed
+@li If OCSP indicates that any of the certificates have been revoked, or if the signature on the OCSP response is invalid, 
+a security error will be issued and the software cannot be installed
+@li If the revocation status of a certificate cannot be determined (e.g. due to lack of network access, or a OCSP responder 
+error), the behaviour will be as if the software is unsigned. (That is, if unsigned software may be installed, issue a 
+warning but allow installation, otherwise issue an error and do not allow installation.)
+
+@section configuration Configuration
+
+The Software Install component is responsible for storing the address of the OCSP server, and a flag indicating whether 
+OCSP checking should be performed.  The address of the OCSP server is a user-modifiable URL set initially from a 
+localisable default.
+The InstCtrl dialog contains a 'Security' tab, as shown below.  The 'Server address' line is greyed out when the 
+'Enabled' checkbox is clear.
+If checking is enabled, the server address is parsed when the dialog is closed, to check that is a valid URL.  A warning 
+dialog is presented if it is not (text = 'Invalid revocation server URL') and focus moved to the server address field, 
+ready for the user to change its contents.\n\n
+ 
+@image html Certman_OCSP_SoftwareInstall.png 
+\n\n
+
+
+*/

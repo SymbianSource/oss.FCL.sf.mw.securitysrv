@@ -1,0 +1,477 @@
+/*
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Resource definitions for CertSaver
+*
+*/
+
+
+
+//  RESOURCE IDENTIFIER
+NAME    CESA // 4 letter ID
+
+//  INCLUDES
+#include <eikon.rh>
+#include <eikon.rsg>
+#include <avkon.rsg>
+#include <avkon.hrh>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include <appinfo.rh>
+#include <certmanui.loc>  //qtn_cm_not_valid_yet
+#include <certsaver.loc>
+#include "certsaver.hrh"
+
+//  CONSTANTS
+
+//  MACROS
+
+//  RESOURCE DEFINITIONS
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf="CertSaver"; }
+
+RESOURCE EIK_APP_INFO
+    {
+    }
+
+RESOURCE LOCALISABLE_APP_INFO r_certsaver_localisable_app_info
+    {
+    short_caption = qtn_certsaver_app_title;
+    caption_and_icon =
+    CAPTION_AND_ICON_INFO
+        {
+        caption = qtn_certsaver_app_title;
+        number_of_icons = 0;
+        };
+    }
+
+
+
+//----------------------------------------------------
+//
+//    Resource buffers.
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_certsaver_memory { buf=qtn_memlo_not_enough_memory; }
+RESOURCE TBUF r_certsaver_cert_discarded { buf=qtn_wmlsec_certificate_discarded; }
+RESOURCE TBUF r_certsaver_details_heading { buf=qtn_wmlsec_query_downl_cert; }
+RESOURCE TBUF r_certsaver_text_label { buf=qtn_wmlsec_cert_subject; }
+RESOURCE TBUF r_certsaver_text_issuer { buf=qtn_wmlsec_scert_issuer; }
+RESOURCE TBUF r_certsaver_text_fingerprint { buf=qtn_cm_fingerprint "\n%U"; }
+RESOURCE TBUF r_certsaver_text_fingerprint_md5 { buf=qtn_cm_fingerprint_md "\n%U"; }
+RESOURCE TBUF r_certsaver_text_validity { buf=qtn_wmlsec_cert_validity; }
+RESOURCE TBUF r_certsaver_error_saveok { buf=qtn_wmlsec_certificate_saved; }
+RESOURCE TBUF r_certsaver_error_unsupported_cert { buf=qtn_wmlsec_cert_unsupported; }
+RESOURCE TBUF r_certsaver_error_already_exists { buf=qtn_wmlsec_cert_duplicate; }
+RESOURCE TBUF r_certsaver_error_label_already_exists { buf = qtn_cm_label_already_exist; }
+RESOURCE TBUF r_certsaver_error_cert_corrupted { buf=qtn_wmlsec_cert_corrupted; }
+RESOURCE TBUF r_certsaver_error_cert_not_valid { buf=qtn_wmlsec_dload_expired_cert;}
+RESOURCE TBUF r_certsaver_error_cert_not_valid_yet { buf = qtn_cm_not_valid_yet; }
+RESOURCE TBUF r_certsaver_error_cacerts_db_corrupted { buf = qtn_memlo_database_corrupted; }
+RESOURCE TBUF r_certsaver_enter_label { buf = qtn_certsaver_enter_label; }
+RESOURCE TBUF r_certsaver_select_trusted_apps { buf = qtn_cm_select_trusted_apps; }
+RESOURCE TBUF r_certsaver_item_mail_image_conn { buf = qtn_cm_list_mail_image_conn; }
+RESOURCE TBUF r_certsaver_item_ocsp { buf = qtn_cm_list_ocsp; }
+RESOURCE TBUF r_certsaver_item_vpn { buf = qtn_cm_list_vpn; }
+
+RESOURCE TBUF r_certsaver_header_pkcs12_file_contains { buf = qtn_cm_header_pkcs12_file_contains; }
+RESOURCE TBUF r_certsaver_private_keys { buf = qtn_cm_private_keys; }
+RESOURCE TBUF r_certsaver_personal_certificates { buf = qtn_cm_personal_certificates; }
+RESOURCE TBUF r_certsaver_authority_certificates { buf = qtn_cm_authority_certificates; }
+RESOURCE TBUF r_certsaver_pkcs12_discarded { buf = qtn_cm_pkcs12_discarded; }
+
+RESOURCE TBUF r_certsaver_private_key_corrupted { buf = qtn_cm_private_key_corrupted; }
+RESOURCE TBUF r_certsaver_key_type_not_supported { buf = qtn_cm_key_type_not_supported; }
+RESOURCE TBUF r_certsaver_keystore_corrupted { buf = qtn_cm_keystore_corrupted; }
+RESOURCE TBUF r_certsaver_pkcs12_file_corrupted { buf = qtn_cm_pkcs12_file_corrupted; }
+RESOURCE TBUF r_certsaver_header_saved { buf = qtn_cm_header_saved; }
+RESOURCE TBUF r_qtn_cm_title_p12_password { buf = qtn_cm_title_p12_password; }
+RESOURCE TBUF r_qtn_cm_incorrect_password { buf = qtn_cm_incorrect_password; }
+RESOURCE TBUF r_qtn_cm_pkcs12_saving_failed { buf = qtn_cm_pkcs12_saving_failed; }
+RESOURCE TBUF r_certsaver_qtn_cm_valid_from { buf=qtn_cm_valid_from; }
+RESOURCE TBUF r_certsaver_qtn_cm_valid_until { buf=qtn_cm_valid_until; }
+RESOURCE TBUF r_certsaver_qtn_cm_pkcs12_expired { buf=qtn_cm_pkcs12_expired;}
+RESOURCE TBUF r_qtn_cm_pkcs12_format_not_supported { buf=qtn_cm_pkcs12_format_not_supported;}
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_key_usage
+//     Key usage item label in details query.
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_key_usage
+    {
+    buf = qtn_cm_key_usage;
+    }
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_digital_signing
+//     Key usage is digital signing
+//     used in client certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_digital_signing
+    {
+    buf = qtn_cm_digital_signing;
+    }
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_client_authentication
+//     Key usage is client authentication
+//     used in client certificate details view
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_client_authentication
+    {
+    buf = qtn_cm_client_authentication;
+    }
+
+//----------------------------------------------------
+//
+//     r_qtn_cm_not_defined
+//     used in certificate details view
+//
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_qtn_cm_not_defined
+    {
+    buf = qtn_cm_not_defined;
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_softkeys_save_discard
+//    Softkeys in r_message_query_dosave.
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certsaver_softkeys_save_discard
+    {
+    buttons =
+        {
+        CBA_BUTTON { id=EAknSoftkeyOk; txt=text_softkey_save; },
+        CBA_BUTTON { id=EAknSoftkeyCancel; txt=text_wmls_list_disc_recvd_cert; },
+        CBA_BUTTON { id=EAknSoftkeyOk; txt=text_softkey_save; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_message_query_dosave
+//    Dialog shown to query if received certificate
+//    should be saved. Certificate details are
+//    shown.
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_message_query_dosave
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = r_certsaver_softkeys_save_discard;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+
+
+//----------------------------------------------------
+//
+//    r_message_query_dosave
+//    Dialog shown to query when pkcs#12 file saved
+//    succesfully.
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_message_query_saved
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_label_query
+//    Dialog to query label for certificate.
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_certsaver_label_query
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control= AVKON_DATA_QUERY
+                {
+                layout = EDataLayout;
+                label = qtn_certsaver_enter_label;
+                control = EDWIN
+                    {
+                    maxlength = CERTSAVER_MAX_LABEL_LEN;
+                    };
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_warning_note
+//    Confirmation query to warn security risk of
+//    certificate downloading.
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_certsaver_warning_note
+    {
+    flags = EGeneralQueryFlags;
+    buttons = r_certsaver_softkeys_save_discard;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_httpsec_save_rootcertificate;
+                };
+            }
+        };
+    }
+
+//-----------------------------------------------------------------------------
+//
+//  r_certsaver_trust_settings_listbox
+//  Items in CertSaver trust settings multiselection query
+//
+//-----------------------------------------------------------------------------
+//
+RESOURCE ARRAY r_certsaver_trust_settings_listbox
+     {
+    items =
+        {
+        LBUF
+            {//mail and image connection
+            txt = "1\t"qtn_cm_lipri_mail_image_conn"";
+            },
+        LBUF
+            {//Native installer
+            txt = "1\t"qtn_cm_lipri_native_installing"";
+            },
+        LBUF
+            {//Java installer
+            txt = "1\t"qtn_cm_lipri_java_installing"";
+            },
+        LBUF
+            {//OCSP validation
+            txt = "1\t"qtn_cm_lipri_ocsp"";
+            }
+        };
+    }
+
+
+
+//----------------------------------------------------
+//
+//    r_certsaver_softkeys_ok_cancel
+//
+//----------------------------------------------------
+//
+
+RESOURCE CBA r_certsaver_softkeys_ok_cancel
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_ok;},
+        CBA_BUTTON {id=EAknSoftkeyCancel; txt= text_softkey_cancel;},
+        CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_ok;}
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_softkeys_ok_cancel_mark
+//
+//----------------------------------------------------
+//
+
+RESOURCE CBA r_certsaver_softkeys_ok_cancel_mark
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_ok;},
+        CBA_BUTTON {id=EAknSoftkeyCancel; txt= text_softkey_cancel;},
+        CBA_BUTTON {id=EAknSoftkeyMark; txt=qtn_msk_mark;}
+        };
+    }
+
+
+//----------------------------------------------------
+//
+//    r_certsaver_trust_settings_query
+//    Multiselection list query for trust settings of
+//    certificate.
+//
+//----------------------------------------------------
+//
+
+RESOURCE AVKON_MULTISELECTION_LIST_QUERY r_certsaver_trust_settings_query
+    {
+    flags = EGeneralQueryFlags;
+    softkeys = r_certsaver_softkeys_ok_cancel_mark;
+    items =
+        {
+        AVKON_MULTISELECTION_LIST_QUERY_DLG_LINE
+          {
+          control = AVKON_LIST_QUERY_CONTROL
+            {
+            listtype = EAknCtSingleGraphicPopupMenuListBox;
+            listbox = AVKON_MULTISELECTION_LIST_QUERY_LIST
+                {
+                flags = EAknListBoxMultiselectionList | EAknListBoxPointerMultiselectionList;
+                array_id=r_certsaver_trust_settings_listbox;
+                };
+            heading = qtn_cm_select_trusted_apps;
+            };
+          }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_password_query_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_pkcs12_pw_query_dialog
+    {
+    flags=EGeneralQueryFlags | EEikDialogFlagVirtualInput;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY
+                {
+                layout = ECodeLayout;
+                control = SECRETED
+                    {
+                    num_letters=32;
+                    };
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_trusted_site_query
+//    Multiselection list query for trusted site
+//    certificate.
+//
+//----------------------------------------------------
+//
+
+RESOURCE DIALOG r_certsaver_trusted_site_query
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = r_certsaver_softkeys_save_discard;
+    items=
+         {
+        DLG_LINE
+              {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                    {
+                    label = qtn_cm_save_trustedsite_certificate_warning_title;
+                    };
+            },
+         DLG_LINE
+              {
+            type = EAknCtMessageQuery;
+              id = EAknMessageQueryContentId;
+                control = AVKON_MESSAGE_QUERY
+                    {
+                     };
+              }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    Resource buffers.
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_certsaver_one_private_key{ buf = qtn_cm_one_private_key; }
+RESOURCE TBUF r_certsaver_one_personal_certificate { buf = qtn_cm_one_personal_certificate; }
+RESOURCE TBUF r_certsaver_one_authority_certificate { buf = qtn_cm_one_authority_certificate; }
+RESOURCE TBUF r_certsaver_trustedsite_warning { buf = qtn_cm_save_trustedsite_certificate_warning_text; }
+
+// End of File

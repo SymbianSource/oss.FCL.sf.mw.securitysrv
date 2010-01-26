@@ -1,0 +1,60 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*	 
+*
+*
+*/
+
+
+#ifndef SECUI_HRH
+#define SECUI_HRH
+
+
+#define SEC_C_SECURITY_CODE_MAX_LENGTH			10
+#define SEC_C_SECURITY_CODE_MIN_LENGTH			5
+#define SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH	5
+#define SEC_C_MASTER_CODE_LENGTH	10
+#define SEC_C_PIN_CODE_MAX_LENGTH	8
+#define SEC_C_PIN_CODE_MIN_LENGTH	4
+#define SEC_C_PIN2_CODE_MAX_LENGTH	8
+#define SEC_C_PIN2_CODE_MIN_LENGTH	4
+#define SEC_C_PUK_CODE_MAX_LENGTH		8
+#define SEC_C_PUK_CODE_MIN_LENGTH		8
+#define SEC_C_PUK2_CODE_MAX_LENGTH		8
+#define SEC_C_PUK2_CODE_MIN_LENGTH		8
+#define SEC_REMOTELOCK_CODE_MAX_LENGTH    20
+#define SEC_REMOTELOCK_CODE_MIN_LENGTH    5
+
+enum TSecUiCommands
+	{
+	ESecUiCodeEtelReqest = 1,
+	ESecUiNone,
+	ESecUiPukRequired
+	};
+	
+enum TSecUiEvents
+	{
+	 ESecUiEmergencyCall = 972,
+	 ESecUiDeviceLocked
+	 };
+	 
+enum TSecUiObserverType
+    {
+      ESecUiDeviceLockObserver,
+      ESecUiRequestStateObserver,
+      ESecUiCallStateObserver  
+    };
+
+#endif  //  SecUi

@@ -1,0 +1,163 @@
+//
+// Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+//!  ****************************************************************************
+//!  Input for TOCSP - Script-based test harness for OCSP
+//!  See \Certman\TOCSP\Commands.cpp for description of commands
+//!  This file must be in UNICODE
+//!  ****************************************************************************
+
+//!  This script tests against the internal Symbian OCSP server running
+//!  openssl. 
+//!  Transport errors are injected using the test HTTP filter. The test code communicates
+//!  the script settings (FILTERPARAMS) to the filter. The parameters to FILTERPARAMS command are:
+//!  numDelayResp countDropResp countCorruptHTTPDataHeader countCorruptHTTPDataBodySizeLarge countCorruptHTTPDataBodySizeSmall countCorruptOCSPData countInternalErrorResp countTryLaterResp
+//!  where:
+//!  	numDelayResp - Delays response by specified number of milliseconds
+//!  	countDropResp - Drops specified number of responses
+//!  	countCorruptHTTPDataHeader - Corrupts specified number of responses (content-type in header is corrupted)
+//!  	countCorruptHTTPDataBodySizeLarge - Corrupts specified number of responses (body is of larger size than expected)
+//!  	countCorruptHTTPDataBodySizeSmall - Corrupts specified number of responses (body is of smaller size than expected)
+//!  	countCorruptOCSPData - Corrupts specified number of responses (OCSPResponse data is corrupted)
+//!  	countInternalErrorResp - Returns an "internalError" response for specified number of requests
+//!  	countTryLaterResp - Returns a "tryLater" response for specified number of requests
+//!  	countSigValidateFailure - Causes a signature validation failure by corrupting the Responder ID
+
+
+//!  These tests are added to test the new transport requi//! ents
+//!  Security/CertMan/xxx.xxx.001
+//!  Security/CertMan/xxx.xxx.002
+//!  Security/CertMan/xxx.xxx.003
+//! 
+//!  NOTE: These test support only one certificate request per test case. 
+//!  Meaning multiple REQUESTCERT commands are NOT supported within one START and END.
+//!  
+//!  One CA is used - Root5 (RSA)
+//!  The OCSP response signing certs are also RSA and DSA respectively.
+
+
+//!  ********** BEGIN Transport Tests **************
+
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0001
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0001
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0001-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0001
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0002
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0002
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0002-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0002
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0003
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0003
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0003-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0003
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0004
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0004
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0004-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0004
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0005
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0005
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0005-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0005
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0006
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0006
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0006-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0006
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0007
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0007
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0007-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0007
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0008
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0008
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0008-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0008
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-0009
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-0009
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-0009-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-0009
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00010
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00010
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00010-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00010
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00011
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00011
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00011-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00011
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00012
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00012
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00012-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00012
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00013
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00013
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00013-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00013
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00014
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00014
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00014-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00014
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00015
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00015
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00015-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00015
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00016
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00016
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00016-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00016
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00017
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00017
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00017-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00017
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00018
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00018
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00018-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00018
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00019
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00019
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00019-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00019
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00020
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00020
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00020-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00020
+
+START_TESTCASE                SEC-TOCSP-HTTPINTERFACE-00021
+//! @SYMTestCaseID            SEC-TOCSP-HTTPINTERFACE-00021
+RUN_TEST_STEP                 httpinterface.ini   SEC-TOCSP-HTTPINTERFACE-00021-0001
+END_TESTCASE                  SEC-TOCSP-HTTPINTERFACE-00021
+
+
+
+
+

@@ -1,0 +1,43 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Contains information for building Wim utilies dll
+*
+*/
+
+#include <platform_paths.hrh>
+//MACRO __WIM_ENABLE_TRACES
+//#define __WIM_ENABLE_TRACES
+
+TARGET          WimUtil.dll
+TARGETTYPE      DLL
+UID             0x1000008d 0x101F79D6
+
+CAPABILITY      CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+
+SOURCE          ../src/WimCertInfo.cpp
+SOURCE          ../src/WimUtilEntry.cpp
+SOURCE          ../src/WimDummyToken.cpp
+
+USERINCLUDE     ../inc
+USERINCLUDE     ../../inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         euser.lib
+LIBRARY         ctframework.lib
+
+SMPSAFE
+

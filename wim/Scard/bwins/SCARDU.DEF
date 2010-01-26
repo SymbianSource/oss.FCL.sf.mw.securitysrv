@@ -1,0 +1,35 @@
+EXPORTS
+	??0CScardListener@@IAE@PAVRScard@@@Z @ 1 NONAME ; CScardListener::CScardListener(class RScard *)
+	??0TScardConnectionRequirement@@QAE@XZ @ 2 NONAME ; TScardConnectionRequirement::TScardConnectionRequirement(void)
+	??1CScardComm@@UAE@XZ @ 3 NONAME ; CScardComm::~CScardComm(void)
+	??1CScardListener@@MAE@XZ @ 4 NONAME ; CScardListener::~CScardListener(void)
+	??1CScardReaderQuery@@UAE@XZ @ 5 NONAME ; CScardReaderQuery::~CScardReaderQuery(void)
+	??1RScard@@UAE@XZ @ 6 NONAME ; RScard::~RScard(void)
+	?CancelTransmit@CScardComm@@QBEXXZ @ 7 NONAME ; void CScardComm::CancelTransmit(void) const
+	?ClearAIDBytesL@TScardConnectionRequirement@@QAEXXZ @ 8 NONAME ; void TScardConnectionRequirement::ClearAIDBytesL(void)
+	?ClearATRL@TScardConnectionRequirement@@QAEXXZ @ 9 NONAME ; void TScardConnectionRequirement::ClearATRL(void)
+	?ClearExcludedL@TScardConnectionRequirement@@QAEXXZ @ 10 NONAME ; void TScardConnectionRequirement::ClearExcludedL(void)
+	?ClearExplicitL@TScardConnectionRequirement@@QAEXXZ @ 11 NONAME ; void TScardConnectionRequirement::ClearExplicitL(void)
+	?DoCancel@CScardListener@@MAEXXZ @ 12 NONAME ; void CScardListener::DoCancel(void)
+	?GetATRL@CScardComm@@QBEXAAV?$TBuf8@$0CB@@@@Z @ 13 NONAME ; void CScardComm::GetATRL(class TBuf8<33> &) const
+	?GetCapabilitiesL@CScardComm@@QBEXJAAVTDes8@@J@Z @ 14 NONAME ; void CScardComm::GetCapabilitiesL(long, class TDes8 &, long) const
+	?ListGroupsL@CScardReaderQuery@@QAEXPAV?$CArrayFixFlat@V?$TBuf@$0CA@@@@@@Z @ 15 NONAME ; void CScardReaderQuery::ListGroupsL(class CArrayFixFlat<class TBuf<32> > *)
+	?ListReadersL@CScardReaderQuery@@QAEXPAV?$CArrayFixFlat@V?$TBuf@$0CA@@@@@ABV?$TBuf@$0CA@@@@Z @ 16 NONAME ; void CScardReaderQuery::ListReadersL(class CArrayFixFlat<class TBuf<32> > *, class TBuf<32> const &)
+	?ListenCardEvents@CScardListener@@QAEHABV?$TBuf@$0CA@@@@Z @ 17 NONAME ; int CScardListener::ListenCardEvents(class TBuf<32> const &)
+	?ManageChannel@CScardComm@@QBEXW4TScChannelManagement@@CAAVTDes8@@AAVTRequestStatus@@J@Z @ 18 NONAME ; void CScardComm::ManageChannel(enum TScChannelManagement, signed char, class TDes8 &, class TRequestStatus &, long) const
+	?NewCardsOnly@TScardConnectionRequirement@@QAEXH@Z @ 19 NONAME ; void TScardConnectionRequirement::NewCardsOnly(int)
+	?NewL@CScardComm@@SAPAV1@PAVRScard@@AAVTScardConnectionRequirement@@AAV?$TBuf@$0CA@@@AAVTRequestStatus@@J@Z @ 20 NONAME ; class CScardComm * CScardComm::NewL(class RScard *, class TScardConnectionRequirement &, class TBuf<32> &, class TRequestStatus &, long)
+	?NewL@CScardNotifyRegistry@@SAPAV1@PAVCScardServer@@@Z @ 21 NONAME ; class CScardNotifyRegistry * CScardNotifyRegistry::NewL(class CScardServer *)
+	?NewL@CScardReaderQuery@@SAPAV1@XZ @ 22 NONAME ; class CScardReaderQuery * CScardReaderQuery::NewL(void)
+	?NewL@RScard@@SAPAV1@XZ @ 23 NONAME ; class RScard * RScard::NewL(void)
+	?NewReadersOnly@TScardConnectionRequirement@@QAEXH@Z @ 24 NONAME ; void TScardConnectionRequirement::NewReadersOnly(int)
+	?NotifyCardEvent@CScardNotifyRegistry@@UAEXW4TScardServiceStatus@@F@Z @ 25 NONAME ; void CScardNotifyRegistry::NotifyCardEvent(enum TScardServiceStatus, short)
+	?RunL@CScardListener@@MAEXXZ @ 26 NONAME ; void CScardListener::RunL(void)
+	?Scard@CScardComm@@QBEPAVRScard@@XZ @ 27 NONAME ; class RScard * CScardComm::Scard(void) const
+	?SetAIDBytesL@TScardConnectionRequirement@@QAEXAAVTDesC8@@@Z @ 28 NONAME ; void TScardConnectionRequirement::SetAIDBytesL(class TDesC8 &)
+	?SetATRL@TScardConnectionRequirement@@QAEXAAV?$TBuf8@$0CB@@@@Z @ 29 NONAME ; void TScardConnectionRequirement::SetATRL(class TBuf8<33> &)
+	?SetExcludedL@TScardConnectionRequirement@@QAEXAAV?$TBuf@$0CA@@@@Z @ 30 NONAME ; void TScardConnectionRequirement::SetExcludedL(class TBuf<32> &)
+	?SetExplicitL@TScardConnectionRequirement@@QAEXAAV?$TBuf@$0CA@@@@Z @ 31 NONAME ; void TScardConnectionRequirement::SetExplicitL(class TBuf<32> &)
+	?StartThread@@YAHXZ @ 32 NONAME ; int StartThread(void)
+	?TransmitToCard@CScardComm@@QBEXABVTDesC8@@AAVTDes8@@AAVTRequestStatus@@JC@Z @ 33 NONAME ; void CScardComm::TransmitToCard(class TDesC8 const &, class TDes8 &, class TRequestStatus &, long, signed char) const
+

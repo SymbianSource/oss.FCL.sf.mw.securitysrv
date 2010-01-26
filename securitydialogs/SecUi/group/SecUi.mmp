@@ -1,0 +1,128 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Makefile
+*
+*
+*
+*/
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET  secui.dll
+TARGETTYPE  dll
+UID 0x1000006C 0x100058ED
+VENDORID VID_DEFAULT
+CAPABILITY CAP_GENERAL_DLL
+
+SOURCEPATH .
+
+SOURCEPATH ../Data
+
+START RESOURCE SecUi.rss
+HEADER
+TARGETPATH   RESOURCE_FILES_DIR  
+LANGUAGE_IDS
+END
+
+USERINCLUDE . ../Inc
+
+MW_LAYER_SYSTEMINCLUDE ../../../inc 
+
+
+#ifdef __PROTOCOL_CDMA
+
+    SOURCEPATH ../Cdma/Src
+    SOURCE  SecUiSecuritySettingsCdma.cpp
+    SOURCE  SecUiSecurityHandlerCdma.cpp
+    SOURCE  SecUiObsStartterCdma.cpp
+    SOURCE  SecUiAutoLockSettingPageCdma.cpp
+    SOURCE  SecUiSystemLockCdma.cpp
+
+    SOURCEPATH ../Src
+    SOURCE  SecUi.cpp
+    SOURCE  SecUiCodeQueryDialog.cpp
+    SOURCE  SecUiCodeQueryControl.cpp
+    SOURCE  SecUiManualSecuritySettings.cpp
+    SOURCE  SecUiWait.cpp
+
+
+    library EUSER.LIB BAFL.LIB CONE.LIB
+    library EIKCORE.LIB EIKCOCTL.LIB
+    library avkon.lib  eikdlg.lib 
+    library etel.lib etelmm.lib
+    library eikctl.lib 
+    library ws32.lib commonengine.lib
+    library efsrv.lib 
+	LIBRARY centralrepository.lib
+	LIBRARY aknNotifierWrapper.lib
+    library customapi.lib
+    library securityclient.lib  //Security Engine
+    library apparc.lib //For starting application in secuiobsstartter
+
+   LIBRARY SCPClient.lib // SCP server
+
+#else //If GSM:
+
+
+    SOURCEPATH ../Src
+
+    SOURCE  ../Src/SecUi.cpp
+    SOURCE  ../Src/SecUiCodeQueryDialog.cpp
+    SOURCE  ../Src/SecUiSecuritySettings.cpp
+    SOURCE  ../Src/SecUiSecurityHandler.cpp
+    SOURCE  ../Src/SecUiCodeQueryControl.cpp
+    SOURCE  ../Src/SecUiAutoLockSettingPage.cpp
+    SOURCE  ../Src/SecUiObsStartter.cpp
+    SOURCE  ../Src/SecUiManualSecuritySettings.cpp
+    SOURCE  ../Src/SecUiSystemLock.cpp
+    SOURCE  ../Src/SecUiWait.cpp
+    SOURCE  ../Src/SecUiLockObserver.cpp
+#ifdef RD_REMOTELOCK
+    SOURCE  ../Src/SecUiRemoteLockSettingPage.cpp
+#endif    
+
+    library     euser.lib bafl.lib cone.lib
+    library     eikcore.lib eikcoctl.lib
+    library     avkon.lib  eikdlg.lib 
+    library     etel.lib etelmm.lib
+    library     eikctl.lib 
+    library     ws32.lib commonengine.lib
+    library     efsrv.lib 
+    library     eiksrvui.lib
+    library     customapi.lib
+    LIBRARY     starterclient.lib       //use of Starter to remove splash screen
+    library     sysutil.lib
+    library     estor.lib
+
+#ifdef RD_REMOTELOCK
+    library     rlocksettings.lib 
+#endif    
+
+
+   LIBRARY      scpclient.lib // SCP server         
+	LIBRARY centralrepository.lib
+	LIBRARY aknnotifierwrapper.lib
+#endif //__PROTOCOL_CDMA
+
+// Modified by build team
+#if defined(WINSCW)
+    DEFFILE ../BWinsCw/SECUI_EKA2.def
+#endif
+LIBRARY                 featmgr.lib
+LIBRARY aknnotify.lib
+
+SMPSAFE
+
+// end of file

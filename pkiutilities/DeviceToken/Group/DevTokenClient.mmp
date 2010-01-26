@@ -1,0 +1,67 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition file for DevTokenClient
+*
+*/
+
+
+#include <platform_paths.hrh>
+TARGET DevTokenClient.dll
+TARGETTYPE DLL
+UID 0x1000008d 0x101FB66B
+
+CAPABILITY All -TCB
+VENDORID VID_DEFAULT
+
+USERINCLUDE ../Inc 
+
+MW_LAYER_SYSTEMINCLUDE
+
+// generic device tokens client code
+SOURCEPATH ../Src/Generic/Client
+SOURCE DevToken.cpp
+SOURCE DevTokenType.cpp 
+SOURCE DevTokenTypeSession.cpp
+SOURCE DevTokenClientSession.cpp 
+SOURCE DevTokenUtils.cpp
+SOURCE DevTokenInterfaceFactory.cpp
+SOURCE DTClient.cpp
+
+// generic common client/server code  
+SOURCEPATH ../Src/Generic/Common
+SOURCE DevTokenCliServ.cpp
+
+// keystore specific client code
+SOURCEPATH ../Src/KeyStore/Client
+SOURCE DevCertKeyStore.cpp
+SOURCE DevCertOpenedKeys.cpp
+
+// certstore specific client code 
+SOURCEPATH ../Src/Certstore/client
+SOURCE DevandTruSrvCertStore.cpp
+
+// trusted sites store client code 
+SOURCEPATH ../Src/TruSitesStore/Client
+SOURCE TrustedSitesStore.cpp
+
+LIBRARY euser.lib 
+LIBRARY ctframework.lib 
+LIBRARY cryptography.lib
+LIBRARY hash.lib 
+LIBRARY DevTokenShared.lib
+LIBRARY x509.lib            // CX509Certificate
+LIBRARY crypto.lib
+
+SMPSAFE
+

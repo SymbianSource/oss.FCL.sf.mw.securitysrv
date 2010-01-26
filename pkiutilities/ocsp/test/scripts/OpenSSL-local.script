@@ -1,0 +1,86 @@
+//
+// Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+//!  OpenSSL.txt
+//! 
+//!  Local OCSP tests using logged requests and responses from OpenSSL server
+
+//!  CA1 standard tests
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0001
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0001
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0001
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0001
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0002
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0002
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0002
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0002
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0003
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0003
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0003
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0003
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0004
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0004
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0004
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0004
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0005
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0005
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0005
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0005
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0006
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0006
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0006
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0006
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0007
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0007
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0007
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0007
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0008
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0008
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0008
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0008
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0009
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0009
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0009
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0009
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0010
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0010
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0010
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0010
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0011
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0011
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0011
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0011
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0012
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0012
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0012
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0012
+
+START_TESTCASE                SEC-TOCSP-OPENSSL-LOCAL-0013
+//! @SYMTestCaseID            SEC-TOCSP-OPENSSL-LOCAL-0013
+RUN_TEST_STEP                 OPENSSL-local.ini   SEC-TOCSP-OPENSSL-LOCAL-0013
+END_TESTCASE                  SEC-TOCSP-OPENSSL-LOCAL-0013

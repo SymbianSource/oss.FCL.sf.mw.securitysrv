@@ -1,0 +1,3 @@
+EXPORTS
+	?CreateL@PKCS12Factory@@SAPAVMPKCS12@@XZ @ 1 NONAME ; class MPKCS12 * PKCS12Factory::CreateL(void)
+

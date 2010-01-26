@@ -1,0 +1,5 @@
+EXPORTS
+	E32Dll__F10TDllReason @ 1 NONAME R3UNUSED ; E32Dll(TDllReason)
+	NewLC__16CCertManUIKeeperRC5TRectG4TUid @ 2 NONAME R3UNUSED ; CCertManUIKeeper::NewLC(TRect const &, TUid)
+	NewL__16CCertManUIKeeperRC5TRectG4TUid @ 3 NONAME R3UNUSED ; CCertManUIKeeper::NewL(TRect const &, TUid)
+

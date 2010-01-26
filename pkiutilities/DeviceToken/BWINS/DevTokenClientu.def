@@ -1,0 +1,11 @@
+EXPORTS
+	??1CTrustSitesStore@@UAE@XZ @ 1 NONAME ; CTrustSitesStore::~CTrustSitesStore(void)
+	?AddForgivenSiteL@CTrustSitesStore@@QAEHABVTDesC16@@ABH@Z @ 2 NONAME ; int CTrustSitesStore::AddForgivenSiteL(class TDesC16 const &, int const &)
+	?AddL@CTrustSitesStore@@QAEHABVTDesC8@@ABVTDesC16@@@Z @ 3 NONAME ; int CTrustSitesStore::AddL(class TDesC8 const &, class TDesC16 const &)
+	?GetTrustedSitesL@CTrustSitesStore@@QAEHABVTDesC8@@AAV?$RPointerArray@VHBufC16@@@@@Z @ 4 NONAME ; int CTrustSitesStore::GetTrustedSitesL(class TDesC8 const &, class RPointerArray<class HBufC16> &)
+	?IsTrustedSiteL@CTrustSitesStore@@QAEHABVTDesC8@@ABVTDesC16@@@Z @ 5 NONAME ; int CTrustSitesStore::IsTrustedSiteL(class TDesC8 const &, class TDesC16 const &)
+	?NewL@CDevTokenType@@SAPAVCCTTokenType@@VTUid@@@Z @ 6 NONAME ; class CCTTokenType * CDevTokenType::NewL(class TUid)
+	?NewL@CTrustSitesStore@@SAPAV1@XZ @ 7 NONAME ; class CTrustSitesStore * CTrustSitesStore::NewL(void)
+	?IsOutOfDateAllowedL@CTrustSitesStore@@QAEHABVTDesC8@@ABVTDesC16@@@Z @ 8 NONAME ; int CTrustSitesStore::IsOutOfDateAllowedL(class TDesC8 const &, class TDesC16 const &)
+	?RemoveForgivenSiteL@CTrustSitesStore@@QAEHABVTDesC16@@@Z @ 9 NONAME ; int CTrustSitesStore::RemoveForgivenSiteL(class TDesC16 const &)
+

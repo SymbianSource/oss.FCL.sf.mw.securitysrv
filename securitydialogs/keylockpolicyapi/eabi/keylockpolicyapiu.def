@@ -1,0 +1,21 @@
+EXPORTS
+	_ZN17CKeyLockPolicyApi15HandleKeyEventLERK9TKeyEvent10TEventCode @ 1 NONAME
+	_ZN17CKeyLockPolicyApi15KeyguardAllowedEv @ 2 NONAME
+	_ZN17CKeyLockPolicyApi16HasConfigurationEv @ 3 NONAME
+	_ZN17CKeyLockPolicyApi17AddKeyCombinationEmm @ 4 NONAME
+	_ZN17CKeyLockPolicyApi17GetKeyCombinationEiRmS0_ @ 5 NONAME
+	_ZN17CKeyLockPolicyApi17GetLastPrimaryKeyEv @ 6 NONAME
+	_ZN17CKeyLockPolicyApi17PrimaryKeyPressedEv @ 7 NONAME
+	_ZN17CKeyLockPolicyApi20ClearKeycombinationsEv @ 8 NONAME
+	_ZN17CKeyLockPolicyApi20RemoveKeyCombinationEmm @ 9 NONAME
+	_ZN17CKeyLockPolicyApi21EnableKeyguardFeatureEv @ 10 NONAME
+	_ZN17CKeyLockPolicyApi22DisableKeyguardFeatureEv @ 11 NONAME
+	_ZN17CKeyLockPolicyApi4NewLE15TLockPolicyType @ 12 NONAME
+	_ZN17CKeyLockPolicyApiD0Ev @ 13 NONAME
+	_ZN17CKeyLockPolicyApiD1Ev @ 14 NONAME
+	_ZN17CKeyLockPolicyApiD2Ev @ 15 NONAME
+	_ZTI17CKeyLockPolicyApi @ 16 NONAME ; #<TI>#
+	_ZTI21CKeyLockPolicyApiImpl @ 17 NONAME ; #<TI>#
+	_ZTV17CKeyLockPolicyApi @ 18 NONAME ; #<VT>#
+	_ZTV21CKeyLockPolicyApiImpl @ 19 NONAME ; #<VT>#
+

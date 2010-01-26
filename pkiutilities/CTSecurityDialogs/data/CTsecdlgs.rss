@@ -1,0 +1,879 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Resource file for CT Security Dialog
+*
+*/
+
+
+//  INCLUDES
+
+#include <eikon.rh>
+#include <avkon.rsg>
+#include <avkon.hrh>
+#include <avkon.rh>
+#include <avkon.loc>
+#include <bldvariant.hrh>
+#include <certmanui.loc>
+#include <certsaver.loc>
+#include <wmlbrowser_wim.loc>
+
+
+//  RESOURCE IDENTIFIER
+
+NAME WIMS
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_pin_query_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_pin_query_dialog
+  {
+  flags=EEikDialogFlagNotifyEsc | EEikDialogFlagVirtualInput;
+  buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+    {
+        DLG_LINE
+          {
+          type=EAknCtQuery;
+          id=EGeneralQuery;
+          control= AVKON_DATA_QUERY
+                {
+                layout = EPinLayout;
+                control = SECRETED
+                    {
+                    num_letters=4;
+                    };
+                };
+          }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_password_query_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_password_query_dialog
+  {
+  flags=EEikDialogFlagNotifyEsc | EEikDialogFlagVirtualInput;
+  buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+    {
+    DLG_LINE
+      {
+      type=EAknCtQuery;
+      id=EGeneralQuery;
+      control= AVKON_DATA_QUERY
+          {
+          label=r_qtn_cm_heading_phone_keystore;
+          layout = ECodeLayout;
+          control = SECRETED
+              {
+              num_letters=4;
+              };
+        };
+      }
+    };
+  }
+// -----------------------------------------------------------------------------
+//
+// r_wim_pinpin_query_dialog
+// Multiline data query for two PINs
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_pinpin_query_dialog
+  {
+  flags=EEikDialogFlagNotifyEsc;
+  buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+  items=
+    {
+    DLG_LINE
+      {
+      type=EAknCtMultilineQuery;
+      id=EMultilineFirstLine;
+      control= AVKON_DATA_QUERY
+        {
+        layout = EMultiDataFirstPinEd;
+        control = SECRETED
+            {
+            num_letters=4;
+            };
+        };
+      },
+    DLG_LINE
+      {
+      type=EAknCtMultilineQuery;
+      id=EMultilineSecondLine;
+      control= AVKON_DATA_QUERY
+          {
+          layout = EMultiDataSecondPinEd;
+          control = SECRETED
+            {
+            num_letters=4;
+            };
+        };
+      }
+    };
+  }
+// -----------------------------------------------------------------------------
+//
+// r_wim_pwpw_query_dialog
+// Multiline data query for two passwords
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_pwpw_query_dialog
+  {
+  flags=EEikDialogFlagNotifyEsc;
+  buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+  items=
+    {
+    DLG_LINE
+      {
+      type=EAknCtMultilineQuery;
+      id=EMultilineFirstLine;
+      control= AVKON_DATA_QUERY
+        {
+        layout = EMultiDataFirstSecEd;
+        control = SECRETED
+            {
+            num_letters=6;
+            };
+        };
+      },
+    DLG_LINE
+      {
+      type=EAknCtMultilineQuery;
+      id=EMultilineSecondLine;
+      control= AVKON_DATA_QUERY
+        {
+        layout = EMultiDataSecondSecEd;
+        control = SECRETED
+            {
+            num_letters=6;
+            };
+        };
+      }
+    };
+  }
+
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_query_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_query_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags =  EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              };
+      },
+    DLG_LINE
+      {
+      type = EAknCtQuery;
+      id = EGeneralQuery;
+      control= AVKON_CONFIRMATION_QUERY
+        {
+          layout = EConfirmationLayout;
+          animation = R_QGN_NOTE_QUERY_ANIM;
+        };
+      }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_signtext_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_userauthtext_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = r_wimdlg_softkey_accept_cancel;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label= qtn_sn_auth_query_heading;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+              {
+              };
+        }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_signtext_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_signtext_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = r_wimdlg_softkey_sign_cancel;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label=qtn_wim_confirm_text;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+        }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_csr_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_csr_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = r_wimdlg_softkey_accept_cancel;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label=qtn_sn_cert_sign_heading;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+          }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_certdetails_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_certdetails_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label=qtn_cm_details_heading;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+        }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_delete_cert_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_delete_cert_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = r_wimdlg_softkey_delete_cancel;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label=qtn_sn_delete_cert_heading;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+          }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_save_cert_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_save_cert_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = r_wimdlg_softkey_save_cancel;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              label=qtn_wmlsec_query_downl_cert;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+        }
+    };
+  }
+// -----------------------------------------------------------------------------
+//
+// r_wim_unblock_info_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_wim_unblock_info_dialog
+  {
+  // Stolen from aknnotpi.rss, added EEikDialogFlagWait
+  flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar | EEikDialogFlagCbaButtons | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow | EEikDialogFlagNotifyEsc;
+  buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items =
+    {
+        DLG_LINE
+          {
+          type = EAknCtPopupHeadingPane;
+          id = EAknMessageQueryHeaderId;
+          control = AVKON_HEADING
+              {
+              //label=qtn_wim_confirm_text;
+              label=qtn_wim_err_pin_blocked;
+              };
+          },
+      DLG_LINE
+          {
+          type = EAknCtMessageQuery;
+          id = EAknMessageQueryContentId;
+          control = AVKON_MESSAGE_QUERY
+              {
+              };
+        }
+    };
+  }
+
+// -----------------------------------------------------------------------------
+// R_NO_TRUST_QUERY
+// -----------------------------------------------------------------------------
+RESOURCE DIALOG r_wim_no_trust_query
+    {
+    // Query needs to be asynchronous -> no wait flag
+    // Notify esc flag is needed for OkToExitL() call when cancel key is pressed
+
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = r_wim_no_trust_query_softkeys;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_ics_ssl_conf_q_continue;
+                };
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_NO_TRUST_QUERY_OOD
+// -----------------------------------------------------------------------------
+RESOURCE DIALOG r_wim_no_trust_query_ood
+    {
+    // Query needs to be asynchronous -> no wait flag
+    // Notify esc flag is needed for OkToExitL() call when cancel key is pressed
+
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = r_wim_no_trust_query_softkeys;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_ics_ssl_conf_q_accept_ood;
+                };
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_NO_TRUST_QUERY_UNTRUSTED
+// -----------------------------------------------------------------------------
+RESOURCE DIALOG r_wim_no_trust_query_untrusted
+    {
+    // Query needs to be asynchronous -> no wait flag
+    // Notify esc flag is needed for OkToExitL() call when cancel key is pressed
+
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = r_wim_no_trust_query_softkeys;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_ics_ssl_conf_q_accept_untrusted;
+                };
+            }
+        };
+    }
+
+
+// -----------------------------------------------------------------------------
+// R_NO_TRUST_QUERY_SITE
+// -----------------------------------------------------------------------------
+RESOURCE DIALOG r_wim_no_trust_query_site
+    {
+    // Query needs to be asynchronous -> no wait flag
+    // Notify esc flag is needed for OkToExitL() call when cancel key is pressed
+
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = r_wim_no_trust_query_softkeys;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_ics_ssl_conf_q_accept_site;
+                };
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_WIM_INVALID_CERTIFICATE_INFORMATION_NOTE
+// -----------------------------------------------------------------------------
+RESOURCE DIALOG r_wim_invalid_certificate_information_note
+    {
+    // Query needs to be asynchronous -> no wait flag
+    // Notify esc flag is needed for OkToExitL() call when cancel key is pressed
+
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = r_wim_invalid_cert_softkeys;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EGeneralNote;
+            control= AVKON_NOTE
+                {
+                layout = EGeneralLayout;
+                singular_label = qtn_ics_ssl_conf_q_accept_signature;
+                };
+            }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_CERTIFICATE_QUERY
+// -----------------------------------------------------------------------------
+
+RESOURCE DIALOG r_notrust_certificate_query
+    {
+    flags = EGeneralQueryFlags |
+            EEikDialogFlagNoBorder |
+            EEikDialogFlagNoShadow |
+            EEikDialogFlagNotifyEsc;
+
+    buttons = R_AVKON_SOFTKEYS_CLOSE;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_trusted_site_query
+//    Multiselection list query for trusted site
+//    certificate.
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_httpsec_query_perm_accept
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_YES_NO;
+    items=
+         {
+        DLG_LINE
+              {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                    {
+                    label = qtn_httpsec_query_perm_accept_title;
+                    };
+            },
+         DLG_LINE
+              {
+              type = EAknCtMessageQuery;
+              id = EAknMessageQueryContentId;
+              control = AVKON_MESSAGE_QUERY
+                    {
+                     };
+              }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_wim_select_certificate_dialog
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE AVKON_LIST_QUERY r_wim_select_certificate_dialog
+    {
+  flags = EEikDialogFlagNotifyEsc;
+    softkeys = R_AVKON_SOFTKEYS_SELECT_CANCEL__SELECT;
+    items =
+      {
+      AVKON_LIST_QUERY_DLG_LINE
+          {
+          control = AVKON_LIST_QUERY_CONTROL
+            {
+            listtype = EAknCtSinglePopupMenuListBox;
+            listbox = AVKON_LIST_QUERY_LIST
+                {
+                array_id=0;
+                };
+            heading = qtn_wim_select_cert;
+            };
+          }
+      };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_wimdlg_softkey_accept_reject
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_wimdlg_softkey_accept_cancel
+    {
+  buttons=
+      {
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_accept; },
+      CBA_BUTTON {id=EAknSoftkeyNo; txt=text_softkey_cancel; },
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_accept; }
+      };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_wimdlg_softkey_accept_reject
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_wimdlg_softkey_save_cancel
+    {
+  buttons=
+      {
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_save; },
+      CBA_BUTTON {id=EAknSoftkeyNo; txt=text_softkey_cancel; },
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=text_softkey_save; }
+      };
+    }
+// -----------------------------------------------------------------------------
+//
+// r_wimdlg_softkey_accept_reject
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_wimdlg_softkey_delete_cancel
+    {
+  buttons=
+      {
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=qtn_sn_softkey_delete; },
+      CBA_BUTTON {id=EAknSoftkeyNo; txt=text_softkey_cancel; },
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=qtn_sn_softkey_delete; }
+      };
+    }
+
+// -----------------------------------------------------------------------------
+//
+// r_wimdlg_softkey_sign_cancel
+// ?description
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE CBA r_wimdlg_softkey_sign_cancel
+    {
+  buttons=
+      {
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=gtn_wim_softk_dsign_sign; },
+      CBA_BUTTON {id=EAknSoftkeyNo; txt=text_softkey_cancel; },
+      CBA_BUTTON {id=EAknSoftkeyYes; txt=gtn_wim_softk_dsign_sign; }
+      };
+    }
+
+// -----------------------------------------------------------------------------
+// R_NO_TRUST_QUERY_SOFTKEYS
+// -----------------------------------------------------------------------------
+
+RESOURCE CBA r_wim_no_trust_query_softkeys
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EAknSoftkeyCancel; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_INVALID_CERT_SOFTKEYS
+// -----------------------------------------------------------------------------
+
+RESOURCE CBA r_wim_invalid_cert_softkeys
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyClose; txt = text_softkey_close; },
+        CBA_BUTTON { id = EAknSoftkeyShow; txt = text_softkey_details; },
+        CBA_BUTTON { id = EAknSoftkeyClose; txt = text_softkey_close; }
+        };
+    }
+
+// -----------------------------------------------------------------------------
+// R_NOTRUST_MENUPANE
+// -----------------------------------------------------------------------------
+RESOURCE ARRAY r_notrust_menupane
+  {
+  items =
+    {
+    LBUF { txt = qtn_httpsec_opt_menu_accept_now;   },
+    LBUF { txt = qtn_httpsec_opt_menu_accept_perm;  },
+    LBUF { txt = qtn_httpsec_opt_menu_details;  }
+    };
+  }
+  
+// -----------------------------------------------------------------------------
+// R_NOTRUST_MENUPANE_NO_PERM
+// -----------------------------------------------------------------------------  
+RESOURCE ARRAY r_notrust_menupane_no_perm
+  {
+  items =
+    {
+    LBUF { txt = qtn_httpsec_opt_menu_accept_now;   },
+    LBUF { txt = qtn_httpsec_opt_menu_details;  }
+    };
+  }
+
+RESOURCE TBUF r_qtn_wim_select_cert { buf=qtn_wim_select_cert; }
+
+RESOURCE TBUF r_qtn_wim_prmt_gen_wim_pin { buf=qtn_wim_prmt_gen_wim_pin; }
+
+RESOURCE TBUF r_qtn_wim_info_digit_sign_req { buf=qtn_wim_info_digit_sign_req; }
+
+RESOURCE TBUF r_qtn_sn_authentication_note { buf=qtn_sn_authentication_note; }
+
+RESOURCE TBUF r_qtn_wim_confirm_text { buf=qtn_wim_confirm_text; }
+
+RESOURCE TBUF r_qtn_wim_not_available { buf=qtn_wim_not_available; }
+
+RESOURCE TBUF r_qtn_wim_err_wrong_pin { buf=qtn_wim_err_wrong_pin; }
+
+RESOURCE TBUF r_qtn_wim_info_pin_unblocked { buf=qtn_wim_info_pin_unblocked; }
+
+RESOURCE TBUF r_qtn_wim_err_pin_blocked { buf=qtn_wim_err_pin_blocked; }
+
+RESOURCE TBUF r_qtn_wim_pin_totalblocked { buf=qtn_wim_pin_totalblocked; }
+
+RESOURCE TBUF r_qtn_wim_wrong_unblock_code { buf=qtn_wim_wrong_unblock_code; }
+
+RESOURCE TBUF r_qtn_wim_pin_unblock_query { buf=qtn_wim_pin_unblock_query; }
+
+RESOURCE TBUF r_qtn_wim_new_pin { buf=qtn_wim_new_pin; }
+
+RESOURCE TBUF r_qtn_wim_verify_pin { buf=qtn_wim_verify_pin; }
+
+RESOURCE TBUF r_qtn_wim_err_codes_do_not_match { buf=qtn_wim_err_codes_do_not_match; }
+
+RESOURCE TBUF r_qtn_wim_sign_cancelled { buf=qtn_wim_sign_cancelled; }
+
+RESOURCE TBUF r_qtn_wim_info_signature_made { buf=qtn_wim_info_signature_made; }
+
+RESOURCE TBUF r_qtn_wim_unblock_info { buf=qtn_wim_unblock_info; }
+
+RESOURCE TBUF r_qtn_wim_err_io_error { buf=qtn_wim_err_io_error; }
+
+RESOURCE TBUF r_qtn_wim_no_matching_certificate { buf=qtn_wim_no_matching_certificate; }
+
+RESOURCE TBUF r_qtn_cm_creating_keystore { buf=qtn_cm_creating_keystore; }
+
+RESOURCE TBUF r_qtn_cm_heading_phone_keystore { buf=qtn_cm_heading_phone_keystore; }
+
+RESOURCE TBUF r_qtn_cm_title_p12_password { buf=qtn_cm_title_p12_password; }
+
+RESOURCE TBUF r_qtn_wim_receipt_saved { buf=qtn_wim_receipt_saved; }
+
+RESOURCE TBUF r_qtn_sn_cert_sign_explanation  { buf=qtn_sn_cert_sign_explanation ; }
+
+RESOURCE TBUF r_qtn_sn_prompt_import_key { buf=qtn_sn_prompt_import_key; }
+
+RESOURCE TBUF r_qtn_sn_prompt1_create_code { buf=qtn_sn_prompt1_create_code; }
+
+RESOURCE TBUF r_qtn_sn_enter_phone_keystore { buf=qtn_sn_enter_phone_keystore; }
+
+RESOURCE TBUF r_qtn_sn_new_phone_keystore { buf=qtn_sn_new_phone_keystore; }
+
+RESOURCE TBUF r_qtn_httpsec_query_perm_accept_text { buf=qtn_httpsec_query_perm_accept_text; }
+
+RESOURCE TBUF r_qtn_cm_site { buf=qtn_cm_site; }
+
+// End of file

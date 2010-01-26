@@ -1,0 +1,60 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Contains information about Wim implementations and their
+*               supported interfaces
+*
+*/
+
+
+//INCLUDES
+
+#include "WimImplementationUID.hrh"
+#include <ecom/registryinfov2.rh>	
+#include "ct/interfaceuid.hrh" 
+
+RESOURCE REGISTRY_INFO theInfo
+    {
+	resource_format_version = RESOURCE_FORMAT_VERSION_2;
+    dll_uid = 0x101FB674;
+    interfaces = 
+        {
+        INTERFACE_INFO
+            {
+            interface_uid = CT_INTERFACE_UID;
+            implementations = 
+                {
+                BINARY_IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = WIM_IMPLEMENTATION_UID;
+                    version_no = 1;
+                    display_name = "Wim Card Token Type";       // Wim card
+                    default_data = {CT_CERT_STORE
+#ifdef __WIM
+                                    ,CT_WRITEABLE_CERT_STORE,            
+                                    CT_AUTHENTICATION_OBJECT,   
+                                    CT_KEY_STORE
+#endif
+									};              
+                    opaque_data  = {CT_MIN_TOKEN_COUNT,   CT_NUM8(0),
+                                    CT_MAX_TOKEN_COUNT,   CT_NUM8(8),
+                                    CT_ACCESS_CONTROLLED, CT_TRUE,
+                                    CT_REMOVABLE,         CT_TRUE,
+                                    CT_SOFTWARE,          CT_FALSE};
+					rom_only = 1;	// This plugin can be loaded only from ROM
+                    }
+
+                };
+            }
+        };
+    }

@@ -1,0 +1,85 @@
+/*
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition file for CertSaver
+*
+*/
+
+
+
+#include <platform_paths.hrh>
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+
+
+TARGET        CertSaver.exe
+TARGETTYPE    exe
+EPOCSTACKSIZE 0x5000
+UID           0x100039CE 0x100059D2
+
+CAPABILITY    CAP_APPLICATION
+VENDORID      VID_DEFAULT
+
+START RESOURCE ../data/CertSaver.rss
+HEADER
+TARGETPATH APP_RESOURCE_DIR
+LANGUAGE_IDS
+END  // RESOURCE
+
+START RESOURCE ../data/CertSaver_reg.rss
+DEPENDS certsaver.rsg
+DEPENDS certsaver.rsg
+TARGETPATH /private/10003a3f/apps
+END
+
+
+SOURCEPATH ../src
+SOURCE  CertSaverApp.cpp
+SOURCE  CertSaverAppUi.cpp
+SOURCE  CertSaverContainer.cpp
+SOURCE  CertSaverDocument.cpp
+SOURCE  CertSaverSyncWrapper.cpp
+SOURCE  certparser.cpp
+SOURCE  CertSaverModel.cpp
+
+USERINCLUDE ../inc
+USERINCLUDE ../../Include
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE   ../../PKCS12/CrPkcs12/Inc
+SYSTEMINCLUDE   ../../DeviceToken/Inc
+
+LIBRARY euser.lib
+LIBRARY apparc.lib
+LIBRARY cone.lib
+LIBRARY eikcore.lib
+LIBRARY avkon.lib
+LIBRARY efsrv.lib
+LIBRARY commonengine.lib
+LIBRARY sysutil.lib
+LIBRARY CTFramework.lib     // CCertAttributeFilter
+LIBRARY certstore.lib
+LIBRARY X509CertNameParser.lib
+LIBRARY x509.lib            // CX509Certificate
+LIBRARY crypto.lib          // CSignedObject
+LIBRARY hash.lib            // SHA-1
+//LIBRARY x500.lib          // Certificate parsing
+LIBRARY bafl.lib            // CDesC16ArrayFlat
+LIBRARY cryptography.lib
+LIBRARY FeatMgr.lib
+LIBRARY asnpkcs.lib
+LIBRARY aknskins.lib
+LIBRARY DevTokenClient.lib
+
+SMPSAFE
+

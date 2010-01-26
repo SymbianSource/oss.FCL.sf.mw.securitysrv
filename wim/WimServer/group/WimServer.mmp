@@ -1,0 +1,83 @@
+/*
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project build file
+*
+*/
+
+#include <platform_paths.hrh>
+// Uncomment MACRO and define below to enable trace logging
+//MACRO __WIM_ENABLE_TRACES
+//#define __WIM_ENABLE_TRACES
+
+TARGET        WimServer.exe
+TARGETTYPE    exe
+
+UID           0x1000008D 0x101F79DD
+
+CAPABILITY    CAP_SERVER NetworkControl
+VENDORID      VID_DEFAULT
+
+USERINCLUDE   ../../inc             // Common inc
+USERINCLUDE   ../inc                // WimServer inc
+
+APP_LAYER_SYSTEMINCLUDE              // RMmCustomAPI.h
+
+
+// WIM Server source files
+SOURCE        ../src/WimApduImpl.cpp
+SOURCE        ../src/WimMemMgmt.cpp
+SOURCE        ../src/WimResponse.cpp
+SOURCE        ../src/WimScardListener.cpp
+SOURCE        ../src/WimServer.cpp
+SOURCE        ../src/WimSession.cpp
+SOURCE        ../src/WimSessionRegistry.cpp
+SOURCE        ../src/WimSimFileHandler.cpp
+SOURCE        ../src/WimTokenHandler.cpp
+SOURCE        ../src/WimUtilityFuncs.cpp
+SOURCE        ../src/WimTrustSettingsHandler.cpp
+SOURCE        ../src/WimTrustSettingsStore.cpp
+SOURCE        ../src/WimCertUtil.cpp
+SOURCE        ../src/WimBTSapObserver.cpp
+SOURCE        ../src/WimSatRefreshObserver.cpp
+SOURCE        ../src/WimAuthObjHandler.cpp
+SOURCE        ../src/WimCallbackImpl.cpp
+SOURCE        ../src/WimCertHandler.cpp
+SOURCE        ../src/WimKeyMgmtHandler.cpp
+SOURCE        ../src/WimOmaProvisioning.cpp
+SOURCE        ../src/WimJavaProvisioning.cpp
+SOURCE        ../src/WimSecurityDlgHandler.cpp
+SOURCE        ../src/WimSignTextHandler.cpp
+SOURCE        ../src/WimTimer.cpp
+SOURCE        ../src/WimCleanup.cpp
+
+STATICLIBRARY Wimi.lib  // WIMI and WIM Library
+
+LIBRARY         random.lib
+LIBRARY       Scard.lib             // Smart Card Server
+LIBRARY       Asn1.lib              // Used to decode trusted usage OID's
+LIBRARY       Customapi.lib         // CustomAPI (used in SIM file reading)
+LIBRARY       Etel.lib Etelmm.lib   // RTelServer, RMobilePhone
+LIBRARY       Estlib.lib Euser.lib  // Symbian basic libraries
+LIBRARY       Ctframework.lib       // Crypto token framework
+LIBRARY       Efsrv.lib             // File server
+LIBRARY       Edbms.lib             // Database server
+LIBRARY       X509.lib              // X509 certificate
+LIBRARY       WimUtil.lib           // WimUtil module
+LIBRARY       Hash.lib              // Hash operations
+LIBRARY       Crypto.lib            // CCertificate
+LIBRARY       Wtlscert.lib          // Used in certificate handling
+LIBRARY       SatClient.lib         // SAT Refresh
+
+SMPSAFE
+

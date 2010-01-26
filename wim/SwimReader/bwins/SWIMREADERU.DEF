@@ -1,0 +1,4 @@
+EXPORTS
+	?NewServiceL@@YAPAVCSwimReaderLauncher@@XZ @ 1 NONAME ; class CSwimReaderLauncher * NewServiceL(void)
+	?PanicClient@@YAXH@Z @ 2 NONAME ; void PanicClient(int)
+

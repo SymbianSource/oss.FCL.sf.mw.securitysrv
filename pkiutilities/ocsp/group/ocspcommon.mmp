@@ -1,0 +1,43 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+/**
+@file
+
+@SYMPurpose ocspcommon.dll Implements functionality common to OCSP and OCSPTransport (repository file reading methods)
+*/
+
+TARGET        ocspcommon.dll
+TARGETTYPE    DLL
+
+CAPABILITY All
+
+UID    0x1000008d 0x1000A405	
+VENDORID 0x70000001
+
+MW_LAYER_SYSTEMINCLUDE_SYMBIAN
+USERINCLUDE 	../inc
+
+DEFFILE ocspcommon.def
+
+SOURCEPATH .
+SOURCE	../src/ocsppolicy.cpp
+
+LIBRARY euser.lib
+LIBRARY efsrv.lib
+LIBRARY estor.lib
+LIBRARY secsettingsclient.lib
+SMPSAFE

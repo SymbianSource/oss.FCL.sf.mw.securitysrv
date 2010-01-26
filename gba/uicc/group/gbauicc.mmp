@@ -1,0 +1,56 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project GBA uicc
+*
+*/
+
+
+#include <platform_paths.hrh>
+TARGET            gbauicc2.dll
+TARGETTYPE        PLUGIN
+UID               0x10009d8d 0x20029F0B
+
+VENDORID VID_DEFAULT
+
+CAPABILITY CAP_ECOM_PLUGIN 
+
+SMPSAFE
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../inc
+
+START RESOURCE ../data/20029F0B.rss
+TARGET gbauicc2.rsc
+END
+
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE /epoc32/include/libc
+SYSTEMINCLUDE /epoc32/include/ecom
+
+SOURCEPATH ../src
+SOURCE GbaAkaIsa.cpp 
+
+
+SOURCEPATH ../../common
+SOURCE GBALogger.cpp
+
+
+LIBRARY 		euser.lib
+LIBRARY 		etel.lib 
+LIBRARY 		etelmm.lib
+LIBRARY 		hash.lib
+LIBRARY 		customapi.lib
+DEBUGLIBRARY 	flogger.lib
+//EOF

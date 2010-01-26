@@ -1,0 +1,4 @@
+EXPORTS
+	?NewL@COCSPTransportDefault@@SAPAV1@AAK@Z @ 1 NONAME ; class COCSPTransportDefault * COCSPTransportDefault::NewL(unsigned long &)
+	?NewL@COCSPTransportHttp@@SAPAV1@ABVTDesC8@@AAK@Z @ 2 NONAME ; class COCSPTransportHttp * COCSPTransportHttp::NewL(class TDesC8 const &, unsigned long &)
+

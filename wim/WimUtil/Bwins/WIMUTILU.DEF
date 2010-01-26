@@ -1,0 +1,13 @@
+EXPORTS
+	?AddExtendedKeyUsage@CWimCertInfo@@QAEHPAVHBufC16@@@Z @ 1 NONAME ; int CWimCertInfo::AddExtendedKeyUsage(class HBufC16 *)
+	?AddTrustedUsage@CWimCertInfo@@QAEHPAVHBufC16@@@Z @ 2 NONAME ; int CWimCertInfo::AddTrustedUsage(class HBufC16 *)
+	?CDFRefs@CWimCertInfo@@QBEEXZ @ 3 NONAME ; unsigned char CWimCertInfo::CDFRefs(void) const
+	?CctCert@CWimCertInfo@@QBEPBVCCTCertInfo@@XZ @ 4 NONAME ; class CCTCertInfo const * CWimCertInfo::CctCert(void) const
+	?ExtendedKeyUsage@CWimCertInfo@@QBE?AV?$RArray@PAVHBufC16@@@@XZ @ 5 NONAME ; class RArray<class HBufC16 *> CWimCertInfo::ExtendedKeyUsage(void) const
+	?ExternalizeL@CWimCertInfo@@QBEPAVTWimCertInfoPckg@@XZ @ 6 NONAME ; class TWimCertInfoPckg * CWimCertInfo::ExternalizeL(void) const
+	?GetCertHash@CWimCertInfo@@QBEXAAV?$TBuf8@$0BE@@@@Z @ 7 NONAME ; void CWimCertInfo::GetCertHash(class TBuf8<20> &) const
+	?InternalizeL@CWimCertInfo@@SAPAV1@AAVTWimCertInfoPckg@@@Z @ 8 NONAME ; class CWimCertInfo * CWimCertInfo::InternalizeL(class TWimCertInfoPckg &)
+	?NewL@CWimCertInfo@@SAPAV1@PAVCCTCertInfo@@V?$TBuf8@$0BE@@@V?$RArray@PAVHBufC16@@@@E@Z @ 9 NONAME ; class CWimCertInfo * CWimCertInfo::NewL(class CCTCertInfo *, class TBuf8<20>, class RArray<class HBufC16 *>, unsigned char)
+	?SetCDFRefs@CWimCertInfo@@QAEXE@Z @ 10 NONAME ; void CWimCertInfo::SetCDFRefs(unsigned char)
+	?TrustedUsage@CWimCertInfo@@QBE?AV?$RArray@PAVHBufC16@@@@XZ @ 11 NONAME ; class RArray<class HBufC16 *> CWimCertInfo::TrustedUsage(void) const
+

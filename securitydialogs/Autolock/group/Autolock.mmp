@@ -1,0 +1,95 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Makefile
+*     
+*
+*/
+
+#include <platform_paths.hrh>
+
+#include <data_caging_paths.hrh>
+
+TARGET      autolock.exe
+TARGETTYPE  exe
+epocstacksize 0x5000
+
+UID  0x100039CE 0x100059B5
+
+VENDORID        VID_DEFAULT
+CAPABILITY      CAP_APPLICATION NetworkControl
+
+MACRO __NO_DOS__
+
+SOURCEPATH ../src
+SOURCE  AutolockApp.cpp 
+SOURCE  AutolockAppUi.cpp
+SOURCE  AutolockDocument.cpp
+SOURCE	AutolockContainer.cpp
+SOURCE  AutoLockModel.cpp
+SOURCE  AutoLockCenRepI.cpp
+SOURCE	AutoLockLockObserver.cpp
+SOURCE	AutoLockValueObserver.cpp
+SOURCE	AutoLockView.cpp
+SOURCE	AutolockWait.cpp
+SOURCE	AutoKeyGuardCenRepI.cpp
+SOURCE	AutoKeyguardObserver.cpp
+SOURCE  AutolockGripStatusObserver.cpp
+SOURCE  AutolockFpsStatusObserver.cpp
+
+
+START RESOURCE ../data/Autolock.rss
+HEADER
+
+TARGETPATH APP_RESOURCE_DIR
+
+LANGUAGE_IDS
+END //RESOURCE
+
+
+//s60 Integration
+START RESOURCE ../data/Autolock_reg.rss
+DEPENDS autolock.rsg
+TARGETPATH /private/10003a3f/apps
+END
+
+//S60 Integration
+
+USERINCLUDE . ../inc ../CenRep
+
+APP_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE ../../../inc
+
+LIBRARY euser.lib apparc.lib cone.lib eikcore.lib 
+LIBRARY eikcoctl.lib avkon.lib
+LIBRARY	activitymanager.lib
+LIBRARY	apgrfx.lib
+LIBRARY ws32.lib secui.lib commonengine.lib
+LIBRARY etel.lib etelmm.lib eikdlg.lib 
+LIBRARY	sysutil.lib
+LIBRARY aknlayout.lib
+LIBRARY aknskins.lib
+LIBRARY centralrepository.lib
+LIBRARY cenrepnotifhandler.lib
+LIBRARY aknlayout2scalable.lib
+LIBRARY aknlayout2.lib 
+LIBRARY featmgr.lib
+LIBRARY aknicon.lib
+LIBRARY fbscli.lib
+LIBRARY scpclient.lib
+LIBRARY gdi.lib
+LIBRARY aknnotify.lib
+LIBRARY     customapi.lib
+
+
+SMPSAFE

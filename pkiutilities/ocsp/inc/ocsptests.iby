@@ -1,0 +1,172 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+#ifndef __OCSPTESTS_IBY__
+#define __OCSPTESTS_IBY__
+
+define ZDRIVE \epoc32\winscw\c
+
+//OCSP tests
+file = ABI_DIR\BUILD_DIR\tocsp.exe 	System\Programs\tocsp.exe
+
+// DEF139848 Fix - Different ROMs need the inclusion or exclusion of tcertcommon.dll. So, this is being controlled by
+// a MACRO.
+#ifndef TCERTCOMMON_DLL_INCLUDED
+file = ABI_DIR\BUILD_DIR\tcertcommon.dll 	System\Programs\tcertcommon.dll
+#endif
+
+ECOM_PLUGIN(tocsphttpfilter.dll, tocsphttpfilter.rsc)
+
+data = ZDRIVE\system\tocsp\scripts\Valicert.txt			System\TOCSP\scripts\Valicert.txt attrib=r
+data = ZDRIVE\system\tocsp\scripts\CertCo.txt			System\TOCSP\scripts\CertCo.txt attrib=r
+
+
+//OCSP tests TMS support
+
+data = ZDRIVE\system\TOCSP\scripts\openssl.script 	        System\TOCSP\scripts\openssl.script attrib=r
+data = ZDRIVE\system\tocsp\scripts\XCert-local.script		System\TOCSP\scripts\XCert-local.script attrib=r
+data = ZDRIVE\system\tocsp\scripts\XCert-oom.script		System\TOCSP\scripts\XCert-oom.script attrib=r
+data = ZDRIVE\system\tocsp\scripts\OpenSSL-local.script	System\TOCSP\scripts\OpenSSL-local.script attrib=r
+
+
+data = ZDRIVE\system\tocsp\scripts\Error.script			System\TOCSP\scripts\Error.script attrib=r
+data = ZDRIVE\system\tocsp\scripts\defaultpolicy.script	System\TOCSP\scripts\defaultpolicy.script attrib=r
+data = ZDRIVE\system\tocsp\scripts\httpinterface.script	system\tocsp\scripts\httpinterface.script attrib=r
+
+data = ZDRIVE\system\TOCSP\scripts\openssl.ini 	        System\TOCSP\scripts\openssl.ini attrib=r
+data = ZDRIVE\system\tocsp\scripts\XCert-local.ini		System\TOCSP\scripts\XCert-local.ini attrib=r
+data = ZDRIVE\system\tocsp\scripts\XCert-oom.ini		System\TOCSP\scripts\XCert-oom.ini attrib=r
+data = ZDRIVE\system\tocsp\scripts\OpenSSL-local.ini	System\TOCSP\scripts\OpenSSL-local.ini attrib=r
+
+
+data = ZDRIVE\system\tocsp\scripts\Error.ini			System\TOCSP\scripts\Error.ini attrib=r
+data = ZDRIVE\system\tocsp\scripts\defaultpolicy.ini	System\TOCSP\scripts\defaultpolicy.ini attrib=r
+data = ZDRIVE\system\tocsp\scripts\httpinterface.ini	system\tocsp\scripts\httpinterface.ini attrib=r
+
+//
+data = ZDRIVE\system\tocsp\responses\response.n1	System\TOCSP\responses\response.n1 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.n2	System\TOCSP\responses\response.n2 attrib=r
+
+data = ZDRIVE\system\tocsp\responses\response.000	System\TOCSP\responses\response.000 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.001	System\TOCSP\responses\response.001 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.002	System\TOCSP\responses\response.002 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.003	System\TOCSP\responses\response.003 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.004	System\TOCSP\responses\response.004 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.005	System\TOCSP\responses\response.005 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.006	System\TOCSP\responses\response.006 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.007	System\TOCSP\responses\response.007 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.008	System\TOCSP\responses\response.008 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.009	System\TOCSP\responses\response.009 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.010	System\TOCSP\responses\response.010 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.011	System\TOCSP\responses\response.011 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.012	System\TOCSP\responses\response.012 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.013	System\TOCSP\responses\response.013 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.014	System\TOCSP\responses\response.014 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.015	System\TOCSP\responses\response.015 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.016	System\TOCSP\responses\response.016 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.018	System\TOCSP\responses\response.018 attrib=r
+data = ZDRIVE\system\tocsp\responses\vs_explicit_version.dat	System\TOCSP\responses\vs_explicit_version.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\response.019	System\TOCSP\responses\response.019 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.020	System\TOCSP\responses\response.020 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.021	System\TOCSP\responses\response.021 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.022	System\TOCSP\responses\response.022 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.023	System\TOCSP\responses\response.023 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.024	System\TOCSP\responses\response.024 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.025	System\TOCSP\responses\response.025 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.026	System\TOCSP\responses\response.026 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.027	System\TOCSP\responses\response.027 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.028	System\TOCSP\responses\response.028 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.029	System\TOCSP\responses\response.029 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.030	System\TOCSP\responses\response.030 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.031	System\TOCSP\responses\response.031 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.032	System\TOCSP\responses\response.032 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.033	System\TOCSP\responses\response.033 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.034	System\TOCSP\responses\response.034 attrib=r
+data = ZDRIVE\system\tocsp\responses\response.035	System\TOCSP\responses\response.035 attrib=r
+
+data = ZDRIVE\system\tocsp\responses\XCert_00_Good_RSA_XCert.rsp              System\TOCSP\responses\XCert_00_Good_RSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_01_Revoked_RSA_XCert.rsp           System\TOCSP\responses\XCert_01_Revoked_RSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_02_Suspended_RSA_XCert.rsp         System\TOCSP\responses\XCert_02_Suspended_RSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_03_Unknown_RSA_XCert.rsp           System\TOCSP\responses\XCert_03_Unknown_RSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_04_Good_DSA_XCert.rsp              System\TOCSP\responses\XCert_04_Good_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_05_Revoked_DSA_XCert.rsp           System\TOCSP\responses\XCert_05_Revoked_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_06_Suspended_DSA_XCert.rsp         System\TOCSP\responses\XCert_06_Suspended_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_07_Unknown_DSA_XCert.rsp           System\TOCSP\responses\XCert_07_Unknown_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_08_All_RSA_XCert.rsp               System\TOCSP\responses\XCert_08_All_RSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_09_All_DSA_XCert.rsp               System\TOCSP\responses\XCert_09_All_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_10_Expired_Subject_and_Issuer.rsp  System\TOCSP\responses\XCert_10_Expired_Subject_and_Issuer.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_11_Expired_Signing.rsp             System\TOCSP\responses\XCert_11_Expired_Signing.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_12_Expired_Subject.rsp             System\TOCSP\responses\XCert_12_Expired_Subject.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_14_Expired_subject_valid_time.rsp  System\TOCSP\responses\XCert_14_Expired_subject_valid_time.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_15_Expired_unspecified.rsp         System\TOCSP\responses\XCert_15_Expired_unspecified.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_16_ThisUpdateTooEarly.rsp          System\TOCSP\responses\XCert_16_ThisUpdateTooEarly.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_20_Nonce_Off.rsp                   System\TOCSP\responses\XCert_20_Nonce_Off.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_22_BadSig_DSA_XCert.rsp            System\TOCSP\responses\XCert_22_BadSig_DSA_XCert.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_23_ResultCombination1.rsp          System\TOCSP\responses\XCert_23_ResultCombination1.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_24_ResultCombination2.rsp          System\TOCSP\responses\XCert_24_ResultCombination2.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_25_ResultCombination3.rsp          System\TOCSP\responses\XCert_25_ResultCombination3.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\XCert_26_ResultCombination4.rsp          System\TOCSP\responses\XCert_26_ResultCombination4.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\Error_00_Single_R5.rsp					  System\TOCSP\responses\Error_00_Single_R5.rsp attrib=r
+data = ZDRIVE\system\tocsp\responses\Error_01_Double_R5.rsp					  System\TOCSP\responses\Error_01_Double_R5.rsp attrib=r
+
+data = ZDRIVE\system\tocsp\responses\ca_1ext_usage_not_ocspsigning_resp.dat		System\TOCSP\responses\ca_1ext_usage_not_ocspsigning_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_2ext_usage_not_ocspsigning_resp.dat		System\TOCSP\responses\ca_2ext_usage_not_ocspsigning_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_2ext_usage_ocspsigning_bad_sign_resp.dat	System\TOCSP\responses\ca_2ext_usage_ocspsigning_bad_sign_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_2ext_usage_ocspsigning_bad_name_resp.dat	System\TOCSP\responses\ca_2ext_usage_ocspsigning_bad_name_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_2ext_usage_ocspsigning_resp.dat			System\TOCSP\responses\ca_2ext_usage_ocspsigning_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_no_ext_usage_resp.dat					System\TOCSP\responses\ca_no_ext_usage_resp.dat
+data = ZDRIVE\system\tocsp\responses\multi_cert_resp.dat						System\TOCSP\responses\multi_cert_resp.dat
+data = ZDRIVE\system\tocsp\responses\no_cert_resp.dat							System\TOCSP\responses\no_cert_resp.dat
+data = ZDRIVE\system\tocsp\responses\multiple_response.dat						System\TOCSP\responses\multiple_response.dat
+data = ZDRIVE\system\tocsp\responses\wrong_ca_cert_resp.dat						System\TOCSP\responses\wrong_ca_cert_resp.dat
+data = ZDRIVE\system\tocsp\responses\ca_delg_wrong_key.dat						System\TOCSP\responses\ca_delg_wrong_key.dat
+
+data = ZDRIVE\system\tocsp\responses\ca_direct_good_wrong_key.dat		System\TOCSP\responses\ca_direct_good_wrong_key.dat
+data = ZDRIVE\system\tocsp\responses\ca_direct_multi_cert_inc_right.dat	System\TOCSP\responses\ca_direct_multi_cert_inc_right.dat
+data = ZDRIVE\system\tocsp\responses\ca_direct_multi_cert_no_right.dat	System\TOCSP\responses\ca_direct_multi_cert_no_right.dat
+data = ZDRIVE\system\tocsp\responses\ca_direct_revoked.dat				System\TOCSP\responses\ca_direct_revoked.dat
+data = ZDRIVE\system\tocsp\responses\ca_direct_wrong_cert.dat			System\TOCSP\responses\ca_direct_wrong_cert.dat
+data = ZDRIVE\system\tocsp\responses\ca_direct_wrong_resp_name.dat		System\TOCSP\responses\ca_direct_wrong_resp_name.dat
+data = ZDRIVE\system\tocsp\responses\no_certresp_signedby_delegate.dat	System\TOCSP\responses\no_certresp_signedby_delegate.dat
+
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response01.dat					System\TOCSP\responses\OpenSSL\response01.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response02.dat					System\TOCSP\responses\OpenSSL\response02.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response03.dat					System\TOCSP\responses\OpenSSL\response03.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response04.dat					System\TOCSP\responses\OpenSSL\response04.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response05.dat					System\TOCSP\responses\OpenSSL\response05.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response06.dat					System\TOCSP\responses\OpenSSL\response06.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response07.dat					System\TOCSP\responses\OpenSSL\response07.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response08.dat					System\TOCSP\responses\OpenSSL\response08.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response09.dat					System\TOCSP\responses\OpenSSL\response09.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response10.dat					System\TOCSP\responses\OpenSSL\response10.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response11.dat					System\TOCSP\responses\OpenSSL\response11.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\OpenSSL\response12.dat					System\TOCSP\responses\OpenSSL\response12.dat attrib=r
+
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request01.dat					System\TOCSP\requests\OpenSSL\request01.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request02.dat					System\TOCSP\requests\OpenSSL\request02.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request03.dat					System\TOCSP\requests\OpenSSL\request03.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request04.dat					System\TOCSP\requests\OpenSSL\request04.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request05.dat					System\TOCSP\requests\OpenSSL\request05.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request06.dat					System\TOCSP\requests\OpenSSL\request06.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request07.dat					System\TOCSP\requests\OpenSSL\request07.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request08.dat					System\TOCSP\requests\OpenSSL\request08.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request09.dat					System\TOCSP\requests\OpenSSL\request09.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request10.dat					System\TOCSP\requests\OpenSSL\request10.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request11.dat					System\TOCSP\requests\OpenSSL\request11.dat attrib=r
+data = ZDRIVE\system\tocsp\requests\OpenSSL\request12.dat					System\TOCSP\requests\OpenSSL\request12.dat attrib=r
+data = ZDRIVE\system\tocsp\responses\openssl\no_aia_no_ocspext.dat			System\TOCSP\responses\openssl\no_aia_no_ocspext.dat
+
+#endif

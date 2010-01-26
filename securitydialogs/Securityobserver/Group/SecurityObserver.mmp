@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2000 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Observer for ETel security events. Uses SecurityNotifier
+*               which calls appropriate dialog to be opened from SecUi.
+*
+*/
+
+
+
+TARGET        SecurityObserver.exe
+
+TARGETTYPE		exexp
+UID						0x10005D30 0x10000938
+
+CAPABILITY      CAP_SERVER
+VENDORID        VID_DEFAULT
+
+TARGETPATH      /system/programs
+
+SOURCEPATH	    	../src
+SOURCE          	SecurityObserver.cpp 
+SOURCE			SecObsNotify.cpp 
+SOURCE			SecPhoneObserver.cpp
+SOURCE			SecSimLockObserver.cpp
+
+USERINCLUDE     ../inc  
+SYSTEMINCLUDE   /epoc32/include /epoc32/include/oem
+SYSTEMINCLUDE ../../inc // subsystem headers
+SYSTEMINCLUDE ../../../inc // ado headers
+
+
+LIBRARY	euser.lib etel.lib  
+LIBRARY ETELMM.LIB
+LIBRARY SysUtil.lib
+
+#ifdef __SAP_TERMINAL_CONTROL_FW
+LIBRARY SCPClient.lib
+#endif //__SAP_TERMINAL_CONTROL_FW
+
+SMPSAFE
+
+//End of File

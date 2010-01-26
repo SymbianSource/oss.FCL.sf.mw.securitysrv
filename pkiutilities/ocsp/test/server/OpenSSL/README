@@ -1,0 +1,14 @@
+OpenSSL OCSP Server
+===================
+
+The files in this directory relate to running the OpenSSL OCSP server.  They
+were used to generate the OpenSSL test data, and are mainly provided for
+reference purposes.  An installation of cygwin is required to run the scripts.
+The version of OpenSSL used was 0.9.7.
+
+Files:
+
+openssl.config			Config file for openssl ca operations
+generateCerts.sh		A script to generate the certs used
+runOCSPResponder.sh 	A script to run several OCSP responders in the sequence
+						expected by the logging script OpenSSL-logging.txt

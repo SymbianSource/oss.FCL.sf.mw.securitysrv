@@ -1,0 +1,10 @@
+EXPORTS
+	_ZTI13CSecObsNotify @ 1 NONAME ; #<TI>#
+	_ZTI14CPhoneObserver @ 2 NONAME ; #<TI>#
+	_ZTI16CSimLockObserver @ 3 NONAME ; #<TI>#
+	_ZTI17CSecurityObserver @ 4 NONAME ; #<TI>#
+	_ZTV13CSecObsNotify @ 5 NONAME ; #<VT>#
+	_ZTV14CPhoneObserver @ 6 NONAME ; #<VT>#
+	_ZTV16CSimLockObserver @ 7 NONAME ; #<VT>#
+	_ZTV17CSecurityObserver @ 8 NONAME ; #<VT>#
+

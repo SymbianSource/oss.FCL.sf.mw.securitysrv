@@ -1,0 +1,356 @@
+//
+// Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+//! ****************************************************************************
+//! Input for TOCSP - Script-based test harness for OCSP
+//! See \Certman\TOCSP\Commands.cpp for description of commands
+//! This file must be in UNICODE
+//! ****************************************************************************
+
+//! This script features error tests, against pre-computed logged responses.
+
+//! *******  BEGIN OCSP ERROR TESTS  ***********
+
+
+
+START_TESTCASE                SEC-TOCSP-ERROR-0001
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0001
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0001
+END_TESTCASE                  SEC-TOCSP-ERROR-0001
+
+
+START_TESTCASE                SEC-TOCSP-ERROR-0002
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0002
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0002
+END_TESTCASE                  SEC-TOCSP-ERROR-0002
+
+
+START_TESTCASE                SEC-TOCSP-ERROR-0003
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0003
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0003
+END_TESTCASE                  SEC-TOCSP-ERROR-0003
+
+
+START_TESTCASE                SEC-TOCSP-ERROR-0004
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0004
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0004
+END_TESTCASE                  SEC-TOCSP-ERROR-0004
+
+
+START_TESTCASE                SEC-TOCSP-ERROR-0005
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0005
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0005
+END_TESTCASE                  SEC-TOCSP-ERROR-0005
+
+START_TESTCASE                SEC-TOCSP-ERROR-0006
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0006
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0006
+END_TESTCASE                  SEC-TOCSP-ERROR-0006
+
+START_TESTCASE                SEC-TOCSP-ERROR-0007
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0007
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0007
+END_TESTCASE                  SEC-TOCSP-ERROR-0007
+
+START_TESTCASE                SEC-TOCSP-ERROR-0008
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0008
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0008
+END_TESTCASE                  SEC-TOCSP-ERROR-0008
+
+START_TESTCASE                SEC-TOCSP-ERROR-0009
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0009
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0009
+END_TESTCASE                  SEC-TOCSP-ERROR-0009
+
+START_TESTCASE                SEC-TOCSP-ERROR-0010
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0010
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0010
+END_TESTCASE                  SEC-TOCSP-ERROR-0010
+
+START_TESTCASE                SEC-TOCSP-ERROR-0011
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0011
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0011
+END_TESTCASE                  SEC-TOCSP-ERROR-0011
+
+START_TESTCASE                SEC-TOCSP-ERROR-0012
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0012
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0012
+END_TESTCASE                  SEC-TOCSP-ERROR-0012
+
+START_TESTCASE                SEC-TOCSP-ERROR-0013
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0013
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0013
+END_TESTCASE                  SEC-TOCSP-ERROR-0013
+
+START_TESTCASE                SEC-TOCSP-ERROR-0014
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0014
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0014
+END_TESTCASE                  SEC-TOCSP-ERROR-0014
+
+START_TESTCASE                SEC-TOCSP-ERROR-0015
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0015
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0015
+END_TESTCASE                  SEC-TOCSP-ERROR-0015
+
+START_TESTCASE                SEC-TOCSP-ERROR-0016
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0016
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0016
+END_TESTCASE                  SEC-TOCSP-ERROR-0016
+
+START_TESTCASE                SEC-TOCSP-ERROR-0017
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0017
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0017
+END_TESTCASE                  SEC-TOCSP-ERROR-0017
+
+START_TESTCASE                SEC-TOCSP-ERROR-0018
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0018
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0018
+END_TESTCASE                  SEC-TOCSP-ERROR-0018
+
+START_TESTCASE                SEC-TOCSP-ERROR-0019
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0019
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0019
+END_TESTCASE                  SEC-TOCSP-ERROR-0019
+
+START_TESTCASE                SEC-TOCSP-ERROR-0020
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0020
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0020
+END_TESTCASE                  SEC-TOCSP-ERROR-0020
+
+START_TESTCASE                SEC-TOCSP-ERROR-0021
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0021
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0021
+END_TESTCASE                  SEC-TOCSP-ERROR-0021
+
+START_TESTCASE                SEC-TOCSP-ERROR-0022
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0022
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0022
+END_TESTCASE                  SEC-TOCSP-ERROR-0022
+
+START_TESTCASE                SEC-TOCSP-ERROR-0023
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0023
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0023
+END_TESTCASE                  SEC-TOCSP-ERROR-0023
+
+START_TESTCASE                SEC-TOCSP-ERROR-0024
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0024
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0024
+END_TESTCASE                  SEC-TOCSP-ERROR-0024
+
+START_TESTCASE                SEC-TOCSP-ERROR-0025
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0025
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0025
+END_TESTCASE                  SEC-TOCSP-ERROR-0025
+
+START_TESTCASE                SEC-TOCSP-ERROR-0026
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0026
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0026
+END_TESTCASE                  SEC-TOCSP-ERROR-0026
+
+START_TESTCASE                SEC-TOCSP-ERROR-0027
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0027
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0027
+END_TESTCASE                  SEC-TOCSP-ERROR-0027
+
+START_TESTCASE                SEC-TOCSP-ERROR-0028
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0028
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0028
+END_TESTCASE                  SEC-TOCSP-ERROR-0028
+
+START_TESTCASE                SEC-TOCSP-ERROR-0029
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0029
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0029
+END_TESTCASE                  SEC-TOCSP-ERROR-0029
+
+START_TESTCASE                SEC-TOCSP-ERROR-0030
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0030
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0030
+END_TESTCASE                  SEC-TOCSP-ERROR-0030
+
+START_TESTCASE                SEC-TOCSP-ERROR-0031
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0031
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0031
+END_TESTCASE                  SEC-TOCSP-ERROR-0031
+
+START_TESTCASE                SEC-TOCSP-ERROR-0032
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0032
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0032
+END_TESTCASE                  SEC-TOCSP-ERROR-0032
+
+START_TESTCASE                SEC-TOCSP-ERROR-0033
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0033
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0033
+END_TESTCASE                  SEC-TOCSP-ERROR-0033
+
+START_TESTCASE                SEC-TOCSP-ERROR-0034
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0034
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0034
+END_TESTCASE                  SEC-TOCSP-ERROR-0034
+
+START_TESTCASE                SEC-TOCSP-ERROR-0035
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0035
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0035
+END_TESTCASE                  SEC-TOCSP-ERROR-0035
+
+START_TESTCASE                SEC-TOCSP-ERROR-0036
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0036
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0036
+END_TESTCASE                  SEC-TOCSP-ERROR-0036
+
+START_TESTCASE                SEC-TOCSP-ERROR-0037
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0037
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0037
+END_TESTCASE                  SEC-TOCSP-ERROR-0037
+
+START_TESTCASE                SEC-TOCSP-ERROR-0038
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0038
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0038
+END_TESTCASE                  SEC-TOCSP-ERROR-0038
+
+START_TESTCASE                SEC-TOCSP-ERROR-0039
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0039
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0039
+END_TESTCASE                  SEC-TOCSP-ERROR-0039
+
+START_TESTCASE                SEC-TOCSP-ERROR-0040
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0040
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0040
+END_TESTCASE                  SEC-TOCSP-ERROR-0040
+
+START_TESTCASE                SEC-TOCSP-ERROR-0041
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0041
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0041
+END_TESTCASE                  SEC-TOCSP-ERROR-0041
+
+START_TESTCASE                SEC-TOCSP-ERROR-0042
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0042
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0042
+END_TESTCASE                  SEC-TOCSP-ERROR-0042
+
+START_TESTCASE                SEC-TOCSP-ERROR-0043
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0043
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0043
+END_TESTCASE                  SEC-TOCSP-ERROR-0043	
+
+START_TESTCASE                SEC-TOCSP-ERROR-0044
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0044
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0044
+END_TESTCASE                  SEC-TOCSP-ERROR-0044
+
+START_TESTCASE                SEC-TOCSP-ERROR-0045
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0045
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0045
+END_TESTCASE                  SEC-TOCSP-ERROR-0045
+
+START_TESTCASE                SEC-TOCSP-ERROR-0046
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0046
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0046
+END_TESTCASE                  SEC-TOCSP-ERROR-0046
+
+START_TESTCASE                SEC-TOCSP-ERROR-0047
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0047
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0047
+END_TESTCASE                  SEC-TOCSP-ERROR-0047
+
+START_TESTCASE                SEC-TOCSP-ERROR-0048
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0048
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0048
+END_TESTCASE                  SEC-TOCSP-ERROR-0048
+
+START_TESTCASE                SEC-TOCSP-ERROR-0049	
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0049
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0049
+END_TESTCASE                  SEC-TOCSP-ERROR-0049
+
+START_TESTCASE                SEC-TOCSP-ERROR-0050
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0050
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0050
+END_TESTCASE                  SEC-TOCSP-ERROR-0050
+
+START_TESTCASE                SEC-TOCSP-ERROR-0051
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0051
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0051
+END_TESTCASE                  SEC-TOCSP-ERROR-0051
+
+START_TESTCASE                SEC-TOCSP-ERROR-0052
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0052
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0052
+END_TESTCASE                  SEC-TOCSP-ERROR-0052
+
+START_TESTCASE                SEC-TOCSP-ERROR-0053
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0053
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0053
+END_TESTCASE                  SEC-TOCSP-ERROR-0053
+
+START_TESTCASE                SEC-TOCSP-ERROR-0054
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0054
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0054
+END_TESTCASE                  SEC-TOCSP-ERROR-0054
+
+START_TESTCASE                SEC-TOCSP-ERROR-0055
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0055
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0055
+END_TESTCASE                  SEC-TOCSP-ERROR-0055
+
+START_TESTCASE                SEC-TOCSP-ERROR-0056
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0056
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0056
+END_TESTCASE                  SEC-TOCSP-ERROR-0056
+
+START_TESTCASE                SEC-TOCSP-ERROR-0057
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0057
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0057
+END_TESTCASE                  SEC-TOCSP-ERROR-0057
+
+START_TESTCASE                SEC-TOCSP-ERROR-0058
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0058
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0058
+END_TESTCASE                  SEC-TOCSP-ERROR-0058
+
+START_TESTCASE                SEC-TOCSP-ERROR-0059
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0059
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0059
+END_TESTCASE                  SEC-TOCSP-ERROR-0059
+
+START_TESTCASE                SEC-TOCSP-ERROR-0060
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0060
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0060
+END_TESTCASE                  SEC-TOCSP-ERROR-0060
+
+START_TESTCASE                SEC-TOCSP-ERROR-0061
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0061
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0061
+END_TESTCASE                  SEC-TOCSP-ERROR-0061
+
+START_TESTCASE                SEC-TOCSP-ERROR-0062
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0062
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0062
+END_TESTCASE                  SEC-TOCSP-ERROR-0062
+
+START_TESTCASE                SEC-TOCSP-ERROR-0063
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0063
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0063
+END_TESTCASE                  SEC-TOCSP-ERROR-0063
+
+START_TESTCASE                SEC-TOCSP-ERROR-0064
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0064
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0064
+END_TESTCASE                  SEC-TOCSP-ERROR-0064
+
+START_TESTCASE                SEC-TOCSP-ERROR-0065
+//! @SYMTestCaseID            SEC-TOCSP-ERROR-0065
+RUN_TEST_STEP                 Error.ini   SEC-TOCSP-ERROR-0001-0065
+END_TESTCASE                  SEC-TOCSP-ERROR-0065

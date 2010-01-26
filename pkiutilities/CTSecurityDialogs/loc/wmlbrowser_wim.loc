@@ -1,0 +1,324 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is a localisation file of CTSecurityDialogs.
+*               Used only in WIM enabled build.
+*
+*/
+
+
+	
+//	Included localisation string resource headers
+
+//  LOCALISATION STRINGS
+
+
+//d:Header text of list query during personal certificates.
+//l:heading_pane_t1
+//w:
+//r:2.6 
+#define qtn_wim_select_cert             "Matching certificates:"
+
+//d:Data query for PIN request in keystore where %0U is the PIN's name %1U is the keystore's name.
+//l:popup_query_code_window
+//w:
+//r:2.6
+#define qtn_wim_prmt_gen_wim_pin         "Enter code for %0U in %1U"
+
+//d:When digital signature is needed from the user.
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_info_digit_sign_req     "Digital signature requested"
+
+//d:Digital signing query pop up window
+//l:heading_pane_t1
+//w:
+//r:2.6
+#define qtn_wim_confirm_text            "Read and sign"
+
+//d:Security module error note
+//d:Shown if Security Module not available
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_not_available "Security module unavailable" 
+
+//d:When the user entered wrong PIN to the secure password dialog
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_err_wrong_pin           "Code incorrect"
+
+//d:Confirmation note shown after code unblock
+//d:
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_info_pin_unblocked "Code unblocked"
+
+//d:PIN code unblocked information note
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_err_pin_blocked         "%U is blocked. PUK code is needed to unblock the code"
+
+//d:Entered unblocking code was incorrect
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_wrong_unblock_code      "Unblocking code incorrect"
+
+//d:prompt text for unblocking pin code in keystore where %0U is the PIN's name %1U is the keystore's name.
+//l:popup_query_code_window
+//w:
+//r:2.6
+#define qtn_wim_pin_unblock_query       "Enter unblocking code for %0U in %1U:"
+
+//d:New PIN code query prompt text
+//l:popup_query_code_window/opt1
+//w:
+//r:2.6
+#define qtn_wim_new_pin                 "Enter new code for: \n%U"
+
+//d:New PIN code verification query prompt text
+//l:popup_query_code_window/opt1
+//w:
+//r:2.6
+#define qtn_wim_verify_pin              "Verify new code:"
+
+//d:If the new PIN-G code and its verification do not match
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_err_codes_do_not_match  "Codes do not match"
+
+//d:Digital Signatures prompt text
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_sign_cancelled			"Digital signing cancelled"
+
+//d:After the user has entered correct PIN-NR to the query
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_info_signature_made		"Digital signature done" 
+
+//d:Digital sign dialog left softkey text 
+//l:control_pane_t1/opt7
+//w:
+//r:2.6
+#define gtn_wim_softk_dsign_sign				 "Sign"
+
+//d:Detailed instructions about unblocking
+//l:popup_info_list_pane_t1
+//w:
+//r:2.6
+#define qtn_wim_unblock_info                    "To unblock %U, a PUK code from your security module's manufacturer is needed."
+
+//d:Security module error note
+//d:Internal error with Security module
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_err_io_error "Security module internal error" 
+
+//d:Detailed instructions about unblocking
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_no_matching_certificate         "Unable to sign. Matching certificate not found"
+
+//d:Receipt saving confirmation query
+//l:popup_note_window
+//w:
+//r:2.6
+#define qtn_wim_receipt_saved                   "Signed text saved to Notepad"
+
+//d:Keystore password creation note.
+//l:popup_note_window
+//w:
+//r:2.8
+#define qtn_cm_creating_keystore                "Keystore password must be created for using private keys."
+
+//d:Heading of the file keystore password query
+//l:heading_pane_t1
+//w:
+//r:2.8
+#define qtn_cm_heading_phone_keystore           "Phone keystore"
+
+//d:Heading of user authentication query pop up window
+//l:heading_pane_t1
+//w:
+//r:3.0
+#define qtn_sn_auth_query_heading           "Authentication request:"
+
+//d:Heading of certificate signing request query pop up window
+//l:heading_pane_t1
+//w:
+//r:3.0
+#define qtn_sn_cert_sign_heading           "Certificate signing request"
+
+//d:User authentication pop up note
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_sn_authentication_note	    "User authentication requested"
+
+//d:Delete certificate query left softkey text 
+//l:control_pane_t1/opt7
+//w:
+//r:3.0
+#define qtn_sn_softkey_delete		    "Delete"
+
+//d:Heading of delete certificate query pop up window
+//l:heading_pane_t1
+//w:
+//r:3.0
+#define qtn_sn_delete_cert_heading	    "Delete certificate:"
+
+//d:Explanation text in the certificate signing request message query
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_sn_cert_sign_explanation "This new personal certificate is requested from certificate authority"
+
+//d:Information note text
+//d:Shown when PIN is total blocked
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_wim_pin_totalblocked "%U totalblocked, contact your module vendor."
+
+// d:Prompt for a confirmation query for continuing when a site has sent a
+// d:non-trusted certificate.
+// l:popup_note_window
+// w:
+// r:3.0
+#define qtn_ics_ssl_conf_q_continue "This site has sent a not trusted certificate. Continue anyway?"
+
+// d:Command in options menu.
+// d:Continues secured connection creation process, despite the fact that
+// d:server certificate was not from trusted source.
+// l:list_single_pane_t1_cp2
+// w:
+// r:3.0
+#define qtn_httpsec_opt_menu_continue "Continue"
+
+
+// d:Command in options menu.
+// d:Opens the certificate details view.
+// l:list_single_pane_t1_cp2
+// w:
+// r:3.0
+#define qtn_httpsec_opt_menu_details "Details"
+
+//d:Imported key password query prompt
+//l:popup_query_code_window
+//w:
+//r:3.0
+#define qtn_sn_prompt_import_key "Enter code for imported key:"
+
+//d:Imported key password query prompt
+//l:popup_query_code_window/opt1
+//w:
+//r:3.0
+#define qtn_sn_prompt1_create_code "Enter new code for exported key:"
+
+//d:Phone key store password query prompt
+//l:popup_query_code_window
+//w:
+//r:3.0
+#define qtn_sn_enter_phone_keystore "Enter code for phone keystore:"
+
+//d:Imported key password query prompt
+//l:popup_query_code_window/opt1
+//w:
+//r:3.0
+#define qtn_sn_new_phone_keystore "Enter new code for phone keystore:"
+
+
+//d:Item in the context menu for accepting server
+//d:certificate temporarily
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_httpsec_opt_menu_accept_now		"Accept now"
+
+
+//d:Item in the context menu for accepting server
+//d:certificate permanently
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_httpsec_opt_menu_accept_perm		"Accept permanently"
+
+
+//d::Title of Permanent accept query
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+//
+#define qtn_httpsec_query_perm_accept_title		"Permanent access"
+
+
+//d:Confirmation query text of Permanent accept query.
+//d:%U stands for the name of the site where the connection is
+//d:requested.
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_httpsec_query_perm_accept_text		"Connection to site %U will be made in future without any warnings. Continue?"
+
+
+//d:Confirmation query text shown if the server certificate contains 
+//d:site name that does not match to the one that was given in request the query contains text
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_ics_ssl_conf_q_accept_site		"This site has sent a certificate with different site name than requested. Accept anyway?"
+
+
+//d:Confirmation query text shown if the server certificate is out-of date
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_ics_ssl_conf_q_accept_ood		"This site has sent a certificate which is out of date. Accept anyway?"
+
+
+//d:Confirmation query text shown if the server certificate issued by unknown 
+//d:Certification Authority
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_ics_ssl_conf_q_accept_untrusted		"This site has sent an untrusted certificate. Accept anyway?"
+
+//d:Information note text shown if the server certificate has an invalid signature
+//d:Softkeys are SK1 'Close' (text_softkey_close) and SK2 'Details' (text_softkey_details)
+//d:Certification Authority
+//l:popup_note_window
+//w:
+//r:5.0
+//
+#define qtn_ics_ssl_conf_q_accept_signature     "This site has sent an invalid certificate. Connection cannot be created."
+
+
+// End of File
+

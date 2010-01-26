@@ -1,0 +1,47 @@
+// Copyright (c) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// ocsphttpfilter.mmp
+// DESRIPTION:
+// Test HTTP filter used for testing OCSP transport module
+// ocsphttpfilter.dll Test HTTP filter used for testing OCSP transport module
+// 
+//
+
+/**
+ @file
+*/
+
+target tocsphttpfilter.dll
+CAPABILITY    All -Tcb
+targettype plugin
+
+// ECom Recognition UID followed by Unique 3rd UID
+UID 0x10009D8D 0xA0004F14
+VENDORID 0x70000001
+
+SOURCEPATH	.
+
+SOURCE ocsphttpfilter.cpp
+SOURCE ocsphttpfiltermain.cpp
+
+USERINCLUDE .
+USERINCLUDE ../
+MW_LAYER_SYSTEMINCLUDE_SYMBIAN
+
+START RESOURCE A0004F14.rss
+TARGET tocsphttpfilter.rsc
+END
+
+LIBRARY euser.lib ecom.lib http.lib bafl.lib efsrv.lib inetprotutil.lib
+SMPSAFE

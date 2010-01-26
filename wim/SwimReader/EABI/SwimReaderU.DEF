@@ -1,0 +1,11 @@
+EXPORTS
+	_Z11NewServiceLv @ 1 NONAME
+	_ZTI11CSwimReader @ 2 NONAME DATA 12 ; #<TI>#
+	_ZTI13CSwimReaderIF @ 3 NONAME DATA 32 ; #<TI>#
+	_ZTI19CSwimReaderLauncher @ 4 NONAME DATA 32 ; #<TI>#
+	_ZTI21CSwimSysAgentObserver @ 5 NONAME DATA 12 ; #<TI>#
+	_ZTV11CSwimReader @ 6 NONAME DATA 32 ; #<VT>#
+	_ZTV13CSwimReaderIF @ 7 NONAME DATA 88 ; #<VT>#
+	_ZTV19CSwimReaderLauncher @ 8 NONAME DATA 48 ; #<VT>#
+	_ZTV21CSwimSysAgentObserver @ 9 NONAME DATA 32 ; #<VT>#
+

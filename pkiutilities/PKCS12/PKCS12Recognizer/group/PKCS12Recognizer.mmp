@@ -1,0 +1,48 @@
+/*
+* Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  
+*     This is project specification file for the PKCS12Recognizer
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+target          PKCS12Recognizer.dll
+targettype      plugin
+uid		        0x10009d8d 0x101F8714
+
+START RESOURCE  ../data/101F8714.rss
+TARGET PKCS12Recognizer.rsc
+END
+
+CAPABILITY CAP_RECOGNISER
+VENDORID    VID_DEFAULT
+
+SOURCEPATH     ../src
+USERINCLUDE    ../inc
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE  ../../CrPkcs12/Inc
+
+SOURCE         PKCS12Recognizer.cpp
+
+LIBRARY euser.lib
+LIBRARY apmime.lib
+//LIBRARY x509.lib
+//LIBRARY CTSecDlgs.lib
+LIBRARY crpkcs12.lib
+//LIBRARY CTFramework.lib
+
+SMPSAFE
+

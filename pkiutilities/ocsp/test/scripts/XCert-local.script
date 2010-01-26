@@ -1,0 +1,244 @@
+//
+// Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+//!  ****************************************************************************
+//!  Input for TOCSP - Script-based test harness for OCSP
+//!  See \Certman\TOCSP\Commands.cpp for description of commands
+//!  This file must be in UNICODE
+//!  ****************************************************************************
+
+//!  This script tests against the internal Symbian OCSP server running
+//!  XCert software
+//!  There were two original XCert CAs used - Root1 (RSA) and Root2 (DSA)
+//!  Now a third is also use - Root5 (RSA)
+//!  On XCert, the OCSP response signing certs are also RSA and DSA respectively.
+
+//!  As we're using logged responses we set the validation  time explicitly in
+//!  each test.  For cases when the validation time necessarily doesn't agree
+//!  with the time the response was produced, we turn of max status age checking.
+
+//!  ********** BEGIN XCERT SERVER TESTS **************
+
+//!  ********** Testing 4 basic Root5 certs against XCert server ***********
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0001
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0001
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0001
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0001
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0002
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0002
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0002
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0002
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0003
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0003
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0003
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0003
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0004
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0004
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0004
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0004
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0005
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0005
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0005
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0005
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0006
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0006
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0006
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0006
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0007
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0007
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0007
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0007
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0008
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0008
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0008
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0008
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0009
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0009
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0009
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0009
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0010
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0010
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0010
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0010
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0011
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0011
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0011
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0011
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0012
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0012
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0012
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0012
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0013
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0013
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0013
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0013
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0014
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0014
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0014
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0014
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0015
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0015
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0015
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0015
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0016
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0016
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0016
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0016
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0017
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0017
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0017
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0017
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0018
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0018
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0018
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0018
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0019
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0019
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0019
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0019
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0020
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0020
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0020
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0020
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0021
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0021
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0021
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0021
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0022
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0022
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0022
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0022
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0023
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0023
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0023
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0023
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0024
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0024
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0024
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0024
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0025
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0025
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0025
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0025
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0026
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0026
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0026
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0026
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0027
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0027
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0027
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0027
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0028
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0028
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0028
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0028
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0029
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0029
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0029
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0029
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0030
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0030
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0030
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0030
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0031
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0031
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0031
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0031
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0032
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0032
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0032
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0032
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0033
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0033
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0033
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0033
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0034
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0034
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0034
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0034
+
+
+START_TESTCASE                SEC-TOCSP-XCERT-LOCAL-0035
+//! @SYMTestCaseID            SEC-TOCSP-XCERT-LOCAL-0035
+RUN_TEST_STEP                 XCert-local.ini   SEC-TOCSP-XCERT-LOCAL-0035
+END_TESTCASE                  SEC-TOCSP-XCERT-LOCAL-0035

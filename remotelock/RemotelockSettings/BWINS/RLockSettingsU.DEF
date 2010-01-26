@@ -1,0 +1,12 @@
+EXPORTS
+	??1CRemoteLockSettings@@UAE@XZ @ 1 NONAME ; CRemoteLockSettings::~CRemoteLockSettings(void)
+	?CompareLockCodesL@CRemoteLockSettings@@QBEHABVTDesC16@@0@Z @ 2 NONAME ; int CRemoteLockSettings::CompareLockCodesL(class TDesC16 const &, class TDesC16 const &) const
+	?GetEnabled@CRemoteLockSettings@@QBEHAAH@Z @ 3 NONAME ; int CRemoteLockSettings::GetEnabled(int &) const
+	?GetLockCode@CRemoteLockSettings@@QBEHAAVTDes16@@0@Z @ 4 NONAME ; int CRemoteLockSettings::GetLockCode(class TDes16 &, class TDes16 &) const
+	?GetLockCode@CRemoteLockSettings@@QBEHAAVTDes16@@@Z @ 5 NONAME ; int CRemoteLockSettings::GetLockCode(class TDes16 &) const
+	?NewL@CRemoteLockSettings@@SAPAV1@PAVMRemoteLockSettingsHandler@@@Z @ 6 NONAME ; class CRemoteLockSettings * CRemoteLockSettings::NewL(class MRemoteLockSettingsHandler *)
+	?NewLC@CRemoteLockSettings@@SAPAV1@PAVMRemoteLockSettingsHandler@@@Z @ 7 NONAME ; class CRemoteLockSettings * CRemoteLockSettings::NewLC(class MRemoteLockSettingsHandler *)
+	?RemoteLockNotifyL@CRemoteLockSettings@@QAEHH@Z @ 8 NONAME ; int CRemoteLockSettings::RemoteLockNotifyL(int)
+	?SetDisabled@CRemoteLockSettings@@QAEHXZ @ 9 NONAME ; int CRemoteLockSettings::SetDisabled(void)
+	?SetEnabledL@CRemoteLockSettings@@QAEHABVTDesC16@@@Z @ 10 NONAME ; int CRemoteLockSettings::SetEnabledL(class TDesC16 const &)
+

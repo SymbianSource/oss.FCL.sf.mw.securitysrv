@@ -1,0 +1,600 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localization for Code queries, Insert Sim Card Note,
+*               System reboot note, Security view (in settings),
+*               Sim & Device security view (in settings) and
+*               SIM locking notes.
+*
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+//d:Query requesting universal pin code
+//l:popup_query_data_window
+//
+#define qtn_enter_upin "UPIN code"
+
+//d:Query requesting universal puk code
+//l:popup_query_data_window
+//
+#define qtn_enter_upuk "UPIN blocked. Enter UPUK code"
+
+//d:Query requesting new upin code
+//l:popup_query_data_window
+//
+#define qtn_set_new_upin "New UPIN code"
+
+//d:Query requesting to verify new upin code
+//l:popup_query_data_window
+//
+#define qtn_verify_new_upin "Verify new UPIN code"
+
+//d:Query requesting pin code
+//l:popup_query_data_window
+//
+#define text_pin "Enter PIN code"
+
+//d:Query requesting pin2 code
+//l:popup_query_data_window
+//
+#define text_pin2 "Enter PIN2 code"
+
+//d:Query requesting puk code
+//l:popup_query_data_window
+//
+#define qtn_simcd_enter_puk "SIM Card blocked. Enter PUK code"
+
+//d:Query requesting puk2 code
+//l:popup_query_data_window
+//
+#define qtn_simcd_enter_puk2 "PIN2 code blocked. Enter PUK2 code"
+
+//d:Query requesting security code
+//l:popup_query_data_window
+//
+#define qtn_set_enter_sec_code "Enter Security code"
+
+//d:Note code accepted. Shown after right code.
+//l:popup_note_window
+//
+#define text_code_accepted "Code accepted"
+
+//d:Note code error. Shown after wrong code.
+//l:popup_note_window
+//
+#define text_code_error "Code error"
+
+//d:Query requesting new pin code
+//l:popup_query_data_window
+//
+#define text_new_pin "Enter new PIN code"
+
+//d:Query requesting new pin2 code
+//l:popup_query_data_window
+//
+#define text_new_pin2 "Enter new PIN2 code"
+
+//d:Query requesting to verify new pin code
+//l:popup_query_data_window
+//
+#define text_verify_pin "Verify new PIN code"
+
+//d:Query requesting to verify new pin2 code
+//l:popup_query_data_window
+//
+#define text_verify_pin2 "Verify new PIN2 code"
+
+//d:Note code changed. Shown after pin code has been changed.
+//l:popup_note_window
+//
+#define text_pin_changed "PIN code changed"
+
+
+//d:Note code changed. Shown after upin code has been changed.
+//l:popup_note_window
+//
+#define qtn_set_upin_changed "UPIN code changed"
+
+
+//d:Note code changed. Shown after pin2 code has been changed.
+//l:popup_note_window
+//
+#define text_pin2_changed "PIN2 code changed"
+
+//d:Note codes don't match. Shown after new and verify codes do not match.
+//l:popup_note_window
+//
+#define text_codes_do_not_match "Codes do not match"
+
+//d:Error note set pin request. Shown if user tries to change pin code when pin request is off.  
+//l:popup_note_window
+//
+#define text_pin_code_cntrl_set "Set PIN code request on"
+
+//d:Error note set upin request. Shown if user tries to change upin code when upin request is off.  
+//l:popup_note_window
+//
+#define qtn_set_upin_on "Set UPIN code request on"
+
+//d:Note upin rejected. Shown after UPIN code has been blocked.
+//l:popup_note_window
+//
+#define qtn_error_upin_rejected "UPIN code rejected"
+
+//d:Query requesting to enter new security code. Shown when changing code.
+//l:popup_query_data_window
+//
+#define qtn_set_new_sec_code "Enter new Security code"
+
+//d:Query requesting to verify security code. Shown when changing code.
+//l:popup_query_data_window
+//
+#define qtn_set_verify_sec_code "Verify new Security code"
+
+//d:Note code changed. Shown after security code has been changed.
+//l:popup_note_window
+//
+#define qtn_set_new_sec_code_changed "Security code changed"
+
+//d:Note Pin2 rejected. Shown after PUK2 code has been blocked.
+//l:popup_note_window
+//
+#define text_pin2_rejected "PIN2 code rejected"
+
+//d:Note Security code blocked. Shown after Security code has been entered incorrectly 5 times.
+//d:Code is ublocked after five minutes.
+//l:popup_note_window
+//
+#define qtn_set_sec_code_error_wait "Code error. Wait five minutes and try again."
+
+//d:Note that user chosen USIM (line) has been activated. Shown together with the line name. For example: "Operator X activated". 
+//l:popup_note_window
+//
+#define qtn_conf_usim_activated "activated"
+
+//d:Header line of the popup menu where different USIM applications are selected from.
+//l: list_single_pane_t1_cp2
+//
+#define qtn_set_select_line "Select line:"
+
+//d:Remaining attempts to enter correct PIN1 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_pin "%N attempts remaining. Enter PIN code:"
+
+//d:Remaining attempts to enter correct PIN2 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_pin2 "%N attempts remaining. Enter PIN2 code:"
+
+//d:Remaining attempts to enter correct UPIN code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_upin "%N attempts remaining. Enter UPIN code:"
+
+//d:Remaining attempts to enter correct PUK1 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_puk "%N attempts remaining. Enter PUK code:"
+
+//d:Remaining attempts to enter correct PUK2 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_puk2 "%N attempts remaining. Enter PUK2 code:"
+
+//d:Remaining attempts to enter correct UPUK code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_attempt_count_upuk "%N attempts remaining. Enter UPUK code:"
+
+//d:Final attempt to enter correct PIN1 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_pin "Final attempt. Enter PIN code:"
+
+//d:Final attempt to enter correct PIN2 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_pin2 "Final attempt. Enter PIN2 code:"
+
+//d:Final attempt to enter correct UPIN code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_upin "Final attempt. Enter UPIN code:"
+
+//d:Final attempt to enter correct PUK1 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_puk "Final attempt. Enter PUK code:"
+
+//d:Final attempt to enter correct PUK2 code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_puk2 "Final attempt. Enter PUK2 code:"
+
+//d:Final attempt to enter correct UPUK code.
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_simcd_final_attempt_upuk "Final attempt. Enter UPUK code:"
+
+
+//-------------------------------------------------------------
+// GENERAL SETTINGS
+
+//-------------------------------------------------------------
+// security view
+//-------------------------------------------------------------
+
+//d: title for security settings folder (in general settings)
+//l: title_pane_t2/opt9
+//
+#define qtn_set_title_settings_security "Security settings"
+
+//d: Command in general settings security folder, opens Device & Sim security view
+//l: list_setting_pane_t1
+//
+#define qtn_set_dev_sim_security "Device & Sim security"
+
+//d: Command in general settings security folder, opens Wims view
+//l: list_setting_pane_t1
+//
+#define qtn_set_wim_security "Security module"
+
+//d: Command in general settings security folder, opens Certificate management view
+//l: list_setting_pane_t1
+//
+#define qtn_set_certmanui_security "Certificate management"
+                
+
+//-------------------------------------------------------------
+// device & sim security view
+//-------------------------------------------------------------
+//d:Code in use setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_code_in_use "Code in use"
+
+
+//d: pin code request setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define text_pin_code_cntrl "PIN code request"
+
+//d: Upin code request setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_upin_code_req "UPIN code request"
+
+
+//d: sim change security setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_sim_change_sec "SIM change security"
+
+//d: atulock period setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_autolock "Autolock period"
+
+//d: security code setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_sec_code "Security code"
+
+//d:Number query: autolock period time in minutes.
+//l:popup_query_data_window
+//
+#define qtn_set_autolock_define_time "Autolock period time (min)"
+
+//d: pin code setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define text_pin_change "PIN code"
+
+//d: upin code setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_upin_code "UPIN code"
+
+//d: pin2 code setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define text_pin2_change "PIN2 code"
+
+//d: fixed dialings setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define text_menu_fdn "Fixed dialing"
+
+//d:list item in fixed dialing setting page
+//l:list_set_graphic_pane_t1
+//
+#define text_fdn_off "Off"
+
+//d:list item in fixed dialing setting page
+//l:list_set_graphic_pane_t1
+//
+#define text_fdn_on "On"
+
+//d: closed user group setting item in device & sim security settings folder
+//l: list_setting_pane_t1
+//
+#define text_closed_user_groups "Closed user group"
+
+//d: item, network default, to closed user group popup list
+//l: list_set_graphic_pane_t1
+#define text_cug_default "Network default"
+
+//d: item, on,  to closed user group popup list
+//l: list_set_graphic_pane_t1
+#define text_cug_group "On"
+
+//d: item, off, to closed user group popup list
+//l: list_set_graphic_pane_t1
+#define text_cug_suppress "Off"
+
+//d: text to number query asking for cug index
+//l: popup_query_data_window
+#define text_give_group_number "Group number:"
+
+//d: text to cug error note when entered index is too large
+//l: popup_note_window
+#define text_cug_error "Value too large"		
+	
+//d:sat operations setting item in device & sim security settings folder
+//l:list_setting_pane_t1
+//
+#define text_simatk_setting "Confirm SAT operations"
+
+//d:list item in pin code request setting page
+//l:list_set_graphic_pane_t1
+//
+#define text_pin_code_off "Off"
+
+//d:list item in pin code request setting page
+//l:list_set_graphic_pane_t1
+//
+#define text_pin_code_on  "On"
+
+//d:list item in code in use setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_pin "PIN"
+
+//d:list item in code in use setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_upin "UPIN"
+
+//d:list item in sim change security setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_sim_change_sec_off "Off"
+
+//d:list item in sim change security setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_sim_change_sec_on "On"
+
+//d:List item in autolock period setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_autolock_off "Autolock off"
+
+//d:List item in autolock period setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_autolock_defined "User defined"
+
+//d:Autolock period settings (plural) item edit - setting selection data, %U is number 2-999
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_autolock_value_min "%U minutes"
+
+//d:Autolock period settings (singular) item edit - setting selection data, %U is number 1
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_autolock_min_one "%U minute"
+
+//d:Confirm SAT operations value on
+//l:list_set_graphic_pane_t1
+//
+#define text_simatk_notes_on "Asked"
+
+//d:Confirm SAT operations value off
+//l:list_set_graphic_pane_t1
+//
+#define text_simatk_notes_off "Not asked"
+
+//d: Command in general settings security folder, Updates bootstrap values
+//l: list_setting_pane_t1
+//
+#define qtn_op_set_trusted_prov_server "Trusted provisioning server"
+
+//d: Confirmation note for Trusted provisioning server
+//l: popup_note_window
+//
+#define qtn_op_set_conf_change_trustser "Reset Trusted provisioning server settings?"
+
+//d: Information note for Trusted prov server. Displayed after the changes are successful
+//l: popup_note_window
+//
+#define qtn_op_restore_bootstrap_ok "Bootstrap restored"
+
+//d: Information note for Trusted prov server. Displayed if there are no changes to be done
+//l: popup_note_window
+//
+#define qtn_op_set_conf_noserver "Nothing to be restored."
+
+//-------------------------------------------------------------
+// Network view
+//-------------------------------------------------------------
+
+//d:Line in use item in General Settings network settings folder
+//l: list_setting_pane_t1
+//
+#define qtn_set_line "Line in use"
+
+
+//-------------------------------------------------------------
+// Sim locking notes
+//-------------------------------------------------------------
+
+//d:Shown when SIM lock is closed from the keybad
+//l:popup_note_window
+//
+#define text_sim_lock_closed "SIM restriction on"
+
+//d:Shown when SIM lock is closed from the keybad with wrong code
+//l:popup_note_window
+//
+#define text_sim_lock_error "Code error"
+
+//d:Shown when SIM lock is closed from the keybad, but the lock is already closed
+//l:popup_note_window
+//
+#define text_sim_lock_already_closed "SIM was already restricted"
+
+//d:Shown when SIM lock is closed from the keybad, but the lock cannot be closed
+//l:popup_note_window
+//
+#define text_sim_lock_not_done "Not allowed"
+
+//d:Shown when SIM lock is opened from the keybad
+//l:popup_note_window
+//
+#define text_sim_lock_opened "SIM restriction off"
+
+//d:Shown when SIM lock is opened from the keybad, but the lock is already open
+//l:popup_note_window
+//
+#define text_sim_lock_already_open "SIM was not restricted"
+
+//-------------------------------------------------------------
+// CDMA Specific Strings
+//-------------------------------------------------------------
+
+//d:CDMA List item in autolock period setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_lock_on_power_up_only "On Power-up only"
+
+//d:CDMA List item in autolock period setting page
+//l:list_set_graphic_pane_t1
+//
+#define qtn_set_timed_and_on_power_up "Timed & power-up"
+
+//d:CDMA Query requesting SPC code
+//l:popup_query_data_window
+//
+#define qtn_cdma_nam_prg_serv_prg_code "Service Programming Code"
+
+//d:CDMA Query requesting to enter new SPC code. Shown when changing code.
+//l:popup_query_data_window
+//
+#define qtn_set_new_spc_code "New SPC code"
+
+//d:CDMA Query requesting to verify SPC code. Shown when changing code.
+//l:popup_query_data_window
+//
+#define qtn_set_verify_spc_code "Verify SPC code"
+
+//d:CDMA Note code changed. Shown after security code has been changed.
+//l:popup_note_window
+//
+#define qtn_set_new_spc_code_changed "Service Programming code changed"
+
+//-------------------------------------------------------------
+// TARM Specific Strings
+//-------------------------------------------------------------
+//d: An error note text, which informs the user that autolock cannot be disabled
+//l:popup_note_window
+//w:
+//r:3.1
+//
+#define qtn_set_autolock_must_be_active "Cannot disable autolock"
+
+//-------------------------------------------------------------
+// Remotelock Specific Strings
+//-------------------------------------------------------------
+//d: Remote lock setting page header
+//l: list_setting_pane_t1
+//w:
+//r:3.2
+#define qtn_set_remotelock_status "Allow remote lock"
+
+//d:Remote lock setting state choice in remote lock radio buton dialog.
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.2
+#define qtn_set_remotelock_off "No"
+
+//d:Remote lock setting state choice in remote lock radio buton dialog.
+//l:list_set_graphic_pane_t1
+//w:
+//r:3.2
+#define qtn_set_remotelock_on  "Yes"
+
+//d:Query for requesting remote lock message
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_set_remotelock_code_prompt "New remote lock message:"
+
+//d:Query for verifying remote lock message
+//l:popup_query_data_window
+//w:
+//r:3.2
+#define qtn_set_remotelock_code_confirm_prompt "Verify remote lock message:"
+
+//d:Note codes don't match. Shown if new and verify remote lock messages do not match..
+//l:popup_note_window
+//w:
+//r:3.2
+#define qtn_set_remotelock_note_code_error "Messages do not match"
+
+//d:Note invalid message. Shown if remote lock message is the same as current security code.
+//l:popup_note_window
+//w:
+//r:3.2
+#define qtn_set_remotelock_note_invalid_code "Lock code and remote lock message must not be the same"
+
+//d:Note Energency calls only. 
+//d:Shown when user presses send key in a touch dialog with emergenncy call support.
+//l:popup_note_window
+//w:
+//r:5.0
+#define qtn_emerg_emergency_only  "Emergency calls only"
+
+// end of file
+
+
+
+
+
+

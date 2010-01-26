@@ -1,0 +1,81 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition file for DevTokenServer
+*
+*/
+
+
+#include <platform_paths.hrh>
+TARGET DevTokenServer.exe
+TARGETTYPE exe
+UID 0x1000008D 0x101FB66C
+
+CAPABILITY TrustedUI ProtServ
+VENDORID VID_DEFAULT
+
+MW_LAYER_SYSTEMINCLUDE
+
+USERINCLUDE ../Inc
+
+//  generic server code
+SOURCEPATH ../Src/Generic/Server
+SOURCE DevTokenServer.cpp
+SOURCE DevTokenUtil.cpp
+SOURCE DevTokenServerDebug.cpp
+SOURCE DevTokenDialog.cpp
+
+//  keystore specific server code
+SOURCEPATH ../Src/KeyStore/Server
+SOURCE DevCertKeyStoreConduit.cpp
+SOURCE DevCertKeyStoreSession.cpp
+SOURCE DevCertKeyStoreServer.cpp
+SOURCE DevCertKeyDataManager.cpp
+SOURCE DevCertCreateKey.cpp
+SOURCE DevCertOpenedKeysSrv.cpp
+SOURCE DevCertKeyStreamUtils.cpp
+SOURCE DevCertKeyEncryptor.cpp
+SOURCE DevTokenPWManager.cpp
+
+//  certstore specific server code
+SOURCEPATH ../Src/Certstore/server
+SOURCE DevandTruSrvCertStoreConduit.cpp
+SOURCE DevandTruSrvCertStoreSession.cpp
+SOURCE DevandTruSrvCertStoreServer.cpp
+SOURCE DevandTruSrvCertStoreEntry.cpp
+SOURCE DevandTruSrvCertStoreEntryList.cpp
+
+// trusted sites server code
+SOURCEPATH ../Src/TruSitesStore/Server
+SOURCE TrustedSitesConduit.cpp
+SOURCE TrustedSitesSession.cpp
+SOURCE TrustedSitesServer.cpp
+
+LIBRARY euser.lib 
+LIBRARY efsrv.lib 
+LIBRARY estor.lib 
+LIBRARY bafl.lib 
+LIBRARY ctframework.lib 
+LIBRARY cryptography.lib
+LIBRARY asnpkcs.lib 
+LIBRARY x509.lib 
+LIBRARY asn1.lib
+LIBRARY DevTokenShared.lib
+LIBRARY charconv.lib
+LIBRARY Edbms.lib             // Database server
+LIBRARY ecom.lib
+LIBRARY crypto.lib 
+LIBRARY X500.lib
+
+SMPSAFE
+

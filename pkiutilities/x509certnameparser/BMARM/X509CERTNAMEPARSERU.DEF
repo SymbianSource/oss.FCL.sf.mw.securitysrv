@@ -1,0 +1,5 @@
+EXPORTS
+	IssuerFullNameL__18X509CertNameParserRC16CX509CertificateRP7HBufC16 @ 1 NONAME R3UNUSED ; X509CertNameParser::IssuerFullNameL(CX509Certificate const &, HBufC16 *&)
+	PrimaryAndSecondaryNameL__18X509CertNameParserRC16CX509CertificateRP7HBufC16T2RC7TDesC16 @ 2 NONAME ; X509CertNameParser::PrimaryAndSecondaryNameL(CX509Certificate const &, HBufC16 *&, HBufC16 *&, TDesC16 const &)
+	SubjectFullNameL__18X509CertNameParserRC16CX509CertificateRP7HBufC16RC7TDesC16 @ 3 NONAME R3UNUSED ; X509CertNameParser::SubjectFullNameL(CX509Certificate const &, HBufC16 *&, TDesC16 const &)
+

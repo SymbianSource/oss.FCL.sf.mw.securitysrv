@@ -1,0 +1,894 @@
+/*
+* Copyright (c) 2005-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the resources for the SecModUI.
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME    SMUI // 4 letter ID
+
+//  INCLUDES
+
+#include <eikon.rh>
+#include <secmodui.loc>
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include "secmodui.hrh"
+
+//  RESOURCE DEFINITIONS
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf = "SecModUI"; }
+    
+// RESOURCE TBUF
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_name
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_name 
+    {
+    buf =    qtn_wim_name;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_keystore_list_text_phone_keystore
+//     Security module details item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_keystore_list_text_phone_keystore
+    {
+    buf =    qtn_keystore_list_text_phone_keystore;
+    }
+    
+//----------------------------------------------------
+//    
+//     r_qtn_wim_card_version
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_card_version
+    {
+    buf =    qtn_wim_card_version;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_security_module_location
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_security_module_location
+    {
+    buf =    qtn_wim_security_module_location;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_sett_pin_g
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_sett_pin_g
+    {
+    buf =    qtn_wim_sett_pin_g;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_pin_g_no_label_details
+//     Security module details item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_pin_g_no_label_details
+    {
+    buf =    qtn_wim_pin_g_no_label_details;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_pin_nr_no_label_details
+//     Security module details item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_pin_nr_no_label_details
+    {
+    buf =    qtn_wim_pin_nr_no_label_details;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_key_pin
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_key_pin
+    {
+    buf =    qtn_wim_key_pin;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_serial_nro
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_serial_nro
+    {
+    buf =    qtn_wim_serial_nro;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_serial_nro
+//     Security module details item
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_manuf
+    {
+    buf =    qtn_wim_manuf;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_settings
+//     General Setting list
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_settings
+    {
+    buf =    qtn_wim_settings;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_title
+//     Main view title pane text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_title
+    {
+    buf =    qtn_wim_title;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_cm_confirm_delete_keys
+//     Confirmation query text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_cm_confirm_delete_keys
+    {
+    buf =    qtn_cm_confirm_delete_keys;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_status_blocked
+//     Code status setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_status_blocked
+    {
+    buf =    qtn_wim_code_status_blocked;
+    }
+
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_status_closed
+//     Code status setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_status_closed
+    {
+    buf =    qtn_wim_status_closed;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_opt_open
+//     Code status setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_opt_open
+    {
+    buf =    qtn_wim_opt_open;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_sett_status
+//     Code status setting item title
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_sett_status
+    {
+    buf =    qtn_wim_sett_status;
+    }
+
+//----------------------------------------------------
+//    
+//     qtn_wim_request_off
+//     Code request setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_request_off
+    {
+    buf =    qtn_wim_request_off;
+    }
+
+//----------------------------------------------------
+//    
+//     qtn_wim_request_on
+//     Code request setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_request_on
+    {
+    buf =    qtn_wim_request_on;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_pin_request
+//     Code request setting item title
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_wim_pin_request
+    {
+    buf =    qtn_wim_pin_request;
+    }
+
+//----------------------------------------------------
+//    
+//     r_text_resource_view_empty_wim_list
+//     Empty WIM view list text
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_text_resource_view_empty_wim_list
+    {
+    buf =    qtn_wim_no_wims;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_wim_info_pin_changed
+//     Code changed confirmation note text 
+//
+//----------------------------------------------------
+//    
+RESOURCE TBUF r_qtn_wim_info_pin_changed 
+    { 
+    buf=qtn_wim_info_pin_changed; 
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_keystore_info_unable_to_delete
+//     Key in use note text
+//
+//----------------------------------------------------
+//    
+RESOURCE TBUF r_qtn_keystore_info_unable_to_delete
+    { 
+    buf=qtn_keystore_info_unable_to_delete; 
+    }
+
+
+// RESOURCE HOTKEYS
+
+//----------------------------------------------------
+//   
+//    r_secmodui_hotkeys
+//
+//----------------------------------------------------
+//
+RESOURCE HOTKEYS r_secmodui_hotkeys
+    {
+    control =
+        {
+        HOTKEY { command = EAknCmdExit; key = 'e'; }
+        };
+    }
+
+// RESOURCE LISTBOX
+
+//----------------------------------------------------
+//   
+//    r_secmodui_dynamic_listbox
+//
+//----------------------------------------------------
+//
+RESOURCE LISTBOX r_secmodui_dynamic_listbox
+	{
+	flags = EAknListBoxSelectionList;
+	}
+
+//----------------------------------------------------
+//   
+//    r_secmodui_codes_listbox
+//
+//----------------------------------------------------
+//
+RESOURCE LISTBOX r_secmodui_codes_listbox
+	{
+	array_id = r_code_items;
+	flags = EAknListBoxSelectionList;
+	}
+
+// RESOURCE ARRAY
+
+//----------------------------------------------------
+//   
+//    r_code_items
+//
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_code_items
+    {
+    items = {
+        LBUF { txt="\t"qtn_wim_list_text_access_code""; },
+        LBUF { txt="\t"qtn_wim_list_text_signature_codes""; }
+        };
+    }
+
+// RESOURCE AVKON_VIEW
+
+//----------------------------------------------------
+//   
+//    r_secmodui_view_main
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_secmodui_view_main
+    {
+    hotkeys = r_secmodui_hotkeys;
+    menubar = r_secmodui_menubar_view_main;  
+    cba     = r_secmodui_softkeys_options_back_open;    
+    }
+
+// ---------------------------------------------------------
+//
+//    r_secmodui_softkeys_options_back_open
+//    Define cba 
+//
+// ---------------------------------------------------------
+//
+RESOURCE CBA r_secmodui_softkeys_options_back_open
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt=text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt=text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOpen;
+            txt=qtn_msk_open;
+            }
+       };
+    } 
+
+//----------------------------------------------------
+//   
+//    r_secmodui_view_code
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_secmodui_view_code
+    {
+    hotkeys = r_secmodui_hotkeys;
+    menubar = r_secmodui_menubar_view_code;  
+    cba     = r_secmodui_softkeys_options_back_open;    
+    }
+
+// ---------------------------------------------------------
+//
+//    r_secmodui_softkeys_options_back_change
+//    Define cba 
+//
+// ---------------------------------------------------------
+//
+RESOURCE CBA r_secmodui_softkeys_options_back_change
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt=text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt=text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyChange;
+            txt=qtn_msk_change;
+            }
+       };
+    } 
+
+RESOURCE CBA r_secmodui_softkeys_options_back_unblock
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt=text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt=text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyUnlock;
+            txt=qtn_msk_unblock;
+            }
+       };
+    } 
+
+RESOURCE CBA r_secmodui_softkeys_options_back_close
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt=text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt=text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyClose;
+            txt=text_softkey_close;
+            }
+       };
+    } 
+
+
+RESOURCE CBA r_secmodui_softkeys_options_back
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyOptions;
+            txt=text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id=EAknSoftkeyBack;
+            txt=text_softkey_back;
+            },
+        CBA_BUTTON
+            {
+            txt = text_softkey_empty;
+            }
+       };
+    }
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_view_signature
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_secmodui_view_signature
+    {
+    hotkeys = r_secmodui_hotkeys;
+    menubar = r_secmodui_menubar_view_signature;  
+    cba     = r_secmodui_softkeys_options_back_change;    
+    }
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_view_access
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_secmodui_view_access
+    {
+    hotkeys = r_secmodui_hotkeys;
+    menubar = r_secmodui_menubar_view_access;  
+    cba     = r_secmodui_softkeys_options_back_change;    
+    }    
+    
+// RESOURCE MENU_BAR
+
+//----------------------------------------------------
+//   
+//    r_secmodui_menubar_view_main
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_secmodui_menubar_view_main
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_secmodui_view_main_menu; txt = ""; }
+        };
+    }
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_menubar_view_code
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_secmodui_menubar_view_code
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_secmodui_view_code_menu; txt = ""; }
+        };
+    }
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_menubar_view_signature
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_secmodui_menubar_view_signature
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_secmodui_view_signature_menu; txt = ""; }
+        };
+    }
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_menubar_view_access
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_secmodui_menubar_view_access
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_secmodui_view_access_menu; txt = ""; }
+        };
+    }
+    
+// RESOURCE MENU_PANE    
+            
+//----------------------------------------------------
+//   
+//    r_secmodui_view_main_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_secmodui_view_main_menu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ESecModUICmdOpen;
+            txt = qtn_wim_options_open;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdModuleInfo;
+            txt = qtn_wim_opt_details;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdDelKeyStore;
+            txt = qtn_cm_options_delete_keystore;
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }  
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_view_code_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_secmodui_view_code_menu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ESecModUICmdOpen;
+            txt = qtn_wim_options_open;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdModuleInfo;
+            txt = qtn_wim_opt_details;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_secmodui_view_signature_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_secmodui_view_signature_menu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ESecModUICmdChange;
+            txt = qtn_options_change;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdUnblock;
+            txt = qtn_wim_sett_opt_unblock;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdModuleInfo;
+            txt = qtn_wim_opt_details;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command=EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }    
+    
+//----------------------------------------------------
+//   
+//    r_secmodui_view_access_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_secmodui_view_access_menu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = ESecModUICmdChange;
+            txt = qtn_options_change;
+            flags = EEikMenuItemAction;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdUnblock;
+            txt = qtn_wim_sett_opt_unblock;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdClose;
+            txt = qtn_wim_options_close_code;
+            },
+        MENU_ITEM
+            {
+            command = ESecModUICmdModuleInfo;
+            txt = qtn_wim_opt_details;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdHelp;
+            txt = qtn_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EAknCmdExit;
+            txt = qtn_options_exit;
+            }
+        };
+    }  
+
+// RESOURCE DIALOGS
+
+//----------------------------------------------------
+//    
+//     r_message_query_details_view
+//     Certificate Management Details view query
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_secmod_details_view
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items=
+        {
+        DLG_LINE 
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                label= qtn_wim_info_header;
+                };
+            },
+         DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------
+//    
+//     r_certmanui_confirmation_query_yes_no
+//     Delete certificate confirmation query 
+//
+// ---------------------------------------------------------
+//
+RESOURCE DIALOG r_secmod_confirmation_query_yes_no
+    {
+    flags=EGeneralQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_YES_NO;
+         items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY 
+                { 
+                layout = EConfirmationLayout;
+                label = "dummy";
+                };
+            }
+        };
+    }
+
+// RESOURCE NAVI_LABELS
+
+// ---------------------------------------------------------
+//    
+//     r_navipane_access_text
+//     Access code view navipane text
+//
+// ---------------------------------------------------------
+//
+RESOURCE NAVI_LABEL r_navipane_access_text
+    {
+    txt = qtn_wim_navi_text_access_codes;
+    }
+
+// ---------------------------------------------------------
+//    
+//     r_navipane_signature_text
+//     Signature codes view navipane text
+//
+// ---------------------------------------------------------
+//
+RESOURCE NAVI_LABEL r_navipane_signature_text
+    {
+    txt = qtn_wim_navi_text_signature_codes;
+    }
+           
+           
+//----------------------------------------------------
+//    
+//     r_qtn_secmod_status_value_blocked
+//     Code status setting item value
+//
+//----------------------------------------------------
+//
+RESOURCE TBUF r_qtn_secmod_status_value_blocked
+    {
+    buf = qtn_secmod_status_value_blocked;
+    }
+
+//----------------------------------------------------
+//    
+//     r_qtn_secmod_status_value_blocked
+//     Security module details item value
+//
+//----------------------------------------------------
+//    
+RESOURCE TBUF r_qtn_secmod_title_phone_keystore_code
+    {
+    buf = qtn_secmod_title_phone_keystore_code;    
+    }
+    
+//----------------------------------------------------
+//    
+//     r_qtn_keystore_title_phone_keystore
+//
+//----------------------------------------------------
+//    
+RESOURCE TBUF r_qtn_keystore_title_phone_keystore
+    {
+    buf = qtn_keystore_title_phone_keystore;
+    }
+
+// End of File

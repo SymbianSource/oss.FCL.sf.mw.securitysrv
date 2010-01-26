@@ -1,0 +1,72 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     This is project specification file for the DevEncStarter
+*     
+*
+*/
+
+
+#include <defaultcaps.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+#include "../../common/DevEncUids.hrh"
+
+TARGET      DevEncStarter.exe
+TARGETTYPE  exe
+UID         0x0 KDevEncStarterUid
+
+VENDORID    VID_DEFAULT
+CAPABILITY  CAP_APPLICATION ReadDeviceData WriteDeviceData SwEvent DiskAdmin 
+
+SOURCEPATH ../src
+SOURCE  DevEncStarter.cpp      
+SOURCE  DevEncStarterEngine.cpp
+SOURCE  DevEncStarterUtils.cpp
+SOURCE  DevEncStarterMemoryEntity.cpp
+SOURCE  DevEncStarterMmcObserver.cpp
+SOURCE  DevEncStarterAppStarter.cpp
+SOURCE  DevEncStarterPropertyObserver.cpp
+
+SOURCEPATH      ../../common
+SOURCE          DevEncLog.cpp
+
+USERINCLUDE ../inc
+USERINCLUDE ../../common
+
+MW_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH        ../data
+START RESOURCE DevEncStarter.rss
+HEADER
+TARGETPATH APP_RESOURCE_DIR
+LANGUAGE_IDS
+END 
+
+// TBI: Remove unnecessary libraries
+LIBRARY apgrfx.lib 
+LIBRARY apparc.lib 
+LIBRARY centralrepository.lib
+LIBRARY commonengine.lib
+LIBRARY cone.lib
+LIBRARY devenccommonutils.lib
+LIBRARY efsrv.lib
+LIBRARY euser.lib
+LIBRARY featmgr.lib
+LIBRARY secui.lib // for security settings
+LIBRARY sysutil.lib // for system startup state
+LIBRARY sisregistryclient.lib // for RSisRegistrySession
+DEBUGLIBRARY flogger.lib 
+
+// End of file

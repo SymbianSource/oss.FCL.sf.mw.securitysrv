@@ -1,0 +1,45 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file of Pk5 Recognizer.
+*
+*/
+
+#include <defaultcaps.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGETTYPE PLUGIN
+TARGET Pk5Recognizer.dll
+
+UID 0x10009D8D 0x2000FD89
+
+START RESOURCE  2000FD89.rss
+ TARGET          Pk5Recognizer.rsc
+END
+
+CAPABILITY      CAP_RECOGNISER
+VENDORID        VID_DEFAULT
+
+SOURCEPATH ../src
+SOURCE Pk5Recognizer.cpp
+
+USERINCLUDE       ../inc
+
+SYSTEMINCLUDE     /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         euser.LIB
+LIBRARY         apmime.LIB
+LIBRARY         bafl.lib
+LIBRARY         efsrv.lib

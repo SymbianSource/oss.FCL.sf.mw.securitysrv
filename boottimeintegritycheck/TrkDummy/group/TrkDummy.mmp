@@ -1,0 +1,61 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Dummy exe to prevent installing too liberal TrkApp
+*  Version     : %version: tr1sido#9 %
+*
+*/
+
+
+// This MMP file builds dummy exe that can be included in ROM image
+// to prevent installing old TrkApp.exe, which allows hacking platform
+// security. Dummy exe has the same UID3 as old TrkApp.exe, and hence
+// installing old TrkApp.exe will fail (error: 'Unable to install').
+// If the same file name (TrkApp.exe, see TrkDummy.iby) is used too,
+// then installing old TrkApp.exe fails with error: 'Cannot install!
+// This component is built-in'.
+
+
+#if(!defined __SERIES60_30__ && !defined __SERIES60_31__)
+  #include <platform_paths.hrh>
+#endif
+
+CAPABILITY      None
+
+TARGETPATH      /sys/bin
+TARGET          TrkDummy.exe
+TARGETTYPE      exe
+
+// Note: UID3 matches to the TrkApp UID to block it's installation.
+UID             0x100039CE 0x101F7159
+
+LANG            SC
+
+SOURCEPATH      ../src
+SOURCE          TrkDummy.cpp
+SOURCE          TrkDummyApplication.cpp
+
+USERINCLUDE     ../inc 
+#if defined (__SERIES60_30__) || defined(__SERIES60_31__)
+	SYSTEMINCLUDE	/epoc32/include  
+#else
+    MW_LAYER_SYSTEMINCLUDE    
+#endif
+
+
+LIBRARY         euser.lib
+LIBRARY         apparc.lib
+LIBRARY         eikcore.lib
+LIBRARY         avkon.lib
+
+SMPSAFE

@@ -1,0 +1,123 @@
+/*
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Project definition file for Certificate Management UI
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+
+// Build target
+
+TARGET            CertManUi.dll
+TARGETTYPE        PLUGIN
+UID  0x10009D8D   0x10008D3D
+
+CAPABILITY        CAP_ECOM_PLUGIN
+VENDORID          VID_DEFAULT
+
+// Resource file location
+SOURCEPATH    ../data
+
+START RESOURCE    10008D3D.rss
+TARGET            CertManUI.rsc
+END
+
+
+// Resource file
+START RESOURCE    certmanui.rss
+HEADER
+TARGETPATH        RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+// Define the following lines to enable logging.
+
+//#define _CERTMANUI_LOG
+
+
+// Source files location
+SOURCEPATH    ../SRC
+
+// Source files
+SOURCE      CertmanuiKeeper.cpp
+SOURCE      CertmanuiviewAuthority.cpp
+SOURCE      CertmanuiviewPersonal.cpp
+SOURCE      CertmanuiviewTrust.cpp
+SOURCE      CertmanuicontainerAuthority.cpp
+SOURCE      CertmanuicontainerPersonal.cpp
+SOURCE      CertmanuicontainerTrust.cpp
+SOURCE      CertmanuiSyncWrapper.cpp
+SOURCE      CertmanuiCertificateHelper.cpp
+SOURCE      Certmanuidialogs.cpp
+SOURCE      CertmanuiPlugin.cpp
+SOURCE      CertmanuiPluginContainer.cpp
+SOURCE      CertmanuiPluginImplementationTable.cpp
+SOURCE      CertmanuiviewMain.cpp
+SOURCE      CertmanuiviewTrustedSite.cpp
+SOURCE      CertmanuiviewDevice.cpp
+SOURCE      CertmanuicontainerMain.cpp
+SOURCE      CertmanuicontainerTrustedSite.cpp
+SOURCE      CertmanuicontainerDevice.cpp
+
+// Include paths
+USERINCLUDE     . ../INC
+USERINCLUDE     ../../Include
+
+APP_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE   ../../DeviceToken/Inc
+
+
+// Dependencies
+LIBRARY         euser.lib
+LIBRARY         cone.lib
+LIBRARY         eikcore.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         avkon.lib
+LIBRARY         aknskins.lib
+LIBRARY         aknicon.lib
+LIBRARY         bafl.lib
+LIBRARY         crypto.lib
+LIBRARY         certstore.lib       // TCertManClientInfo::Id
+LIBRARY         commonengine.lib    // StringLoader.h
+LIBRARY         eikctl.lib          // markable icons
+LIBRARY         efsrv.lib           // needed by CertManUI debug logger
+LIBRARY         SysUtil.lib         // For FFS Space checking
+LIBRARY         commonui.lib        // for CErrorUI
+LIBRARY         CTFramework.lib     // CCertAttributeFilter
+LIBRARY         X509.lib
+LIBRARY         pkixcert.lib        // Validation
+LIBRARY         x509certnameparser.lib    // parsing of label
+LIBRARY         hash.lib
+LIBRARY         Featmgr.lib         // feature manager support
+LIBRARY         ecom.lib
+LIBRARY         GSFramework.lib
+LIBRARY         GSEcomPlugin.lib
+LIBRARY         DevTokenClient.lib
+LIBRARY         cryptography.lib    // Public key functions
+
+
+#ifdef _CERTMANUI_LOG
+MACRO   _CERTMANUI_LOG_
+LIBRARY         flogger.lib         // needed by CertManUI debug logger
+#else
+DEBUGLIBRARY    flogger.lib         // needed by CertManUI debug logger
+#endif
+
+LIBRARY         hlplch.lib          // for "Help" options menu
+
+SMPSAFE
+

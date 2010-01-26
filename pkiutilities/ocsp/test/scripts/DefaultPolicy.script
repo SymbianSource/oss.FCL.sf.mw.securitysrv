@@ -1,0 +1,72 @@
+//
+// Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+//!  This tests the default OCSP policy
+//!  This tests a certificate with a AIA URL and
+//!  and a certificate with no AIA URL when there is 
+//!  no default URI
+//!  The expected result is the first outcome is ok 
+//!  and the second is "No server result unknown" 
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0001
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0001
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0001-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0001
+
+//!  **************************Test for CheckCertsWithAIAOnly ******************************
+
+//!  Generate Response for missing URI is enabled for all these test cases
+
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0002
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0002
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0002-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0002
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0003
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0003
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0003-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0003
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0004
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0004
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0004-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0004
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0005
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0005
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0005-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0005
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0006
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0006
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0006-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0006
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0007
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0007
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0007-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0007
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0008
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0008
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0008-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0008
+
+START_TESTCASE                SEC-TOCSP-DEFAULTPOLICY-0009
+//! @SYMTestCaseID            SEC-TOCSP-DEFAULTPOLICY-0009
+RUN_TEST_STEP                 DefaultPolicy.ini   SEC-TOCSP-DEFAULTPOLICY-0009-0001
+END_TESTCASE                  SEC-TOCSP-DEFAULTPOLICY-0009

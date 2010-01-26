@@ -1,0 +1,45 @@
+// Copyright (c) 2004-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// ocsptransport.dll Provides implementation of HTTP transport for OCSP
+// 
+//
+
+/**
+ @file
+*/
+
+TARGET        ocsptransport.dll
+TARGETTYPE    DLL
+CAPABILITY All -Tcb
+
+UID    0x1000008d 0x10202142
+VENDORID 0x70000001
+
+DEFFILE ocsptransport_v2.def
+
+MW_LAYER_SYSTEMINCLUDE_SYMBIAN
+
+
+USERINCLUDE 	../inc
+
+SOURCEPATH		.
+SOURCE			panic.cpp
+SOURCE			transportdefault.cpp
+SOURCE			transporthttp.cpp
+
+LIBRARY ocspcommon.lib
+LIBRARY bafl.lib efsrv.lib euser.lib
+LIBRARY inetprotutil.lib http.lib ecom.lib securitymanager.lib
+LIBRARY	secutil.lib httputils.lib esock.lib
+SMPSAFE

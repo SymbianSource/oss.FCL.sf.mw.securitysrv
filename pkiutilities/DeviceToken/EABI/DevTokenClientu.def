@@ -1,0 +1,37 @@
+EXPORTS
+	_ZN13CDevTokenType4NewLE4TUid @ 1 NONAME
+	_ZN16CTrustSitesStore14IsTrustedSiteLERK6TDesC8RK7TDesC16 @ 2 NONAME
+	_ZN16CTrustSitesStore16GetTrustedSitesLERK6TDesC8R13RPointerArrayI7HBufC16E @ 3 NONAME
+	_ZN16CTrustSitesStore4AddLERK6TDesC8RK7TDesC16 @ 4 NONAME
+	_ZN16CTrustSitesStore4NewLEv @ 5 NONAME
+	_ZN16CTrustSitesStoreD0Ev @ 6 NONAME
+	_ZN16CTrustSitesStoreD1Ev @ 7 NONAME
+	_ZN16CTrustSitesStoreD2Ev @ 8 NONAME
+	_ZTI13CDevTokenType @ 9 NONAME ; #<TI>#
+	_ZTI16CDevCertKeyStore @ 10 NONAME ; #<TI>#
+	_ZTI16CTrustSitesStore @ 11 NONAME ; #<TI>#
+	_ZTI17CDevCertOpenedKey @ 12 NONAME ; #<TI>#
+	_ZTI19CDevCertDHAgreement @ 13 NONAME ; #<TI>#
+	_ZTI20CDevCertRSADecryptor @ 14 NONAME ; #<TI>#
+	_ZTI20CDevTokenTypeSession @ 15 NONAME ; #<TI>#
+	_ZTI22CDevandTruSrvCertStore @ 16 NONAME ; #<TI>#
+	_ZTI27CDevCertDSARepudiableSigner @ 17 NONAME ; #<TI>#
+	_ZTI27CDevCertRSARepudiableSigner @ 18 NONAME ; #<TI>#
+	_ZTI9CDTClient @ 19 NONAME ; #<TI>#
+	_ZTI9CDevToken @ 20 NONAME ; #<TI>#
+	_ZTV13CDevTokenType @ 21 NONAME ; #<VT>#
+	_ZTV16CDevCertKeyStore @ 22 NONAME ; #<VT>#
+	_ZTV16CTrustSitesStore @ 23 NONAME ; #<VT>#
+	_ZTV17CDevCertOpenedKey @ 24 NONAME ; #<VT>#
+	_ZTV19CDevCertDHAgreement @ 25 NONAME ; #<VT>#
+	_ZTV20CDevCertRSADecryptor @ 26 NONAME ; #<VT>#
+	_ZTV20CDevTokenTypeSession @ 27 NONAME ; #<VT>#
+	_ZTV22CDevandTruSrvCertStore @ 28 NONAME ; #<VT>#
+	_ZTV27CDevCertDSARepudiableSigner @ 29 NONAME ; #<VT>#
+	_ZTV27CDevCertRSARepudiableSigner @ 30 NONAME ; #<VT>#
+	_ZTV9CDTClient @ 31 NONAME ; #<VT>#
+	_ZTV9CDevToken @ 32 NONAME ; #<VT>#
+	_ZN16CTrustSitesStore16AddForgivenSiteLERK7TDesC16RKi @ 33 NONAME
+	_ZN16CTrustSitesStore19IsOutOfDateAllowedLERK6TDesC8RK7TDesC16 @ 34 NONAME
+	_ZN16CTrustSitesStore19RemoveForgivenSiteLERK7TDesC16 @ 35 NONAME
+

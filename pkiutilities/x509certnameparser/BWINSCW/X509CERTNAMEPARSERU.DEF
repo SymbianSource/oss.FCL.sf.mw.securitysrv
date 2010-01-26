@@ -1,0 +1,5 @@
+EXPORTS
+	?IssuerFullNameL@X509CertNameParser@@SAHABVCX509Certificate@@AAPAVHBufC16@@@Z @ 1 NONAME ; int X509CertNameParser::IssuerFullNameL(class CX509Certificate const &, class HBufC16 * &)
+	?PrimaryAndSecondaryNameL@X509CertNameParser@@SAHABVCX509Certificate@@AAPAVHBufC16@@1ABVTDesC16@@@Z @ 2 NONAME ; int X509CertNameParser::PrimaryAndSecondaryNameL(class CX509Certificate const &, class HBufC16 * &, class HBufC16 * &, class TDesC16 const &)
+	?SubjectFullNameL@X509CertNameParser@@SAHABVCX509Certificate@@AAPAVHBufC16@@ABVTDesC16@@@Z @ 3 NONAME ; int X509CertNameParser::SubjectFullNameL(class CX509Certificate const &, class HBufC16 * &, class TDesC16 const &)
+

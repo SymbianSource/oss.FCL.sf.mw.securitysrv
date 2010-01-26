@@ -1,0 +1,3 @@
+EXPORTS
+	?NotifierArray@@YAPAV?$CArrayPtr@VMEikSrvNotifierBase2@@@@XZ @ 1 NONAME ; class CArrayPtr<class MEikSrvNotifierBase2> * NotifierArray(void)_E32Dll=__E32Dll	; Entry point for emulation
+

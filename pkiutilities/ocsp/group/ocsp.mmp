@@ -1,0 +1,58 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+/**
+@file
+
+@SYMPurpose ocsp.dll Implements OCSP protocol
+*/
+
+TARGET        ocsp.dll
+TARGETTYPE    DLL
+
+CAPABILITY All
+
+UID    0x1000008d 0x1000A404
+VENDORID 0x70000001
+
+MW_LAYER_SYSTEMINCLUDE_SYMBIAN
+USERINCLUDE     ../inc
+
+DEFFILE ocsp_v2.def
+
+SOURCEPATH .
+SOURCE	../src/certid.cpp
+SOURCE	../src/client.cpp
+SOURCE	../src/directauthorisation.cpp
+SOURCE	../src/delegateauthorisation.cpp
+SOURCE	../src/cadirectauthorisation.cpp
+SOURCE	../src/panic.cpp
+SOURCE	../src/parameters.cpp
+SOURCE	../src/request.cpp
+SOURCE	../src/requestencoder.cpp
+SOURCE	../src/response.cpp
+SOURCE	../src/responsecertinfo.cpp
+SOURCE	../src/responsedecoder.cpp
+SOURCE	../src/transaction.cpp
+SOURCE	../src/validator.cpp
+SOURCE	../src/ocsputils.cpp
+
+LIBRARY ocspcommon.lib
+LIBRARY euser.lib asn1.lib crypto.lib x509.lib random.lib
+LIBRARY cryptography.lib
+LIBRARY hash.lib x500.lib pkixcertbase.lib
+LIBRARY ctframework.lib efsrv.lib estor.lib 
+SMPSAFE

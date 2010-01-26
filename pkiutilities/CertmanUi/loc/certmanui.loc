@@ -1,0 +1,426 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Localisation of CertManUI
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+//d: Command in general settings security folder, opens Certificate management view
+//l: list_setting_pane_t1
+//
+#define qtn_set_certmanui_security      "Certificate management"
+
+//d:Name of the dll for title pane
+//l:title_pane_t2/opt9
+#define qtn_cm_title                    "Certificate management"
+
+//d:Command for the options menus.
+//l:list_single_pane_t1_cp2
+#define qtn_cm_option_view_details      "View details"
+
+//d:Command for the options menus.
+//l:list_single_pane_t1_cp2
+#define qtn_cm_option_trust_settings    "Trust settings"
+
+//d:Command for the options menus.
+//l:list_single_pane_t1_cp2
+#define qtn_cm_option_change_trust      "Change trust"
+
+//d:Certificate view list item
+//d: used in Certificate Main view
+//l:list_single_pane_t1
+#define qtn_cm_no_subject_list          "(No subject)"
+
+//d:Certificate details view item
+//d: used in certificate details,
+//l:popup_info_list_pane_t1
+#define qtn_cm_no_subject_details       "(No subject)"
+
+//d:Certificate trust settings title
+//d: used in Trust Settings Title pane
+//l:title_pane_t2/opt9
+#define qtn_cm_no_subject_title         "(No subject)"
+
+//d:Certificate details changeable list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_not_defined              "(Not defined)"
+
+//d:Certificate details view item
+//d: used in certificate details,
+//l:popup_info_list_pane_t1
+#define qtn_cm_no_label_details         "(No label)"
+
+//d:Name of the Authority Certificates view tab.
+//l:tabs_2_long_active_pane_t1
+#define qtn_cm_tab_authority            "Authority"
+
+//d:Name of the Personal Certificates view tab.
+//l:tabs_2_long_active_pane_t1
+#define qtn_cm_tab_personal             "Personal"
+
+//d:Confirmation query text in Certificates View
+//l:popup_note_window
+#define qtn_query_conf_delete_no_label  "Delete certificate?"
+
+//d:Confirmation query text in Certificates View: about to delete more items
+//l:popup_note_window
+#define qtn_fldr_del_items_query_cm     "Delete %N items?"
+
+//d:Information note text in Certificates View: could not delete one item
+//l:popup_note_window
+#define qtn_cant_delete_item_no_label     "Can't delete certificate"
+
+// Certificate details algorithm names
+///////////////////////////////////////////////////////////
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_rsa            "RSA"
+
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_dsa            "DSA"
+
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_dh             "DH"
+
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_md2            "MD2"
+
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_md5            "MD5"
+
+//d:Certificate details algorithm name
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_sha1           "SHA1"
+
+//d:Certificate details algorithm unknown
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm_unknown        "Unknown"
+
+//d:Certificate details list's heading
+//l:heading_pane_t1
+#define qtn_cm_details_heading          "Certificate details"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_label                    "Label:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_subject                  "Subject:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_issuer                   "Issuer:"
+
+//d:Rel 2.8 Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_key_usage                "Key usage:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_validity_period          "Validity period:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_valid_from               "Valid from:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_valid_until              "Valid until:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_certificate_location     "Location:"
+
+//d:Certificate details changeable list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_phone_memory             "Phone memory"
+
+//d:Certificate details changeable list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_smart_card               "Smart card"
+
+//d:Rel 2.8 Certificate details changeable list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_no_private_key           "No private key"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_cert_format              "Certificate format:"
+
+//d:Rel 2.8 Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_key_location             "Private key location:"
+
+//d:Certificate details changeable list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_cert_format_x509         "X509"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_algorithm                "Algorithm:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_serial_number            "Serial number:"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_fingerprint              "Fingerprint (SHA1):"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_fingerprint_md           "Fingerprint (MD5):"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+//r:3.2
+//
+#define qtn_cm_public_key               "Public key (%0U %1N bits):"
+
+//d:Certificate details list item
+//l:popup_info_list_pane_t1
+//w:
+//r:3.0
+#define qtn_sn_key_length_label         "Key length:"
+
+//d:Rel 2.8 Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_digital_signing          "Digital signing"
+
+//d:Rel 2.8 Certificate details list item
+//l:popup_info_list_pane_t1
+#define qtn_cm_client_authentication    "Client authentication"
+
+//d:Certificate trust settings WAP connection
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_wap_connection     "WAP connection"
+
+//d:Certificate trust settings application controller
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_app_control        "Application controller"
+
+//d:Certificate trust settings mail and image connection
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_mail_image_conn    "Mail and Image conn."
+
+//d:Certificate trust settings for java installing.
+//d:With this user can decide if certificate is trusted for
+//d:installing java applications.
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_java_installing    "Java installing"
+
+//d:Certificate trust settings native installing.
+//d:With this user can decide if certificate is trusted for
+//d:native application installing (i.e. SOS applications).
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_native_installing    "Native installing"
+
+//d:Certificate trust settings for OCSP validation.
+//d:With this user can decide if certificate is trusted to
+//d:validate ocsp response (i.e. SOS applications).
+//l:list_single_graphic_pane_t1_cp2
+#define qtn_cm_lipri_ocsp "OCSP validation"
+
+//d:Certificate trust settings value yes
+//l:list_set_graphic_pane_t1
+#define qtn_cm_trust_value_yes            "Yes"
+
+//d:Certificate trust settings value no
+//l:list_set_graphic_pane_t1
+#define qtn_cm_trust_value_no             "No"
+
+//d:Certificate trust settings X.509 authority certificate in WIM note
+//l:main_list_empty_pane
+#define qtn_cm_empty_trust_settings       "(No trusting\napplications)"
+
+//d:Certificate trust settings text in navi pane
+//d:Trust setting list view
+//l:navi_text_pane_t1
+#define qtn_cm_title_trust_settings       "Trust settings"
+
+
+//d:Certificate warning notes
+//l:popup_note_window
+#define qtn_cm_expired                    "The certificate has expired"
+
+//d:Certificate warning notes
+//l:popup_note_window
+#define qtn_cm_not_valid_yet              "The certificate is not valid yet"
+
+//d:Certificate warning notes
+//l:popup_note_window
+#define qtn_cm_corrupted                  "The certificate is corrupted"
+
+//d:Certificate warning notes
+//l:popup_note_window
+#define qtn_cm_not_trusted                "Certificate not trusted"
+
+//d:Internal error warning note
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_cm_internal_error             "Internal error"
+
+//d:Certificate trust settings for VPN.
+//d:With this user can decide if certificate is trusted for VPN.
+//l:list_single_graphic_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_cm_lipri_vpn                  "VPN"
+
+//d:Site name
+//d:%U stands for site name
+//l:popup_info_list_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_site                   "Site:"
+
+//d:Site names.
+//d:%U stands for site names
+//l:popup_info_list_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_sites                  "Sites:"
+
+
+//d::Text of Authority list item in Security view's main pane
+//l:list_single_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_list_text_authority    "Authority"
+
+
+//d::Text of Trusted sites list item in Security view's main pane
+//l:list_single_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_list_text_trusted    "Trusted sites"
+
+//d::Text of Device list item in Security view's main pane
+//l:list_single_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_list_text_device     "Device"
+
+//d::Text of Personal certificates list item in Security view's main pane
+//l:list_single_pane_t1
+//w:
+//r:3.2
+//
+#define qtn_cm_list_text_personal   "Personal"
+
+//d::Title of Authority certificates view
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+//
+#define qtn_cm_title_authority      "Authority certificates"
+
+//d::Title of Trusted site certificates view
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+//
+#define qtn_cm_title_trusted        "Trusted site certificates"
+
+//d::Title of Personal certificates view
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+//
+#define qtn_cm_title_personal       "Personal certificates"
+
+//d:Title of Device certificates view
+//l:title_pane_t2/opt9
+//w:
+//r:3.2
+//
+#define qtn_cm_title_device         "Device certificates"
+
+//d:Item in Options menu (Personal certificates view)
+//d:for moving the selected certificate(s) to
+//d:the Device Certificates.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_cm_option_move_to_device_certificates   "Move to Device Certificates"
+
+//d:Item in Options menu (Device certificates view)
+//d:for moving the selected certificate(s) to the
+//d:Personal Certificates.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_cm_option_move_to_personal_certificates   "Move to Personal Certificates"
+
+//d:Confirmation query text shown before moving
+//d:certificate to Device certificates
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_cm_conf_move_to_device    "Device certificates can be used without user confirmation. Use of device lock recommended. Proceed ?"
+
+//d:Confirmation query text shown before moving
+//d:certificate to Personal certificates
+//l:popup_note_window
+//w:
+//r:3.2
+//
+#define qtn_cm_conf_move_to_personal    "Use of Personal certificates may require user confirmation. Proceed?"
+
+//d:Empty list text for Authority certificates view
+//l:main_list_empty_pane
+//w:
+//r:3.2
+//
+#define qtn_authority_empty_list    "(no authority certificates)"
+
+//d:Empty list text for Trusted site certificates view
+//l:main_list_empty_pane
+//w:
+//r:3.2
+//
+#define qtn_trusted_empty_list      "(no trusted site certificates)"
+
+//d:Empty list text for Personal certificates view
+//l:main_list_empty_pane
+//w:
+//r:3.2
+//
+#define qtn_personal_empty_list     "(no personal certificates)"
+
+//d:Empty list text for Device certificates view
+//l:main_list_empty_pane
+//w:
+//r:3.2
+//
+#define qtn_device_empty_list       "(no device certificates)"
+
+// End of File
