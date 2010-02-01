@@ -18,7 +18,7 @@
 #ifndef WIMCLEANUP_H
 #define WIMCLEANUP_H
 
-#include "wimi.h"
+#include "Wimi.h"
 
 
 //

@@ -22,7 +22,7 @@
 #include "lockapptrace.h"
 #include <lockappclientserver.h>
 #include <aknglobalpopupprioritycontroller.h>
-#include <APGCLI.h>
+#include <apgcli.h>
 
 #ifdef __SAP_TERMINAL_CONTROL_FW
 #include <SCPClient.h>

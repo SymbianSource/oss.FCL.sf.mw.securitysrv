@@ -15,7 +15,7 @@
 *
 */
 
-#include <gbautility.h>
+#include <GbaUtility.h>
 #include "GbaClientrequesthandler.h"
 #include "GBALogger.h"
 

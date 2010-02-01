@@ -28,7 +28,7 @@ NAME    SIMS // 4 letter ID
 #include <avkon.loc> // Avkon localized strings
 #include <avkon.mbg>
 #include <avkon.rsg>
-#include <eikcore.rsg>
+#include <EIKCORE.rsg>
 #include <uikon.rh>
 #include <eikon.rh>
 #include <avkon.rh>

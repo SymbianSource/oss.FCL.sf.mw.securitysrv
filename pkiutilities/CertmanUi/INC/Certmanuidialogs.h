@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -15,73 +15,48 @@
 *
 */
 
+#ifndef CERTMANUIDIALOGS_H
+#define CERTMANUIDIALOGS_H
 
-#ifndef     CERTMANUIDIALOGS_H
-#define     CERTMANUIDIALOGS_H
-
-// INCLUDES
 #include <e32base.h>
-
-// FORWARD DECLARATIONS
 
 class CAknGlobalNote;
 class CAknGlobalConfirmationQuery;
 class CAknWaitDialog;
 
-// CLASS DECLARATION
-
 /**
-*  CCertManUIKeeper view control class.
-*
-*
-*/
+ *  CCertManUIWaitDialog can be used to display deleting wait note,
+ *  or progress wait note.
+ */
 class CCertManUIWaitDialog: public CBase
     {
     public: // functions
-
         /**
-        * Default Constructor
-        */
+         * Default constructor.
+         */
         CCertManUIWaitDialog();
 
         /**
-        * Destructor
-        */
+         * Destructor.
+         */
         ~CCertManUIWaitDialog();
 
         /**
-        * Display dialog
-        * @param selector for progress or delete dialog
-        */
-        void StartWaitDialogL(TInt aDialogSelector);
+         * Display wait dialog.
+         * @param Selector for progress or delete dialog, must be either
+         * ECertmanUiDeleteDialog or ECertmanUiWaitDialog.
+         */
+        void StartWaitDialogL( TInt aDialogSelector );
 
         /**
-        * Close dialog.
-        */
-
+         * Closes dialog.
+         */
         void CloseWaitDialogL();
 
-
-    private:    // Functions
-
-
-        static void CleanupWaitDialog(TAny* aAny);
-
-
     private:    // Data
-
-        /**
-        * For wait note
-        */
-        CAknWaitDialog*     iDialog;
-
-        /**
-        *  Flag whether dialof is being displayed
-        */
-        TBool               iDisplayed;
-
+        CAknWaitDialog* iDialog;
+        TInt iOpenCount;
     };
 
-#endif //   CERTMANUIDIALOGS_H
+#endif  // CERTMANUIDIALOGS_H
 
-// End of File

@@ -41,7 +41,7 @@
 #include <e32property.h>
 #include <PSVariables.h>   // Property values
 #include <coreapplicationuisdomainpskeys.h>
-#include <StartupDomainPSKeys.h>
+#include <startupdomainpskeys.h>
 #include <ctsydomainpskeys.h>
 _LIT(BitmapName,"AutoLock.mbm");
 

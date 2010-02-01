@@ -21,7 +21,7 @@
 #include <e32base.h>
 #include <stringpool.h>
 #include <http.h>
-#include <gbautility.h>
+#include <GbaUtility.h>
 #include "M3GPPAuthenticationCallback.h"
 #include "gbauicc.h"
 

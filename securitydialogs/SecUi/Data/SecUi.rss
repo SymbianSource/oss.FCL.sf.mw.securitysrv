@@ -22,7 +22,7 @@
 NAME SECU
 
 #include <eikon.rh>
-#include <eikcore.rsg>
+#include <EIKCORE.rsg>
 
 #include <avkon.loc>
 #include <secui.loc>

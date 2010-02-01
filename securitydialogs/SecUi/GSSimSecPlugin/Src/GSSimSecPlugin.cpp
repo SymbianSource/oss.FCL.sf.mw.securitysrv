@@ -26,7 +26,7 @@
 #include <aknradiobuttonsettingpage.h>
 #include <aknPopup.h>
 #include <aknlists.h>
-#include <RSSSettings.h>
+#include <rsssettings.h>
 #include <AknQueryDialog.h>
 #include <aknnotedialog.h>
 #include <aknViewAppUi.h>

@@ -24,7 +24,7 @@
 #include <http/cecomfilter.h>
 #include <http/framework/httplogger.h>
 
-#include <gbautility.h>
+#include <GbaUtility.h>
 
 class RHTTPResponse;
 class RHTTPTransaction;

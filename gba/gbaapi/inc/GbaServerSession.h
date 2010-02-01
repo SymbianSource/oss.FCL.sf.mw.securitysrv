@@ -20,7 +20,7 @@
 #define GBASERVERSESSION_H_
 
 #include <e32base.h>
-#include <gbautility.h>
+#include <GbaUtility.h>
 
 class RGbaServerSession : public RSessionBase
     {

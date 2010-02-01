@@ -36,7 +36,7 @@
 #include <mmtsy_names.h>
 #include <featmgr.h>
 #include <secui.h>
-#include <SecUiSecurityHandler.h>
+#include <secuisecurityhandler.h>
 
 #include <settingsinternalcrkeys.h>  // KSettingsAutolockStatus
 #include <coreapplicationuisdomainpskeys.h>

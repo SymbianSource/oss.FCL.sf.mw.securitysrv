@@ -208,6 +208,28 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeL()"));
     #endif
+
+    /* if code is still not initialized, then there's no need to ask it. This fixes the error when the RFS requests the code */
+    const TUid KCRUidSCPLockCode = {0x2002677B};
+    const TUint32 KSCPLockCodeDefaultLockCode = 0x00000001;
+	
+    CRepository* repository = CRepository::NewL(KCRUidSCPLockCode);
+    TInt currentLockStatus = -1;
+    TInt res=-1;
+
+    res = repository->Get(KSCPLockCodeDefaultLockCode , currentLockStatus);
+    #if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+    RDebug::Printf( "%s %s (%u) currentLockStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, currentLockStatus );
+    #endif
+    delete repository;
+    if(res==0 && currentLockStatus==1)
+        {
+        // code is the default one; no need to request it.
+        return ETrue;
+        }
+    /* end check for default code */
+
     // Destructor sets thisDestroyed to ETrue
     TBool thisDestroyed( EFalse );
     iDestroyedPtr = &thisDestroyed;

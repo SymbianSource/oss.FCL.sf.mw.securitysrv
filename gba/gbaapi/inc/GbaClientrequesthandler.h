@@ -20,7 +20,7 @@
 #define GBACLIENTREQUESTHANDLER_H
 
 #include <e32base.h>
-#include "gbautility.h"
+#include <GbaUtility.h>
 
 // CLASS DECLARATION
 class RGbaServerSession;
