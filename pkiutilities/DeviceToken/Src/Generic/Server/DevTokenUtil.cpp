@@ -20,6 +20,7 @@
 #include <s32file.h>
 #include "DevTokenUtil.h"
 
+
 /// Read/write drive the stores reside on
 _LIT(KFileStoreStandardDrive, "C:");
 /// Rom drive where the initial store data is
@@ -59,18 +60,23 @@ void PanicServer(ETokenTypeServerPanic aPanicCode)
 // ---------------------------------------------------------------------------
 // 
 TBool FileUtils::ExistsL(RFs& aFs, const TDesC& aFile)
-    {
+    {      
     TBool result = EFalse;
-    TBool open;
-    TInt err = aFs.IsFileOpen(aFile, open);
-
-    if (err == KErrNone)
+    TUint attributes;
+    
+    TInt err = aFs.Att( aFile, attributes );
+           
+    if ( err == KErrNone )
         {
         result = ETrue;
         }
-    else if (err != KErrNotFound && err != KErrPathNotFound)
+    else if ( err == KErrNotFound || err == KErrPathNotFound  ) 
         {
-        User::Leave(err);
+        result = EFalse;
+        }
+    else 
+        {
+        User::Leave( err );
         }
 
     return result;

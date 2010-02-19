@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -264,8 +264,6 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
 
         void MapTlsProviderOperation( TUint aOperation );
 
-        TPtrC CutCertificateField(const TDesC&  aField);
-
         /**
         * Completes client's request
         */
@@ -275,7 +273,7 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
         * Checks that are two PINs the same
         */
         void VerifyPinsL();
-        
+
     private:    // Data
         RMessagePtr2 iMessagePtr;
         TSecurityDialogNotification iOperation;
@@ -302,7 +300,7 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
         CCertAttributeFilter* iFilter;
         RFs iFs;
         CCTCertInfo* iCertInfo;
-        CDesCArrayFlat*  iCertArray;        
+        CDesCArrayFlat*  iCertArray;
         RMPointerArray<CCTCertInfo> iCertInfos;
         HBufC8* iCertBuf;
         MCTWritableCertStore *iTrustedSiteCertStore;
@@ -322,12 +320,12 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
 
         TSaveCertInput iSaveCertInput;
         TValidationError iAuthFailReason;
-        
+
         TBool& iDeleted;
-        
+
         CAknQueryDialog* iQueryDialog;
         TBool iQueryDialogDeleted;
-        
+
         CCTPinQueryDialog* iPinQueryDialog;
         TBool iPinQueryDialogDeleted;
         };

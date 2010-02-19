@@ -31,6 +31,7 @@
 #include <AknQueryDialog.h>
 #include <featmgr.h>
 #include <SCPClient.h>
+#include <apgcli.h>
 
 //  LOCAL CONSTANTS AND MACROS
 	/*****************************************************
@@ -224,6 +225,33 @@ void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMes
 //
 void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const RMessagePtr2& aMessage)
     {
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
+	#endif
+	TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
+	const TUid KAutolockUid = { 0x100059B5 };
+	TApaTask task( taskList.FindApp( KAutolockUid ) );
+	if ( !task.Exists() )
+		{
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
+		#endif
+		RApaLsSession ls;                   
+		User::LeaveIfError(ls.Connect());   
+		CleanupClosePushL(ls);         
+		
+		CApaCommandLine* commandLine = CApaCommandLine::NewLC();
+		commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
+		commandLine->SetCommandL( EApaCommandRun );
+		
+		// Try to launch the application.        
+		User::LeaveIfError(ls.StartApp(*commandLine));
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) autolock.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x2 );
+		#endif
+		
+		CleanupStack::PopAndDestroy(2); // commandLine, ls
+		}
 	/*****************************************************
 	*	Series 60 Customer / ETel
 	*	Series 60  ETel API

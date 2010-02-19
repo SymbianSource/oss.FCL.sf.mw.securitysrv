@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -481,8 +481,8 @@ TInt CWimSecModule::GetPINModulesL( TRequestStatus& aStatus )
     
     if ( pinCount )
         {
-        TPinAddress* pinLst = new( ELeave ) TPinAddress[pinCount];  
-        CleanupStack::PushL( TCleanupItem( Cleanup, pinLst ) );
+        TPinAddress* pinLst = new( ELeave ) TPinAddress[ pinCount ];
+        CleanupStack::PushL( TCleanupItem( CleanupPinAddressList, pinLst ) );
         
         status = iClientSession->PINRefs( iReference, iPinLstAddr, pinLst,
                                         ( TText8 )pinCount );
@@ -549,9 +549,8 @@ TInt CWimSecModule::GetPINModulesL()
     
     if ( pinCount )
         {
-        TPinAddress* pinLst = new( ELeave ) TPinAddress[pinCount];  
-        
-        CleanupStack::PushL( TCleanupItem( Cleanup, pinLst ) );
+        TPinAddress* pinLst = new( ELeave ) TPinAddress[ pinCount ];
+        CleanupStack::PushL( TCleanupItem( CleanupPinAddressList, pinLst ) );
         
         status = iClientSession->PINRefs( iReference, iPinLstAddr, pinLst,
                                         ( TText8 )pinCount );
@@ -610,14 +609,15 @@ TInt CWimSecModule::GetPINModulesL()
 
 
 // -----------------------------------------------------------------------------
-// CWimSecModule::Cleanup()
-// Handles cleanup for an object which is not derived from CBase
+// CWimSecModule::CleanupPinAddressList()
+// Handles cleanup of an TPinAddress array
 // -----------------------------------------------------------------------------
 //
-void CWimSecModule::Cleanup( TAny* aObject )
+void CWimSecModule::CleanupPinAddressList( TAny* aObject )
     {
     _WIMTRACE ( _L( "CWimSecModule::Cleanup()" ) );
-    delete aObject;
+    TPinAddress* pinLst = static_cast< TPinAddress* >( aObject );
+    delete[] pinLst;
     aObject = NULL;
     }
 

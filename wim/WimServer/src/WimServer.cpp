@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -38,7 +38,7 @@
 #include    <PSVariables.h>     // Property values
 
 #ifdef WIMSERVER_SHUTDOWN
-const TInt KServerShutdownDelay = 0x200000; 
+const TInt KServerShutdownDelay = 0x200000;
 #endif
 // Initialize static variables. These variables are static because static
 // callback functions in CWimCallBack.
@@ -60,23 +60,23 @@ static void StartServerL()
     _WIMTRACE(_L("WIM | WIMServer | StartServer | Enter"));
     User::LeaveIfError( User::RenameThread( KWIMServerName ) );
     _WIMTRACE(_L("WIM | WIMServer | StartServer | Create AS"));
- 
+
     CActiveScheduler* s = new(ELeave) CActiveScheduler;
-    CleanupStack::PushL( s );    
+    CleanupStack::PushL( s );
 
     CActiveScheduler::Install( s );
-    
+
     _WIMTRACE(_L("WIM | WIMServer | StartServer | Create server"));
-        
+
     CWimServer::NewL();
-      
+
     _WIMTRACE(_L("WIM | WIMServer | StartServer | Notify client"));
     // Notify Client that server has starter
-    RProcess::Rendezvous( KErrNone );       
+    RProcess::Rendezvous( KErrNone );
 
     _WIMTRACE(_L("WIM | WIMServer | StartServer | Start ActiveScheduler"));
     CActiveScheduler::Start();
-       
+
     CleanupStack::PopAndDestroy( s );
     }
 
@@ -91,17 +91,17 @@ GLDEF_C TInt E32Main()
     {
     __UHEAP_MARK;
     _WIMTRACE(_L("WIM | WIMServer | E32Main | Begin"));
-  
+
     CTrapCleanup* cleanup=CTrapCleanup::New();
     TInt r=KErrNoMemory;
-    
+
     if ( cleanup )
         {
         TRAP( r, StartServerL() );
         delete cleanup;
         }
-    _WIMTRACE(_L("WIM | WIMServer | E32Main Memory leak checking line"));    
-    __UHEAP_MARKEND;    
+    _WIMTRACE(_L("WIM | WIMServer | E32Main Memory leak checking line"));
+    __UHEAP_MARKEND;
     _WIMTRACE(_L("WIM | WIMServer | E32Main Memory checking passed"));
     return r;
     }
@@ -137,10 +137,10 @@ void CWimServer::ConstructL()
     iWimSessionRegistry = CWimSessionRegistry::NewL();
     iWimTrustSettingsStore = CWimTrustSettingsStore::NewL();
     iWimTimer = CWimTimer::NewL( this );
-#ifdef WIMSERVER_SHUTDOWN    
+#ifdef WIMSERVER_SHUTDOWN
     iShutdown.ConstructL();
     iShutdown.Start();
-#endif    
+#endif
      _WIMTRACE(_L("WIM | WIMServer | CWimServer::ConstructL | End"));
     }
 
@@ -179,7 +179,7 @@ CWimServer::~CWimServer()
         WIMI_CloseDownReq();
         _WIMTRACE(_L("WIM | WIMServer | CWimServer::~CWimServer | WIMI_CloseDownReq"));
         }
-    //iWimTrustSettingsStore->CloseD();
+
     delete iWimTrustSettingsStore;
     delete iWimSessionRegistry;
     delete iWimTimer;
@@ -272,14 +272,14 @@ void CWimServer::WimInitialize( const RMessage2& aMessage )
 // Set iWimInitialized flag
 // -----------------------------------------------------------------------------
 //
-void CWimServer::SetWimInitialized( TBool aInitialized, TInt aStatus )
+void CWimServer::SetWimInitialized( TBool aInitialized, TInt aWimStatus )
     {
     _WIMTRACE2(_L("WIM|WIMServer|CWimServer::SetWimInitialized|Value=%d"), aInitialized);
     iWimInitialized = aInitialized;
 
     if ( !aInitialized )
         {
-        iWimStatus = aStatus;
+        iWimStatus = aWimStatus;
         }
     }
 
@@ -348,11 +348,9 @@ void CWimServer::InitializeCallbackFunctions()
 void CWimServer::PanicServer( TWimServerPanic aPanic )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimServer::PanicServer | Begin"));
-    // Set server state to EWimServerNotRunning
-    TInt retVal = RProperty::Set( KUidSystemCategory,
-                                  KWimServerUid.iUid,
-                                  EWimServerNotRunning );
-    retVal = retVal; // To prevent warning
+
+    // Set server state to EWimServerNotRunning.
+    (void)RProperty::Set( KUidSystemCategory, KWimServerUid.iUid, EWimServerNotRunning );
 
     User::Panic( KWIMServerName, aPanic );
     }
@@ -724,16 +722,16 @@ WIMI_STAT CWimServer::ResolveExportPublicReqL( const RMessage2& aMsg,
     	return callStatus;
         }
     free_WIMI_RefList_t( clicertRefList );
-    
+
     if ( clicertCount > 0 )
         {
     	usage = WIMI_CU_Client;
-        }    
+        }
     else
         {
     	TUint8 cacertCount = 0;
         WIMI_RefList_t cacertRefList = NULL;
-    
+
         callStatus = WIMI_GetCertificateListByKeyHash( ( TUint8* ) keyIdBuf.Ptr(),
                                             WIMI_CU_CA,
                                             &cacertCount,
@@ -753,7 +751,7 @@ WIMI_STAT CWimServer::ResolveExportPublicReqL( const RMessage2& aMsg,
         	aMsg.Complete( KErrBadHandle );
             }
         }
-    
+
     aUsage = static_cast< TUint8 >( usage );
 
     _WIMTRACE2(_L("CWimServer::ResolveExportPublicReqL | End, heap=%d"),
@@ -919,7 +917,7 @@ void CWimServer::SetRefreshNotificationReceived( TBool aValue )
 
 // -----------------------------------------------------------------------------
 // CWimServer::TimerExpired()
-// Interface derived from 
+// Interface derived from MWimTimerListener
 // -----------------------------------------------------------------------------
 //
 void CWimServer::TimerExpired()
@@ -928,18 +926,17 @@ void CWimServer::TimerExpired()
     WIMI_Ref_pt pWimRefTemp = NULL;
 
     pWimRefTemp = WIMI_GetWIMRef( 0 );
- 
+
     if ( pWimRefTemp )  // Close the WIM
         {
         WIMI_CloseWIM( pWimRefTemp );
         free_WIMI_Ref_t( pWimRefTemp );
         }
-    //SetWimInitialized( EFalse );
     }
 
 // -----------------------------------------------------------------------------
 // CWimServer::WimTimer()
-// Return the pointer of Timer 
+// Return the pointer of Timer
 // -----------------------------------------------------------------------------
 //
 CWimTimer* CWimServer::WimTimer()
@@ -950,16 +947,16 @@ CWimTimer* CWimServer::WimTimer()
 
 // -----------------------------------------------------------------------------
 // CWimServer::CancelWimInitialize()
-// Cancel Wim Initialize 
+// Cancel Wim Initialize
 // -----------------------------------------------------------------------------
 //
 void CWimServer::CancelWimInitialize( const RMessage2& aMessage )
     {
 	 if ( !iWimInitialized )
 		 {
-		 CWimCallBack::CancelWimInitialize();	
+		 CWimCallBack::CancelWimInitialize();
 		 }
-	aMessage.Complete( KErrNone );	 
+	aMessage.Complete( KErrNone );
     }
 
 

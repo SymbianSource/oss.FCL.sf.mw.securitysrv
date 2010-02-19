@@ -829,7 +829,14 @@ TInt C3GPPBootstrapHttpHandler::HandleAuthorizationChallengeL( RHTTPTransaction 
            {
            THTTPHdrVal requestUri;
            RHTTPTransactionPropertySet propSet = aTransaction.PropertySet();
-           propSet.Property( stringPool.StringF(HTTP::EUri,RHTTPSession::GetTable()), requestUri );
+           TBool exist = propSet.Property( stringPool.StringF(HTTP::EUri,RHTTPSession::GetTable()), requestUri );
+           
+           if(!exist)
+               {
+               CleanupStack::PopAndDestroy( pushCount ); 
+               return KErrNotFound;
+               }
+           
            //save rsp auth calcuation
            //Save the string handle for rsp auth checking
            //Close the previous handle, then set new one
@@ -906,7 +913,14 @@ TInt C3GPPBootstrapHttpHandler::FindHeaderPartToUseL( RHTTPTransaction aTransact
     {
     THTTPHdrVal fieldVal;// The name of the current field.
     THTTPHdrVal hdrVal;//A scratch hdrVal
-    headers.GetField(wwwAuthenticate, i, fieldVal);
+    
+    TInt error = headers.GetField(wwwAuthenticate, i, fieldVal);
+    
+    if(error != KErrNone)
+        {
+        return KErrNotFound;
+        }
+    
     switch ( fieldVal.StrF().Index(RHTTPSession::GetTable() ) )
         {
         case HTTP::EDigest:

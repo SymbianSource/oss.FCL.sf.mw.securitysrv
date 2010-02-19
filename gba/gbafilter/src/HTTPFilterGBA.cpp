@@ -298,6 +298,7 @@ void CHTTPFilterGBA::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent& aE
             GBA_TRACE_DEBUG(("Event: EFailed"));			
 			Cleanup( aTransaction );		
 		}
+		break;
 		default: 
 		{
             GBA_TRACE_DEBUG_NUM(("Unknow Event: ID - %d" ), aEvent.iStatus );
@@ -752,7 +753,9 @@ TInt CHTTPFilterGBA::FindHeaderPartToUseL(RHTTPTransaction aTransaction) const
     {
 	THTTPHdrVal fieldVal;// The name of the current field.
 	THTTPHdrVal hdrVal;//A scratch hdrVal
-	headers.GetField(wwwAuthenticate, ii, fieldVal);
+	TInt error = headers.GetField(wwwAuthenticate, ii, fieldVal);
+	if( error != KErrNone )
+	    return lastGoodBasic;
 	TInt x = fieldVal.StrF().Index(RHTTPSession::GetTable());
 	GBA_TRACE_DEBUG_NUM((" FindHeaderPartToUseL part no:1 = %d"), x );
 	switch (fieldVal.StrF().Index(RHTTPSession::GetTable()))

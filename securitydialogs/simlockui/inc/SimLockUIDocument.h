@@ -25,8 +25,8 @@
 #define __SIMLOCKUI_DOCUMENT_H__
 
 // INCLUDES
-#include <akndoc.h>
-#include <RMmCustomAPI.h> // RMmCustomAPI, RTelServer, RMobilePhone
+#include <AknDoc.h>
+#include <rmmcustomapi.h> // RMmCustomAPI, RTelServer, RMobilePhone
 
 // CONSTANTS
 

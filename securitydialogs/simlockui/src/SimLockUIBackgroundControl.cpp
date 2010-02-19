@@ -24,17 +24,17 @@
 
 // System Includes
 #include <coemain.h>
-#include <aknsdrawutils.h>                      // AknsDrawUtils
-#include <aknsskininstance.h>                   // MAknsSkinInstance
-#include <aknscontrolcontext.h>                 // MAknsControlContext
-#include <aknsbasicbackgroundcontrolcontext.h>  // CAknsBasicBackgroundControlContext
-#include <AknLayoutScalable_Avkon.cdl.h>        // AknLayoutScalable_Avkon
-#include <aknutils.h>                           // AknsUtils
+#include <AknsDrawUtils.h>                      // AknsDrawUtils
+#include <AknsSkinInstance.h>                   // MAknsSkinInstance
+#include <AknsControlContext.h>                 // MAknsControlContext
+#include <AknsBasicBackgroundControlContext.h>  // CAknsBasicBackgroundControlContext
+#include <aknlayoutscalable_avkon.cdl.h>        // AknLayoutScalable_Avkon
+#include <AknUtils.h>                           // AknsUtils
 
 // User Includes
-#include "SimLockUIBackgroundControl.h"
-#include "SimLockISAServerDefinitions.h"
-#include <SimLockUI.rsg>
+#include "simlockuibackgroundcontrol.h"
+#include "simlockisaserverdefinitions.h"
+#include <simlockui.rsg>
 
 static const TInt KSkinLayoutOption = 2;
 

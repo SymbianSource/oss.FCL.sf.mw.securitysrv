@@ -21,12 +21,12 @@
 * ============================================================================
 */
 
-#ifndef __SimLockUI_HRH__
-#define __SimLockUI_HRH__
+#ifndef __simlockui_HRH__
+#define __simlockui_HRH__
 
 #define SIMLOCK_UI_UID3               0x2000B0FA
 #define SEC_ATT_PASSWORD_MAX_BUFFER   32
 
-#endif // __SimLockUI_HRH__
+#endif // __simLockui_HRH__
 
 // End of file.

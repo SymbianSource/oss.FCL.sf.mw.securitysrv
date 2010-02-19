@@ -26,7 +26,7 @@
 
 // System Includes
 #include <e32base.h>
-#include <Etel3rdParty.h> // CTelephony members
+#include <etel3rdparty.h> // CTelephony members
 
 // Forward Declarations
 class CPeriodic;

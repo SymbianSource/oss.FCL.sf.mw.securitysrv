@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -215,13 +215,13 @@ void CSwimReaderIF::Notify( TScardServiceStatus aStatus )
     }
 
 // -----------------------------------------------------------------------------
-// CSwimReaderIF::Open
+// CSwimReaderIF::OpenAsync
 // Uses CSwimReader::WakeUpL to initialize a connection to the ETEL server.
 // -----------------------------------------------------------------------------
 //
-void CSwimReaderIF::Open( TRequestStatus& aStatus )
+void CSwimReaderIF::OpenAsync( TRequestStatus& aStatus )
     {
-    _WIMTRACE(_L("WIM|SwimReader|CSwimReaderIF::Open|Begin"));
+    _WIMTRACE(_L("WIM|SwimReader|CSwimReaderIF::OpenAsync|Begin"));
     iClientStatus = &aStatus;
     aStatus = KRequestPending;
     

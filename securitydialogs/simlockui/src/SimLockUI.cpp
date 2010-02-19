@@ -1,6 +1,6 @@
 /*
 * ============================================================================
-*  Name        : SimLockUI.cpp
+*  Name        : simlockui.cpp
 *  Part of     : Sim Lock UI Application
 *  Description : Sim Lock UI App framework code
 *  Version     : 
@@ -25,7 +25,7 @@
 #include <eikstart.h>
 
 // User Includes
-#include "SimLockUIApplication.h"
+#include "simlockuiapplication.h"
 
 // ---------------------------------------------------------------------------
 // NewApplication

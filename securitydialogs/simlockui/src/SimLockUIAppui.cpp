@@ -24,24 +24,24 @@
 // Platform Includes
 #include <avkon.hrh>
 #include <aknnotewrappers.h>    // CAknNoteDialog
-#include <stringloader.h>       // StringLoader
+#include <StringLoader.h>       // StringLoader
 #include <exterror.h>           // KErrGsm0707OperationNotAllowed
 #include <eikspane.h>     // CEikStatusPane
 #include <aknmessagequerydialog.h> // CAknMessageQueryDialog
 #include <e32base.h>
 #include <e32property.h> //Rproperty
 // Local Includes
-#include "SimLockISAServerDefinitions.h"
-#include "SimLockUI.pan"
-#include "SimLockUIAppUi.h"
-#include "SimLockUIBackgroundControl.h"
-#include "SimLockUI.hrh"
-#include "SimLockDataHandlingDelegate.h"
-#include "SimLockTelephonyProxy.h"
-#include "SimLockUiKeys.h"
+#include "simlockisaserverdefinitions.h"
+#include "simlockui.pan"
+#include "simlockuiappui.h"
+#include "simlockuibackgroundcontrol.h"
+#include "simlockui.hrh"
+#include "simlockdatahandlingdelegate.h"
+#include "simlocktelephonyproxy.h"
+#include "simlockuikeys.h"
 
 // Resource Includes
-#include <SimLockUI.rsg>
+#include <simlockui.rsg>
 
 // ---------------------------------------------------------------------------
 // CSimLockUIAppUi::CSimLockUIAppUi

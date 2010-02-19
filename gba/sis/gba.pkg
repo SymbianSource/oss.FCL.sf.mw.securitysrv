@@ -17,7 +17,7 @@
 &EN
 
 ; Header
-#{"GBA (Beta)"},(0x2000F867), 0, 3, 0, TYPE=SA,RU
+#{"GBA (Beta)"},(0x2000F867), 0, 4, 0, TYPE=SA,RU
 
 ; Localised Vendor name
 %{"Nokia"}

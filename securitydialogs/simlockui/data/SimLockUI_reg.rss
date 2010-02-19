@@ -24,9 +24,9 @@
 //SimLockUI application's registration resource file 
 
 #include <appinfo.rh>
-#include <SimLockUI.rsg>
+#include <simlockui.rsg>
 
-#include "SimLockUI.hrh"
+#include "simlockui.hrh"
 
 UID2 KUidAppRegistrationResourceFile
 UID3 SIMLOCK_UI_UID3

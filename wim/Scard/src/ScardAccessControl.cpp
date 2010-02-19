@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -693,7 +693,7 @@ TBool CScardAccessControl::InitialiseReader(
             EFileLoggingModeAppend, 
             _L( "CScardAccessControl::InitialiseReader: Opening Reader\n" ) );
 #endif
-        iReader->Open( iStatus );
+        iReader->OpenAsync( iStatus );
         }
 #ifdef _DEBUG    
     else 

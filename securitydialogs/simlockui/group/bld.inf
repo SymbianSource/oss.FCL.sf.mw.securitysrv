@@ -27,16 +27,16 @@
 PRJ_MMPFILES
 
 // Project File
-SimLockUI.mmp
+simlockui.mmp
 
 // Icon File
 
 PRJ_EXPORTS
 // Export IBY files
-..\rom\simlockui.iby            CORE_MW_LAYER_IBY_EXPORT_PATH( simlockui.iby) 
-..\rom\simlockui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)   
+../rom/simlockui.iby            CORE_MW_LAYER_IBY_EXPORT_PATH( simlockui.iby) 
+../rom/simlockui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)   
 
 // For EE texts
-..\rom\simlockui_resources.iby  CORE_APP_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)    		
+../rom/simlockui_resources.iby  CORE_APP_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)    		
 
-..\inc\simlockuikeys.h                  \epoc32\include\oem\simlockuikeys.h
+../inc/simlockuikeys.h                  /epoc32/include/oem/simlockuikeys.h
