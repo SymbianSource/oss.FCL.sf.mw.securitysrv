@@ -18,7 +18,7 @@
 
 #include <startupdomainpskeys.h>
 #include "DevEncStarterEngine.h"
-#include "DevEncStarterdef.h"
+#include "DevEncStarterDef.h"
 #include "DevEncLog.h"
 #include "DevEncStarterMmcObserver.h"
 #include "DevEncUids.hrh"

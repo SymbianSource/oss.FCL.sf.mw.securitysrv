@@ -26,7 +26,7 @@
 #include <w32std.h>
 //#include <akncapserverclient.h>	// for RAknUiServer
 
-#include "DevEncStarterdef.h"
+#include "DevEncStarterDef.h"
 #include "DevEncStarterAppStarter.h"
 
 // FORWARD DECLARATIONS

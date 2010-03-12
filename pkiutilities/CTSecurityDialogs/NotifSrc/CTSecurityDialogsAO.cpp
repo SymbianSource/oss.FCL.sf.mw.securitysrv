@@ -1435,7 +1435,8 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
 void CCTSecurityDialogsAO::ShowNoTrustDialogL()
     {
     CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
-    TInt resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+    TInt dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+    TInt promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
     TBool showPermAccept = ETrue;
 
     if( iAuthFailReason == ESignatureInvalid || iAuthFailReason == ECertificateRevoked )
@@ -1462,33 +1463,39 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
             if( !cn )
                 {
                 // Couldn't retrieve CN from certificate
-                resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
                 }
             else if( iServerName->Des() != cn->Des() )
                 {
                 // Domain name doesn't match with CN
-                resourceid = R_WIM_NO_TRUST_QUERY_SITE;
+                dialogResourceId = R_WIM_NO_TRUST_QUERY_SITE;
+                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_SITE;
                 }
             else if( iAuthFailReason == EDateOutOfRange )
                 {
                 // Certificate is out of date
-                resourceid = R_WIM_NO_TRUST_QUERY_OOD;
+                dialogResourceId = R_WIM_NO_TRUST_QUERY_OOD;
+                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_OOD;
                 showPermAccept = EFalse;
                 }
             else
                 {
                 // Otherwise show general untrusted note
-                resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
                 }
             }
         else
             {
             // Untrusted certificate
-            resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+            dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+            promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
             }
 
         // No "Accept Permanently" option if certificate is out of date, or
-        // if domain name is not defined.
+        // if domain name is not defined, or if trusted site store failed to
+        // open (and it's not possible to save the server certificate).
         const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
         const TTime& startValue = validityPeriod.Start();
         const TTime& finishValue = validityPeriod.Finish();
@@ -1496,14 +1503,17 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
         current.UniversalTime();
 
         if( (( startValue > current ) || ( finishValue < current )) ||
-                ( iServerName->Des().Length() == 0 ) )
+                ( iServerName->Des().Length() == 0 ) ||
+                ( !iTrustedSiteCertStore ) )
             {
             showPermAccept = EFalse;
             }
 
         iQueryDialog = new( ELeave ) CCTNoTrustQuery( *this, iRetValue, iStatus, iServerName,
                     showPermAccept, iQueryDialogDeleted );
-        iQueryDialog->ExecuteLD( resourceid );
+        HBufC* prompt = StringLoader::LoadLC( promptResourceId, *iServerName );
+        iQueryDialog->ExecuteLD( dialogResourceId, *prompt );
+        CleanupStack::PopAndDestroy( prompt );
         }
 
     CleanupStack::PopAndDestroy( cert );
@@ -2455,6 +2465,10 @@ void CCTSecurityDialogsAO::DoHandleSaveServerCertL()
         iNextStep = EAddTrustedSite;
         iStatus = KRequestPending;
         SetActive();
+        }
+    else
+        {
+        User::Leave( KErrGeneral );
         }
     }
 

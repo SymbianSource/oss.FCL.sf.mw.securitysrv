@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -505,7 +505,7 @@ RESOURCE DIALOG r_wim_no_trust_query_ood
             control= AVKON_CONFIRMATION_QUERY
                 {
                 layout = EConfirmationLayout;
-                label = qtn_ics_ssl_conf_q_accept_ood;
+                // label defined dynamically, using host name parameter
                 };
             }
         };
@@ -534,7 +534,7 @@ RESOURCE DIALOG r_wim_no_trust_query_untrusted
             control= AVKON_CONFIRMATION_QUERY
                 {
                 layout = EConfirmationLayout;
-                label = qtn_ics_ssl_conf_q_accept_untrusted;
+                // label defined dynamically, using host name parameter
                 };
             }
         };
@@ -564,7 +564,7 @@ RESOURCE DIALOG r_wim_no_trust_query_site
             control= AVKON_CONFIRMATION_QUERY
                 {
                 layout = EConfirmationLayout;
-                label = qtn_ics_ssl_conf_q_accept_site;
+                // label defined dynamically, using host name parameter
                 };
             }
         };
@@ -875,5 +875,11 @@ RESOURCE TBUF r_qtn_sn_new_phone_keystore { buf=qtn_sn_new_phone_keystore; }
 RESOURCE TBUF r_qtn_httpsec_query_perm_accept_text { buf=qtn_httpsec_query_perm_accept_text; }
 
 RESOURCE TBUF r_qtn_cm_site { buf=qtn_cm_site; }
+
+RESOURCE TBUF r_qtn_ics_ssl_conf_q_accept_site { buf=qtn_ics_ssl_conf_q_accept_site; }
+
+RESOURCE TBUF r_qtn_ics_ssl_conf_q_accept_ood { buf=qtn_ics_ssl_conf_q_accept_ood; }
+
+RESOURCE TBUF r_qtn_ics_ssl_conf_q_accept_untrusted { buf=qtn_ics_ssl_conf_q_accept_untrusted; }
 
 // End of file

@@ -31,7 +31,7 @@
 #include <gsfwviewuids.h>
 #include <gsbaseview.h>
 #include <secuisecuritysettings.h>
-#include <rsssettings.h>
+#include <RSSSettings.h>
 
 // CONSTANTS
 const TInt KMaxStringLength = 80;

@@ -22,7 +22,7 @@
 
 #include <aknlists.h>
 #include <etelmm.h>
-#include <rsssettings.h>
+#include <RSSSettings.h>
 #include <StringLoader.h>
 #include <featmgr.h>
 #include <csxhelp/cp.hlp.hrh>

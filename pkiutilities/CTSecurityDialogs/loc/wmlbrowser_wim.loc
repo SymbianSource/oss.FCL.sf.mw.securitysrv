@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -286,29 +286,35 @@
 
 
 //d:Confirmation query text shown if the server certificate contains 
-//d:site name that does not match to the one that was given in request the query contains text
+//d:site name that does not match to the one that was given in request.
+//d:%U stands for the name of the site where the connection is requested.
+//d:Displaying the site name is a security feature.
 //l:popup_note_window
 //w:
 //r:3.2
 //
-#define qtn_ics_ssl_conf_q_accept_site		"This site has sent a certificate with different site name than requested. Accept anyway?"
+#define qtn_ics_ssl_conf_q_accept_site          "Service %U has sent a certificate with different site name than requested. Accept anyway?"
 
 
 //d:Confirmation query text shown if the server certificate is out-of date
+//d:%U stands for the name of the site where the connection is requested.
+//d:Displaying the site name is a security feature.
 //l:popup_note_window
 //w:
 //r:3.2
 //
-#define qtn_ics_ssl_conf_q_accept_ood		"This site has sent a certificate which is out of date. Accept anyway?"
+#define qtn_ics_ssl_conf_q_accept_ood           "Service %U has sent a certificate which is out of date. Accept anyway?"
 
 
-//d:Confirmation query text shown if the server certificate issued by unknown 
+//d:Confirmation query text shown if the server certificate issued by unknown
 //d:Certification Authority
+//d:%U stands for the name of the site where the connection is requested.
+//d:Displaying the site name is a security feature.
 //l:popup_note_window
 //w:
 //r:3.2
 //
-#define qtn_ics_ssl_conf_q_accept_untrusted		"This site has sent an untrusted certificate. Accept anyway?"
+#define qtn_ics_ssl_conf_q_accept_untrusted     "Service %U has sent an untrusted certificate. Accept anyway?"
 
 //d:Information note text shown if the server certificate has an invalid signature
 //d:Softkeys are SK1 'Close' (text_softkey_close) and SK2 'Details' (text_softkey_details)

@@ -30,7 +30,7 @@ _LIT( KEnd, "Exit <----");
     void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC &arg4);
     void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC8 &arg4);
     void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const char *arg4, const TInt &aNum);
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC8 &arg4, const TInt &aNum);
+    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC &arg4, const TInt &aNum);
     void DebugBinary(const TDesC8 &buf);
     void debugTTime( TTime& aTime );
     void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const char *arg4);

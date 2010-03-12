@@ -593,9 +593,6 @@ void CHTTPFilterGBA::CheckHeadersL(  RHTTPTransaction& aTrans )
 	                //Default accesspoint will be used - iAPID = -1
 	                iGbaInputParams.iAPID = -1;
                     
-	                //Cancel the transaction
-	                aTrans.Cancel();
-                    
 	                // fetch credentials from bootstrapper
 	                iGbaUtility->Bootstrap(iGbaInputParams, iGbaOutputParams);
 	                iBootstrapCount++;
@@ -624,6 +621,8 @@ void CHTTPFilterGBA::CheckHeadersL(  RHTTPTransaction& aTrans )
                         propSet.SetPropertyL( iPasswordStr, password );
                         CleanupStack::PopAndDestroy(&password);
                         CleanupStack::PopAndDestroy(&username);
+                        //Cancel the http transaction
+                        aTrans.Cancel();
                         // Re-submit the http request with much needed credentials
                         aTrans.SubmitL(); 
                         }

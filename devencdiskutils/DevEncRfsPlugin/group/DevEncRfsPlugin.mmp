@@ -33,7 +33,7 @@ SOURCEPATH  ../src
 SOURCE      DevEncRfsPlugin.cpp 
 SOURCE      DevEncRfsPluginImp.cpp 
 
-START RESOURCE ..\data\200025B6.rss
+START RESOURCE ../data/200025B6.rss
 #ifdef SYMBIAN_SECURE_ECOM 
   TARGET DevEncRfsPlugin.rsc
 #endif 

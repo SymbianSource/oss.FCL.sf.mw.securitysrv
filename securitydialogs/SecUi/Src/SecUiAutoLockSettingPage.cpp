@@ -51,7 +51,6 @@ CAutoLockSettingPage::CAutoLockSettingPage(TInt aResourceId, TInt& aCurrentSelec
 
 	{
         iOriginalIndex = aCurrentSelectionItem;
-	iPrevSelectionItem = aCurrentSelectionItem;
 	}
 
 //
@@ -168,10 +167,7 @@ void CAutoLockSettingPage::HandlePointerEventL(const TPointerEvent& aPointerEven
          	//only take into account the "Up" event. Otherwise we'll end up having 2 dialogs.
          	if(aPointerEvent.iType == TPointerEvent::EButton1Up)
          	{
-		if(iPrevSelectionItem!=cur)
-			iPrevSelectionItem=cur;
-		else
-         	{
+
          	    //only react to the event if the pen is actually inside the dialog.
          	    if(ListBoxControl()->Rect().Contains(aPointerEvent.iPosition))
          	        {
@@ -213,7 +209,6 @@ void CAutoLockSettingPage::HandlePointerEventL(const TPointerEvent& aPointerEven
 		    }
          	}
         }
-    }
 //
 // ---------------------------------------------------------
 // CAutolockQuery::CAutolockQuery()
