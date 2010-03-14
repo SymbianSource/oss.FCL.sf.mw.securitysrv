@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -15,18 +15,14 @@
 *
 */
 
-
 #ifndef SECMODUISYNCWRAPPER_H
 #define SECMODUISYNCWRAPPER_H
 
-
-// INCLUDES
 #include <e32base.h>
 #include <f32file.h>
 #include <ct/rcpointerarray.h>
 #include <ct/rmpointerarray.h>
 
-// FORWARD DECLERATIONS
 class MCTToken;
 class MCTAuthenticationObject;
 class MCTAuthenticationObjectList;
@@ -36,7 +32,7 @@ class CCTKeyInfo;
 class TCTKeyAttributeFilter;
 class MCTKeyStore;
 class TCTTokenObjectHandle;
-// CLASS DECLARATION
+
 
 /**
 *  class CSecModUISyncWrapper
@@ -47,88 +43,66 @@ class TCTTokenObjectHandle;
 */
 class CSecModUISyncWrapper : public CActive
     {
-    public:
+    public:     // Constructors and destructor
 
-        /**
-        * Two-phased constructor.
-        */
         static CSecModUISyncWrapper* NewLC();
-
-        /**
-        * Two-phased constructor.
-        */
         static CSecModUISyncWrapper* NewL();
-
-        /**
-        * Destructor.
-        */
         virtual ~CSecModUISyncWrapper();
 
-    public: // New functions
-
-        /**
-        * TInt ListL
-        * @since S60 2.0
-        * @param aStore reference to store where operation is done.
-        * @param aArray certificates are stored here.
-        * @param aFilter Information on what kind certificates are looked.
-        * @return TInt Status Symbian's API's call.
-        */
-        
+    public:     // New functions
 
         TInt Initialize(CUnifiedKeyStore& aKeyStore );
 
         TInt OpenWIM();
 
         TInt GetAuthObjectInterface(
-            MCTToken& aToken, 
+            MCTToken& aToken,
             MCTTokenInterface*& aTokenInterface);
 
-        TInt ListAuthObjects( 
-            MCTAuthenticationObjectList& aAuthObjList, 
+        TInt ListAuthObjects(
+            MCTAuthenticationObjectList& aAuthObjList,
             RMPointerArray<MCTAuthenticationObject>& aAuthObjects );
-                             
+
         TInt ListKeys(
-            MCTKeyStore& aKeyStore, 
-            RMPointerArray<CCTKeyInfo>& aKeysInfos, 
+            MCTKeyStore& aKeyStore,
+            RMPointerArray<CCTKeyInfo>& aKeysInfos,
 		    const TCTKeyAttributeFilter& aFilter);
-					  
+
 	    TInt DeleteKey(
-	        CUnifiedKeyStore& aKeyStore, 
-	        TCTTokenObjectHandle aHandle);				                       
-    
+	        CUnifiedKeyStore& aKeyStore,
+	        TCTTokenObjectHandle aHandle);
+
         TInt ChangeReferenceData( MCTAuthenticationObject& aAuthObject );
 
         TInt UnblockAuthObject( MCTAuthenticationObject& aAuthObject );
-        
+
         TInt EnableAuthObject( MCTAuthenticationObject& aAuthObject );
-        
+
         TInt DisableAuthObject( MCTAuthenticationObject& aAuthObject );
-        
+
         TInt CloseAuthObject( MCTAuthenticationObject& aAuthObject );
-        
+
         TInt TimeRemaining( MCTAuthenticationObject& aAuthObject, TInt& aStime );
 
-    protected:
-        
+    protected:      // From CActive
+
         void DoCancel();
 	    void RunL();
 
-    private:
+    private:        // New functions
 
         CSecModUISyncWrapper();
-        void HandleErrorL();
 
-    private:    //Data
+    private:        // Data
 
         // Internal operation states.
         enum TOperation
             {
-            EOperationInit,            
+            EOperationInit,
             EOperationGetAOInterface,
             EOperationListAOs,
             EOperationListKeys,
-            EOperationDelKey,                                  
+            EOperationDelKey,
             EOperationChangeReferenceData,
             EOperationUnblockAO,
             EOperationEnableAO,
@@ -140,13 +114,12 @@ class CSecModUISyncWrapper : public CActive
 
         // For wrapping asynchronous calls.
         CActiveSchedulerWait    iWait;
+
         // Internal state of operation.
         TOperation              iOperation;
-        
+
         // CT objects
         TAny* iObject;
     };
 
 #endif // SECMODUISYNCWRAPPER_H
-
-// End of File

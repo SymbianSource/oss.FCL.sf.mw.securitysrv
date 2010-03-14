@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -330,10 +330,8 @@ void CWimCert::RunL()
             else
                 {
                 TCertificateAddressList  certRefLst = 
-                     new( ELeave ) TCertificateAddress[iCertCount]; 
-
-                CleanupStack::PushL( TCleanupItem( CleanupRefLst,
-                                                   certRefLst ) );
+                     new( ELeave ) TCertificateAddress[ iCertCount ];
+                CleanupStack::PushL( TCleanupItem( CleanupRefLst, certRefLst ) );
 
                 TWimCertInfo* certInfoArr = new( ELeave ) 
                                         TWimCertInfo[iCertCount];
@@ -681,13 +679,14 @@ void CWimCert::Cleanup( TAny* aObject )
 
 // -----------------------------------------------------------------------------
 // CWimCert::CleanupRefLst()
-// Handles cleanup for an object which is not derived from CBase
+// Handles cleanup of an TCertificateAddressList array
 // -----------------------------------------------------------------------------
 //
 void CWimCert::CleanupRefLst( TAny* aObject )
     {
     _WIMTRACE ( _L( "CWimCert::CleanupRefLst()" ) );
-    delete[] aObject;  
+    TCertificateAddressList* certRefLst = static_cast< TCertificateAddressList* >( aObject );
+    delete[] certRefLst;
     aObject = NULL;
     }
 

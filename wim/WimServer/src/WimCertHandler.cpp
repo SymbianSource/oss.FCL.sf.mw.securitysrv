@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -68,7 +68,7 @@ void CWimCertHandler::ConstructL()
 // Two-phased constructor.
 // -----------------------------------------------------------------------------
 //
-CWimCertHandler* CWimCertHandler::NewL() 
+CWimCertHandler* CWimCertHandler::NewL()
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::NewL | Begin"));
     CWimCertHandler* self = new( ELeave ) CWimCertHandler;
@@ -78,7 +78,7 @@ CWimCertHandler* CWimCertHandler::NewL()
     return self;
     }
 
-    
+
 // Destructor
 CWimCertHandler::~CWimCertHandler()
     {
@@ -101,7 +101,7 @@ CWimCertHandler::~CWimCertHandler()
 // -----------------------------------------------------------------------------
 //
 void CWimCertHandler::GetCertificatesFromWimL(
-    const RMessage2& aMessage, 
+    const RMessage2& aMessage,
     CWimMemMgmt* aWimMgmt )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetCertificatesFromWimL | Begin"));
@@ -117,16 +117,12 @@ void CWimCertHandler::GetCertificatesFromWimL(
     TUint32* pCertRefLst = ( TUint32* )( certRefLst->Des().Ptr() );
     TWimCertInfo* pCertInfoLst = ( TWimCertInfo* )( certInfoLst->Des().Ptr() );
 
-    temp = aWimMgmt->WimRef();
-    if ( !temp )
-        { 
-        temp = WIMI_GetWIMRef( 0 );
-        aWimMgmt->SetWIMRef( temp );    // takes ownership
-        }
+    __ASSERT_ALWAYS( aWimMgmt, User::Leave( KErrArgument ) );
+    temp = MainWimRef( *aWimMgmt );
 
     if ( temp )
         {
-        if ( EWimEntryTypeAll == certEntryType || 
+        if ( EWimEntryTypeAll == certEntryType ||
              EWimEntryTypeCA == certEntryType )
             {
             callStatus = GetCertificateFromWimRefL( temp, WIMI_CU_CA,
@@ -134,7 +130,7 @@ void CWimCertHandler::GetCertificatesFromWimL(
                                                     pCertInfoLst, aMessage );
 
             }
-        if ( callStatus == WIMI_Ok && ( EWimEntryTypeAll == certEntryType || 
+        if ( callStatus == WIMI_Ok && ( EWimEntryTypeAll == certEntryType ||
                                    EWimEntryTypePersonal == certEntryType ) )
             {
             callStatus = GetCertificateFromWimRefL( temp, WIMI_CU_Client,
@@ -142,7 +138,7 @@ void CWimCertHandler::GetCertificatesFromWimL(
                                                     pCertInfoLst, aMessage );
 
             }
-        
+
         //record the ref for sanity checking, deallocate old refs first
         for( TInt index = 0; index < iCertRefLst.Count(); ++index )
             {
@@ -157,7 +153,7 @@ void CWimCertHandler::GetCertificatesFromWimL(
             _WIMTRACE2(_L("WIM | WIMServer | CWimCertHandler::GetCertificatesFromWimL, +ref 0x%08x"), pCertRefLst[ index ]);
             iCertRefLst.AppendL( pCertRefLst[ index ] );
             }
-        
+
         aMessage.WriteL( 0, certRefLst->Des() );
         aMessage.WriteL( 1, certInfoLst->Des() );
         }
@@ -185,13 +181,13 @@ WIMI_STAT CWimCertHandler::GetCertificateFromWimRefL(
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetCertificateFromWimRefL | Begin"));
     TUint8 tempCrtCount;
     WIMI_RefList_t refList = NULL;
-    WIMI_STAT callStatus = WIMI_Ok;
+    WIMI_STAT callStatus = WIMI_ERR_BadReference;
 
     if ( aTmpWimRef )
         {
-        callStatus = WIMI_GetCertificateListByWIM( aTmpWimRef, 
-                                                   aUsage, 
-                                                   &tempCrtCount, 
+        callStatus = WIMI_GetCertificateListByWIM( aTmpWimRef,
+                                                   aUsage,
+                                                   &tempCrtCount,
                                                    &refList );
 
         if ( callStatus == WIMI_Ok )
@@ -218,8 +214,8 @@ WIMI_STAT CWimCertHandler::GetCertificateFromWimRefL(
                     free_WIMI_Ref_t( refList[certIndex] );
                     }
                 }
-            //variable step is equal to the number of certificate in CDF whose 
-            //length is set as 0.     
+            //variable step is equal to the number of certificate in CDF whose
+            //length is set as 0.
             aCertNum = static_cast< TUint8 >( aCertNum + tempCrtCount - step );
 
             // Because list items are moved to aCertRefLst, only refList array
@@ -255,7 +251,7 @@ TInt CWimCertHandler::CopyCertificateInfo(
     TUint8 type;
     TUint16 certLen;
     TUint8 modifiable = 0;
-    WIMI_STAT callStatus = WIMI_GetCertificateInfo( 
+    WIMI_STAT callStatus = WIMI_GetCertificateInfo(
                                 aCert,
                                 &tempRef,
                                 &ptLabel,
@@ -265,10 +261,10 @@ TInt CWimCertHandler::CopyCertificateInfo(
                                 &ptTrustedUsage,
                                 &uiCDFRefs,
                                 &usage,  /* 0 = client, 1 = CA */
-                                &type,   /* WTLSCert(1), 
-                                            X509Cert(2), 
-                                            X968Cert(3), 
-                                            CertURL(4) */ 
+                                &type,   /* WTLSCert(1),
+                                            X509Cert(2),
+                                            X968Cert(3),
+                                            CertURL(4) */
                                 &certLen,   /* cert. content or URL length */
                                 &modifiable );
 
@@ -289,7 +285,7 @@ TInt CWimCertHandler::CopyCertificateInfo(
             }
 
         // it is x509cert
-        if ( type == 2 && certLen != 0 )
+        if ( type == WIMI_CT_X509 && certLen != 0 )
             {
             //use this rough sanity checking for temp
             if ( certLen < 10 )
@@ -307,33 +303,33 @@ TInt CWimCertHandler::CopyCertificateInfo(
 
         aCertInfo.iLabel.Copy(
             TPtr8(
-                ptLabel.pb_buf, 
-                ptLabel.ui_buf_length, 
+                ptLabel.pb_buf,
+                ptLabel.ui_buf_length,
                 ptLabel.ui_buf_length ) );
 
         aCertInfo.iKeyId.Copy(
             TPtr8(
-                ptKeyID.pb_buf, 
-                ptKeyID.ui_buf_length, 
+                ptKeyID.pb_buf,
+                ptKeyID.ui_buf_length,
                 ptKeyID.ui_buf_length ) );
-        
+
         aCertInfo.iCAId.Copy(
             TPtr8(
-                ptCAID.pb_buf, 
-                ptCAID.ui_buf_length, 
+                ptCAID.pb_buf,
+                ptCAID.ui_buf_length,
                 ptCAID.ui_buf_length ) );
-        
+
         aCertInfo.iIssuerHash.Copy(
             TPtr8(
-                ptIssuerHash.pb_buf, 
-                ptIssuerHash.ui_buf_length, 
+                ptIssuerHash.pb_buf,
+                ptIssuerHash.ui_buf_length,
                 ptIssuerHash.ui_buf_length ) );
 
         aCertInfo.iUsage = usage;
         aCertInfo.iType = type;
         aCertInfo.iCertlen = certLen;
         aCertInfo.iModifiable = modifiable;
-        
+
         // Certificate location
         aCertInfo.iCDFRefs = iWimUtilFuncs->MapCertLocation( uiCDFRefs );
 
@@ -357,23 +353,19 @@ TInt CWimCertHandler::CopyCertificateInfo(
 // -----------------------------------------------------------------------------
 //
 void CWimCertHandler::GetExtrasFromWimL(
-    const RMessage2& aMessage, 
+    const RMessage2& aMessage,
     CWimMemMgmt* aWimMgmt )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetExtrasFromWimL | Begin"));
 
     WIMI_STAT callStatus = WIMI_Ok;
     TInt8 certUsage = 0;
-    
+
     HBufC8* keyIdBuf = iWimUtilFuncs->DesLC( 0, aMessage );
     TPtrC8 keyIdHash = keyIdBuf->Des();
 
-    WIMI_Ref_t* wimTempRef = aWimMgmt->WimRef();
-    if ( !wimTempRef )
-        { 
-        wimTempRef = WIMI_GetWIMRef( 0 );
-        aWimMgmt->SetWIMRef( wimTempRef );  // takes ownership
-        }
+    __ASSERT_ALWAYS( aWimMgmt, User::Leave( KErrArgument ) );
+    WIMI_Ref_t* wimTempRef = MainWimRef( *aWimMgmt );
 
     if ( wimTempRef )
         {
@@ -427,7 +419,7 @@ WIMI_STAT CWimCertHandler::GetExtrasFromWimRefL(
     const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetExtrasFromWimRefL | Begin"));
-  
+
     TUint8 tempCertCount = 0;
     WIMI_RefList_t certRefList = NULL;
     WIMI_STAT callStatus = WIMI_Ok;
@@ -437,19 +429,20 @@ WIMI_STAT CWimCertHandler::GetExtrasFromWimRefL(
     if ( aTmpWimRef )
         {
         // List all certificates (by WIM and usage)
-        callStatus = WIMI_GetCertificateListByWIM( aTmpWimRef, 
-                                                   aUsage, 
-                                                   &tempCertCount, 
+        callStatus = WIMI_GetCertificateListByWIM( aTmpWimRef,
+                                                   aUsage,
+                                                   &tempCertCount,
                                                    &certRefList );
         }
     else
         {
         callStatus = WIMI_ERR_BadReference;
         }
-    CleanupPushWimRefListL( certRefList );
-    
+
     if ( callStatus == WIMI_Ok )
         {
+        CleanupPushWimRefListL( certRefList );
+
         WIMI_Ref_t* tempRef = NULL;
         WIMI_BinData_t ptLabel;
         WIMI_BinData_t ptKeyID;
@@ -474,7 +467,7 @@ WIMI_STAT CWimCertHandler::GetExtrasFromWimRefL(
                                                   &ptTrustedUsage,
                                                   &uiCDFRefs,
                                                   &usage,
-                                                  &certType,   
+                                                  &certType,
                                                   &certLen,
                                                   &modifiable );
             if ( callStatus == WIMI_Ok )
@@ -548,7 +541,7 @@ void CWimCertHandler::CopyCertExtrasInfoL(
     certExtraInfo.iCDFRefs = 0;
     certExtraInfo.iTrustedUsage = NULL;
 
-    WIMI_STAT callStatus = WIMI_GetCertificateInfo( 
+    WIMI_STAT callStatus = WIMI_GetCertificateInfo(
                                 aCert,
                                 &tempref,
                                 &ptLabel,
@@ -558,9 +551,9 @@ void CWimCertHandler::CopyCertExtrasInfoL(
                                 &ptTrustedUsage,
                                 &uiCDFRefs,
                                 &usage,  /* 0 = client, 1 = CA */
-                                &type,   
+                                &type,
                                 &certlen,   /* cert. content or URL length */
-                                &modifiable); 
+                                &modifiable);
     if ( callStatus == WIMI_Ok )
         {
         free_WIMI_Ref_t( tempref );
@@ -573,7 +566,7 @@ void CWimCertHandler::CopyCertExtrasInfoL(
         pushedItemCount++;
 
         TPtrC8 undecodedUsage;
-        undecodedUsage.Set( ptTrustedUsage.pb_buf ); 
+        undecodedUsage.Set( ptTrustedUsage.pb_buf );
 
         if ( ptTrustedUsage.ui_buf_length == 0 ) // No OIDs
             {
@@ -606,7 +599,7 @@ void CWimCertHandler::CopyCertExtrasInfoL(
                         }
                     else    // Not found OID from buffer
                         {
-                        found = EFalse;    
+                        found = EFalse;
                         CleanupStack::PopAndDestroy( decodedOIDs );
                         }
                     decodedOIDs = NULL;
@@ -633,7 +626,7 @@ void CWimCertHandler::CopyCertExtrasInfoL(
             pushedItemCount++;
 
             trustedUsage.Set( trustedUsagesBuf->Des() );
-       
+
             // Add OID's to one buffer from separate buffers
             for ( TInt i = 0; i < decodedOIDArray.Count(); i++ )
                 {
@@ -651,9 +644,9 @@ void CWimCertHandler::CopyCertExtrasInfoL(
 
         TPckgBuf<TCertExtrasInfo> wimCertExtraPckg( certExtraInfo );
         aMessage.ReadL( 1, wimCertExtraPckg );
-        
+
         wimCertExtraPckg().iCDFRefs = iWimUtilFuncs->MapCertLocation( uiCDFRefs );
-        
+
         if ( oidsLength > 0 ) // OID's found, write buffer to client
             {
             aMessage.WriteL( 3, trustedUsage );
@@ -670,13 +663,13 @@ void CWimCertHandler::CopyCertExtrasInfoL(
 // -----------------------------------------------------------------------------
 //
 void CWimCertHandler::GetCerticateCountL(
-    const RMessage2& aMessage, 
+    const RMessage2& aMessage,
     CWimMemMgmt* aWimMgmt ) const
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetCerticateCountL | Begin"));
     WIMI_STAT callStatus = WIMI_Ok;
     TWimEntryType certEntryType = ( TWimEntryType )aMessage.Int1();
-    
+
     __ASSERT_ALWAYS( certEntryType != EWimEntryTypeAll ||
         certEntryType != EWimEntryTypeCA ||
         certEntryType != EWimEntryTypePersonal, User::Leave( KErrArgument ) );
@@ -684,28 +677,24 @@ void CWimCertHandler::GetCerticateCountL(
     WIMI_Ref_t* wimRef = NULL;
     TUint8 certCount = 0;
 
-    wimRef = aWimMgmt->WimRef();
-    if ( !wimRef )
-        {
-        wimRef = WIMI_GetWIMRef( 0 );
-        aWimMgmt->SetWIMRef( wimRef );  // takes ownership
-        }
+    __ASSERT_ALWAYS( aWimMgmt, User::Leave( KErrArgument ) );
+    wimRef = MainWimRef( *aWimMgmt );
 
     if ( wimRef )
         {
-        if ( EWimEntryTypeAll == certEntryType || 
+        if ( EWimEntryTypeAll == certEntryType ||
             EWimEntryTypeCA == certEntryType )
             {
-            callStatus = GetCertificateCountByWIM( wimRef, 
-                                                   certCount, 
-                                                   WIMI_CU_CA );            
+            callStatus = GetCertificateCountByWIM( wimRef,
+                                                   certCount,
+                                                   WIMI_CU_CA );
             }
 
-        if ( callStatus == WIMI_Ok && ( EWimEntryTypeAll == certEntryType || 
+        if ( callStatus == WIMI_Ok && ( EWimEntryTypeAll == certEntryType ||
                                      EWimEntryTypePersonal == certEntryType ) )
             {
-            callStatus = GetCertificateCountByWIM( wimRef, 
-                                                   certCount, 
+            callStatus = GetCertificateCountByWIM( wimRef,
+                                                   certCount,
                                                    WIMI_CU_Client );
             }
         }
@@ -730,25 +719,25 @@ void CWimCertHandler::GetCerticateCountL(
 // -----------------------------------------------------------------------------
 //
 WIMI_STAT CWimCertHandler::GetCertificateCountByWIM(
-    WIMI_Ref_t* aRef, 
-    TUint8& aCertCount, 
+    WIMI_Ref_t* aRef,
+    TUint8& aCertCount,
     TUint8 aUsage ) const
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetCertificateCountByWIM | Begin"));
-    
+
     // Get the number of certificates from smart card.
     TUint8 certNum = 0;
     WIMI_RefList_t refList ;
-    WIMI_STAT callStatus = WIMI_GetCertificateListByWIM( aRef, 
+    WIMI_STAT callStatus = WIMI_GetCertificateListByWIM( aRef,
                                                          aUsage,
-                                                         &certNum, 
+                                                         &certNum,
                                                          &refList );
 
-    if ( callStatus != WIMI_Ok )   
+    if ( callStatus != WIMI_Ok )
         {
     	return callStatus;
         }
-    
+
     // Find out how many certificate has zero length
     TInt certLenZero = 0;
     TInt certMalformat = 0;
@@ -765,7 +754,7 @@ WIMI_STAT CWimCertHandler::GetCertificateCountByWIM(
 	    TUint8 type;
 	    TUint16 certLen;
 	    TUint8 modifiable = 0;
-	    callStatus = WIMI_GetCertificateInfo( 
+	    callStatus = WIMI_GetCertificateInfo(
 	                                refList[i],
 	                                &tempRef,
 	                                &ptLabel,
@@ -775,24 +764,24 @@ WIMI_STAT CWimCertHandler::GetCertificateCountByWIM(
 	                                &ptTrustedUsage,
 	                                &uiCDFRefs,
 	                                &usage,  /* 0 = client, 1 = CA */
-	                                &type,   /* WTLSCert(1), 
-	                                            X509Cert(2), 
-	                                            X968Cert(3), 
-	                                            CertURL(4) */ 
+	                                &type,   /* WTLSCert(1),
+	                                            X509Cert(2),
+	                                            X968Cert(3),
+	                                            CertURL(4) */
 	                                &certLen,   /* cert. content or URL length */
 	                                &modifiable );
 
 	    if ( callStatus == WIMI_Ok )
 	        {
 	        free_WIMI_Ref_t( tempRef );
-	        
+
 	        if ( certLen == 0 )
 	            {
 	            certLenZero++;
 	            }
 
             // it is x509cert
-            if ( type == 2 && certLen != 0 )
+            if ( type == WIMI_CT_X509 && certLen != 0 )
                 {
 
                 //use this rough sanity checking
@@ -826,7 +815,7 @@ WIMI_STAT CWimCertHandler::GetCertificateCountByWIM(
 // Stores certificate to the WIM card.
 // -----------------------------------------------------------------------------
 //
-void CWimCertHandler::StoreCertificateL( 
+void CWimCertHandler::StoreCertificateL(
     TWimServRqst /*aOpcode*/,
     const RMessage2& aMessage ) const
     {
@@ -839,7 +828,7 @@ void CWimCertHandler::StoreCertificateL(
 // Removes certificate from a WIM card.
 // -----------------------------------------------------------------------------
 //
-void CWimCertHandler::RemoveCertificateL( 
+void CWimCertHandler::RemoveCertificateL(
     const RMessage2& aMessage,
     CWimMemMgmt* /*aWimMgmt*/ ) const
     {
@@ -858,7 +847,7 @@ TBool CWimCertHandler::SanityCheck( TUint32 aCertRef )
         {
         return EFalse;
         }
-    
+
     for ( TInt index = 0; index < certNum; ++index )
         {
         if( aCertRef == iCertRefLst[ index ] )
@@ -875,8 +864,8 @@ TBool CWimCertHandler::SanityCheck( TUint32 aCertRef )
 // -----------------------------------------------------------------------------
 //
 void CWimCertHandler::GetCertificateDetailsL(
-    TWimServRqst aOpCode, 
-    const RMessage2& aMessage ) 
+    TWimServRqst aOpCode,
+    const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimCertHandler::GetCertificateDetailsL | Begin"));
     TBool IsOk = SanityCheck( (TUint32)aMessage.Ptr0() );
@@ -885,7 +874,7 @@ void CWimCertHandler::GetCertificateDetailsL(
         aMessage.Panic(_L("WIM"), KErrBadHandle );
         return;
         }
-    
+
     //capability checking
     TUint8 usage = 255;
     WIMI_STAT callStatus = ResolveCertUsage( aMessage, usage );
@@ -893,7 +882,7 @@ void CWimCertHandler::GetCertificateDetailsL(
         {
         if( !CheckReadCapsForUsage( aMessage, usage  ) )
               {
-              aMessage.Complete(KErrPermissionDenied);  
+              aMessage.Complete(KErrPermissionDenied);
               return;
               }
         }
@@ -926,7 +915,7 @@ WIMI_STAT CWimCertHandler::ResolveCertUsage( const RMessage2& aMsg,
     _WIMTRACE(_L("CWimServer::ResolveCertUsage | Begin"));
 
     // aMsg.Ptr0 contains reference to certificate
-    
+
     WIMI_Ref_pt pCertRef = const_cast< WIMI_Ref_pt >( aMsg.Ptr0() );
     _WIMTRACE2(_L("CWimServer::ResolveCertUsage | Begin aMsg.Ptr0() = %d"), aMsg.Ptr0());
 
@@ -998,7 +987,7 @@ TBool CWimCertHandler::CheckReadCapsForUsage( const RMessage2& aMsg,
                                TUint8 aUsage )
     {
     TBool result = EFalse;
-    
+
     switch ( aUsage )
         {
         case WIMI_CU_CA:
@@ -1041,13 +1030,13 @@ TBool CWimCertHandler::CheckReadCapsForUsage( const RMessage2& aMsg,
 //
 void CWimCertHandler::ExportPublicKeyL( const RMessage2& aMessage ) const
     {
-    _WIMTRACE(_L("WIM | WIMServer | CWimPublicKeyHandler::ExportPublicKeyParamsL | Begin"));
+    _WIMTRACE(_L("WIM | WIMServer | CWimPublicKeyHandler::ExportPublicKeyL | Begin"));
 
     TUint8 certType = 0;
 
     TPckgBuf<TExportPublicKey> keyExportPckg;
     aMessage.ReadL( 0, keyExportPckg );
-    
+
     HBufC8* publicKeyBuf = HBufC8::NewLC( KPublicKeyLength );
 
     TBuf8<KKeyIdLen> keyIdBuf = keyExportPckg().iKeyId;
@@ -1118,7 +1107,7 @@ void CWimCertHandler::ExportPublicKeyL( const RMessage2& aMessage ) const
                                                   &ptTrustedUsage,
                                                   &uiCDFRefs,
                                                   &usage,
-                                                  &certType,   
+                                                  &certType,
                                                   &certLen,
                                                   &modifiable );
             if ( callStatus == WIMI_Ok )
@@ -1142,7 +1131,7 @@ void CWimCertHandler::ExportPublicKeyL( const RMessage2& aMessage ) const
                     }
                 }
             }
-    
+
         // Retrieve certificate data from WIM
         if ( callStatus == WIMI_Ok )
             {
@@ -1154,8 +1143,9 @@ void CWimCertHandler::ExportPublicKeyL( const RMessage2& aMessage ) const
                 TPtrC8 certPtr( ptCertData.pb_buf, ptCertData.ui_buf_length );
                 TPtr8 publicKeyPtr = publicKeyBuf->Des();
 
-                TRAPD( parseOk, ParseCertPublicKeyL( certPtr, publicKeyPtr, certType ) );
-                if ( parseOk )
+                TRAPD( parseError, ParseCertPublicKeyL( certPtr, publicKeyPtr, certType ) );
+                _WIMTRACE2(_L("WIM | WIMServer | CWimPublicKeyHandler::ExportPublicKeyL parseError %d"), parseError );
+                if ( !parseError )
                     {
                     aMessage.WriteL( 1, publicKeyPtr );
                     }
@@ -1167,13 +1157,15 @@ void CWimCertHandler::ExportPublicKeyL( const RMessage2& aMessage ) const
                 CleanupStack::PopAndDestroy( ptCertData.pb_buf );
                 }
             }
-        
+
         CleanupStack::PopAndDestroy( certRefList );
         }
 
     CleanupStack::PopAndDestroy( publicKeyBuf );
 
+    _WIMTRACE2(_L("WIM | WIMServer | CWimPublicKeyHandler::ExportPublicKeyL callStatus %d"), callStatus);
     aMessage.Complete( CWimUtilityFuncs::MapWIMError( callStatus ) );
+    _WIMTRACE(_L("WIM | WIMServer | CWimPublicKeyHandler::ExportPublicKeyL | End"));
     }
 
 // -----------------------------------------------------------------------------
@@ -1186,6 +1178,7 @@ void CWimCertHandler::ParseCertPublicKeyL(
     TDes8& aPublicKey,
     const TUint8 aCertType ) const
     {
+    _WIMTRACE2(_L("WIM | WIMServer | CWimPublicKeyHandler::ParseCertPublicKeyL | Begin, type %d"), aCertType);
     CCertificate* certificate = NULL;
     CRSAPublicKey* publicKey = NULL;
 
@@ -1197,7 +1190,7 @@ void CWimCertHandler::ParseCertPublicKeyL(
             publicKey = CWTLSRSAPublicKey::NewLC( certificate->PublicKey().KeyData() );
             break;
             }
-    
+
         case WIMI_CT_X509:
             {
             certificate = CX509Certificate::NewLC( aCertData );
@@ -1227,6 +1220,24 @@ void CWimCertHandler::ParseCertPublicKeyL(
     encoded->WriteDERL( aPublicKey, pos );
 
     CleanupStack::PopAndDestroy( 3, certificate );  // encoded, publicKey, certificate
+    _WIMTRACE(_L("WIM | WIMServer | CWimPublicKeyHandler::ParseCertPublicKeyL | End"));
     }
+
+// -----------------------------------------------------------------------------
+// CWimCertHandler::MainWimRef()
+// Returns cached WIM ref using WIM memory manager
+// -----------------------------------------------------------------------------
+//
+WIMI_Ref_t* CWimCertHandler::MainWimRef( CWimMemMgmt& aWimMgmt ) const
+    {
+    WIMI_Ref_t* ref = aWimMgmt.WimRef();
+    if( !ref )
+        {
+        ref = WIMI_GetWIMRef( 0 );
+        aWimMgmt.SetWIMRef( ref );    // takes ownership
+        }
+    return ref;
+    }
+
 
 //  End of File

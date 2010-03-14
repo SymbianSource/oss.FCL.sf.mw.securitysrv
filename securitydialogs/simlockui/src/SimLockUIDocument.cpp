@@ -23,15 +23,14 @@
 */
 
 // System Include Files
-#include <RMmCustomAPI.h>           // RMmCustomAPI, RMobilePhone
-#include <MmTsy_names.h>            // KMmTsyModuleName
-#include <RMmCustomAPI.h>
+#include <rmmcustomapi.h>           // RMmCustomAPI, RMobilePhone
+#include <mmtsy_names.h>            // KMmTsyModuleName
 
 // User Include Files
-#include "SimLockDataHandlingDelegate.h"
-#include "SimLockISAServerDefinitions.h"
-#include "SimLockUIAppUi.h"
-#include "SimLockUIDocument.h"
+#include "simlockdatahandlingdelegate.h"
+#include "simlockisaserverdefinitions.h"
+#include "simlockuiappui.h"
+#include "simlockuidocument.h"
 
 // Local Constants
 const TInt KTriesToConnectServer( 2 );

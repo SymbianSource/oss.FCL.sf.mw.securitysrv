@@ -31,8 +31,8 @@ NAME SLUI
 #include <avkon.rsg>
 #include <appinfo.rh>
 
-#include "SimLockUI.hrh"
-#include "SimLockUI.loc"
+#include "simlockui.hrh"
+#include "simlockui.loc"
 
 // Resource Identifiers
 RESOURCE RSS_SIGNATURE { }

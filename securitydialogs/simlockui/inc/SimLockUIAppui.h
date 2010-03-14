@@ -33,7 +33,7 @@
 // FORWARD DECLARATIONS
 class RProperty;
 // User includes
-#include "SimLockUIBackgroundControl.h" // CSimLockUIBackgroundControl::TBackgroundText
+#include "simlockuibackgroundcontrol.h" // CSimLockUIBackgroundControl::TBackgroundText
 
 // Forward reference
 class CSimLockUIBackgroundControl;

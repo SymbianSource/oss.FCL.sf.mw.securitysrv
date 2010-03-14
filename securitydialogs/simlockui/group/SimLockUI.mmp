@@ -21,13 +21,13 @@
 * ============================================================================
 */
 
-#include "../inc/SimLockUI.hrh"
+#include "../inc/simlockui.hrh"
 #include <data_caging_paths.hrh>
 #include <platform_paths.hrh>
 CAPABILITY ALL -TCB
 
 TARGETPATH        /sys/bin
-TARGET            SimLockUI.exe
+TARGET            simlockui.exe
 TARGETTYPE        exe
 
 UID               0x00000000 SIMLOCK_UI_UID3
@@ -36,13 +36,13 @@ VENDORID          VID_DEFAULT
 LANG              SC
 
 SOURCEPATH        ../src
-SOURCE            SimLockUI.cpp
-SOURCE            SimLockUIApplication.cpp 
-SOURCE            SimLockUIBackgroundControl.cpp
-SOURCE            SimLockUIAppUi.cpp
-SOURCE            SimLockUIDocument.cpp 
-SOURCE            SimLockDataHandlingDelegate.cpp
-SOURCE            SimLockTelephonyProxy.cpp
+SOURCE            simlockui.cpp
+SOURCE            simlockuiapplication.cpp 
+SOURCE            simlockuibackgroundcontrol.cpp
+SOURCE            simlockuiappui.cpp
+SOURCE            simlockuidocument.cpp 
+SOURCE            simlockdatahandlingdelegate.cpp
+SOURCE            simlocktelephonyproxy.cpp
 
 USERINCLUDE       ../inc 
 SYSTEMINCLUDE     /epoc32/include/internal
@@ -57,13 +57,13 @@ LIBRARY       gdi.lib
 LIBRARY       etel.lib
 LIBRARY       etelmm.lib
 LIBRARY       customapi.lib
-LIBRARY       CommonEngine.lib
+LIBRARY       commonengine.lib
 LIBRARY       aknskins.lib  
 LIBRARY       aknskinsrv.lib
 LIBRARY       aknswallpaperutils.lib
 LIBRARY       aknlayout2.lib
-LIBRARY       AknLayout2Scalable.lib
-LIBRARY       CdlEngine.lib
+LIBRARY       aknlayout2scalable.lib
+LIBRARY       cdlengine.lib
 LIBRARY       ws32.lib
 LIBRARY       etel3rdparty.lib
 LIBRARY       eikcoctl.lib
@@ -71,14 +71,14 @@ LIBRARY       eikcoctl.lib
 SOURCEPATH    ../data
 
 // Main resource file
-START RESOURCE  SimLockUI.RSS
+START RESOURCE  simlockui.rss
 HEADER
 TARGETPATH  /resource/apps
 LANG    SC
 END
 
 // Resource registration file
-START RESOURCE  SimLockUI_reg.rss
+START RESOURCE  simlockui_reg.rss
 TARGETPATH  /private/10003a3f/apps
 END
 

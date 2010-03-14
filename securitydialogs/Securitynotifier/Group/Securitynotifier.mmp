@@ -51,7 +51,7 @@ LIBRARY scpclient.lib // SCP server
 #if defined(WINSCW)
 DEFFILE ../BWinsCw/SecurityNotifierU.def
 #endif
-LIBRARY                 featmgr.lib
+LIBRARY                 featmgr.lib  apgrfx.lib apparc.lib
 
 SMPSAFE
 

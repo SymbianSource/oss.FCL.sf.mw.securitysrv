@@ -22,12 +22,12 @@
 */
 
 // System Include Files
-#include <RMmCustomAPI.h>           // RMmCustomAPI, RMobilePhone
+#include <rmmcustomapi.h>           // RMmCustomAPI, RMobilePhone
 
 // User Include Files
-#include "SimLockDataHandlingDelegate.h"
-#include "SimLockUI.pan"
-#include "SimLockISAServerDefinitions.h"
+#include "simlockdatahandlingdelegate.h"
+#include "simlockui.pan"
+#include "simlockisaserverdefinitions.h"
 
 
 TInt KSimLockTimeoutDelay = 5000000;       // 5 seconds

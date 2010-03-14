@@ -22,11 +22,11 @@
 */
 
 // System Includes
-#include <Etel3rdParty.h>           // CTelephony
+#include <etel3rdparty.h>           // CTelephony
 
 // User Includes
-#include "SimLockTelephonyProxy.h"
-#include "SimLockUi.pan"
+#include "simlocktelephonyproxy.h"
+#include "simlockui.pan"
 
 
 TInt KSimLockProxyTimeout = 5000000;    // 5 seconds

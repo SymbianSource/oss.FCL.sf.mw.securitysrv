@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2000, 2002, 2004 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2000, 2002, 2004, 2010 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -178,8 +178,8 @@ NONSHARABLE_CLASS( CCrCrypto ): public CBase
             const TInt        aBlockSize,
             CCrAlgInfo*       algInfo);
 
-        TInt MesDigestInputSize(TCrAlgorithm aDigestAlg);
-        TInt MesDigestOutputSize(TCrAlgorithm aDigestAlg);
+        TInt MesDigestInputSizeL(TCrAlgorithm aDigestAlg);
+        TInt MesDigestOutputSizeL(TCrAlgorithm aDigestAlg);
         void Reset();
     
     private: // Data.

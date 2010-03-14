@@ -1,6 +1,6 @@
 /*
 * ============================================================================
-*  Name        : SimLockUIApplication.cpp
+*  Name        :simlockuiapplication.cpp
 *  Part of     : Sim Lock UI Application
 *  Description : Implementation of Sim Lock UI Application UI Methods
 *  Version     : 
@@ -22,9 +22,9 @@
 */
 
 // User include files
-#include "SimLockUIDocument.h"
-#include "SimLockUIApplication.h"
-#include "SimLockUI.hrh"
+#include "simlockuidocument.h"
+#include "simlockuiapplication.h"
+#include "simlockui.hrh"
 
 // UID for the application, this should correspond to the uid defined in the mmp file
 static const TUid KUidSimLockUIApp = {SIMLOCK_UI_UID3};

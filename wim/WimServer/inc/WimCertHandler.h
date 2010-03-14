@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -31,33 +31,33 @@ class CWimUtilityFuncs;
 
 /**
 *  Class for handling certificates in WIM card
-*  
+*
 *  @since Series60 2.1
 */
 class CWimCertHandler : public CBase
     {
     public:  // Constructors and destructor
-        
+
         /**
         * Two-phased constructor.
         */
         static CWimCertHandler* NewL();
-        
+
         /**
         * Destructor.
         */
         virtual ~CWimCertHandler();
 
     public: // New functions
-        
+
         /**
         * Fetches certificates from WIM card.
         * @param aMessage Encapsulates a client request.
         * @param aWimMgmt Pointer to WIM reference management class.
         */
-        void GetCertificatesFromWimL( const RMessage2& aMessage, 
+        void GetCertificatesFromWimL( const RMessage2& aMessage,
                                       CWimMemMgmt* aWimMgmt );
-        
+
         /**
         * Fetches certificate extra information from WIM card.
         * Extra information includes trusted usage and CDF referense
@@ -65,23 +65,23 @@ class CWimCertHandler : public CBase
         * @param aMessage Encapsulates a client request.
         * @param aWimMgmt Pointer to WIM reference management class.
         */
-        void GetExtrasFromWimL( const RMessage2& aMessage, 
+        void GetExtrasFromWimL( const RMessage2& aMessage,
                                 CWimMemMgmt* aWimMgmt );
-        
+
         /**
         * Fetches count of certicates in certain WIM card.
         * @param aMessage Encapsulates a client request.
         * @param aWimMgmt Pointer to WIM reference management class.
         */
-        void GetCerticateCountL( const RMessage2& aMessage, 
+        void GetCerticateCountL( const RMessage2& aMessage,
                                  CWimMemMgmt* aWimMgmt ) const;
 
 
         /**
         * Stores certificate to the WIM card.
         * @since Series60 2.6
-        * @param aRequest Enumerator used in message 
-                          passing between client and server.   
+        * @param aRequest Enumerator used in message
+                          passing between client and server.
         * @param aMessage Encapsulates a client request.
         */
         void StoreCertificateL( TWimServRqst aRequest,
@@ -95,11 +95,11 @@ class CWimCertHandler : public CBase
         */
         void RemoveCertificateL( const RMessage2& aMessage,
                                  CWimMemMgmt* aWimMgmt ) const;
-        
+
         /**
         * Fetches certificate details.
-        * @param aOpCode Enumerator used in message 
-                          passing between client and server.   
+        * @param aOpCode Enumerator used in message
+                          passing between client and server.
         * @param aMessage Encapsulates a client request.
         */
         void GetCertificateDetailsL( TWimServRqst aOpCode,
@@ -111,14 +111,14 @@ class CWimCertHandler : public CBase
         * @param aMessage Encapsulates a client request.
         */
         void ExportPublicKeyL( const RMessage2& aMessage ) const;
-        
-        
+
+
         TBool SanityCheck( TUint32 aCertRef );
-        
+
         TBool CheckReadCapsForUsage( const RMessage2& aMsg,
                                        TUint8 aUsage );
-        
-        
+
+
         WIMI_STAT ResolveCertUsage( const RMessage2& aMsg,
                                                 TUint8& aUsage );
 
@@ -143,7 +143,7 @@ class CWimCertHandler : public CBase
                                              TInt8 aUsage,
                                              TUint8& aCertNum,
                                              TUint32* aCertRefLst,
-                                             TWimCertInfo* aCertInfoLst,  
+                                             TWimCertInfo* aCertInfoLst,
                                              const RMessage2& aMessage );
 
         /**
@@ -154,7 +154,7 @@ class CWimCertHandler : public CBase
         * @return TInt      KErrNone or KErrArgument
         */
         TInt CopyCertificateInfo( TWimCertInfo& aCertInfo,
-                                   WIMI_Ref_t* aCert,  
+                                   WIMI_Ref_t* aCert,
                                    const RMessage2& aMessage );
 
         /**
@@ -165,7 +165,7 @@ class CWimCertHandler : public CBase
         * @param aMessage   Encapsulates a client request.
         * @return Status returned by WIMI. See in WimClsv.h.
         */
-        WIMI_STAT GetExtrasFromWimRefL( WIMI_Ref_t* aTmpWimRef,                                  
+        WIMI_STAT GetExtrasFromWimRefL( WIMI_Ref_t* aTmpWimRef,
                                         TInt8 aUsage,
                                         TDesC8& aKeyHash,
                                         const RMessage2& aMessage );
@@ -187,8 +187,8 @@ class CWimCertHandler : public CBase
         * @param aUsage     Certificate usage.
         * @return Status returned by WIMI. See in wimclsv.h.
         */
-        WIMI_STAT GetCertificateCountByWIM( WIMI_Ref_t* aRef, 
-                                            TUint8& aCertCount, 
+        WIMI_STAT GetCertificateCountByWIM( WIMI_Ref_t* aRef,
+                                            TUint8& aCertCount,
                                             TUint8 aUsage ) const;
 
         /**
@@ -202,6 +202,13 @@ class CWimCertHandler : public CBase
                                   TDes8& aPublicKey,
                                   const TUint8 aCertType ) const;
 
+        /**
+         * Returns WIM reference. Returns WIM ref cached in aWimMgmt, or
+         * fetches new using WIMI_GetWIMRef() and caches it in aWimMgmt.
+         * @since Serier60 5.2
+         * @param aWimMgmt  WIM memory manager
+         */
+        WIMI_Ref_t* MainWimRef( CWimMemMgmt& aWimMgmt ) const;
 
     private:    // Data
         CWimUtilityFuncs* iWimUtilFuncs;
@@ -209,5 +216,5 @@ class CWimCertHandler : public CBase
     };
 
 #endif      // CWIMCERTHANDLER_H
-    
+
 //End of File
