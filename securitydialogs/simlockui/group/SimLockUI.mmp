@@ -33,7 +33,7 @@ TARGETTYPE        exe
 UID               0x00000000 SIMLOCK_UI_UID3
 VENDORID          VID_DEFAULT
 
-LANG              SC
+LANGUAGE_IDS
 
 SOURCEPATH        ../src
 SOURCE            simlockui.cpp
@@ -74,7 +74,7 @@ SOURCEPATH    ../data
 START RESOURCE  simlockui.rss
 HEADER
 TARGETPATH  /resource/apps
-LANG    SC
+LANGUAGE_IDS
 END
 
 // Resource registration file

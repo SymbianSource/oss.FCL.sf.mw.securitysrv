@@ -65,9 +65,8 @@ class   CLockObserver: public CActive
         void DoCancel();
     private: // data
     	CAutolockAppUi*      iAppUi; //not owned!
-        RProperty            iProperty;
-        RTelServer      iServer; // EMKK-7N3G7R
-        CWait*			 		wait;	// EMKK-7N3G7R
+      RProperty            iProperty;
+ 
     };
 
 #endif 

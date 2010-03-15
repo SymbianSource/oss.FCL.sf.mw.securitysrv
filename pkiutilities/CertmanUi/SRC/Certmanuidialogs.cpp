@@ -59,7 +59,8 @@ void CCertManUIWaitDialog::StartWaitDialogL( TInt aDialogSelector )
 
     if( !iDialog )
         {
-        iDialog = new( ELeave ) CAknWaitDialog( reinterpret_cast< CEikDialog** >( &iDialog ) );
+        iDialog = new( ELeave ) CAknWaitDialog(
+                reinterpret_cast< CEikDialog** >( &iDialog ), ETrue );
 
         TInt dialog = 0;
         switch( aDialogSelector )

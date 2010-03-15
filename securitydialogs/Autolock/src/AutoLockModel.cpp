@@ -21,17 +21,17 @@
 #include <featmgr.h>
 #include <AknNotifierController.h>
 #include <featmgr.h>
-#include    <e32property.h>
-#include	<PSVariables.h>
-#include    <startupdomainpskeys.h>
-#include    <coreapplicationuisdomainpskeys.h>
+#include <e32property.h>
+#include <PSVariables.h>
+#include <startupdomainpskeys.h>
+#include <coreapplicationuisdomainpskeys.h>
 #include <ctsydomainpskeys.h>
 
 #include <SCPClient.h>
 
-#include    "AutoLockModelPS.h"  
-#include	"AutolockAppUiPS.h"
-#include    "AutoLockLockObserverPS.h"
+#include "AutoLockModelPS.h"  
+#include "AutolockAppUiPS.h"
+#include "AutoLockLockObserverPS.h"
 #include "AutoLockCenRepI.h"
 
 
@@ -47,13 +47,13 @@ const TInt AutoLockOff(60000);
 //
 
 CAutoLockModel* CAutoLockModel::NewL(CAutolockAppUi* aAppUi, TBool aLocked)
-	{
-	CAutoLockModel* self = new (ELeave) CAutoLockModel(aAppUi);
-	CleanupStack::PushL(self);
-	self->ConstructL( aLocked );
-	CleanupStack::Pop(); //self
-	return self;
-	}
+  {
+  CAutoLockModel* self = new (ELeave) CAutoLockModel(aAppUi);
+  CleanupStack::PushL(self);
+  self->ConstructL( aLocked );
+  CleanupStack::Pop(); //self
+  return self;
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::CAutoLockModel()
@@ -61,9 +61,9 @@ CAutoLockModel* CAutoLockModel::NewL(CAutolockAppUi* aAppUi, TBool aLocked)
 // ----------------------------------------------------------
 // 
 CAutoLockModel::CAutoLockModel(CAutolockAppUi* aAppUi) : 
- iAppUi( aAppUi ), iMonitoring(EFalse)	
-	{
-	}
+ iAppUi( aAppUi ), iMonitoring(EFalse)  
+  {
+  }
 
 //
 // ----------------------------------------------------------
@@ -72,43 +72,40 @@ CAutoLockModel::CAutoLockModel(CAutolockAppUi* aAppUi) :
 // ----------------------------------------------------------
 //
 void CAutoLockModel::ConstructL( TBool aLocked )
-	{
-		FeatureManager::InitializeLibL();
-	#if defined(_DEBUG)
+  {
+    FeatureManager::InitializeLibL();
+  #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::ConstructL() BEGIN"));
-  #endif	
+  #endif  
     iCenRepI = CAutolockCenRepI::NewL(iAppUi);
-	// lock status observer
-	iLockObserver = CLockObserver::NewL(iAppUi);
-	// Activitymanager
-	iActivityManager = CUserActivityManager::NewL(CActive::EPriorityStandard);
-	StartActivityMonitoringL();
+  // lock status observer
+  iLockObserver = CLockObserver::NewL(iAppUi);
+  // Activitymanager
+  iActivityManager = CUserActivityManager::NewL(CActive::EPriorityStandard);
+  StartActivityMonitoringL();
     // In GSM the device is always unlocked.
     // In CDMA, SecClientUi will lock the device on boot-up if needed.
- 
- 	if ( aLocked == EAutolockStatusUninitialized )
-	{
-			RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus,	EAutolockStatusUninitialized);
-	}
-	else
-	{
-	    RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus,	EAutolockOff);
-  }
+    if ( aLocked == EFalse ) {       
+       SetLockedL(EAutolockOff);
+       #if defined(_DEBUG)
+       RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::ConstructL() EAutolockOff"));
+       #endif       
+    }     
        
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::ConstructL() END"));
     #endif
-	}
-	//
+  }
+  //
 // ----------------------------------------------------------
 // CAutoLockModel::StartActivityMonitoringL()
 // Start monitoring user activity
 // ----------------------------------------------------------
 //
 void CAutoLockModel::StartActivityMonitoringL()
-	{	
-	SetActivityManagerL();
-	}
+  { 
+  SetActivityManagerL();
+  }
 
 //
 // ----------------------------------------------------------
@@ -117,9 +114,9 @@ void CAutoLockModel::StartActivityMonitoringL()
 // ----------------------------------------------------------
 //
 void CAutoLockModel::StopActivityMonitoring()
-	{
-	CancelActivityManager();
-	}
+  {
+  CancelActivityManager();
+  }
 
 //
 // ----------------------------------------------------------
@@ -128,19 +125,19 @@ void CAutoLockModel::StopActivityMonitoring()
 // ----------------------------------------------------------
 //
 void CAutoLockModel::SetActivityManagerL()
-	{
-	if (AutoLockTimeout() )
-		{
-		iActivityManager->Start(AutoLockTimeout(), TCallBack(HandleInactiveEventL,this), 
-								TCallBack(HandleActiveEventL,this));
-		}
-	else
-		{
-		iActivityManager->Start(AutoLockOff, TCallBack(HandleInactiveEventL,this), 
-								TCallBack(HandleActiveEventL,this));
-		}
+  {
+  if (AutoLockTimeout() )
+    {
+    iActivityManager->Start(AutoLockTimeout(), TCallBack(HandleInactiveEventL,this), 
+                TCallBack(HandleActiveEventL,this));
+    }
+  else
+    {
+    iActivityManager->Start(AutoLockOff, TCallBack(HandleInactiveEventL,this), 
+                TCallBack(HandleActiveEventL,this));
+    }
 
-	}
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::CancelActivityManager()
@@ -148,14 +145,14 @@ void CAutoLockModel::SetActivityManagerL()
 // ----------------------------------------------------------
 //
 void CAutoLockModel::CancelActivityManager()
-	{
+  {
     if ( iActivityManager )
         {
-	    iActivityManager->Cancel();
+      iActivityManager->Cancel();
         }
-	delete iActivityManager;
-	iActivityManager = NULL;
-	}
+  delete iActivityManager;
+  iActivityManager = NULL;
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::~CAutoLockModel()
@@ -163,13 +160,13 @@ void CAutoLockModel::CancelActivityManager()
 // ----------------------------------------------------------
 //
 CAutoLockModel::~CAutoLockModel()
-	{
+  {
     delete iCenRepI;
-	delete iLockObserver;
-	StopActivityMonitoring();
-	FeatureManager::UnInitializeLib();
+  delete iLockObserver;
+  StopActivityMonitoring();
+  FeatureManager::UnInitializeLib();
     // close custom phone
-	}
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::AutoLockTimeout()
@@ -177,9 +174,9 @@ CAutoLockModel::~CAutoLockModel()
 // ----------------------------------------------------------
 //
 TInt CAutoLockModel::AutoLockTimeout()
-	{
+  {
     return iCenRepI->Timeout();
-	}
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::ResetInactivityTimeoutL()
@@ -187,16 +184,16 @@ TInt CAutoLockModel::AutoLockTimeout()
 // ----------------------------------------------------------
 //
 void CAutoLockModel::ResetInactivityTimeout()
-	{	
-	if (AutoLockTimeout() )
-		{
-		iActivityManager->SetInactivityTimeout(AutoLockTimeout());
-		}
-	else
-		{
-		iActivityManager->SetInactivityTimeout(AutoLockOff);
-		}
-	}
+  { 
+  if (AutoLockTimeout() )
+    {
+    iActivityManager->SetInactivityTimeout(AutoLockTimeout());
+    }
+  else
+    {
+    iActivityManager->SetInactivityTimeout(AutoLockOff);
+    }
+  }
 //
 // ----------------------------------------------------------
 // CAutoLockModel::HandleActiveEventL()
@@ -204,9 +201,9 @@ void CAutoLockModel::ResetInactivityTimeout()
 // ----------------------------------------------------------
 //
 TInt CAutoLockModel::HandleActiveEventL(TAny* /*aPtr*/)
-	{
-	return KErrNone;
-	}
+  {
+  return KErrNone;
+  }
 
 //
 // ----------------------------------------------------------
@@ -215,32 +212,32 @@ TInt CAutoLockModel::HandleActiveEventL(TAny* /*aPtr*/)
 // ----------------------------------------------------------
 //
 TInt CAutoLockModel::HandleInactiveEventL(TAny* aPtr)
-	{
-	if ( STATIC_CAST(CAutoLockModel*, aPtr)->AutoLockTimeout() )
-		{
-			TInt value(EStartupUiPhaseUninitialized);
-			RProperty::Get(KPSUidStartup, KPSStartupUiPhase, value);
-			//Don't lock unless boot is over.
-	    if(value == EStartupUiPhaseAllDone)
-		    {
-		    #if defined(_DEBUG)
-    		RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::HandleInactiveEventL() Boot over"));
-    		#endif
-				#ifdef RD_REMOTELOCK
-				STATIC_CAST(CAutoLockModel*, aPtr)->LockSystemL(ETimerLocked);
-				#else
-				STATIC_CAST(CAutoLockModel*, aPtr)->LockSystemL(EAutolockOn);
-				#endif //RD_REMOTELOCK
-			  }
-			else
-			{
-				#if defined(_DEBUG)
-    		RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::HandleInactiveEventL() In boot; don't lock"));
-    		#endif
-			}
-		}
-	return KErrNone;
-	}
+  {
+  if ( STATIC_CAST(CAutoLockModel*, aPtr)->AutoLockTimeout() )
+    {
+      TInt value(EStartupUiPhaseUninitialized);
+      RProperty::Get(KPSUidStartup, KPSStartupUiPhase, value);
+      //Don't lock unless boot is over.
+      if(value == EStartupUiPhaseAllDone)
+        {
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::HandleInactiveEventL() Boot over"));
+        #endif
+        #ifdef RD_REMOTELOCK
+        STATIC_CAST(CAutoLockModel*, aPtr)->LockSystemL(ETimerLocked);
+        #else
+        STATIC_CAST(CAutoLockModel*, aPtr)->LockSystemL(EAutolockOn);
+        #endif //RD_REMOTELOCK
+        }
+      else
+      {
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::HandleInactiveEventL() In boot; don't lock"));
+        #endif
+      }
+    }
+  return KErrNone;
+  }
 
 //
 // ----------------------------------------------------------
@@ -249,37 +246,37 @@ TInt CAutoLockModel::HandleInactiveEventL(TAny* aPtr)
 // ----------------------------------------------------------
 //
 void CAutoLockModel::LockSystemL(TInt aAutolockState)
-	{
-	#if defined(_DEBUG)
+  {
+  #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() BEGIN"));
     #endif
     // If already locked, do nothing. Otherwise we'll end up
     // on top of Screensaver
     // Check if iSideKey2 is zero or not (locked if nonzero)
     // Also, phone should not be locked if PUK1 code query is up.
-#ifdef FF_STARTUP_OMA_DM_SUPPORT	// New booting order	Start	ID:	 MVKS-7PZDZ5
-		TInt autolock_value	=	0;
-		RProperty::Get(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus,	autolock_value);	
-		if (autolock_value ==	EAutolockStatusUninitialized)
-		{
-				return;					
-		}		
-#endif	//End	ID:	 MVKS-7PZDZ5
+#ifdef FF_STARTUP_OMA_DM_SUPPORT  // New booting order  Start ID:  MVKS-7PZDZ5
+    TInt autolock_value = 0;
+    RProperty::Get(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, autolock_value);  
+    if (autolock_value == EAutolockStatusUninitialized)
+    {
+        return;         
+    }   
+#endif  //End ID:  MVKS-7PZDZ5
     if (iAppUi->Locked() || iAppUi->IsPinBlocked())
         {
         return;
         }
-	
-	TInt lightStatus=EForcedLightsUninitialized; 
-	RProperty::Get(KPSUidCoreApplicationUIs,KLightsVTForcedLightsOn,lightStatus ); 
-	//If display is forced on. don't lock 
-	if(lightStatus == EForcedLightsOn ) 
-		{
-		#if defined(_DEBUG) 
-		RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() Display is forced on. Device not locked")); 
-		#endif 
-		return;
-		}
+  
+  TInt lightStatus=EForcedLightsUninitialized; 
+  RProperty::Get(KPSUidCoreApplicationUIs,KLightsVTForcedLightsOn,lightStatus ); 
+  //If display is forced on. don't lock 
+  if(lightStatus == EForcedLightsOn ) 
+    {
+    #if defined(_DEBUG) 
+    RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() Display is forced on. Device not locked")); 
+    #endif 
+    return;
+    }
 
     //Check which state we are in to see if it's OK to lock the phone
     //In CDMA when there is no SIM (RUIM) support we should be able to lock
@@ -294,7 +291,7 @@ void CAutoLockModel::LockSystemL(TInt aAutolockState)
         if( (sysState == ESwStateNormalRfOn       ||
             sysState == ESwStateNormalRfOff       ||
              sysState == ESwStateCriticalPhaseOK) &&
-            (aAutolockState > EAutolockOff) )	// EMKK-7N3G7R
+            (aAutolockState > EAutolockOff) ) // EMKK-7N3G7R
             {
             #if defined(_DEBUG)
             RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() LOCKED AFTER HIDDEN RESET"));
@@ -311,11 +308,11 @@ void CAutoLockModel::LockSystemL(TInt aAutolockState)
             okToLock = ETrue;
             }
         }
-   TInt tarmFlag;
+   TInt tarmFlag=0;
 if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))    
 {
     // Get the TARM admin flag value
-	TInt tRet = RProperty::Get( KSCPSIDAutolock, SCP_TARM_ADMIN_FLAG_UID, tarmFlag );
+  TInt tRet = RProperty::Get( KSCPSIDAutolock, SCP_TARM_ADMIN_FLAG_UID, tarmFlag );
     
     if ( tRet != KErrNone )
         {
@@ -333,20 +330,20 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
         }
 }
     
-    TInt callState;
+    TInt callState=0;
     iProperty.Get(KPSUidCtsyCallInformation, KCTsyCallState, callState);
 TBool isConditionSatisfied = EFalse;
 if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 {        
     if ( ( callState != EPSCTsyCallStateNone ) && (!( tarmFlag & KSCPFlagAdminLock )) )    
-    			isConditionSatisfied = ETrue;
+          isConditionSatisfied = ETrue;
 }
 else
 {
     if ( callState != EPSCTsyCallStateNone )
-    		isConditionSatisfied = ETrue;
+        isConditionSatisfied = ETrue;
 }
-		if (isConditionSatisfied)
+    if (isConditionSatisfied)
         {
         TBool remoteLocked(EFalse);
         #ifdef RD_REMOTELOCK
@@ -369,46 +366,47 @@ else
         #if defined(_DEBUG)
         RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() LOCK PHONE"));
         #endif   
-		// close fast-swap window
-		CEikonEnv::Static()->DismissTaskList();
-		// inform Avokon & Other app that system is locked
-		// unless the value has already been set in secuisystemlock
-		#ifdef RD_REMOTELOCK
-		if(aAutolockState != EManualLocked)
-    		{
-    		    #if defined(_DEBUG)
+    // close fast-swap window
+    CEikonEnv::Static()->DismissTaskList();
+    // inform Avokon & Other app that system is locked
+    // unless the value has already been set in secuisystemlock
+    #ifdef RD_REMOTELOCK
+    if(aAutolockState != EManualLocked)
+        {
+            #if defined(_DEBUG)
                 RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() Timer/Remote locked: %d"), aAutolockState);
                 #endif
-    		    SetLockedL(aAutolockState);		    
-    		}
-		else if((aAutolockState == EManualLocked)  && !iAppUi->Locked() && iAppUi->HiddenReset())
-		     {   //set the PubSub key if we are to be locked after a hidden reset has occurred.
-		         #if defined(_DEBUG)
+            SetLockedL(aAutolockState);       
+        }
+    else if((aAutolockState == EManualLocked)  && !iAppUi->Locked() && iAppUi->HiddenReset())
+         {   //set the PubSub key if we are to be locked after a hidden reset has occurred.
+             #if defined(_DEBUG)
                  RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() HIDDEN RESET LOCK"));
                  #endif
-		         SetLockedL(aAutolockState);	   
-		     }
-		else
-		    {   //Normal manual lock from power key. Just set the CenRep key.
-		        iCenRepI->SetLockedL(okToLock);
-		    }
-		#else //! RD_REMOTELOCK
-		SetLockedL(aAutolockState);
-		#endif//RD_REMOTELOCK
-		// lock keys
-		iAppUi->LockKeysL();
-		// app to foreground
-		iAppUi->BringAppToForegroundL();
+             SetLockedL(aAutolockState);     
+         }
+    else
+        {   //Normal manual lock from power key. Just set the CenRep key.
+            iCenRepI->SetLockedL(okToLock);
+        }
+    #else //! RD_REMOTELOCK
+    SetLockedL(aAutolockState);
+    #endif//RD_REMOTELOCK
+    // lock keys
+    iAppUi->LockKeysL();
+    // app to foreground
+    iAppUi->BringAppToForegroundL();
          // Reset inactivity time so that Screensaver gets to
         // run again after its timeout. We'll ignore the new
         // inactivity timeout, if already locked
-        User::ResetInactivityTime();
-		}
+        RDebug::Printf( "%s %s (%u) CR 428-469 avoid User::ResetInactivityTime=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+        // User::ResetInactivityTime();
+    }
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::LockSystemL() END"));
     #endif
 } 
-	
+  
 //
 // ----------------------------------------------------------
 // CAutoLockModel::SetLocked
@@ -416,20 +414,20 @@ else
 // ----------------------------------------------------------
 //
 void CAutoLockModel::SetLockedL(TInt aAutolockState)
-	{
-	#if defined(_DEBUG)
+  {
+  #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::SetLockedL() begin"));
     #endif
-	TBool locked = (aAutolockState > EAutolockOff);
-	if (locked)
-		{
+  TBool locked = (aAutolockState > EAutolockOff);
+  if (locked)
+    {
         iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, aAutolockState);
         #if defined(_DEBUG)
         RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::SetLockedL() LOCK"));
         #endif
-		}		
+    }   
   else
-		{				
+    {       
         iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, EAutolockOff);
         #if defined(_DEBUG)
         RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::SetLockedL() UNLOCK"));         
@@ -440,6 +438,6 @@ void CAutoLockModel::SetLockedL(TInt aAutolockState)
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoLockModel::SetLockedL() end"));
     #endif
-	}
+  }
 
 // END OF FILE

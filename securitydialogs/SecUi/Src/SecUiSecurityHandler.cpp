@@ -223,7 +223,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
     RDebug::Printf( "%s %s (%u) currentLockStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, currentLockStatus );
     #endif
     delete repository;
-    if(res==0 && currentLockStatus==1)
+    if(res==0 && currentLockStatus>=1 )
         {
         // code is the default one; no need to request it.
         return ETrue;
@@ -1248,7 +1248,7 @@ TInt CSecurityHandler::Pin1RequiredL()
         #endif
         User::LeaveIfError(res);
         
-        if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+        if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
             res = iSecurityDlg->ExecuteLD(R_PIN_REQUEST_QUERY);
         else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
             {
@@ -1300,7 +1300,7 @@ TInt CSecurityHandler::Pin1RequiredL()
         CSecUiLockObserver* queryStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg, ESecUiRequestStateObserver);
         CleanupStack::PushL(queryStatusObserver);
         
-        if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+        if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
             res = iSecurityDlg->ExecuteLD(R_PIN_QUERY);
         else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
             {
@@ -1928,7 +1928,7 @@ TInt CSecurityHandler::UPinRequiredL()
             res = wait->WaitForRequestL();
             User::LeaveIfError(res);
             
-            if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+            if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
                 res = iSecurityDlg->ExecuteLD(R_UPIN_REQUEST_QUERY);
             else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
                 {
@@ -1974,7 +1974,7 @@ TInt CSecurityHandler::UPinRequiredL()
     		CSecUiLockObserver* queryStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg, ESecUiRequestStateObserver);
             CleanupStack::PushL(queryStatusObserver);
             
-            if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+            if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
                 res = iSecurityDlg->ExecuteLD(R_UPIN_QUERY);
             else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
                 {

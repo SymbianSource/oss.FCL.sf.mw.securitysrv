@@ -139,8 +139,8 @@ void CAutolockAppUi::ConstructL()
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() phone opened"));
     #endif
 
-    TBool systemLocked = EFalse;
-	TBool autolockValue = EAutolockStatusUninitialized;
+  TBool systemLocked = EFalse;
+	TBool phoneLocked = EFalse;
 
     iWait = NULL;
     iWait = CWait::NewL();
@@ -174,8 +174,9 @@ void CAutolockAppUi::ConstructL()
         RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Hidden reset"));
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() CR get result: %d"), cRresult);
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() CR lock value: %d"), lockValue);
+    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() CR lockInfo.iSetting: %d"), lockInfo.iSetting);    
     #endif
-	if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
+	  if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
 		{
         repository->Set(KSettingsAutoLockTime, 0);
         if ( FeatureManager::FeatureSupported( KFeatureIdProtocolCdma ) )
@@ -189,24 +190,15 @@ void CAutolockAppUi::ConstructL()
         #if defined(_DEBUG)
         RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Hidden reset when locked"));
         #endif
-        systemLocked = ETrue;
+        phoneLocked = systemLocked = ETrue;
         }
-
-        
- 		if ( lockInfo.iSetting == RMobilePhone::ELockSetEnabled && lockValue != EAutolockOff && !hiddenReset)
-		{
-		    #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() EAutolockStatusUninitialized %d"),EAutolockStatusUninitialized);
+    else if (lockInfo.iSetting == RMobilePhone::ELockSetEnabled && !hiddenReset) {       
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Set phone locked"));
         #endif
-        autolockValue = EAutolockStatusUninitialized;					            
-    }
-    else if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled || (hiddenReset && (lockValue == 0)) )
-		{
-		    #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() EAutolockOff %d"),EAutolockOff);
-        #endif
-        autolockValue = EAutolockOff;
-    }
+        phoneLocked = ETrue;
+        }             
+ 	
      
     delete repository;
 	#endif   //__WINS__
@@ -252,7 +244,7 @@ void CAutolockAppUi::ConstructL()
 	SetDefaultViewL(*lockView);
 
 	// start autolock timer
-	iModel = CAutoLockModel::NewL(this, autolockValue);	
+	iModel = CAutoLockModel::NewL(this, phoneLocked);	
 
 	// phone event observer
 	iPhoneObserver = CValueObserver::NewL(this);
@@ -496,7 +488,14 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 		if (iLocked)
 			{
 			// lock voice key 
-			LockSideKeyL();			
+			LockSideKeyL();	
+			CAknView* view = View(KAutoLockViewId);
+			if(view)
+				{	
+		  		TRect aCallRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(15, aCallRect);
+				}
+		
 			}
 		else
 			{
@@ -525,6 +524,12 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			{
 			// unlock voice key while there is active call
 			UnLockSideKey();
+			CAknView* view = View(KAutoLockViewId);
+			if(view)
+				{	
+			  	TRect aCallRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(16, aCallRect);
+				}
 			}
 		}
 
@@ -935,6 +940,8 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 	CAknView* view = View(KAutoLockViewId);
 	if(view)
 	  {
+	  TRect aCallRect;
+      STATIC_CAST(CAutolockView*, view)->HandleCall(17, aCallRect);
 	  STATIC_CAST(CAutolockView*, view)->MakeVisible(ETrue);
 	  }
 	else

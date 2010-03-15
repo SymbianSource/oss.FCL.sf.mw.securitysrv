@@ -28,7 +28,7 @@
 #include <aknnotpi.rsg> // keyguard spesific resources
 #include <AknUtils.h>
 #include <activitymanager.h>
-#include <secondarydisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
+#include <SecondaryDisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
 #include <featmgr.h> // feature manager
 #include <eikcba.h> // keyguard soft buttons
 #include <eikspane.h>

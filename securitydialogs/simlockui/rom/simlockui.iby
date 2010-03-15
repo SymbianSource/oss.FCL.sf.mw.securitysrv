@@ -27,7 +27,7 @@
 #define _SIMLOCKUI_IBY_
 
 #include <data_caging_paths_for_iby.hrh>
-#ifdef FF_SIMLOCKD_UI
+#ifdef FF_SIMLOCK_UI
 // Definitions for applications with a UI
 S60_APP_EXE( SimLockUI )
 S60_APP_AIF_RSC( SimLockUI )

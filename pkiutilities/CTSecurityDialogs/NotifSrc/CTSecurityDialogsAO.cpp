@@ -81,6 +81,46 @@ _LIT( KKeyStoreImportKeyLabel, "Passphrase of the imported key file" );
 _LIT( KKeyStoreExportKeyLabel, "Passphrase of the exported key file" );
 _LIT( KPKCS12TokenLabel, "PKCS12");
 
+
+// ============================ LOCAL FUNCTIONS ===============================
+
+TInt AlgorithmNameResourceId( TAlgorithmId aAlgorithmId )
+    {
+    TInt resourceId = 0;
+    switch( aAlgorithmId )
+        {
+        case ERSA:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_RSA;
+            break;
+        case EDSA:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_DSA;
+            break;
+        case EDH:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_DH;
+            break;
+        case EMD2:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_MD2;
+            break;
+        case EMD5:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_MD5;
+            break;
+        case ESHA1:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_SHA1;
+            break;
+        case ESHA224:
+        case ESHA256:
+        case ESHA384:
+        case ESHA512:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_SHA2;
+            break;
+        default:
+            resourceId = R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN;
+            break;
+        }
+    return resourceId;
+    }
+
+
 // ============================ MEMBER FUNCTIONS ===============================
 
 // -----------------------------------------------------------------------------
@@ -2050,61 +2090,17 @@ void CCTSecurityDialogsAO::AddCertAlgorithmsL( TDes& aMessage, const CX509Certif
     {
     TInt fieldType = 0;
     TInt fieldType2 = 0;
+
     // digest algorithm
-    TAlgorithmId algorithmId =
-        aCert.SigningAlgorithm().DigestAlgorithm().Algorithm();
-    switch ( algorithmId )
-        {
-        case EMD2:
-            {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_MD2;
-            break;
-            }
-        case EMD5:
-            {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_MD5;
-            break;
-            }
-        case ESHA1:
-            {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_SHA1;
-            break;
-            }
-        default:
-            {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN;
-            break;
-            }
-        }
+    TAlgorithmId algorithmId = aCert.SigningAlgorithm().DigestAlgorithm().Algorithm();
+    fieldType = AlgorithmNameResourceId( algorithmId );
 
     // public-key algorithm
-    algorithmId =
-        aCert.SigningAlgorithm().AsymmetricAlgorithm().Algorithm();
-    switch ( algorithmId )
-        {
-        case ERSA:
-            {
-            fieldType2 = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_RSA;
-            break;
-            }
-        case EDSA:
-            {
-            fieldType2 = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_DSA;
-            break;
-            }
-        case EDH:
-            {
-            fieldType2 = R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM_DH;
-            break;
-            }
-        default:
-            {
-            fieldType2 = R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN;
-            }
-        }
+    algorithmId = aCert.SigningAlgorithm().AsymmetricAlgorithm().Algorithm();
+    fieldType2 = AlgorithmNameResourceId( algorithmId );
 
     // If other algorithm is unknown
-    if ( fieldType == R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN ||
+    if( fieldType == R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN ||
         fieldType2 == R_TEXT_RESOURCE_DETAILS_VIEW_UNKNOWN )
         {
         DetailsFieldResourceL( aMessage,

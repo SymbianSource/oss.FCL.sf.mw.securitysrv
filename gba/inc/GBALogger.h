@@ -27,31 +27,29 @@ _LIT( KEnd, "Exit <----");
 
 #ifdef _DEBUG
 
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC &arg4);
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC8 &arg4);
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const char *arg4, const TInt &aNum);
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const TDesC &arg4, const TInt &aNum);
-    void DebugBinary(const TDesC8 &buf);
+    void debugline( const char *aFormatString, void *aArg1, void* aArg2, void *aArg3, void *aArg4, const TDesC &aArg5 );
+    void debugline( const char *aFormatString, void *aArg1, void *aArg2, void *aArg3, void *aArg4, const TDesC8 &aArg5 );
+    void debugline( const char *aFormatString, void *aArg1, void* aArg2, void *aArg3, void *aArg4, const char *aArg5 );
+    void debugline( const char *aFormatString, void *aArg1, void *aArg2, void *aArg3, void *aArg4, const char *aArg5, const TInt& aNum );
+    void debugBinary( const TDesC8 &aBuffer );
     void debugTTime( TTime& aTime );
-    void debugline(const char *a, void *arg1, void* f, void *arg2, void *arg3, const char *arg4);
-
+    
+    //Macro's
     #define GBA_DEBUG
     #define GBA_TRACE_DEBUG_DESC(a) debugline("%s:%s %d: %d",(void *) __FILE__, (void *) __func__, (void *)__LINE__, (void *)User::TickCount(),(a))
     #define GBA_TRACE_DEBUG_NUM( a,b ) debugline("%s:%s %d: %d",(void *) __FILE__, (void *) __func__, (void *)__LINE__, (void *)User::TickCount(),(a),b)
-    
-#ifdef LOG_GBA_KEYS
-    #define GBA_TRACE_DEBUG_BINARY(a) DebugBinary((a));
-#else
-    #define GBA_TRACE_DEBUG_BINARY(a)
-#endif 
-    
     #define GBA_TRACE_BEGIN() debugline("%s:%s %d: %d",(void *) __FILE__, (void *) __func__, (void *)__LINE__, (void *)User::TickCount(),(KEnter))
     #define GBA_TRACE_END() debugline("%s:%s %d: %d",(void *) __FILE__, (void *) __func__, (void *)__LINE__, (void *)User::TickCount(),(KEnd))
     #define GBA_TRACE_TIME( a ) debugTTime( (a) );
     #define GBA_TRACE_DEBUG(a) debugline("%s:%s %d: %d",(void *) __FILE__, (void *) __func__, (void *)__LINE__, (void *)User::TickCount(),(a))
-
+#ifdef LOG_GBA_KEYS
+    #define GBA_TRACE_DEBUG_BINARY(a) debugBinary((a));
 #else
+    #define GBA_TRACE_DEBUG_BINARY(a)
+#endif
 
+#else //_DEBUG
+    
     #define GBA_TRACE_DEBUG_DESC(a)
     #define GBA_TRACE_DEBUG(a) 
     #define GBA_TRACE_DEBUG_NUM(a,b)
@@ -60,8 +58,8 @@ _LIT( KEnd, "Exit <----");
     #define GBA_TRACE_END()
     #define GBA_TRACE_TIME( a )
 
-#endif
-
+#endif //_DEBUG
+    
 
 #endif //__GBALOGGER_H_
                                                                         

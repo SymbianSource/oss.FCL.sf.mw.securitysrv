@@ -257,7 +257,7 @@ EXPORT_C void CSecuritySettings::ChangePinL()
     res = iWait->WaitForRequestL();
     User::LeaveIfError(res);
     // ask pin
-    if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+    if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
             res = dlg->ExecuteLD(R_PIN_QUERY);
     else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
        {
@@ -431,7 +431,7 @@ EXPORT_C void CSecuritySettings::ChangeUPinL()
         res = iWait->WaitForRequestL();
         User::LeaveIfError(res);
             
-        if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
+        if( codeInfo.iRemainingEntryAttempts >= KMaxNumberOfPINAttempts )
             res = dlg->ExecuteLD(R_UPIN_QUERY);
         else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
             {

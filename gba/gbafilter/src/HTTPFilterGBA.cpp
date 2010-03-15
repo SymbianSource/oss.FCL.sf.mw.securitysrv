@@ -20,7 +20,7 @@
 #include <http/rhttpresponse.h>
 #include <httperr.h>
 #include <httpstringconstants.h>
-#include <imcvcodc.h>      //for base64 en/decoding
+#include <tconvbase64.h>                   //for base64 en/decoding
 #include "HTTPFilterGBA.h"
 #include "GbaCommon.h"
 #include <bautils.h>
@@ -609,9 +609,8 @@ void CHTTPFilterGBA::CheckHeadersL(  RHTTPTransaction& aTrans )
                         GBA_TRACE_DEBUG(("BTID:"));
                         GBA_TRACE_DEBUG(iGbaOutputParams.iBTID);
                         // Encodes the KNAF to generate a password
-                        TImCodecB64 b64coder;
+                        TBase64 b64coder;
                         TBuf8<KB64KeySize> keyBase64;
-                        b64coder.Initialise();
                         b64coder.Encode( iGbaOutputParams.iKNAF, keyBase64 );
                         RString username = iStringPool.OpenStringL( iGbaOutputParams.iBTID );
                         CleanupClosePushL<RString>( username );

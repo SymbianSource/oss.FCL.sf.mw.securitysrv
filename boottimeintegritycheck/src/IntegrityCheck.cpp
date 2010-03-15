@@ -78,6 +78,37 @@ using namespace Swi;
 
 // FUNCTION PROTOTYPES
 
+template <class T>
+class CleanupResetAndDestroy
+    {
+public:
+    inline static void PushL(T& aRef);
+private:
+    static void ResetAndDestroy(TAny *aPtr);
+    };
+    
+template <class T>
+inline void CleanupResetAndDestroyPushL(T& aRef);
+
+template <class T>
+inline void CleanupResetAndDestroy<T>::PushL(T& aRef)
+    {
+    CleanupStack::PushL(TCleanupItem(&ResetAndDestroy,&aRef));
+    }
+
+template <class T>
+void CleanupResetAndDestroy<T>::ResetAndDestroy(TAny *aPtr)
+    {
+    static_cast<T*>(aPtr)->ResetAndDestroy();
+    }
+
+template <class T>
+inline void CleanupResetAndDestroyPushL(T& aRef)
+    {
+    CleanupResetAndDestroy<T>::PushL(aRef);
+    }
+
+
 LOCAL_C TInt ThreadStartL();
 
 LOCAL_C TInt ReadCertificatesL( 
@@ -390,10 +421,14 @@ LOCAL_C TInt ThreadStartL()
  
     BTIC_TRACE_PRINT_NUM("Updated store read enabled(1) = %d",certFileFound);
     BTIC_TRACE_PRINT_NUM("Binaries check enabled(0) = %d",binariesCheckEnbled);           
-   
+//FIX   
     // Create pointer array for root certificates.  
-    RPointerArray<CX509Certificate> x509CertArray;     
+    RPointerArray<CX509Certificate> x509CertArray; 
+    CleanupResetAndDestroyPushL( x509CertArray );
+    pushToStack++;
     RPointerArray<TCapabilitySet> certCapaArray;
+    CleanupResetAndDestroyPushL( certCapaArray );
+    pushToStack++;
     TInt fileError = 0;
      
     // Read root certificates if needed.      
@@ -413,16 +448,19 @@ LOCAL_C TInt ThreadStartL()
             {
             BTIC_TRACE_PRINT("ERROR Can't read root certificates ! ! !");
             CleanupStack::PopAndDestroy( pushToStack );
-            x509CertArray.ResetAndDestroy();                   
-            certCapaArray.ResetAndDestroy();
+
             User::Leave( fileError );
             }               
         }
-              
+            
     // Create temporary pointer array for C-drive updated certificates. 
-    RPointerArray<CX509Certificate> tempCertArray;  
-    RPointerArray<TCapabilitySet> tempCapaArray;    
-             
+    RPointerArray<CX509Certificate> tempCertArray; 
+    CleanupResetAndDestroyPushL( tempCertArray );
+    pushToStack++;
+    RPointerArray<TCapabilitySet> tempCapaArray; 
+    CleanupResetAndDestroyPushL( tempCapaArray );
+    pushToStack++;
+    
     // If candidate for certstore file is found read it and validate file.
     if ( certFileFound )
         {        
@@ -512,13 +550,9 @@ LOCAL_C TInt ThreadStartL()
 */      
                             
     BTIC_TRACE_PRINT("\nProgram complete\n");
-    // DELETE ALL ARRAYS AND ARRAY CONTENT    
-    x509CertArray.ResetAndDestroy();                
-    tempCertArray.ResetAndDestroy();
-    certCapaArray.ResetAndDestroy();
-    tempCapaArray.ResetAndDestroy();  
-  
-    CleanupStack::PopAndDestroy( pushToStack ); //fs, buffers
+    // DELETE ALL ARRAYS AND ARRAY CONTENT  
+    // x509CertArray, tempCertArray, certCapaArray, tempCapaArray, fs,  buffers
+    CleanupStack::PopAndDestroy( pushToStack ); 
       
     BTIC_TRACE_PRINT("UHEAP MARK END");
     __UHEAP_MARKEND;
@@ -683,8 +717,12 @@ LOCAL_C TBool ValidateCertStoreL(
     __UHEAP_MARK;
                           
     TBool storeOK = EFalse;                  
-    
+ 
     RPointerArray<HBufC> updaterExePaths;
+    CleanupResetAndDestroyPushL( updaterExePaths );
+    
+    RPointerArray<CSisRegistryPackage> sisPackages;
+    CleanupResetAndDestroyPushL( sisPackages );
          
     Swi::RSisRegistrySession sisRegSession;  
 
@@ -693,8 +731,6 @@ LOCAL_C TBool ValidateCertStoreL(
     User::LeaveIfError( sisRegSession.Connect() );
         
     CleanupClosePushL( sisRegSession );
-    
-    RPointerArray<CSisRegistryPackage> sisPackages;
                 
     // Find installed packages.
     sisRegSession.InstalledPackagesL( sisPackages );            
@@ -778,10 +814,7 @@ LOCAL_C TBool ValidateCertStoreL(
                 }                
             }                                                        
         }                       
-                                                   
-    // Cleanup array.           
-    sisPackages.ResetAndDestroy();                                           
-
+                                         
     if ( entryOpen )
         {        
         CleanupStack::PopAndDestroy(); //RSisRegistryEntry               
@@ -796,8 +829,9 @@ LOCAL_C TBool ValidateCertStoreL(
         {              
         storeOK = RunUpdaterL( aFs, updaterExePaths );                        
         }
-        
-    updaterExePaths.ResetAndDestroy();    
+    
+    CleanupStack::PopAndDestroy( 1, &sisPackages );    
+    CleanupStack::PopAndDestroy( 1, &updaterExePaths ); 
                   
     BTIC_TRACE_PRINT("UHEAP MARK END");     
     __UHEAP_MARKEND;   
@@ -827,7 +861,7 @@ LOCAL_C TBool ValidateProvisonerCertStoreL(
     {
     BTIC_TRACE_PRINT("[BOOT INTECRITY CHECK] ValidateProvisonerStoreL --->");
     __UHEAP_MARK;
-        
+       
     TBool retOK = EFalse;                      
     // installedFiles array owns entry's files.
     RPointerArray<HBufC> installedFilesArray;
@@ -837,6 +871,12 @@ LOCAL_C TBool ValidateProvisonerCertStoreL(
     RArray<TUint64> capaArray;              
     RPointerArray<HBufC> stringArray;
     HBufC* string = NULL;
+    
+    CleanupResetAndDestroyPushL( installedFilesArray );
+    CleanupResetAndDestroyPushL( foundFilesArray );
+    CleanupResetAndDestroyPushL( fileArray );
+    CleanupResetAndDestroyPushL( hashArray );
+    CleanupResetAndDestroyPushL( stringArray );
     
     TUint64* capaVector = new( ELeave ) TUint64[KBTICCapaCount];
     CleanupArrayDeletePushL( capaVector );
@@ -1050,7 +1090,13 @@ LOCAL_C TBool ValidateProvisonerCertStoreL(
         }
     
     CleanupStack::PopAndDestroy(); //capaVector   
-                                              
+
+    CleanupStack::Pop( &stringArray );
+    CleanupStack::Pop( &hashArray );
+    CleanupStack::Pop( &fileArray );
+    CleanupStack::Pop( &foundFilesArray );
+    CleanupStack::Pop( &installedFilesArray );
+                 
     // Reset only. InstalledFiles array owns buffers.
     foundFilesArray.Reset();
     fileArray.Reset(); 
@@ -1096,6 +1142,12 @@ LOCAL_C TBool ValidateSymbianCertStoreL(
     RArray<TUint64> capaArray;              
     RPointerArray<HBufC> stringArray;
     HBufC* string = NULL;
+   
+    CleanupResetAndDestroyPushL( installedFilesArray );
+    CleanupResetAndDestroyPushL( foundFilesArray );
+    CleanupResetAndDestroyPushL( fileArray );
+    CleanupResetAndDestroyPushL( hashArray );
+    CleanupResetAndDestroyPushL( stringArray );
     
     TUint64* capaVector = new( ELeave ) TUint64[KBTICCapaCount];
     CleanupArrayDeletePushL( capaVector );
@@ -1161,7 +1213,13 @@ LOCAL_C TBool ValidateSymbianCertStoreL(
         }
    
     CleanupStack::PopAndDestroy(); //capaVector   
-                                              
+    
+    CleanupStack::Pop( &stringArray ); 
+    CleanupStack::Pop( &hashArray );
+    CleanupStack::Pop( &fileArray );
+    CleanupStack::Pop( &foundFilesArray );
+    CleanupStack::Pop( &installedFilesArray );
+                                                               
     // Reset only. InstalledFiles array owns buffers.
     foundFilesArray.Reset();
     fileArray.Reset(); 
@@ -1392,6 +1450,8 @@ LOCAL_C TBool SearchValidCertificateL(
     BTIC_TRACE_PRINT("[BOOT INTECRITY CHECK] SearchValidCertificate v2.1 --->");      
 
     RPointerArray<HBufC8> binaryCertChainArray;
+    CleanupResetAndDestroyPushL( binaryCertChainArray );
+    
     // Get certificates in binary format.
     aEntry.CertificateChainsL( binaryCertChainArray );
                             
@@ -1401,7 +1461,8 @@ LOCAL_C TBool SearchValidCertificateL(
     TBool retVal = EFalse;                                                                  
 
     RPointerArray<CX509Certificate> chainCertArray;
-
+    CleanupResetAndDestroyPushL( chainCertArray );
+    
     // Check all entry's chains    
     for ( TInt chain = 0; chain < chainCount; chain++ )
         {  
@@ -1546,13 +1607,12 @@ LOCAL_C TBool SearchValidCertificateL(
         if ( retVal )
             {                
             break;
-            }
-            
+            }           
         } // FOR LOOP
-                    
-    binaryCertChainArray.ResetAndDestroy();
-    
-                                        
+
+    CleanupStack::PopAndDestroy( &chainCertArray );
+    CleanupStack::PopAndDestroy( &binaryCertChainArray );
+                                            
     BTIC_TRACE_PRINT("[BOOT INTECRITY CHECK] SearchValidCertificate v2.1 <---");         
     
     return retVal;

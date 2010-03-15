@@ -21,9 +21,7 @@
 #include		<e32property.h>
 #include	<PSVariables.h>
 #include		<coreapplicationuisdomainpskeys.h>
-#include <SCPClient.h>	// EMKK-7N3G7R
-#include		<startupdomainpskeys.h>	// EMKK-7N3G7R
-#include <mmtsy_names.h>	// EMKK-7N3G7R 
+
 #include	"AutoLockLockObserverPS.h"
 #include	"AutolockAppUiPS.h"
 #include	"AutoLockModelPS.h"
@@ -54,14 +52,6 @@ CLockObserver::~CLockObserver()
 		{
 		Cancel();
 		iProperty.Close();
-#ifdef FF_STARTUP_OMA_DM_SUPPORT	// New booting order	Start	EMKK-7N3G7R			
-		delete wait;
-		if (iServer.Handle())
-			{						
-				iServer.UnloadPhoneModule(KMmTsyModuleName);
-				iServer.Close();
-			}
-#endif	// End EMKK-7N3G7R	
 		}
 //
 // ----------------------------------------------------------
@@ -97,12 +87,13 @@ CLockObserver::CLockObserver(CAutolockAppUi* aAppUi) : CActive(0), iAppUi(aAppUi
 void CLockObserver::ConstructL()
 		{
 	    
-		#if	defined(_DEBUG)	
-        RDebug::Print(_L("(AUTOLOCK)CLockObserver::ConstructL()"));
+	#if	defined(_DEBUG)	
+    RDebug::Print(_L("(AUTOLOCK)CLockObserver::ConstructL()"));
     #endif
         
 		// Add this	active object	to the scheduler.
 	CActiveScheduler::Add(this);
+	    
 	TInt ret;
 	_LIT_SECURITY_POLICY_PASS(KReadPolicy);	
 	_LIT_SECURITY_POLICY_C1(KWritePolicy,	ECapabilityWriteDeviceData);

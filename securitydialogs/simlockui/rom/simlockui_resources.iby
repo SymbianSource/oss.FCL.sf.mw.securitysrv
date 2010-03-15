@@ -25,7 +25,7 @@
 #define _SIMLOCKUI_RESOURCES_IBY_
 
 #include <data_caging_paths_for_iby.hrh>
-#ifdef FF_SIMLOCKD_UI
+#ifdef FF_SIMLOCK_UI
 S60_APP_RESOURCE( SimLockUI )
 #endif  // FF_SIMLOCK_UI
 
