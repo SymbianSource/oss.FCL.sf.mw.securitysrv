@@ -63,7 +63,6 @@ class CAutoLockSettingPage : public CAknRadioButtonSettingPage
 		TInt& iAutoLockValue;
 		TInt iMaximum;
 		TInt iOriginalIndex;
-		TInt iPrevSelectionItem;
 
 	};
 

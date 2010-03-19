@@ -17,7 +17,7 @@
 &EN
 
 ; Header
-#{"GBA (Beta)"},(0x2000F867), 0, 3, 0, TYPE=SA,RU
+#{"GBA (Beta)"},(0x20029F08), 0, 4, 0, TYPE=SA,RU
 
 ; Localised Vendor name
 %{"Nokia"}
@@ -32,12 +32,12 @@
 
 ; Files to install
 
-"\epoc32\release\armv5\urel\gbaserver2.exe"			-"c:\sys\bin\gbaserver2.exe"
-"\epoc32\release\armv5\urel\gbauicc2.dll"			-"c:\sys\bin\gbauicc2.dll"
-"\epoc32\data\z\resource\plugins\gbauicc2.rsc"			-"c:\resource\plugins\gbauicc2.rsc"
-"\epoc32\release\armv5\urel\gba2.dll"				-"c:\sys\bin\gba2.dll"
-"\epoc32\release\armv5\urel\httpfiltergba2.dll"			-"c:\sys\bin\httpfiltergba2.dll"
-"\epoc32\data\z\resource\plugins\httpfiltergba2.rsc"		-"c:\resource\plugins\httpfiltergba2.rsc"
+"\epoc32\release\armv5\urel\gbaserver2.exe"			-"!:\sys\bin\gbaserver2.exe"
+"\epoc32\release\armv5\urel\gbauicc2.dll"			-"!:\sys\bin\gbauicc2.dll"
+"\epoc32\data\z\resource\plugins\gbauicc2.rsc"			-"!:\resource\plugins\gbauicc2.rsc"
+"\epoc32\release\armv5\urel\gba2.dll"				-"!:\sys\bin\gba2.dll"
+"\epoc32\release\armv5\urel\httpfiltergba2.dll"			-"!:\sys\bin\httpfiltergba2.dll"
+"\epoc32\data\z\resource\plugins\httpfiltergba2.rsc"		-"!:\resource\plugins\httpfiltergba2.rsc"
 
 
 

@@ -34,6 +34,7 @@ const TInt KNetworkIdLength3 = 3;
 const TInt KIntegerConstant4 = 4;
 const TInt KIntegerConstant16 = 16;
 const TInt KIntegerConstant32 = 32;
+const TInt KMaximumKcSize     = 8;
 
 _LIT8( KAT, "@" );
 _LIT8( KIMSMNC, "ims.mnc" );
@@ -330,19 +331,21 @@ void CAkaIsaInterface::QueryAuthentication2GL(  const TDesC8& aNonce, TDes8& aRe
     
     GBA_TRACE_DEBUG(("Creating 2G authentication vector KDF(key,\"3gpp-gba-res\",sres)"));
     GBA_TRACE_DEBUG_BINARY(authSIMdata.iSRES);
+    GBA_TRACE_DEBUG_NUM(("SRES size = %d"), authSIMdata.iSRES.Size() );
     GBA_TRACE_DEBUG_BINARY(authSIMdata.iKC);
+    GBA_TRACE_DEBUG_NUM(("Kc size = %d"), authSIMdata.iKC.Size() );
     
     TBuf8<KMaxBufferSize> lastSRESKC;
-    TBuf8<2*RMmCustomAPI::KMaxKCLength+KAKA_RAND_LENGTH> kc2;
+    TBuf8< 2*KMaximumKcSize + KAKA_RAND_LENGTH > kc2;
     
     // COPYING Kc twice
     GBA_TRACE_DEBUG(("Copying iKC"));
-    for( TInt  i=0; i<(RMmCustomAPI::KMaxKCLength) ; i++ )
+    for( TInt  i=0; i<KMaximumKcSize; i++ )
         {
         kc2.Append(  (TUint8)(authSIMdata.iKC[i]) );
         }
     GBA_TRACE_DEBUG(("Copying iKC"));
-    for( TInt  i=0;i<(RMmCustomAPI::KMaxKCLength);i++ )
+    for( TInt  i=0; i<KMaximumKcSize; i++ )
         {
         kc2.Append(  (TUint8)(authSIMdata.iKC[i]) );
         }
@@ -351,7 +354,7 @@ void CAkaIsaInterface::QueryAuthentication2GL(  const TDesC8& aNonce, TDes8& aRe
     
     GBA_TRACE_DEBUG(("K part"));
     GBA_TRACE_DEBUG_BINARY(kc2);
-    
+    GBA_TRACE_DEBUG_NUM(("Key size = %d"), kc2.Size() );
     // appending RAND
     lastSRESKC.Append( 0x01);
     lastSRESKC.Append(K3GPPGBARES);
@@ -803,8 +806,9 @@ void CAkaIsaInterface::QueryCardInterfaceL()
 
         GBA_TRACE_DEBUG_NUM(("QueryCardInterfaceL: GBA_U avail checking is Done, err = %d"), status.Int());
     
-        if ( status.Int() == KErrNotFound )
+        if ( status.Int() == KErrNotFound ||  status.Int() == KErrNotSupported)
             {
+			//If the GetUSIMServiceSupport API returnS KErrNotSupported,need to force 3G GBA_ME[E3GInterface]
             //Not gba-u service available
             GBA_TRACE_DEBUG(("QueryCardInterfaceL: it returns KErrNotFound, No GBA-U "));
             // set interface as 3g then
@@ -839,7 +843,8 @@ void CAkaIsaInterface::QueryCardInterfaceL()
         }
     else
         {
-        //nothing	
+        // leave
+        User::LeaveIfError(KErrNotSupported);
         }
     }
 

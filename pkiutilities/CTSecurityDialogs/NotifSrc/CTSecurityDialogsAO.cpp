@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *
 */
 
@@ -49,8 +49,6 @@
 // LOCAL CONSTANTS AND MACROS
 const TInt KCertArrayGranularity = 3;
 const TInt KMaxLengthTextDetailsBody = 5000;
-// CertLabel, Issuer, Owner max length 510 bytes
-const TInt KMaxLengthTextCertLabel = 510;
 // CertLabel, Issuer, Owner max visible length
 const TInt KMaxLengthTextCertLabelVisible = 200;
 // "dd/mm/yyyy0"
@@ -165,7 +163,7 @@ CCTSecurityDialogsAO::~CCTSecurityDialogsAO()
     delete iKeyStore;
     delete iCertStore;
     iFs.Close();
-    
+
     iDeleted = ETrue;
     }
 
@@ -186,7 +184,7 @@ void CCTSecurityDialogsAO::StartLD(
     iMessagePtr = aMessage;
 
     WIMSECURITYDIALOGS_WRITE_FORMAT( "CCTSecurityDialogsAO::StartLD iOperation=%d", iOperation );
-    
+
     MapTlsProviderOperation( iOperation );
 
     switch ( iOperation )
@@ -326,7 +324,7 @@ void CCTSecurityDialogsAO::StartLD(
             User::Panic( _L("CTestSecDlgNotifier"), 0 );
             break;
         }
-    
+
     // Note that CCTSecurityDialogsAO::StartLD() must complete the given message and
     // delete itself when ready. However, there may be several steps before it can be
     // deleted. CCTSecurityDialogsAO::HandleResponseAndCompleteL() completes the given
@@ -543,7 +541,7 @@ void CCTSecurityDialogsAO::DoHandleUnblockPinOperationL()
         DoHandleMessageL( EErrorPukCodeIncorrect, KNullDesC, KNullDesC, 0, 0 );
       }
     // Ask the PUK code
-    // The label is iPIN instead of iUnblockPIN, since we need to show to 
+    // The label is iPIN instead of iUnblockPIN, since we need to show to
     // the user which PIN to unblock
     DoHandleMessageL( EEnterPukNR, iPIN.iPINLabel,
         iPIN.iTokenLabel, iUnblockPIN.iMinLength, iUnblockPIN.iMaxLength );
@@ -762,8 +760,8 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
                                         aMinLength,
                                         aMaxLength,
                                         iRetValue,
-                                        resource, 
-                                        iPinQueryDialog, 
+                                        resource,
+                                        iPinQueryDialog,
                                         iPinQueryDialogDeleted );
                 break;
             }
@@ -1000,64 +998,64 @@ void CCTSecurityDialogsAO::RunL()
       case EProcessTrustedSite:
         {
         WIMSECURITYDIALOGS_WRITE( "EProcessTrustedSite" );
-            TInt count = iCertStore->WritableCertStoreCount();
-            for ( TInt i = 0; i < count; i++ )
+        TInt count = iCertStore->WritableCertStoreCount();
+        for ( TInt i = 0; i < count; i++ )
+            {
+            MCTWritableCertStore *certstore = &iCertStore->WritableCertStore( i );
+            MCTToken& token = certstore->Token();
+            TUid tokenuid = token.Handle().iTokenTypeUid;
+            if ( tokenuid == KTrustedServerTokenUid )
                 {
-                MCTWritableCertStore *certstore = &iCertStore->WritableCertStore( i );
-                MCTToken& token = certstore->Token();
-                TUid tokenuid = token.Handle().iTokenTypeUid;
-                if ( tokenuid == KTrustedServerTokenUid )
-                    {
-                    iTrustedSiteCertStore = certstore;
-                    }
+                iTrustedSiteCertStore = certstore;
                 }
+            }
 
-                CTrustSitesStore* trustedSitesStore = CTrustSitesStore::NewL();
-                CleanupStack::PushL( trustedSitesStore );
+        CTrustSitesStore* trustedSitesStore = CTrustSitesStore::NewL();
+        CleanupStack::PushL( trustedSitesStore );
 
-                // Find out whether or not site associated with certificate is trusted
-                iTrustedSite = trustedSitesStore->IsTrustedSiteL( *iCertBuf, *iServerName );
+        // Find out whether or not site associated with certificate is trusted
+        iTrustedSite = trustedSitesStore->IsTrustedSiteL( *iCertBuf, *iServerName );
 
-                if ( iTrustedSite )
+        if ( iTrustedSite )
+            {
+            TBool allowOutOfDate = trustedSitesStore->IsOutOfDateAllowedL(*iCertBuf, *iServerName);
+
+            if (!allowOutOfDate)
+                {
+                CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
+
+                const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
+                const TTime& startValue = validityPeriod.Start();
+                const TTime& finishValue = validityPeriod.Finish();
+                TTime current;
+                current.UniversalTime();
+
+                // First check certificate validity period
+                if ( ( startValue > current ) || ( finishValue < current ) )
                     {
-                    TBool allowOutOfDate = trustedSitesStore->IsOutOfDateAllowedL(*iCertBuf, *iServerName );	
-                
-                    if (!allowOutOfDate)
-                        {
-                        CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
-
-                        const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
-                        const TTime& startValue = validityPeriod.Start();
-                        const TTime& finishValue = validityPeriod.Finish();
-                        TTime current;
-                        current.UniversalTime();
-
-                        // First check certificate validity period
-                        if ( ( startValue > current ) || ( finishValue < current ) )
-                            {
-                            iTrustedSite = EFalse;	
-                            }
-                    
-                        CleanupStack::PopAndDestroy(); //cert
-                        }
+                    iTrustedSite = EFalse;
                     }
-                CleanupStack::PopAndDestroy( trustedSitesStore ); // trustedSitesStore
 
-                if ( iTrustedSite )
-                    {
-                    // Site is trusted. Next step is to check that server
-                    // certificate is in the trusted site certificate storage
-                    iNextStep = ERetrieveServerCerts;
-                    iStatus = KRequestPending;
-                    SetActive();
-                    TRequestStatus* status = &iStatus;
-                    User::RequestComplete( status, KErrNone );
-                    }
-                 else
-                    {
-                    // Site is not trusted. Prompt user
-                    ShowNoTrustDialogL();
-                    }
+                CleanupStack::PopAndDestroy( cert );
+                }
+            }
+        CleanupStack::PopAndDestroy( trustedSitesStore );
+
+        if ( iTrustedSite )
+            {
+            // Site is trusted. Next step is to check that server
+            // certificate is in the trusted site certificate storage
+            iNextStep = ERetrieveServerCerts;
+            iStatus = KRequestPending;
+            SetActive();
+            TRequestStatus* status = &iStatus;
+            User::RequestComplete( status, KErrNone );
+            }
+         else
+            {
+            // Site is not trusted. Prompt user
+            ShowNoTrustDialogL();
+            }
 
         break;
         }
@@ -1394,7 +1392,7 @@ void CCTSecurityDialogsAO::VerifyPinsL()
 void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
     {
     TBool foundDevCert = EFalse;
-    
+
     // Check certificate list to find out if there is certificate from
     // Device Certificate Store.
     for ( TInt ii = 0; ii < iCertHandleList.Count(); ii++)
@@ -1402,28 +1400,28 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
         TCTTokenObjectHandle handle = iCertHandleList[ii];
         if ( handle.iTokenHandle.iTokenTypeUid == KDeviceCertStoreTokenUid )
             {
-            // Found a certificate from Device Certificate Store. 
+            // Found a certificate from Device Certificate Store.
             foundDevCert = ETrue;
-            iTokenHandle = handle;                        
-            iRetValue = ETrue;            
+            iTokenHandle = handle;
+            iRetValue = ETrue;
             iNextStep = EOperationCompleted;
             iStatus = KRequestPending;
             SetActive();
             TRequestStatus* status = &iStatus;
-            User::RequestComplete( status, KErrNone );            
+            User::RequestComplete( status, KErrNone );
             break;
             }
-        
+
         }
-    
+
     if ( !foundDevCert )
-        { 
+        {
         // No certificate from Device Certificate Store. Prompt user
         // for certificate selection
         CCTSelectCertificateDialog::RunDlgLD(
             iCertArray, iCertHandleList, iTokenHandle,
             iStatus, iRetValue ); // Takes ownerhip of array
-        
+
         iNextStep = EOperationCompleted;
         iStatus = KRequestPending;
         SetActive();
@@ -1439,7 +1437,7 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
     CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
     TInt resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
     TBool showPermAccept = ETrue;
-    
+
     if( iAuthFailReason == ESignatureInvalid || iAuthFailReason == ECertificateRevoked )
         {
         // Invalid or revoked certificate
@@ -1453,13 +1451,13 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
         if( iAuthFailReason == EValidatedOK || iAuthFailReason == EDateOutOfRange )
             {
             // Trusted certificate, but problems with CN or date
-            
+
             // Retrieve subject name
             const CX500DistinguishedName& dName = cert->SubjectName();
-    
+
             // Retrieve common name
             HBufC* cn = dName.ExtractFieldL( KX520CommonName );
-    
+
             // Check common name first and then date
             if( !cn )
                 {
@@ -1490,15 +1488,17 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
             }
 
         // No "Accept Permanently" option if certificate is out of date, or
-        // if domain name is not defined.
+        // if domain name is not defined, or if trusted site store failed to
+        // open (and it's not possible to save the server certificate).
         const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
         const TTime& startValue = validityPeriod.Start();
         const TTime& finishValue = validityPeriod.Finish();
         TTime current;
         current.UniversalTime();
-    
+
         if( (( startValue > current ) || ( finishValue < current )) ||
-                ( iServerName->Des().Length() == 0 ) )
+                ( iServerName->Des().Length() == 0 ) ||
+                ( !iTrustedSiteCertStore ) )
             {
             showPermAccept = EFalse;
             }
@@ -2234,47 +2234,32 @@ void CCTSecurityDialogsAO::DetailsResourceL(
 // HBufC& aMessage, TPtrC aValue, TInt aResourceOne)
 // Reads dynamic text, if the string is empty
 // put a not defined text from the resource in its place
-// KMaxLengthTextCertLabel = 510, used by CertLabel(), Issuer(), Owner()
 // ---------------------------------------------------------
 //
 void CCTSecurityDialogsAO::DetailsDynamicL(
     TDes& aMessage, const TDesC& aValue, TInt aResource)
     {
-    HBufC* buf = HBufC::NewLC( KMaxLengthTextCertLabel );
-    buf->Des() = aValue;
-    buf->Des().TrimLeft();
-    // Cut CertLabel after fourth semi colon
-    TPtrC trimmedCertLabel = CutCertificateField( buf->Des() );
-    buf->Des().Copy( trimmedCertLabel );
-    TInt length = buf->Des().Length();
-    if (length == 0 )
+    HBufC* buf = aValue.AllocLC();
+    TPtr trimmedValue( buf->Des() );
+    trimmedValue.TrimLeft();
+
+    if( trimmedValue.Length() > KMaxLengthTextCertLabelVisible )
+        {
+        trimmedValue.SetLength( KMaxLengthTextCertLabelVisible - 1 );
+        trimmedValue.Append( KTextUtilClipEndChar );
+        }
+
+    if( trimmedValue.Length() == 0 )
         {
         DetailsResourceL( aMessage, aResource );
         }
     else
         {
-        aMessage.Append( buf->Des() );
+        aMessage.Append( trimmedValue );
         aMessage.Append( KEnter );
         }
-    CleanupStack::PopAndDestroy();  // buf
-    }
 
-// ---------------------------------------------------------
-// CCTSecurityDialogsAO::CutCertificateField(TPtrC aField)
-// If CertLabel, Issuer and Owner length is over 80 characters,
-// cut it down to 80
-// Returns the cut certificate field.
-// ---------------------------------------------------------
-//
-TPtrC CCTSecurityDialogsAO::CutCertificateField( const TDesC&  aField )
-    {
-    TInt fieldLength = aField.Length();
-    if ( fieldLength >= KMaxLengthTextCertLabelVisible )
-        {
-        TPtrC cutCertLabel = aField.Mid( 0, KMaxLengthTextCertLabelVisible );
-        return cutCertLabel;
-        }
-    return aField;
+    CleanupStack::PopAndDestroy( buf );
     }
 
 // -----------------------------------------------------------------------------
@@ -2375,12 +2360,12 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
         default:
             User::Panic( _L("CTestSecDlgNotifier"), 0 );
         }
-    
+
     if( iOperation != EServerAuthenticationFailure )
         {
         iMessagePtr.Complete( iRetValue ? KErrNone : KErrCancel );
         }
-    
+
     delete this;
     }
 
@@ -2429,14 +2414,14 @@ void CCTSecurityDialogsAO::DoCancel()
         iQueryDialogDeleted = ETrue;
         }
     iQueryDialog = NULL;
-    
+
     if ( !iPinQueryDialogDeleted )
         {
         delete iPinQueryDialog;
         iPinQueryDialogDeleted = ETrue;
         }
     iPinQueryDialog = NULL;
-    
+
     // Complete message if it has not been completed earlier.
     if( !iMessagePtr.IsNull() )
         {
@@ -2472,6 +2457,10 @@ void CCTSecurityDialogsAO::DoHandleSaveServerCertL()
         iNextStep = EAddTrustedSite;
         iStatus = KRequestPending;
         SetActive();
+        }
+    else
+        {
+        User::Leave( KErrGeneral );
         }
     }
 

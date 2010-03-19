@@ -30,8 +30,6 @@ PRJ_MMPFILES
 #include "../Securityobserver/Group/bld.inf"
 #include "../lockclient/group/bld.inf"
 #include "../lockapp/group/bld.inf"
-#include "../simlockui/group/bld.inf"
-
 
 PRJ_TESTMMPFILES
 

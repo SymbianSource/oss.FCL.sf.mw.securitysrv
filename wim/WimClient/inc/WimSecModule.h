@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -183,10 +183,10 @@ class CWimSecModule: public CActive
         TInt GetWIMInfoL(); 
 
         /** 
-        * Handles cleanup for an object which is not derived from CBase
-        * @param aObject -object to be cleaned up
+        * Handles cleanup for an TPinAddress array allocated using new[].
+        * @param aObject - TPinAddress list to be cleaned up
         */
-        static void Cleanup( TAny* aObject );
+        static void CleanupPinAddressList( TAny* aObject );
 
         /** 
         * Converts serialnumber to 8-bit form. Conversion reads

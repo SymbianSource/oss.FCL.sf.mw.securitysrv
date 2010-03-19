@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2000, 2004 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2000, 2004, 2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -41,10 +41,10 @@ CCrCrypto::CCrCrypto()
 // -----------------------------------------------------------------------------
 CCrCrypto::~CCrCrypto()
     {
-    Reset();
-
     if( iAlgorithmInfos )
         {
+        Reset();
+
         iAlgorithmInfos->Reset();
         delete iAlgorithmInfos;
         iAlgorithmInfos = NULL;
@@ -713,8 +713,8 @@ TCrStatus CCrCrypto::DeriveKeyPKCS12L(
     TInt remainder = 0;
     TInt rounds = 0;
     TInt pushedToCStack = 0;
-    TInt inputSize = MesDigestInputSize(aHashFunc);
-    TInt outputSize = MesDigestOutputSize(aHashFunc);
+    TInt inputSize = MesDigestInputSizeL(aHashFunc);
+    TInt outputSize = MesDigestOutputSizeL(aHashFunc);
 
     // Step 1: Construct D by concatenating copies of ID.
     // Construct a string D
@@ -865,12 +865,12 @@ TCrStatus CCrCrypto::DeriveKeyPKCS12L(
 }
 
 // -----------------------------------------------------------------------------
-// CCrCrypto::MesDigestInputSize
+// CCrCrypto::MesDigestInputSizeL
 // Returns input size of the message digest algorithm. 
 // Return Values:      Input size of the message digest algorithm in bytes.
-//                     If unknown algorithm returns -1.      
+//                     If unknown algorithm, leaves with KErrNotSupported.
 // -----------------------------------------------------------------------------
-TInt CCrCrypto::MesDigestInputSize(TCrAlgorithm aDigestAlg)
+TInt CCrCrypto::MesDigestInputSizeL( TCrAlgorithm aDigestAlg )
     {
     switch(aDigestAlg)
         {
@@ -882,19 +882,20 @@ TInt CCrCrypto::MesDigestInputSize(TCrAlgorithm aDigestAlg)
             }
         default:
             {
-            return -1;
+            User::Leave( KErrNotSupported );
+            return -1;  // keeps compiler happy
             }
         }
     }
 
 // -----------------------------------------------------------------------------
-// CCrCrypto::MesDigestOutputSize
+// CCrCrypto::MesDigestOutputSizeL
 // Returns output size of the message digest algorithm. 
 // Parameters:         aDigestAlg           message digest algortihm
 // Return Values:      Output size of the message digest algorithm in bytes.
-//                     If unknown algorithm returns -1.      
+//                     If unknown algorithm, leaves with KErrNotSupported.
 // -----------------------------------------------------------------------------
-TInt CCrCrypto::MesDigestOutputSize(TCrAlgorithm aDigestAlg)
+TInt CCrCrypto::MesDigestOutputSizeL( TCrAlgorithm aDigestAlg )
     {
     switch(aDigestAlg)
         {
@@ -909,7 +910,8 @@ TInt CCrCrypto::MesDigestOutputSize(TCrAlgorithm aDigestAlg)
             }
         default:
             {
-            return -1;
+            User::Leave( KErrNotSupported );
+            return -1;  // keeps compiler happy
             }
         }
     }

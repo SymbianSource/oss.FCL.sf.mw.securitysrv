@@ -50,11 +50,11 @@ TInt StartServer()
     RProcess server;  
     TInt r = server.Create(KDevTokenServerImg, KNullDesC, serverUid);
     
-    RDebug::Print( _L(" StartServer ") );
+    TRACE_PRINT( "StartServer" );
     
     if ( r != KErrNone )
         {
-        RDebug::Print( _L("StartServer1 %d"), r );
+        TRACE_PRINT_NUM("StartServer1 %d", r );
         return r;
         }
 
@@ -72,19 +72,19 @@ TInt StartServer()
         server.Resume();
         }
 
-    RDebug::Print( _L(" StartServer 2") );
+    TRACE_PRINT(" StartServer 2");
 
     // Wait to synchronise with server - if it dies in the meantime, it
     // also gets completed
     User::WaitForRequest(stat); 
     
-    RDebug::Print( _L(" StartServer 3") );
+    TRACE_PRINT(" StartServer 3");
     // We can't use the 'exit reason' if the server panicked as this
     // is the panic 'reason' and may be '0' which cannot be distinguished
     // from KErrNone
     r = (server.ExitType()==EExitPanic) ? KErrGeneral : stat.Int();
     
-    RDebug::Print( _L(" StartServer 4 %d"), r );
+    TRACE_PRINT_NUM(" StartServer 4 %d", r );
     
     server.Close();
     return (r);
@@ -159,13 +159,13 @@ TInt RDevTokenClientSession::Connect(EDevTokenEnum aToken)
         
         if ( r!=KErrNotFound && r!=KErrServerTerminated )
             {
-            RDebug::Print( _L("connect1 %d"), r );
+            TRACE_PRINT_NUM("connect1 %d", r );
             return r; 
             }
 
         if (--retry==0)
             {
-            RDebug::Print( _L(" connect2 %d"), r );
+            TRACE_PRINT_NUM(" connect2 %d", r );
             return r; 
             }
 
@@ -173,7 +173,7 @@ TInt RDevTokenClientSession::Connect(EDevTokenEnum aToken)
         
         if ( r!=KErrNone && r!=KErrAlreadyExists )
             {
-            RDebug::Print( _L(" connect3 %d"), r );
+            TRACE_PRINT_NUM(" connect3 %d", r );
             return r;  
             }
 

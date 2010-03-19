@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -61,7 +61,7 @@ CWimMemMgmt* CWimMemMgmt::NewL()
     CleanupStack::Pop( self );
     return self;
     }
-    
+
 // Destructor
 CWimMemMgmt::~CWimMemMgmt()
     {
@@ -185,7 +185,7 @@ void CWimMemMgmt::FreeRef( WIMI_Ref_pt aRef )
 void CWimMemMgmt::FreeWIMRefs( const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimMemMgmt::FreeWIMRefsL | Begin"));
-    TUint wimCount = aMessage.Int1(); 
+    TUint wimCount = aMessage.Int1();
     WIMI_Ref_pt ref = reinterpret_cast< WIMI_Ref_pt >( aMessage.Int0() );
     _WIMTRACE3(_L("WIM | WIMServer | CWimMemMgmt::FreeWIMRefsL | ref 0x%08x, wimCount %d"),
             ref, wimCount);
@@ -193,7 +193,7 @@ void CWimMemMgmt::FreeWIMRefs( const RMessage2& aMessage )
     for( TUint8 wimIndex = 0; wimIndex < wimCount; wimIndex++ )
         {
         _WIMTRACE2(_L("WIM | WIMServer | CWimMemMgmt::FreeWIMRefsL | index=%d"), wimIndex);
-        FreeRef( ref );     // TODO: fix, now deallocating the same ref in each loop?
+        FreeRef( ref );
         }
 
     _WIMTRACE(_L("WIM | WIMServer | CWimMemMgmt::FreeWIMRefsL | End"));
@@ -225,7 +225,7 @@ void CWimMemMgmt::FreeRefLst( const RMessage2& aMessage )
             }
         }
     _WIMTRACE(_L("WIM | WIMServer | CWimMemMgmt::FreeRefLst | not found") );
-    aMessage.Complete( KErrNotFound );              
+    aMessage.Complete( KErrNotFound );
     }
 
 // -----------------------------------------------------------------------------
@@ -239,7 +239,7 @@ TBool CWimMemMgmt::ValidateWIMRefL( WIMI_Ref_pt aRef )
     for( TUint8 index = 0; index < count; index++ )
         {
         TWimiAllocRef* allocRef = iRefs[ index ];
-        if( allocRef->ref == aRef )
+        if( allocRef && ( allocRef->ref == aRef ) )
             {
             _WIMTRACE(_L("WIM | WIMServer | CWimMemMgmt::ValidateWIMRefL, valid"));
             return ETrue;

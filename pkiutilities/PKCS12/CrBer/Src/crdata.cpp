@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2000, 2004 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2000, 2004, 2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -519,7 +519,13 @@ EXPORT_C TInt CCrData::LineL(TDes8& aLine)
         TDes8 tempDes = tempBuf->Des();
 
         // Read data to a buffer from iPointer to end of file
-        Read(currentPlace, tempDes, neededLengthToFind);
+        TInt readErr = Read(currentPlace, tempDes, neededLengthToFind);
+        if (readErr)
+            {
+            delete tempBuf;
+            tempBuf = NULL;
+            return readErr;
+            }
 
         // Find the next new line character
         newLinePlace = tempDes.Find(newLine);

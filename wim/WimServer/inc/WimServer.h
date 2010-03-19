@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -137,20 +137,20 @@ class CWimBTSapObserver;
  * close.
  *
  *  @lib
- *  @since S60 
+ *  @since S60
  */
 class CShutdown : public CTimer
-    {  
+    {
     public:
-    
+
         inline CShutdown();
-        
+
         inline void ConstructL();
-        
+
         inline void Start();
-        
+
     private:
-        
+
         void RunL();
     };
 
@@ -219,23 +219,26 @@ class CWimServer : public CPolicyServer, public MWimTimerListener   // for polic
         /**
         * Initializes WIMI if not yet initialized.
         * In initalization WIM data from card is fetched to WIMI.
+        * @param aMessage  Client request, completed to return initialization status.
         * @return void
         */
         void WimInitialize( const RMessage2& aMessage );
-        
+
         /**
         * Cancel Initializes WIMI if not yet initialized.
         * Stop the apdu sending
+        * @param aMessage  Client request, completed with KErrNone.
         * @return void
         */
         void CancelWimInitialize( const RMessage2& aMessage );
 
         /**
         * Set WimInitialized flag
-        * @param aInitialized ETrue/EFalse whether WIM is initialized
+        * @param aInitialized  ETrue/EFalse whether WIM is initialized
+        * @param aWimStatus    KErrNone or other error code
         * @return void
         */
-        static void SetWimInitialized( TBool aInitialized, TInt aStatus  );
+        static void SetWimInitialized( TBool aInitialized, TInt aWimStatus );
 
         /**
         * Get TrustSettingsStore pointer
@@ -276,17 +279,17 @@ class CWimServer : public CPolicyServer, public MWimTimerListener   // for polic
         * @param  TBool  Refresh event received from SAT.
         */
         void SetRefreshNotificationReceived( TBool aValue );
-        
+
         /**
         * Return the pointer of Timer
         */
         CWimTimer* WimTimer();
-        
+
         /**
         * Interface derived from MWimTimerListener
         */
         void TimerExpired();
-        
+
 #ifdef WIMSERVER_SHUTDOWN
         void AddSession();
 
@@ -421,7 +424,7 @@ class CWimServer : public CPolicyServer, public MWimTimerListener   // for polic
         // Pointer to CServer object
         static CWimServer*   iWimServer;
         // Callback structure for WIMI
-       
+
         /**
         * Current service is accessing physical token.
         * Used to determine if SIM Refresh can be allowed.
@@ -444,13 +447,13 @@ class CWimServer : public CPolicyServer, public MWimTimerListener   // for polic
         *
         */
    		CWimBTSapObserver* iBTSapObserver;
-   		  
-   		  // Pointer to Timer. Owned
-   		  CWimTimer* iWimTimer;
 
-#ifdef WIMSERVER_SHUTDOWN   		  
+        // Pointer to Timer. Owned
+        CWimTimer* iWimTimer;
+
+#ifdef WIMSERVER_SHUTDOWN
    		CShutdown iShutdown;
-#endif   		
+#endif
     };
 
 #endif      // CWIMSERVER_H

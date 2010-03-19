@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2004, 2010 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -1130,10 +1130,17 @@ TBool CCrPKCS12::UnpackPkcs7EncryptedDataL( CCrData& aPkcs7EncryptedData )
                 }
             }
         }
+
+    if( !pkcs7EncryptedDataBuf )
+        {
+        CleanupStack::PopAndDestroy(numberOfItemsInCStack); // set
+        numberOfItemsInCStack = 0;
+        return EFalse;
+        }
+
     // OK, now we have buffer to be decrypted, used algorithm, salt and
     // an iteration count. Next we decrypt buffer and append it to iBags.
-	
-	DecryptPkcs7EncryptedDataL( pkcs7EncryptedDataBuf,salt,iter,algorithm );
+	DecryptPkcs7EncryptedDataL( pkcs7EncryptedDataBuf, salt, iter, algorithm );
 
     CleanupStack::PopAndDestroy(numberOfItemsInCStack);
     numberOfItemsInCStack = 0;
@@ -1309,7 +1316,6 @@ void CCrPKCS12::DecryptShroudedKeybagL( CCrData& aSafeBag )
     {
     TInt numberOfItemsinCStack = 0;
     CCrBerSet* set = NULL;
-    TInt errData = KErrNone;
 
     set = CCrBerSet::NewLC( 1 );
     ++numberOfItemsinCStack;
@@ -1403,11 +1409,6 @@ void CCrPKCS12::DecryptShroudedKeybagL( CCrData& aSafeBag )
     CleanupStack::PushL(encryptedPrivateKeyInfo);
     ++numberOfItemsinCStack;
     
-    if ( errData < KErrNone )
-        {
-        User::Leave(KErrArgument);
-        }
-
     // Decrypt
     if ( !DecryptPrivateKeyL( encryptedPrivateKeyInfo,
                                                  salt,

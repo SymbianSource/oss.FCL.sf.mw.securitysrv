@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -29,7 +29,7 @@
 *  @lib SwimReader.lib
 *  @since Series60 2.1
 */
-class CSwimReaderLauncher : public MScardReaderLauncher, public CBase 
+class CSwimReaderLauncher : public MScardReaderLauncher, public CBase
     {
     public: // Constructors and destructor
      

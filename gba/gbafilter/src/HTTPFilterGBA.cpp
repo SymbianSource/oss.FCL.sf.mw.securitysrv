@@ -298,6 +298,7 @@ void CHTTPFilterGBA::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent& aE
             GBA_TRACE_DEBUG(("Event: EFailed"));			
 			Cleanup( aTransaction );		
 		}
+		break;
 		default: 
 		{
             GBA_TRACE_DEBUG_NUM(("Unknow Event: ID - %d" ), aEvent.iStatus );
@@ -592,9 +593,6 @@ void CHTTPFilterGBA::CheckHeadersL(  RHTTPTransaction& aTrans )
 	                //Default accesspoint will be used - iAPID = -1
 	                iGbaInputParams.iAPID = -1;
                     
-	                //Cancel the transaction
-	                aTrans.Cancel();
-                    
 	                // fetch credentials from bootstrapper
 	                iGbaUtility->Bootstrap(iGbaInputParams, iGbaOutputParams);
 	                iBootstrapCount++;
@@ -623,6 +621,8 @@ void CHTTPFilterGBA::CheckHeadersL(  RHTTPTransaction& aTrans )
                         propSet.SetPropertyL( iPasswordStr, password );
                         CleanupStack::PopAndDestroy(&password);
                         CleanupStack::PopAndDestroy(&username);
+                        //Cancel the http transaction
+                        aTrans.Cancel();
                         // Re-submit the http request with much needed credentials
                         aTrans.SubmitL(); 
                         }
@@ -752,7 +752,9 @@ TInt CHTTPFilterGBA::FindHeaderPartToUseL(RHTTPTransaction aTransaction) const
     {
 	THTTPHdrVal fieldVal;// The name of the current field.
 	THTTPHdrVal hdrVal;//A scratch hdrVal
-	headers.GetField(wwwAuthenticate, ii, fieldVal);
+	TInt error = headers.GetField(wwwAuthenticate, ii, fieldVal);
+	if( error != KErrNone )
+	    return lastGoodBasic;
 	TInt x = fieldVal.StrF().Index(RHTTPSession::GetTable());
 	GBA_TRACE_DEBUG_NUM((" FindHeaderPartToUseL part no:1 = %d"), x );
 	switch (fieldVal.StrF().Index(RHTTPSession::GetTable()))

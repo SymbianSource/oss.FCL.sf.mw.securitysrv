@@ -20,11 +20,11 @@
 #include <apmrec.h>
 #include <apmstd.h>
 #include <e32svr.h>
-#include <ImplementationProxy.h>
+#include <implementationproxy.h>
 
 #include "Pk5Recognizer.h"
 #include <barsread.h>
-#include <EikEnv.h>
+#include <eikenv.h>
 #include <f32file.h>
 
 // CONSTANTS
