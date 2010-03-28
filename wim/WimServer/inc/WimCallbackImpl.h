@@ -267,7 +267,7 @@ class CWimCallBack : public CBase
         * This function is called by CWimServer destructor,
         * to delete the gApdu object.
         */
-        static void CWimCallBack::DeletegApdu();
+        static void DeletegApdu();
                              
     private:
 

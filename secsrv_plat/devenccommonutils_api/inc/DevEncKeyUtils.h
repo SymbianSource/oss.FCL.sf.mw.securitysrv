@@ -49,10 +49,10 @@ class CDevEncKeyUtils: public CBase
         virtual ~CDevEncKeyUtils();
 
         // To connect the engine 
-        IMPORT_C TInt CDevEncKeyUtils::Connect();
+        IMPORT_C TInt Connect();
 
         // To close the connection with the engine
-        IMPORT_C void CDevEncKeyUtils::Close();
+        IMPORT_C void Close();
 
         /**
         * Creates a PKCS#5 key and takes it into use by loading it

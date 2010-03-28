@@ -79,7 +79,7 @@ class CScardServer : public CServer2, public MScardReaderService
         * @param aVersion Version of the server
         * @return Pointer to created session
         */
-        virtual CSession2* CScardServer::NewSessionL( 
+        virtual CSession2* NewSessionL( 
             const TVersion& aVersion,
             const RMessage2& aMessage ) const;
     

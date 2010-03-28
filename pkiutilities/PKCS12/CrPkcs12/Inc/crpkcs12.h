@@ -237,7 +237,7 @@ NONSHARABLE_CLASS( CCrPKCS12): public CBase
 
 
         // Extracts contents of keybag, used in DecodeSafeBags function.
-		void CCrPKCS12::ExtractKeybagL( CCrData& aSafeBag );
+		void ExtractKeybagL( CCrData& aSafeBag );
 
         // Decrypts pkcs8-shroudedkeybag, used in DecodeSafeBags function.
         void DecryptShroudedKeybagL( CCrData& aSafeBag );

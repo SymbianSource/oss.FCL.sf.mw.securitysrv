@@ -68,7 +68,7 @@ class CLockAppDevicelockControl : public CLockAppBaseControl, public MEikCommand
 		/**
 		 * Finalize the construction by connecting to Phone side.
 		 */
-		void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg );
+		void ConnectToPhoneL( RWindowGroup& aWg );
 
 		/**
 		 * Is it allowed to activate control.

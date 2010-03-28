@@ -45,7 +45,7 @@ class CLockAppDevicelockContainer : public CCoeControl, MCoeControlObserver
 		/**
 		 * Two-phased constructor.
 		 */
-		static CLockAppDevicelockContainer* CLockAppDevicelockContainer::NewL( RWindowGroup& aWg );
+		static CLockAppDevicelockContainer* NewL( RWindowGroup& aWg );
 
 		/**
 		 * Destructor.

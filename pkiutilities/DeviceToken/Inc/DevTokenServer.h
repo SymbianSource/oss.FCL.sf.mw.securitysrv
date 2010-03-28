@@ -93,7 +93,7 @@ class CDevTokenServer : public CServer2
          * @param 
          * @return server object of Truste sites
          */
-        CTrustedSitesServer& CDevTokenServer::TrustedSitesL() const;
+        CTrustedSitesServer& TrustedSitesL() const;
         
     // For CServer2
     private:
