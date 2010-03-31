@@ -170,10 +170,7 @@ void CCertManUIContainerTrust::HandleListBoxEventL(
     switch( aEventType )
         {
         case EEventItemSingleClicked:
-            if ( !iKeeper.iWrapper->IsActive() )
-                {
-                iParent.ChangeTrustL();
-                }
+            ChangeTrustChangeSettingSingleClickL();
             break;
         default:
             {
@@ -698,6 +695,33 @@ void CCertManUIContainerTrust::ShowTrustChangeSettingPageL(
         }
 
     CERTMANUILOGGER_LEAVEFN( " CCertManUIContainerTrust::ShowTrustChangeSettingPageL" );
+    }
+
+// ---------------------------------------------------------------------------
+// CCertManUIContainerTrust::ChangeTrustChangeSettingSingleClickL()
+// ---------------------------------------------------------------------------
+//
+void CCertManUIContainerTrust::ChangeTrustChangeSettingSingleClickL()
+    {
+    if( !iKeeper.iWrapper->IsActive() )
+        {
+        TInt certIndex = iKeeper.iCurrentCACertForTrustSettings;
+
+        if( certIndex >= 0 && certIndex < iKeeper.iCALabelEntries.Count() )
+            {
+            CCTCertInfo* entry = iKeeper.iCALabelEntries[ certIndex ]->iCAEntry;
+            if( entry && entry->IsDeletable() )
+                {
+                TInt currentTrustSetting = iListBox->CurrentItemIndex();
+                if( currentTrustSetting >= 0 && currentTrustSetting < iClientUids.Count() )
+                    {
+                    TUid uid = iClientUids[ currentTrustSetting ];
+                    ChangeTrustValueL( *entry, uid );
+                    UpdateTrustListboxItemL( *entry, currentTrustSetting );
+                    }
+                }
+            }
+        }
     }
 
 // ---------------------------------------------------------------------------

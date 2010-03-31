@@ -493,7 +493,7 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			if(view)
 				{	
 		  		TRect aCallRect;
-				STATIC_CAST(CAutolockView*, view)->HandleCall(15, aCallRect);
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x15, aCallRect);
 				}
 		
 			}
@@ -516,6 +516,12 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
         if (callState == EPSCTsyCallStateNone && simStatus != ESimNotPresent)
 			{	
 			// try put autolock back to foreground
+			CAknView* view = View(KAutoLockViewId);
+			if(view)
+				{	
+				TRect aCallRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x19, aCallRect);
+				}
 			TApaTask self(iCoeEnv->WsSession());
 			self.SetWgId(iCoeEnv->RootWin().Identifier());
 			self.BringToForeground();		
@@ -528,7 +534,7 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			if(view)
 				{	
 			  	TRect aCallRect;
-				STATIC_CAST(CAutolockView*, view)->HandleCall(16, aCallRect);
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x16, aCallRect);
 				}
 			}
 		}
@@ -744,6 +750,14 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
             TRAPD(err,
 			{
 			iDeviceLockQueryStatus = ETrue;
+			TBool iAppKeyBelongedToBigClock=EFalse;
+			if(!iAppKey)
+				{
+				RDebug::Printf( "%s %s (%u) stealing EStdKeyApplication0 from BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+				RWindowGroup& groupWin=iCoeEnv->RootWin();
+				iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key now, in case that it was given to BigClock
+				iAppKeyBelongedToBigClock=ETrue;
+				}
 			if(handler->AskSecCodeInAutoLockL())
 				{		
 				iLocked = EFalse;
@@ -755,6 +769,13 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
 				}
             else
 				{  // make sure that we will be topmost still
+					if(iAppKey && iAppKeyBelongedToBigClock)
+						{
+						RDebug::Printf( "%s %s (%u) giving EStdKeyApplication0 to BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						RWindowGroup& groupWin=iCoeEnv->RootWin();
+						groupWin.CancelCaptureKeyUpAndDowns(iAppKey);	// give S60-Application key back to BigClock
+						iAppKey = 0;
+						}
 				    iDeviceLockQueryStatus = EFalse;
                     TInt callState;
                     RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
@@ -941,7 +962,7 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 	if(view)
 	  {
 	  TRect aCallRect;
-      STATIC_CAST(CAutolockView*, view)->HandleCall(17, aCallRect);
+      STATIC_CAST(CAutolockView*, view)->HandleCall(0x17, aCallRect);
 	  STATIC_CAST(CAutolockView*, view)->MakeVisible(ETrue);
 	  }
 	else
@@ -1275,7 +1296,7 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 								    {	
 								        STATIC_CAST(CAutolockView*, view)->ScreenDeviceChanged();
 								    	TRect aCallRect;
-								        STATIC_CAST(CAutolockView*, view)->HandleCall(1, aCallRect);
+								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x1, aCallRect);
    								    	if(aCallButtonRect.iBr.iX==0)
    								    		aCallButtonRect = TRect (aCallRect);
 								    }
@@ -1357,7 +1378,7 @@ void CAutolockAppUi::HandleWindowGroupListChange()
 								  if(view)
 								    {	
 								    	TRect aCallRect;
-								        STATIC_CAST(CAutolockView*, view)->HandleCall(10, aCallRect);
+								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x10, aCallRect);
 												if(aCallButtonRect.iBr.iX==0)
    								    		aCallButtonRect = TRect (aCallRect);
 								    }

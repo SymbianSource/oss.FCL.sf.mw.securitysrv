@@ -1039,7 +1039,8 @@ TBool C3GPPBootstrap::LoadCredentialsL()
             }
         
         GBA_TRACE_DEBUG(("Cached IMPI = ")); 
-        GBA_TRACE_DEBUG(*tmpIdentity);
+        if(tmpIdentity != NULL)
+        	GBA_TRACE_DEBUG(*tmpIdentity);
         GBA_TRACE_DEBUG(("IMPI from smart card = ")); 
         GBA_TRACE_DEBUG(*iIdentity);
         
