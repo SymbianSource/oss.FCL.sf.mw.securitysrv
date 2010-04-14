@@ -36,9 +36,9 @@ RESOURCE APP_REGISTRATION_INFO
     app_file="SimLockUI";
     
     // Application is not in the menu
-    //hidden = KAppIsHidden;
+    hidden = KAppIsHidden;
     // Uncomment and comment previous line to un-hide
-    hidden = KAppNotHidden;
+    //hidden = KAppNotHidden;
     localisable_resource_file="\\resource\\apps\\SimLockUI";
     embeddability = KAppNotEmbeddable;
     newfile = KAppDoesNotSupportNewFile;

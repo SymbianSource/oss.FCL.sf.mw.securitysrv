@@ -59,7 +59,6 @@ class CAutoLockSettingPage : public CAknRadioButtonSettingPage
     	void HandlePointerEventL(const TPointerEvent& aPointerEvent);
     	
 	private: // data
-		CEikButtonGroupContainer* iPopoutCba;
 		TInt& iAutoLockValue;
 		TInt iMaximum;
 		TInt iOriginalIndex;

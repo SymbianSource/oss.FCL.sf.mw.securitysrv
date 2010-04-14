@@ -82,6 +82,12 @@ class CCugQuery
         * C++ constructor.
         */
         CCugQuery( TInt& aNumber,const TTone aTone = ENoTone );
+        /**
+        * Prepares the dialog, by constructing it from the specified resource. Overwrite the base class.
+        * @param aResourceId The resource ID of the dialog.
+        */
+        void PrepareLC( TInt aResourceId );
+        
     protected: // From base classes
         /**
         * From CCAknNumberQueryDialog Left softkey is allways OK.
@@ -541,8 +547,8 @@ TInt CGSSimSecPlugin::CugIndexQueryL( TInt& aCugIndex, TInt& aCugDefault )
         {
         CCugQuery* dlg = new( ELeave ) CCugQuery( aCugIndex,
                                        CAknQueryDialog::ENoTone );
-    
-        if ( dlg->ExecuteLD( R_CUG_INDEX ) )
+        dlg->PrepareLC( R_CUG_INDEX );
+        if ( dlg->RunLD() )
             {
             // check content validity (?-32767), 
             // ui spec concerned only values above limit
@@ -591,6 +597,24 @@ void CCugQuery::UpdateLeftSoftKeyL()
     MakeLeftSoftkeyVisible( ETrue );
     }
 
+// ---------------------------------------------------------------------------
+// CCugQuery::PrepareLC( TInt aResourceId )
+// 
+// ---------------------------------------------------------------------------
+//
+void CCugQuery::PrepareLC( TInt aResourceId )
+    {
+    CAknNumberQueryDialog::PrepareLC( aResourceId );
+    CAknQueryControl* queryControl = QueryControl();
+    if( queryControl )
+        {
+        CEikEdwin* edwin = static_cast< CEikEdwin* >( queryControl->ControlByLayoutOrNull( ENumberLayout ) );
+        if( edwin )
+            {
+            edwin->SetAknEditorNumericKeymap( EAknEditorPlainNumberModeKeymap );
+            }
+        }
+    }
 
 // ---------------------------------------------------------------------------
 // CGSSimSecPlugin::HandleResourceChangeL( TInt aType )

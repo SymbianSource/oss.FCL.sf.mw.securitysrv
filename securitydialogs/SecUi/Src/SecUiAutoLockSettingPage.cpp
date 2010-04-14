@@ -63,8 +63,6 @@ void CAutoLockSettingPage::ConstructL()
 	{
 	CAknRadioButtonSettingPage::ConstructL();
 	const TSize screenSize = iCoeEnv->ScreenDevice()->SizeInPixels();
-	iPopoutCba = CEikButtonGroupContainer::NewL(CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, this, R_AVKON_SOFTKEYS_OK_CANCEL__OK);
-	iPopoutCba->SetBoundingRect(TRect(screenSize));
 	FeatureManager::InitializeLibL();
 	}
 
@@ -76,7 +74,6 @@ void CAutoLockSettingPage::ConstructL()
 // 
 CAutoLockSettingPage::~CAutoLockSettingPage()
 	{
-	delete iPopoutCba;
 	FeatureManager::UnInitializeLib();
 	}
 

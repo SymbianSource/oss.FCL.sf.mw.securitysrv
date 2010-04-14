@@ -661,9 +661,11 @@ void CAutolockAppUi::HandlePointerEventL(const TPointerEvent& aPointerEvent)
 TKeyResponse CAutolockAppUi::HandleKeyEventL(
     const TKeyEvent& aKeyEvent,TEventCode aType)
     {
-	if ( aKeyEvent.iCode == EKeyBell)
- 		{
- 		HandleCommandL(ESecUiCmdUnlock);
+        
+    if ( aKeyEvent.iCode == EKeyBell || (aType == EEventKeyUp && aKeyEvent.iScanCode == EStdKeyDeviceF) )      
+		{
+		if(iLocked)    
+ 		    HandleCommandL(ESecUiCmdUnlock);
  		return EKeyWasConsumed; 
  		}
 

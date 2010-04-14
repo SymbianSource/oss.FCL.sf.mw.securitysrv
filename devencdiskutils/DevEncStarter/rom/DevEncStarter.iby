@@ -24,7 +24,6 @@ S60_APP_EXE( DevEncStarter )
 //S60_APP_BITMAP( DevEncStarter )
 S60_APP_AIF_ICONS( DevEncStarter )
 S60_APP_AIF_RSC( DevEncStarter )
-data=DATAZ_\private\10003a3f\apps\DevEncStarter_reg.rsc     private\10003a3f\import\apps\DevEncStarter_reg.rsc
 
 
 #endif // __DEVENCSTARTER_IBY__

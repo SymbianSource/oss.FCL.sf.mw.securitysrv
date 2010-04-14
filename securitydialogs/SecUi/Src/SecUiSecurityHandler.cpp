@@ -975,7 +975,6 @@ if(!FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements))
             RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() KErrNone"));
             #endif
             // code approved 
-            CSecuritySettings::ShowResultNoteL(R_CONFIRMATION_NOTE, CAknNoteDialog::EConfirmationTone);
         if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw))    
         {
                 // Unset the admin flag if set

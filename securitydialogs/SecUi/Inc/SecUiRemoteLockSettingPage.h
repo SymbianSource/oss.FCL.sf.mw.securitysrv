@@ -71,8 +71,6 @@ NONSHARABLE_CLASS(CRemoteLockSettingPage) : public CAknRadioButtonSettingPage
 
 	private: // data
 
-		CEikButtonGroupContainer* iPopoutCba;
-
         /** Remote lock status */
 		TInt& iRemoteLockStatus;
 		TInt iPrevSelectionItem;
