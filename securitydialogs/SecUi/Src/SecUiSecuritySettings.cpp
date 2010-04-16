@@ -45,6 +45,10 @@
 #include "SecUiRemoteLockSettingPage.h"
 #endif // RD_REMOTELOCK
 #include <featmgr.h>
+
+#include "SecQueryUi.h"
+#include <hb/hbwidgets/hbdevicemessageboxsymbian.h>
+
     /*****************************************************
     *    Series 60 Customer / TSY
     *    Needs customer TSY implementation
@@ -194,170 +198,24 @@ EXPORT_C CSecuritySettings::~CSecuritySettings()
 //
 EXPORT_C void CSecuritySettings::ChangePinL()
     {
-    /*****************************************************
-    *    Series 60 Customer / ETel
-    *    Series 60  ETel API
-    *****************************************************/
-    
-    TInt simState;
-    TInt err( KErrGeneral );
-    err = RProperty::Get(KPSUidStartup, KPSSimStatus, simState);
-    User::LeaveIfError( err );
-    TBool simRemoved(simState == ESimNotPresent);
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    RMobilePhone::TMobilePassword iOldPassword;
+    RMobilePhone::TMobilePassword iNewPassword;
+    TInt iFlags=0;
+    RDebug::Printf( "%s %s (%u) iOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		iOldPassword.Copy(_L(""));
+    RDebug::Printf( "%s %s (%u) iNewPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		iNewPassword.Copy(_L(""));
 
-    if ( simRemoved )
-        {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
-        return;
-        }
-
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinL()"));
-    #endif    
-    RMobilePhone::TMobilePhoneSecurityCode secCodeType;
-    secCodeType = RMobilePhone::ESecurityCodePin1;
-
-    RMobilePhone::TMobilePassword oldPassword;
-    RMobilePhone::TMobilePassword newPassword;
-    RMobilePhone::TMobilePassword verifcationPassword;
-    RMobilePhone::TMobilePhonePasswordChangeV1 passwords;
-    RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
-    RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
-
-    CCodeQueryDialog* verdlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-    CleanupStack::PushL(verdlg);
-
-    CCodeQueryDialog* newdlg = new (ELeave) CCodeQueryDialog(newPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-    CleanupStack::PushL(newdlg);
-
-    CCodeQueryDialog* dlg = new (ELeave) CCodeQueryDialog (oldPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);       
-    CleanupStack::PushL(dlg);
-
-    RMobilePhone::TMobilePhoneLock lockType;
-    RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
-    
-    lockType = RMobilePhone::ELockICC;
-
-    RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
-    iWait->SetRequestType(EMobilePhoneGetLockInfo);
-    iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
-    TInt res = iWait->WaitForRequestL();
-    User::LeaveIfError(res);
-
-    if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
-        {    
-        CleanupStack::PopAndDestroy(3,verdlg);
-        ShowResultNoteL(R_PIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
-        return;
-        }
-    
-    CleanupStack::Pop(); // dlg
-    iWait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
-    iPhone.GetSecurityCodeInfo(iWait->iStatus, secCodeType, codeInfoPkg);
-    res = iWait->WaitForRequestL();
-    User::LeaveIfError(res);
-    // ask pin
-    if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
-            res = dlg->ExecuteLD(R_PIN_QUERY);
-    else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_PIN_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-         res = dlg->ExecuteLD(R_PIN_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);
-       }
-    else
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_PIN_ATTEMPT);
-         res = dlg->ExecuteLD(R_PIN_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);   
-       }  
-    
-      if( !res )
-        {
-        CleanupStack::PopAndDestroy(2,verdlg);
-        return;
-        }      
-    CleanupStack::Pop(); // newdlg
-    // new pin code query
-     if (!(newdlg->ExecuteLD(R_NEW_PIN_CODE_QUERY)))
-        {
-        CleanupStack::PopAndDestroy(verdlg);
-        return;
-        }
-
-    CleanupStack::Pop(); // verdlg
-    // verification code query
-    if (!(verdlg->ExecuteLD(R_VERIFY_NEW_PIN_CODE_QUERY)))
-            return;
-        
-    while (newPassword.CompareF(verifcationPassword) != 0) 
-        {
-        // codes do not match -> note -> ask new pin and verification codes again  
-        ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
-    
-        newPassword = _L("");
-        verifcationPassword = _L("");
-
-        // new pin code query
-        CCodeQueryDialog* newdlg = new (ELeave) CCodeQueryDialog (newPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-        if (!(newdlg->ExecuteLD(R_NEW_PIN_CODE_QUERY)))
-              return;
-        
-        // verification code query
-        CCodeQueryDialog* verdlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-        if (!(verdlg->ExecuteLD(R_VERIFY_NEW_PIN_CODE_QUERY)))
-            return;
-        }            
-        
-    // send code
-    passwords.iOldPassword = oldPassword;
-    passwords.iNewPassword = newPassword;
-    iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
-    iPhone.ChangeSecurityCode(iWait->iStatus, secCodeType, passwords);
-    res = iWait->WaitForRequestL();
-    #if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangePinL(): RETURN CODE: %d"), res);
-    #endif
-    switch(res)
-        {
-        case KErrNone:
-            {
-            // code changed 
-            ShowResultNoteL(R_PIN_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
-            break;
-            }        
-        case KErrGsm0707IncorrectPassword:
-        case KErrAccessDenied:
-            {    
-            // code was entered erroneously
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            ChangePinL();
-            break;
-            }    
-        case KErrGsmSSPasswordAttemptsViolation:
-        case KErrLocked:
-            {
-            // Pin1 blocked! 
-            return;
-            }
-        case KErrGsm0707OperationNotAllowed:
-            {
-            // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
-            return;
-            }
-        case KErrAbort:
-            {
-            break;
-            }
-        default:
-            {
-            ShowErrorNoteL(res);
-            ChangePinL();
-            break;
-            }
-        }
-
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    TBuf<0x80> iCaption;
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    iCaption.Copy(_L("ChangePinL"));
+    RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+   	RDebug::Print(iCaption);
+    TInt iShowError=1;
+  	ChangePinParamsL(iOldPassword, iNewPassword, iFlags, iCaption, iShowError);
+  	RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     }
 
 //
@@ -742,158 +600,25 @@ EXPORT_C void CSecuritySettings::ChangePin2L()
 // ----------------------------------------------------------
 //
 EXPORT_C void CSecuritySettings::ChangeSecCodeL()
-    {  
-    /*****************************************************
-    *    Series 60 Customer / ETel
-    *    Series 60  ETel API
-    *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeSecCodeL()"));
-    #endif
-    TInt res;
-    RMobilePhone::TMobilePassword newPassword;
-if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ) &&
-		(FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements  )))   
-{ 
-    
-    // Connect to the SCP server, and request the code change
-    RSCPClient scpClient;
-    User::LeaveIfError( scpClient.Connect() );
-    CleanupClosePushL( scpClient );
-    res = scpClient.ChangeCodeRequest();
-    CleanupStack::PopAndDestroy(); // scpClient
-    
-}
-else
-{
-         
-    RMobilePhone::TMobilePhoneSecurityCode secCodeType;
-    secCodeType = RMobilePhone::ESecurityCodePhonePassword;
-    RMobilePhone::TMobilePassword oldPassword;
-    RMobilePhone::TMobilePassword verifcationPassword;
-    RMobilePhone::TMobilePassword required_fourth;
-    RMobilePhone::TMobilePhonePasswordChangeV1 passwords;
+    {
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    RMobilePhone::TMobilePassword iOldPassword;
+    RMobilePhone::TMobilePassword iNewPassword;
+    TInt iFlags=0;
+    RDebug::Printf( "%s %s (%u) iOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		iOldPassword.Copy(_L(""));
+    RDebug::Printf( "%s %s (%u) iNewPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		iNewPassword.Copy(_L(""));
 
-    CCodeQueryDialog* verdlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH,ESecUiNone);
-    CleanupStack::PushL(verdlg);
-
-    CCodeQueryDialog* newdlg = new (ELeave) CCodeQueryDialog(newPassword,SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH,ESecUiNone);
-    CleanupStack::PushL(newdlg);
-
-    CCodeQueryDialog* dlg = new (ELeave) CCodeQueryDialog (oldPassword,SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_MAX_LENGTH,ESecUiNone);
-    CleanupStack::PushL(dlg);
-
-    // ask security code
-    CleanupStack::Pop(); // dlg
-    if (!(dlg->ExecuteLD(R_SECURITY_QUERY)))
-        {
-        CleanupStack::PopAndDestroy(2,verdlg);
-        return;
-        }
-    // new security code query
-    CleanupStack::Pop(); // newdlg
-    if(!(newdlg->ExecuteLD(R_NEW_SECURITY_CODE_QUERY)))
-        {    
-        CleanupStack::PopAndDestroy(verdlg);
-        return;
-        }
-     
-    // verification code query
-    CleanupStack::Pop(); // verdlg
-      if(!(verdlg->ExecuteLD(R_VERIFY_NEW_SECURITY_CODE_QUERY)))
-        {
-        return;
-        }
-
-    while (newPassword.CompareF(verifcationPassword) != 0)         
-        {            
-        // codes do not match -> note -> ask new pin and verification codes again  
-        ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
-        
-        newPassword = _L("");
-        verifcationPassword = _L("");
-
-        // new pin code query
-        CCodeQueryDialog* dlg = new (ELeave) CCodeQueryDialog (newPassword,SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH,ESecUiNone);
-        if(!(dlg->ExecuteLD(R_NEW_SECURITY_CODE_QUERY)))
-            return;
-          
-        // verification code query
-        CCodeQueryDialog* dlg2 = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_CHANGE_MAX_LENGTH,ESecUiNone);
-          if(!(dlg2->ExecuteLD(R_VERIFY_NEW_SECURITY_CODE_QUERY)))
-            return;    
-        }            
-    iWait->SetRequestType(EMobilePhoneVerifySecurityCode);    
-    // check code
-    iPhone.VerifySecurityCode(iWait->iStatus,secCodeType, oldPassword, required_fourth);
-    res = iWait->WaitForRequestL();
-    #if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangeSecCode(): CODE VERIFY RESP: %d"), res);
-    #endif
-    // change code 
-    if (res == KErrNone)
-        {
-        passwords.iOldPassword = oldPassword;
-        passwords.iNewPassword = newPassword;
-        iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
-        iPhone.ChangeSecurityCode(iWait->iStatus,secCodeType,passwords);
-        res = iWait->WaitForRequestL();
-        }
-        
-}
-        
-    #if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangeSecCode(): RETURN CODE: %d"), res);
-    #endif
-    switch(res)
-        {
-        case KErrNone:
-            {
-            // code changed 
-            ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
-            if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ) &&
-								!(FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements  )))
-						{
-            // Send the changed code to the SCP server. Not used with device lock enhancements.
-            
-            RSCPClient scpClient;
-            TSCPSecCode newCode;
-            newCode.Copy( newPassword );
-            if ( scpClient.Connect() == KErrNone )
-                {
-                scpClient.StoreCode( newCode );
-                scpClient.Close();
-                }                                               
-          }
-                        
-            break;
-            }
-        case KErrGsmSSPasswordAttemptsViolation:
-        case KErrLocked:
-            {
-            ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
-            ChangeSecCodeL();
-            break;
-            }
-        case KErrGsm0707IncorrectPassword:
-        case KErrAccessDenied:
-            {    
-            // code was entered erroneously
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            ChangeSecCodeL();
-            break;
-            }
-        case KErrAbort:
-            {
-            break;
-            }
-        default:
-            {
-            ShowErrorNoteL(res);
-            ChangeSecCodeL();
-            break;
-            }
-        }
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    TBuf<0x80> iCaption;
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    iCaption.Copy(_L("ChangeSecCodeL"));
+    RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+   	RDebug::Print(iCaption);
+    TInt iShowError=1;
+  	ChangeSecCodeParamsL(iOldPassword, iNewPassword, iFlags, iCaption, iShowError);
+  	RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     }
 //
 // ----------------------------------------------------------
@@ -1584,18 +1309,6 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
                         
     TInt oldItem = currentItem;
 
-    CAknRadioButtonSettingPage* dlg = new (ELeave)CAknRadioButtonSettingPage(R_SECURITY_SETTING_PAGE, currentItem, items);
-    CleanupStack::PushL(dlg);
-    
-
-    CleanupStack::Pop(); // dlg
-    if ( !(dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged)) || oldItem==currentItem )
-        {
-        CleanupStack::PopAndDestroy();    // items
-        return EFalse;
-        }    
-
-
 
     if (currentItem == 1)
         {
@@ -1605,8 +1318,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
         {
         lockChangeSetting = RMobilePhone::ELockSetEnabled;
         }
-
-    CleanupStack::PopAndDestroy();    // items 
+		RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     
     iWait->SetRequestType(EMobilePhoneSetLockSetting);
     RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
@@ -1654,140 +1366,22 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
 //
 EXPORT_C TBool CSecuritySettings::ChangePinRequestL()
     {    
-    /*****************************************************
-    *    Series 60 Customer / ETel
-    *    Series 60  ETel API
-    *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL()"));
-    #endif      
-    TInt simState;
-    TInt err( KErrGeneral );
-    err = RProperty::Get(KPSUidStartup, KPSSimStatus, simState);
-    User::LeaveIfError( err );
-    TBool simRemoved(simState == ESimNotPresent);
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    RMobilePhone::TMobilePassword iOldPassword;
+    TInt iFlags=0;
+    RDebug::Printf( "%s %s (%u) iOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		iOldPassword.Copy(_L(""));
 
-    if ( simRemoved )
-        {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
-        return EFalse;;
-        }
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    TBuf<0x80> iCaption;
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    iCaption.Copy(_L("ChangePinRequestL"));
+    RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+   	RDebug::Print(iCaption);
+    TInt iShowError=1;
+  	ChangePinRequestParamsL(1/* TODO it's imposible to know if we want to set or clear*/, iOldPassword, iFlags, iCaption, iShowError);
+  	RDebug::Printf( "%s %s (%u) iCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
 
-    RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
-    RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
-    RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockICC;
-
-    RMobilePhone::TMobilePhoneLockSetting lockChangeSetting;
-    
-    CCoeEnv* coeEnv = CCoeEnv::Static();
-    CDesCArrayFlat* items = coeEnv->ReadDesC16ArrayResourceL(R_PIN_LBX);
-    CleanupStack::PushL(items);
-                        
-    //get lock info
-    iWait->SetRequestType(EMobilePhoneGetLockInfo);
-    iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
-    TInt status = iWait->WaitForRequestL();
-    User::LeaveIfError(status);                    
-    TInt currentItem = 0;
-
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() GetLockInfo"));
-    #endif
-
-    if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() lockInfo: ELockSetDisabled"));
-        #endif
-        currentItem = 1;  // off
-        }
-                        
-    TInt oldItem = currentItem;
-
-    CAknRadioButtonSettingPage* dlg = new (ELeave)CAknRadioButtonSettingPage(R_PIN_SETTING_PAGE, currentItem, items);
-    CleanupStack::PushL(dlg);
-    
-
-    CleanupStack::Pop(); // dlg
-    if ( !(dlg->ExecuteLD(CAknSettingPage::EUpdateWhenChanged)) || oldItem==currentItem )
-        {
-        CleanupStack::PopAndDestroy();    // items
-        return EFalse;
-        }    
-
-
-    if (currentItem == 1)
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetDisabled"));
-        #endif
-        lockChangeSetting = RMobilePhone::ELockSetDisabled;
-        }
-    else
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetEnabled"));
-        #endif
-        lockChangeSetting = RMobilePhone::ELockSetEnabled;
-        }
-
-    CleanupStack::PopAndDestroy();    // items 
-
-    // Raise a flag to indicate that the PIN
-    // request coming from ETEL has originated from SecUi and not from Engine.
-    TInt tRet = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsSecUIOriginated);
-    if ( tRet != KErrNone )
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL():\
-            FAILED to set the SECUI query Flag: %d"), tRet);
-        #endif
-        }
-    // Change the lock setting
-    iWait->SetRequestType(EMobilePhoneSetLockSetting);
-    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
-    iPhone.SetLockSetting(iWait->iStatus,lockType,lockChangeSetting);
-    status = iWait->WaitForRequestL();
-    #if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangePinRequestL(): RETURN CODE: %d"), status);
-    #endif
-
-    // Lower the flag                             
-    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsETelAPIOriginated);
-
-    switch(status)
-        {
-        case KErrNone:
-            {
-            break;
-            }
-        case KErrGsm0707OperationNotAllowed:
-            {
-            // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
-            return EFalse;
-            }
-        case KErrGsm0707IncorrectPassword:
-        case KErrAccessDenied:
-            {    
-            // code was entered erroneously
-            return ChangePinRequestL();
-            }    
-        case KErrGsmSSPasswordAttemptsViolation:
-        case KErrLocked:
-            {
-            return ETrue;
-            }
-        case KErrAbort:
-            {
-            return EFalse;
-            }
-        default:
-            {
-            return ChangePinRequestL();
-            }
-        }
-    
     return ETrue;
     }
 
@@ -1865,14 +1459,14 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
        if (currentItem == 1)
             {
             #if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetDisabled"));
+            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() currentItem: ELockSetDisabled"));
             #endif
             lockChangeSetting = RMobilePhone::ELockSetDisabled;
             }
         else
             {
             #if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetEnabled"));
+            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() currentItem: ELockSetEnabled"));
             #endif
             lockChangeSetting = RMobilePhone::ELockSetEnabled;
             }
@@ -2428,18 +2022,9 @@ void CSecuritySettings::ShowErrorNoteL(TInt aError)
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecuritySettings::ShowErrorNoteL()"));
     #endif
-    // Let's create TextResolver instance for error resolving...
-    CTextResolver* textresolver = CTextResolver::NewLC(); 
-    // Resolve the error
-    TPtrC errorstring;
-    errorstring.Set( textresolver->ResolveErrorString( aError ) );
-    CAknNoteDialog* noteDlg = new (ELeave) CAknNoteDialog(REINTERPRET_CAST(CEikDialog**,&noteDlg));
-    noteDlg->PrepareLC(R_CODE_ERROR);
-    noteDlg->SetTextL((TDesC&)errorstring);
-    noteDlg->SetTimeout(CAknNoteDialog::ELongTimeout);
-    noteDlg->SetTone(CAknNoteDialog::EErrorTone);
-    noteDlg->RunLD();
-    CleanupStack::PopAndDestroy(); // resolver    
+   	RDebug::Printf( "%s %s (%u) aError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aError );  
+    
+    ShowResultNoteL(aError, CAknNoteDialog::EErrorTone);
     }
 
 //
@@ -2454,10 +2039,83 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
     RDebug::Print(_L("(SECUI)CSecuritySettings::ShowResultNoteL()"));
     RDebug::Print(_L("(SECUI)CSecuritySettings::ShowResultNoteL() Resource ID: %d"), aResourceID);
     #endif
+    RDebug::Printf( "%s %s (%u) aResourceID=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aResourceID );
+    
+    /*
     CAknNoteDialog* noteDlg = new (ELeave) CAknNoteDialog(REINTERPRET_CAST(CEikDialog**,&noteDlg));
     noteDlg->SetTimeout(CAknNoteDialog::ELongTimeout);
     noteDlg->SetTone(aTone);
     noteDlg->ExecuteLD(aResourceID);
+    */
+    CHbDeviceMessageBoxSymbian* messageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EWarning);
+    CleanupStack::PushL(messageBox);
+    _LIT(KText, "ShowResultNoteL: ");
+		TBuf<0x200> title;
+		title.Zero();
+		title.Append(KText);
+		title.AppendNum(aResourceID);
+    _LIT(KSeparator, " ");
+		title.Append(KSeparator);
+    switch(aResourceID)
+    {
+    	case 0:
+	    	title.Append(_L("OK"));
+	    	break;
+    	case KErrGsm0707IncorrectPassword:
+    		title.Append(_L("KErrGsm0707IncorrectPassword"));
+	    	break;
+    	case KErrAccessDenied:
+	    	title.Append(_L("KErrAccessDenied"));
+	    	break;
+    	case KErrGsmSSPasswordAttemptsViolation:
+  	  	title.Append(_L("KErrGsmSSPasswordAttemptsViolation"));
+	    	break;
+    	case KErrLocked:
+    		title.Append(_L("KErrLocked"));
+	    	break;
+    	case KErrGsm0707OperationNotAllowed:
+    		title.Append(_L("KErrGsm0707OperationNotAllowed"));
+	    	break;
+    	case KErrAbort:
+	    	title.Append(_L("KErrAbort"));
+	    	break;
+    	case KErrNotSupported:
+  	  	title.Append(_L("KErrNotSupported"));
+	    	break;
+    	case R_SEC_BLOCKED:
+  	  	title.Append(_L("R_SEC_BLOCKED"));
+	    	break;
+    	case R_CODE_ERROR:
+  	  	title.Append(_L("R_CODE_ERROR"));
+	    	break;
+    	case KErrGsmInvalidParameter:
+  	  	title.Append(_L("KErrGsmInvalidParameter"));
+	    	break;
+    	case R_CONFIRMATION_NOTE:
+  	  	title.Append(_L("R_CONFIRMATION_NOTE"));
+	    	break;
+    	case R_CODES_DONT_MATCH:
+  	  	title.Append(_L("R_CODES_DONT_MATCH"));
+	    	break;
+    	case R_PIN_CODE_CHANGED_NOTE:
+  	  	title.Append(_L("R_PIN_CODE_CHANGED_NOTE"));
+	    	break;
+    	case R_SECURITY_CODE_CHANGED_NOTE:
+  	  	title.Append(_L("R_SECURITY_CODE_CHANGED_NOTE"));
+	    	break;
+    	default:
+    		title.Append(_L("Specific Error"));
+	    	break;
+		}
+	  messageBox->SetTextL(title);
+		RDebug::Printf( "%s %s (%u) aResourceID=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aResourceID );
+	
+    _LIT(KIconName, "qtg_small_smiley_wondering");
+    messageBox->SetIconNameL(KIconName);
+
+    messageBox->ExecL();
+    CleanupStack::PopAndDestroy(); // messageBox
+
     }
 
 //
@@ -2599,5 +2257,562 @@ EXPORT_C TBool CSecuritySettings::IsUpinActive()
     else
         return EFalse;
 }
+
+EXPORT_C TInt  CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	RDebug::Printf( "%s %s (%u) aFlags=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags );
+	RDebug::Printf( "%s %s (%u) aOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	RDebug::Print(aOldPassword);
+	RDebug::Printf( "%s %s (%u) aOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	RDebug::Print(aNewPassword);
+	RDebug::Printf( "%s %s (%u) aCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	RDebug::Print(aCaption);
+	RDebug::Printf( "%s %s (%u) aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aShowError );
+
+
+    /*****************************************************
+    *    Series 60 Customer / ETel
+    *    Series 60  ETel API
+    *****************************************************/
+    
+    TInt simState;
+    TInt err( KErrGeneral );
+    err = RProperty::Get(KPSUidStartup, KPSSimStatus, simState);
+    User::LeaveIfError( err );
+    TBool simRemoved(simState == ESimNotPresent);
+
+    if ( simRemoved )
+        {
+        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        return;
+        }
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinParamsL()"));
+    #endif    
+    RMobilePhone::TMobilePhoneSecurityCode secCodeType;
+    secCodeType = RMobilePhone::ESecurityCodePin1;
+
+    RMobilePhone::TMobilePassword oldPassword;
+    RMobilePhone::TMobilePassword newPassword;
+    RMobilePhone::TMobilePassword verifcationPassword;
+    RMobilePhone::TMobilePhonePasswordChangeV1 passwords;
+    RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
+    RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
+		TBool queryAccepted = EFalse;
+
+		RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+
+    RMobilePhone::TMobilePhoneLock lockType;
+    RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
+    
+    lockType = RMobilePhone::ELockICC;
+
+    RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    iWait->SetRequestType(EMobilePhoneGetLockInfo);
+    #ifndef __WINS__    
+    iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    TInt res = iWait->WaitForRequestL();
+    #else
+    RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    TInt res = KErrNone;
+    #endif
+    User::LeaveIfError(res);
+		RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+			
+    if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
+        {    
+				RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+        // CleanupStack::PopAndDestroy(1,dlg);	// TODO sure about dlg ?
+        ShowResultNoteL(R_PIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+        return;
+        }
+    
+   	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    iWait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+    #ifndef __WINS__    
+    iPhone.GetSecurityCodeInfo(iWait->iStatus, secCodeType, codeInfoPkg);
+    res = iWait->WaitForRequestL();
+    #else
+    res = KErrNone;
+    #endif
+    User::LeaveIfError(res);
+   	RDebug::Printf( "%s %s (%u) codeInfo.iRemainingEntryAttempts=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, codeInfo.iRemainingEntryAttempts );
+ 		codeInfo.iRemainingEntryAttempts=KMaxNumberOfPINAttempts;
+
+   	RDebug::Printf( "%s %s (%u) checking aOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		if(aOldPassword.Length()==0)
+			{
+   		RDebug::Printf( "%s %s (%u) asking aOldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+			/* request PIN using QT */
+			queryAccepted = EFalse;
+			CSecQueryUi *iSecQueryUi;
+			iSecQueryUi = CSecQueryUi::NewL();
+			queryAccepted = iSecQueryUi->SecQueryDialog( _L("PIN1-Old"), oldPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+			RDebug::Printf( "%s %s (%u) oldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+			RDebug::Print( oldPassword );
+			RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+			delete iSecQueryUi;
+			if(!queryAccepted)
+					return;
+			res=1;	// indicate that everything is ok
+			/* end request PIN using QT */
+			newPassword = _L("");
+	    verifcationPassword = _L("");
+			}
+		else
+			{
+			oldPassword.Copy(aOldPassword);
+			newPassword.Copy(aNewPassword);
+			verifcationPassword.Copy(aNewPassword);
+			}
+    
+   	RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+        
+		RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    while (newPassword.Length()==0 || newPassword.CompareF(verifcationPassword) != 0) 
+        {
+        // codes do not match -> note -> ask new pin and verification codes again  
+        if(newPassword.Length()>0)
+        	ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
+    
+        newPassword = _L("");
+        verifcationPassword = _L("");
+
+        // new pin code query
+					if(aOldPassword.Length()==0)	// only if inout parameters are empty
+						{
+							/* request PIN using QT */
+							{
+							queryAccepted = EFalse;
+							CSecQueryUi *iSecQueryUi;
+							iSecQueryUi = CSecQueryUi::NewL();
+							queryAccepted = iSecQueryUi->SecQueryDialog( _L("PIN1-New"), newPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+							RDebug::Printf( "%s %s (%u) newPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+							RDebug::Print( newPassword );
+							RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+							delete iSecQueryUi;
+							if(!queryAccepted)
+									return;
+							}
+							/* end request PIN using QT */
+
+						  RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+							/* request PIN using QT */
+							{
+							queryAccepted = EFalse;
+							CSecQueryUi *iSecQueryUi;
+							iSecQueryUi = CSecQueryUi::NewL();
+							queryAccepted = iSecQueryUi->SecQueryDialog( _L("PIN1-Ver"), verifcationPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+							RDebug::Printf( "%s %s (%u) verifcationPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+							RDebug::Print( verifcationPassword );
+							RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+							delete iSecQueryUi;
+							if(!queryAccepted)
+									return;
+						  }
+							/* end request PIN using QT */
+			  	}
+        }            
+        
+    // send code
+    passwords.iOldPassword = oldPassword;
+    passwords.iNewPassword = newPassword;
+		RDebug::Printf( "%s %s (%u) SetRequestType=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		RDebug::Print( passwords.iOldPassword );
+		RDebug::Print( passwords.iNewPassword );
+    iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
+    #ifndef __WINS__    
+    iPhone.ChangeSecurityCode(iWait->iStatus, secCodeType, passwords);
+    res = iWait->WaitForRequestL();
+    #else
+    res = KErrNone;
+    #endif
+		RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+    #if defined(_DEBUG)
+    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangePinParamsL(): RETURN CODE: %d"), res);
+    #endif
+    switch(res)
+        {
+        case KErrNone:
+            {
+            // code changed 
+            ShowResultNoteL(R_PIN_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+            break;
+            }        
+        case KErrGsm0707IncorrectPassword:
+        case KErrAccessDenied:
+            {    
+            // code was entered erroneously
+            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ChangePinParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
+            break;
+            }    
+        case KErrGsmSSPasswordAttemptsViolation:
+        case KErrLocked:
+            {
+            // Pin1 blocked! 
+            return;
+            }
+        case KErrGsm0707OperationNotAllowed:
+            {
+            // not allowed with this sim
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            return;
+            }
+        case KErrAbort:
+            {
+            break;
+            }
+        default:
+            {
+            ShowErrorNoteL(res);
+            ChangePinParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
+            break;
+            }
+        }
+	return res;
+	}
+EXPORT_C TInt  CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) aFlags=%x aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags, aShowError );
+	#endif
+	}
+EXPORT_C TInt  CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) aFlags=%x aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags, aShowError );
+	#endif
+	}
+EXPORT_C TInt  CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) aFlags=%x aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags, aShowError );
+	#endif
+    /*****************************************************
+    *    Series 60 Customer / ETel
+    *    Series 60  ETel API
+    *****************************************************/
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeSecCodeParamsL()"));
+    #endif
+    TInt res=0;
+    TBool queryAccepted = EFalse;
+    RMobilePhone::TMobilePassword newPassword;
+         
+    RMobilePhone::TMobilePhoneSecurityCode secCodeType;
+    secCodeType = RMobilePhone::ESecurityCodePhonePassword;
+    RMobilePhone::TMobilePassword oldPassword;
+    RMobilePhone::TMobilePassword verifcationPassword;
+    RMobilePhone::TMobilePassword required_fourth;
+    RMobilePhone::TMobilePhonePasswordChangeV1 passwords;
+
+		if(aOldPassword.Length()==0)
+			{			/* request PIN using QT */
+			queryAccepted = EFalse;
+			CSecQueryUi *iSecQueryUi;
+			iSecQueryUi = CSecQueryUi::NewL();
+			// TODO allow and handle Cancel
+			queryAccepted = iSecQueryUi->SecQueryDialog( _L("Lock-Old"), oldPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+			RDebug::Printf( "%s %s (%u) oldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+			RDebug::Print( oldPassword );
+			RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+			delete iSecQueryUi;
+			if(!queryAccepted)
+					return KErrAbort;
+			res=1;	// indicate that everything is ok
+			/* end request PIN using QT */
+			newPassword = _L("");
+	    verifcationPassword = _L("");
+	  	}
+		else
+			{
+			oldPassword.Copy(aOldPassword);
+			newPassword.Copy(aNewPassword);
+			verifcationPassword.Copy(aNewPassword);
+			}
+
+		RDebug::Printf( "%s %s (%u) EMobilePhoneVerifySecurityCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EMobilePhoneVerifySecurityCode );
+	  iWait->SetRequestType(EMobilePhoneVerifySecurityCode);
+    // check code
+    iPhone.VerifySecurityCode(iWait->iStatus,secCodeType, oldPassword, required_fourth);
+    res = iWait->WaitForRequestL();
+		RDebug::Printf( "%s %s (%u) VerifySecurityCode res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+			
+		if(res!=KErrNone)
+			{
+			ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
+			return res;
+			}
+	
+    while (newPassword.Length()==0 || newPassword.CompareF(verifcationPassword) != 0)         
+        {            
+        // codes do not match -> note -> ask new pin and verification codes again  
+        if(newPassword.Length()>0)
+        	ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
+
+        	{
+					queryAccepted = EFalse;
+					CSecQueryUi *iSecQueryUi;
+					iSecQueryUi = CSecQueryUi::NewL();
+					queryAccepted = iSecQueryUi->SecQueryDialog( _L("Lock-New"), newPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+					RDebug::Printf( "%s %s (%u) newPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+					RDebug::Print( newPassword );
+					RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+					delete iSecQueryUi;
+					if(!queryAccepted)
+							return KErrAbort;
+					}
+
+					{
+					queryAccepted = EFalse;
+					CSecQueryUi *iSecQueryUi;
+					iSecQueryUi = CSecQueryUi::NewL();
+					queryAccepted = iSecQueryUi->SecQueryDialog( _L("Lock-Verif"), verifcationPassword, 4, 8, ESecUiCancelSupported | ESecUiEmergencyNotSupported | secCodeType );
+					RDebug::Printf( "%s %s (%u) verifcationPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+					RDebug::Print( verifcationPassword );
+					RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+					delete iSecQueryUi;
+					if(!queryAccepted)
+							return KErrAbort;
+					// TODO allow and handle Cancel
+					}
+
+        }	// while
+
+    // change code 
+		RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+    if (res == KErrNone)
+        {
+        passwords.iOldPassword = oldPassword;
+        passwords.iNewPassword = newPassword;
+        iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
+				RDebug::Printf( "%s %s (%u) ChangeSecurityCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+        iPhone.ChangeSecurityCode(iWait->iStatus,secCodeType,passwords);
+        res = iWait->WaitForRequestL();
+				RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+
+				if(res==KErrNone && 1==0 )	// TODO not possible to enable because it asks code again
+					{
+	        RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
+ 	        RMobilePhone::TMobilePhoneLockSetting lockChangeSetting = RMobilePhone::ELockSetEnabled;                       
+					if(oldPassword.Length()==6)
+						{
+						lockChangeSetting = RMobilePhone::ELockSetDisabled;
+						RDebug::Printf( "%s %s (%u) RMobilePhone::ELockSetDisabled=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, RMobilePhone::ELockSetDisabled );
+						}
+	        iWait->SetRequestType(EMobilePhoneSetLockSetting);
+					RDebug::Printf( "%s %s (%u) SetLockSetting=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	        iPhone.SetLockSetting(iWait->iStatus, lockType, lockChangeSetting );
+	        res = iWait->WaitForRequestL();
+					RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+	        }
+        }
+        
+		RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+    #if defined(_DEBUG)
+    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangeSecCodeParamsL(): RETURN CODE: %d"), res);
+    #endif
+    switch(res)
+        {
+        case KErrNone:
+            {
+            // code changed 
+            ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+            if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ) &&
+								!(FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements  )))
+						{
+            // Send the changed code to the SCP server. Not used with device lock enhancements.
+         		RDebug::Printf( "%s %s (%u) scpClient.Connect=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+            RSCPClient scpClient;
+            TSCPSecCode newCode;
+            newCode.Copy( newPassword );
+            if ( scpClient.Connect() == KErrNone )
+                {
+								RDebug::Printf( "%s %s (%u) scpClient.StoreCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+                scpClient.StoreCode( newCode );
+                scpClient.Close();
+                }                                               
+          	}
+            break;
+            }
+        case KErrGsmSSPasswordAttemptsViolation:
+        case KErrLocked:
+            {
+            ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
+            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
+            break;
+            }
+        case KErrGsm0707IncorrectPassword:
+        case KErrAccessDenied:
+            {    
+            // code was entered erroneously
+            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
+            break;
+            }
+        case KErrAbort:
+            {
+            break;
+            }
+        default:
+            {
+            ShowErrorNoteL(res);
+            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
+            break;
+            }
+       } // switch
+	}
+EXPORT_C TInt  CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) aFlags=%x aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags, aShowError );
+	#endif
+	}
+EXPORT_C TInt  CSecuritySettings::ChangePinRequestParamsL(TInt aEnable, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
+	{
+	TInt ret = KErrNone;
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) aFlags=%x aShowError=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aFlags, aShowError );
+	#endif
+    /*****************************************************
+    *    Series 60 Customer / ETel
+    *    Series 60  ETel API
+    *****************************************************/
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL()"));
+    #endif      
+    TInt simState=0;
+    TInt lEnable=aEnable;
+    TInt err( KErrGeneral );
+    err = RProperty::Get(KPSUidStartup, KPSSimStatus, simState);
+    User::LeaveIfError( err );
+    TBool simRemoved(simState == ESimNotPresent);
+
+    if ( simRemoved )
+        {
+        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        return EFalse;;
+        }
+
+    RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
+    RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
+    RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockICC;
+
+    RMobilePhone::TMobilePhoneLockSetting lockChangeSetting;
+    
+                        
+    //get lock info
+    iWait->SetRequestType(EMobilePhoneGetLockInfo);
+    iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
+    TInt status = iWait->WaitForRequestL();
+    User::LeaveIfError(status);                    
+    TInt currentItem = 0;
+
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() GetLockInfo"));
+    #endif
+
+		if(aOldPassword.Length()==0)	// only if input parameters are empty
+			{
+				// switch the value.
+			   if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
+			        lEnable=1;  // on
+         else
+         			lEnable=0;	// off
+      }
+
+    if (lEnable == 0)
+        {
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetDisabled"));
+        #endif
+        lockChangeSetting = RMobilePhone::ELockSetDisabled;
+        }
+    else
+        {
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL() currentItem: ELockSetEnabled"));
+        #endif
+        lockChangeSetting = RMobilePhone::ELockSetEnabled;
+        }
+
+    // Raise a flag to indicate that the PIN
+    // request coming from ETEL has originated from SecUi and not from Engine.
+    TInt tRet = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsSecUIOriginated);
+    if ( tRet != KErrNone )
+        {
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestL():\
+            FAILED to set the SECUI query Flag: %d"), tRet);
+        #endif
+        }
+
+	    /* TODO do I really need this? wouldn't it just generate RMobilePhone::EPin1Required and then continue ? */
+	    /*
+	    RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePin1;
+      RMobilePhone::TMobilePassword oldPassword;
+		  TBool queryAccepted = EFalse;
+			CSecQueryUi *iSecQueryUi;
+			iSecQueryUi = CSecQueryUi::NewL();
+			queryAccepted = iSecQueryUi->SecQueryDialog( _L("PIN1-Curr"), oldPassword, 4, 8, secCodeType );
+			RDebug::Printf( "%s %s (%u) oldPassword=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+			RDebug::Print( oldPassword );
+			RDebug::Printf( "%s %s (%u) queryAccepted=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+			delete iSecQueryUi;
+			*/
+    
+    // Change the lock setting
+    iWait->SetRequestType(EMobilePhoneSetLockSetting);
+    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
+    iPhone.SetLockSetting(iWait->iStatus,lockType,lockChangeSetting);	// this will trigger Pin1RequiredL
+    status = iWait->WaitForRequestL();
+    #if defined(_DEBUG)
+    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangePinRequestL(): RETURN CODE: %d"), status);
+    #endif
+
+    // Lower the flag                             
+    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsETelAPIOriginated);
+
+    switch(status)
+        {
+        case KErrNone:
+            {
+            break;
+            }
+        case KErrGsm0707OperationNotAllowed:
+            {
+            // not allowed with this sim
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            return EFalse;
+            }
+        case KErrGsm0707IncorrectPassword:
+        case KErrAccessDenied:
+            {    
+            // code was entered erroneously
+            return ChangePinRequestParamsL(aEnable, aOldPassword, aFlags, aCaption, aShowError);
+            }    
+        case KErrGsmSSPasswordAttemptsViolation:
+        case KErrLocked:
+            {
+            return ETrue;
+            }
+        case KErrAbort:
+            {
+            return EFalse;
+            }
+        default:
+            {
+            return ChangePinRequestParamsL(aEnable, aOldPassword, aFlags, aCaption, aShowError);
+            }
+        }
+ 	}
 
 // End of file

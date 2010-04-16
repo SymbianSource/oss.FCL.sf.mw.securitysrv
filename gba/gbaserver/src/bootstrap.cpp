@@ -25,7 +25,10 @@
 // 6. return SRES 
 // 7. Store keymaterial  to a token   
 
-#include <imcvcodc.h>                   //for base64 en/decoding
+#include <s32stor.h>
+#include <s32file.h>
+#include <tconvbase64.h>                   //for base64 en/decoding
+
 #include <ecom.h>
 #include "dataretriever.h"
 #include "bootstrap.h" 
@@ -699,8 +702,7 @@ TBool C3GPPBootstrap::GetCredentialsL(const TUriC8& /*aURI*/, RString aRealm, RS
     ptrDecNonce.FillZ();
     
     // decodes the base64 nonce
-    TImCodecB64 b64coder;
-    b64coder.Initialise();
+    TBase64 b64coder;
     b64coder.Decode( *nonce, ptrDecNonce );
     
     GBA_TRACE_DEBUG((" The decoded nonce value in binary"));
@@ -1037,7 +1039,8 @@ TBool C3GPPBootstrap::LoadCredentialsL()
             }
         
         GBA_TRACE_DEBUG(("Cached IMPI = ")); 
-        GBA_TRACE_DEBUG(*tmpIdentity);
+        if(tmpIdentity != NULL)
+        	GBA_TRACE_DEBUG(*tmpIdentity);
         GBA_TRACE_DEBUG(("IMPI from smart card = ")); 
         GBA_TRACE_DEBUG(*iIdentity);
         

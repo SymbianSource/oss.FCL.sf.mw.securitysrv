@@ -29,7 +29,7 @@ NAME    CESA // 4 letter ID
 #include <avkon.mbg>
 #include <avkon.loc>
 #include <appinfo.rh>
-#include <certmanui.loc>  //qtn_cm_not_valid_yet
+//#include <certmanui.loc>  //qtn_cm_not_valid_yet
 #include <certsaver.loc>
 #include "certsaver.hrh"
 

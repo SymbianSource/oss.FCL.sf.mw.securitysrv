@@ -51,7 +51,9 @@ LIBRARY         hash.lib // for PKCS5
 LIBRARY         pbe.lib
 LIBRARY         random.lib // for PKCS5
 LIBRARY         x509.lib // for PKCS5
-LIBRARY			imut.lib // for base64 coding
+LIBRARY         inetprotutil.lib // for base64 coding , was using imut.lib before 
+
+
 DEBUGLIBRARY    flogger.lib
 
 // EXPORTUNFROZEN

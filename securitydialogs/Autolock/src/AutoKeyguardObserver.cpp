@@ -29,7 +29,7 @@
 #include <ctsydomainpskeys.h>
 #include <activeidle2domainpskeys.h>
 #include <coreapplicationuisdomainpskeys.h>
-#include <ScreensaverInternalPSKeys.h>
+// #include <ScreensaverInternalPSKeys.h>
 #include <hwrmdomainpskeys.h>
 #include "AutoKeyguardCenRepI.h"
 #include "AutoKeyguardObserver.h"
@@ -358,12 +358,18 @@ void CAutoKeyguardObserver::LockKeysL()
     autolockOn = (value > EAutolockOff);
 	
 		value = 0;
+		/* This is not used any more because screensavers are removed now
 	  RProperty::Get(KPSUidScreenSaver, KScreenSaverOn, value);
     screenSaverOn = (value == KSsOn);
+    */
+    screenSaverOn = ETrue;
     
+		/* This is not used any more because screensavers are removed now
     value = 0;
     RProperty::Get(KPSUidScreenSaver, KScreenSaverActivatedFromIdle, value);
     screenSaverStertedFromIdle = (value == KSsStartedFromIdle);
+    */
+    screenSaverStertedFromIdle = ETrue;
     
     //See if all the startup related queries and graphics has been displayed
     value = 0;

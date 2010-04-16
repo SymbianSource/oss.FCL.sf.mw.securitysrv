@@ -24,7 +24,7 @@
 #include <avkon.rh>
 #include <avkon.loc>
 #include <bldvariant.hrh>
-#include <certmanui.loc>
+//#include <certmanui.loc>
 #include <certsaver.loc>
 #include <wmlbrowser_wim.loc>
 

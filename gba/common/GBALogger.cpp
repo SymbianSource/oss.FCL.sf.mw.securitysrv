@@ -21,178 +21,154 @@
 #include    "GBALogger.h"
 #include    <flogger.h>
 
-const TInt KDebugBufferSize1024 = 1024;
-const TInt KDebugBufferSize512  = 512;
-const TInt KDebugBufferSize240  = 240;
-const TInt KDebugBufferSize120  = 120;
+const TInt KDebugBufferSize1024         = 1024;
+const TInt KDebugBufferSize512          = 512;
+const TInt KDebugBufferSize256          = 256;
+const TInt KDebugBufferFragmentSize     = 120;
+const TInt KDebugBufferSize128          = 128;
 
 _LIT(KTimeFormat, "%F%D/%M/%Y %J:%T:%S");
 
-void debugline(const char *a, void *arg1, void* arg1b, void *arg2, void *arg3, const char *arg4) 
+void debugline(const char *aFormatString, void *aArg1, void* aArg2, void *aArg3, void *aArg4, const char *aArg5)
     {
     TBuf8<KDebugBufferSize1024> logbuffer;
-    TPtrC8 p((const TUint8 *)a);
-    TPtrC8 temp_arg4((const TUint8 *)arg4);
+    TPtrC8 p((const TUint8 *)aFormatString);
+    TPtrC8 tempArg5((const TUint8 *)aArg5);
+    logbuffer.Format(p, aArg1,aArg2, aArg3, aArg4);
     
-    if( temp_arg4.Length() > KDebugBufferSize1024 - KDebugBufferSize120  )
+    if( KDebugBufferSize1024 < logbuffer.Size() + tempArg5.Size() )
         return;
     
-    logbuffer.Format(p, arg1,arg1b, arg2, arg3);
-    logbuffer.Append(temp_arg4);
+    logbuffer.Append(tempArg5);
     
-    if ( logbuffer.Length() <= KDebugBufferSize120 )
+    TInt iterator = 0;
+    
+    TBuf8<KDebugBufferSize256> tempbuffer;
+    TInt bufferSize = logbuffer.Size();
+    while( iterator < bufferSize )
         {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer );
-        }
-    else
-        {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer.Left( KDebugBufferSize120 ) );
-        //max length is 150, print another line 
-        if (logbuffer.Mid(KDebugBufferSize120).Length()<= KDebugBufferSize120 )
-            { 
+        if( (bufferSize - iterator) > KDebugBufferFragmentSize )
+            {
+            tempbuffer.Copy(logbuffer.Mid(iterator, KDebugBufferFragmentSize));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120) );
+                                        EFileLoggingModeAppend,
+                                        _L8("%S"), &tempbuffer);
             }
         else
             {
+            tempbuffer.Copy(logbuffer.Mid(iterator, bufferSize - iterator));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120, KDebugBufferSize120) );
-            RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize240) );                           
-            }                
-          }
+                                      EFileLoggingModeAppend,
+                                      _L8("%S"), &tempbuffer);
+            }
+        iterator += KDebugBufferFragmentSize;
+        }
     }
 
-
-void debugline(const char *a, void *arg1, void* arg1b, void *arg2, void *arg3, const TDesC &arg4) 
+void debugline(const char *aFormatString, void *aArg1, void* aArg2, void *aArg3, void *aArg4, const TDesC &aArg5)
     {
     TBuf8<KDebugBufferSize1024> logbuffer;
+    TPtrC8 p((const TUint8 *)aFormatString);
+    logbuffer.Format(p, aArg1,aArg2, aArg3, aArg4);
     
-    if( arg4.Length() > KDebugBufferSize1024 - KDebugBufferSize120  )
+    if( KDebugBufferSize1024 < logbuffer.Size() + aArg5.Length() )
         return;
     
-    TPtrC8 p((const TUint8 *)a);
-    logbuffer.Format(p, arg1,arg1b, arg2, arg3);
-    logbuffer.Append(arg4);
+    logbuffer.Append(aArg5);
     
-    if ( logbuffer.Length() <= KDebugBufferSize120 )
+    TInt iterator = 0;
+    
+    TBuf8<KDebugBufferSize256> tempbuffer;
+    TInt bufferSize = logbuffer.Size();
+    while( iterator < bufferSize )
         {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer );
-        }
-    else
-        {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer.Left( KDebugBufferSize120 ) );
-        //max length is 150, print another line 
-        if (logbuffer.Mid(KDebugBufferSize120).Length()<= KDebugBufferSize120 )
-            { 
+        if( (bufferSize - iterator) > KDebugBufferFragmentSize )
+            {
+            tempbuffer.Copy(logbuffer.Mid(iterator, KDebugBufferFragmentSize));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120) );
+                                        EFileLoggingModeAppend,
+                                        _L8("%S"), &tempbuffer);
             }
         else
             {
+            tempbuffer.Copy(logbuffer.Mid(iterator, bufferSize - iterator));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120, KDebugBufferSize120) );
-            RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize240) );                          	
-            }        
-    	  }
+                                        EFileLoggingModeAppend,
+                                        _L8("%S"), &tempbuffer);
+            }
+        iterator += KDebugBufferFragmentSize;
+        }
     }
 
-void debugline(const char *a, void *arg1, void *arg1b, void *arg2, void *arg3, const TDesC8 &arg4) 
-    {  
+void debugline(const char *aFormatString, void *aArg1, void *aArg2, void *aArg3, void *aArg4, const TDesC8 &aArg5)
+    {
     TBuf8<KDebugBufferSize1024> logbuffer;
+    TPtrC8 p((const TUint8 *)aFormatString);
+    logbuffer.Format(p, aArg1,aArg2, aArg3, aArg4);
     
-    if( arg4.Length() > KDebugBufferSize1024 - KDebugBufferSize120)
+    if( KDebugBufferSize1024 < logbuffer.Size() + aArg5.Size() )
         return;
     
-    TPtrC8 p((const TUint8 *)a);
-    logbuffer.Format(p, arg1,arg1b, arg2, arg3);
-    logbuffer.Append(arg4); 
+    logbuffer.Append(aArg5);
     
-    if ( logbuffer.Length() <= KDebugBufferSize120 )
+    TInt iterator = 0;
+    
+    TBuf8<KDebugBufferSize256> tempbuffer;
+    TInt bufferSize = logbuffer.Size();
+    while( iterator < bufferSize )
         {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer );
-        }
-    else
-        {
-        RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                  EFileLoggingModeAppend, 
-                                  logbuffer.Left(KDebugBufferSize120) );
-        //max length is 150, print another line 
-        
-        if (logbuffer.Mid(KDebugBufferSize120).Length()<= KDebugBufferSize120 )
-            { 
+        if( (bufferSize - iterator) > KDebugBufferFragmentSize )
+            {
+            tempbuffer.Copy(logbuffer.Mid(iterator, KDebugBufferFragmentSize));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120) );
+                                        EFileLoggingModeAppend,
+                                        _L8("%S"), &tempbuffer);
             }
         else
             {
+            tempbuffer.Copy(logbuffer.Mid(iterator, bufferSize - iterator));
             RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize120, KDebugBufferSize120) );
-            RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                                      EFileLoggingModeAppend, 
-                                      logbuffer.Mid(KDebugBufferSize240) );                          	
-            }                               
-    	  }     
+                                        EFileLoggingModeAppend,
+                                        _L8("%S"), &tempbuffer);
+            }
+        iterator += KDebugBufferFragmentSize;
+        }
     }
 
-void debugline(const char *a, void *arg1, void *arg1b, void *arg2, void *arg3, const char *arg4, const TInt& aNum ) 
+void debugline(const char *aFormatString, void *aArg1, void *aArg2, void *aArg3, void *aArg4, const char *aArg5, const TInt& aNum )
     {
-    TBuf8<KDebugBufferSize512> logbuf;
-    TPtrC8 temp_arg4((TUint8 *)arg4);
-    
-    if( temp_arg4.Length() > KDebugBufferSize512 - KDebugBufferSize120)
+    TBuf8<KDebugBufferSize512> logbuffer;
+    TPtrC8 tempArg5((const TUint8 *)aArg5);
+    if( tempArg5.Size() > KDebugBufferSize512 - KDebugBufferSize128 )
         return;
     
-    logbuf.Format( temp_arg4, aNum );
-    debugline(a, arg1, arg1b, arg2, arg3, logbuf);
-    }
+    TPtrC8 p((const TUint8 *)aFormatString);
+    logbuffer.Format(p, aArg1,aArg2, aArg3, aArg4);
+    //Print in two seperate lines
+    RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
+                                                EFileLoggingModeAppend,
+                                                _L8("%S"), &logbuffer);
+    RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
+                                            EFileLoggingModeAppend,
+                                            _L8(aArg5), aNum);
+    }  
 
-void debugline(const char *a, void *arg1, void *arg1b, void *arg2, void *arg3, const TDesC &arg4, const TInt& aNum ) 
-    {
-    TBuf<KDebugBufferSize512> logbuf;
-    
-    if( arg4.Length() > KDebugBufferSize512 - KDebugBufferSize120 )
-        return;
-    
-    logbuf.Format( arg4, aNum );
-    debugline(a, arg1, arg1b, arg2, arg3, logbuf);
-    }    
-
-void DebugBinary( const TDesC8 &buf ) 
+void debugBinary( const TDesC8 &aBuffer )
     {
     RFileLogger::HexDump( KGBALogDir, KGBALogFileName,
-        EFileLoggingModeAppend, 
-       NULL, NULL , buf.Ptr(), buf.Length() );
-    } 
+                                EFileLoggingModeAppend,
+                                NULL, NULL , aBuffer.Ptr(), aBuffer.Length() );
+    }
 
 void debugTTime( TTime& aTime )
     {
-    TBuf<KDebugBufferSize120> buf;
+    TBuf<KDebugBufferSize256> buf;
     TRAPD(error , aTime.FormatL( buf, KTimeFormat));
     if(error != KErrNone)
         return;
     RFileLogger::WriteFormat( KGBALogDir, KGBALogFileName,
-                             EFileLoggingModeAppend, 
-                             buf );
+                                EFileLoggingModeAppend,
+                                buf );
     }
 
 #endif

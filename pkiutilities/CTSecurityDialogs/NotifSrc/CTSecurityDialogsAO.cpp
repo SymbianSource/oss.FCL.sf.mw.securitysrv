@@ -37,7 +37,7 @@
 #include <DocumentHandler.h>
 #include <apmstd.h>
 #include <DigSigningNote.h>
-#include <certmanui.rsg>
+//#include <certmanui.rsg>
 #include <X509CertNameParser.h>
 #include <x509cert.h>
 #include <x500dn.h>
@@ -1528,9 +1528,9 @@ void CCTSecurityDialogsAO::ShowCSRDialogL()
 
     messagePtr.Append( KEnter );
 
-    DetailsFieldDynamicL( messagePtr, *iText,
-        R_TEXT_RESOURCE_DETAILS_VIEW_SUBJECT,
-        R_TEXT_RESOURCE_VIEW_NO_SUBJECT_DETAILS );
+    //DetailsFieldDynamicL( messagePtr, *iText,
+    //    R_TEXT_RESOURCE_DETAILS_VIEW_SUBJECT,
+    //    R_TEXT_RESOURCE_VIEW_NO_SUBJECT_DETAILS );
 
     AddKeyUsageL( messagePtr, iKeyInfo );
     AddKeyAlgorithmL( messagePtr, iKeyInfo );
@@ -1613,13 +1613,14 @@ void CCTSecurityDialogsAO::ShowCertDialogL()
 // ---------------------------------------------------------
 //
 HBufC* CCTSecurityDialogsAO::MessageQueryCertDetailsL(
-    const TDesC8& aCert,
-    const CCTCertInfo* aCertInfo,
-    TCertificateFormat aCertFormat,
-    const CCTKeyInfo* aKeyInfo)
+    const TDesC8& /*aCert*/,
+    const CCTCertInfo* /*aCertInfo*/,
+    TCertificateFormat /*aCertFormat*/,
+    const CCTKeyInfo* /*aKeyInfo*/)
     {
     // Create message buffer
     HBufC* message = HBufC::NewLC( KMaxLengthTextDetailsBody );
+/*
     TPtr messagePtr = message->Des();
     // Label
     if ( aCertInfo )
@@ -1681,7 +1682,7 @@ HBufC* CCTSecurityDialogsAO::MessageQueryCertDetailsL(
             User::Leave( KErrNotSupported );
             }
         }
-
+*/
     CleanupStack::Pop( message );
     return message;
     }
@@ -1690,22 +1691,25 @@ HBufC* CCTSecurityDialogsAO::MessageQueryCertDetailsL(
 // CCTSecurityDialogsAO::AddIssuerAndSubjectL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddSiteL( TDes& aMessage )
+void CCTSecurityDialogsAO::AddSiteL( TDes& /*aMessage*/ )
     {
+/*
     if ( iServerName )
         {
         DetailsFieldDynamicL( aMessage, iServerName->Des(),
             R_QTN_CM_SITE,
             R_TEXT_RESOURCE_DETAILS_VIEW_NOT_DEFINED );
         }
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddIssuerAndSubjectL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddIssuerAndSubjectL( TDes& aMessage, const CX509Certificate& aCert )
+void CCTSecurityDialogsAO::AddIssuerAndSubjectL( TDes& /*aMessage*/, const CX509Certificate& /*aCert*/ )
     {
+/*
     HBufC* issuer = NULL;
     HBufC* owner = NULL;
     X509CertNameParser::SubjectFullNameL( aCert, owner );
@@ -1723,14 +1727,16 @@ void CCTSecurityDialogsAO::AddIssuerAndSubjectL( TDes& aMessage, const CX509Cert
         R_TEXT_RESOURCE_DETAILS_VIEW_SUBJECT,
         R_TEXT_RESOURCE_VIEW_NO_SUBJECT_DETAILS );
     CleanupStack::PopAndDestroy( owner );   //owner
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddKeySizeL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddKeySizeL( TDes& aMessage, const CCTKeyInfo* aKeyInfo )
+void CCTSecurityDialogsAO::AddKeySizeL( TDes& /*aMessage*/, const CCTKeyInfo* /*aKeyInfo*/ )
     {
+/*
     TUint keySize = aKeyInfo->Size();
 
     TBuf<KMaxLengthTextDateString> sizeBuf;
@@ -1744,14 +1750,16 @@ void CCTSecurityDialogsAO::AddKeySizeL( TDes& aMessage, const CCTKeyInfo* aKeyIn
         R_TEXT_RESOURCE_DETAILS_VIEW_NOT_DEFINED );
 
     aMessage.Append( KEnterEnter );
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddKeyUsageL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddKeyUsageL( TDes& aMessage, const CCTKeyInfo* aKeyInfo )
+void CCTSecurityDialogsAO::AddKeyUsageL( TDes& /*aMessage*/, const CCTKeyInfo* /*aKeyInfo*/ )
     {
+/*
     if ( aKeyInfo != NULL )
         {
         TKeyUsagePKCS15 keyUsage = aKeyInfo->Usage();
@@ -1774,14 +1782,16 @@ void CCTSecurityDialogsAO::AddKeyUsageL( TDes& aMessage, const CCTKeyInfo* aKeyI
         DetailsFieldResourceL( aMessage,
             R_TEXT_RESOURCE_DETAILS_VIEW_KEY_USAGE, usage);
         }
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddKeyUsageL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddKeyUsageL( TDes& aMessage, const CX509Certificate& aCert )
+void CCTSecurityDialogsAO::AddKeyUsageL( TDes& /*aMessage*/, const CX509Certificate& /*aCert*/ )
     {
+/*
   TKeyUsageX509 x509Usage = EX509UsageNone;
   TKeyUsagePKCS15 pkcs15KeyUsage = EPKCS15UsageNone;
   const CX509CertExtension* ext = aCert.Extension(KKeyUsage);
@@ -1854,14 +1864,16 @@ void CCTSecurityDialogsAO::AddKeyUsageL( TDes& aMessage, const CX509Certificate&
       }
    DetailsFieldResourceL( aMessage,
           R_TEXT_RESOURCE_DETAILS_VIEW_KEY_USAGE, usage );
+*/
    }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddKeyAlgorithmL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddKeyAlgorithmL( TDes& aMessage, const CCTKeyInfo* aKeyInfo )
+void CCTSecurityDialogsAO::AddKeyAlgorithmL( TDes& /*aMessage*/, const CCTKeyInfo* /*aKeyInfo*/ )
     {
+/*
     TInt algRes = 0;
     switch( aKeyInfo->Algorithm())
         {
@@ -1892,6 +1904,7 @@ void CCTSecurityDialogsAO::AddKeyAlgorithmL( TDes& aMessage, const CCTKeyInfo* a
         }
     DetailsFieldResourceL( aMessage,
             R_TEXT_RESOURCE_DETAILS_VIEW_ALGORITHM, algRes);
+*/
     }
 
 // -----------------------------------------------------------------------------
@@ -1926,8 +1939,9 @@ void CCTSecurityDialogsAO::AddKeyLocationL( TDes& aMessage, const CCTKeyInfo* aK
 // ---------------------------------------------------------
 //
 void CCTSecurityDialogsAO::AddLocationInfoL(
-    TDes& aMessage, TUid aUid, TBool aCertificate )
+    TDes& /*aMessage*/, TUid /*aUid*/, TBool /*aCertificate*/ )
     {
+/*
     TInt location = 0;
     TInt locationRes =0;
 
@@ -1968,6 +1982,7 @@ void CCTSecurityDialogsAO::AddLocationInfoL(
         }
 
     DetailsFieldResourceL( aMessage, locationRes, location );
+*/
     }
 
 // -----------------------------------------------------------------------------
@@ -1979,7 +1994,7 @@ void CCTSecurityDialogsAO::AddValidityPeriodL(
     {
     TLocale locale;
     TTimeIntervalSeconds offSet = locale.UniversalTimeOffset();
-    DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_VALID_FROM );
+    //DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_VALID_FROM );
     const CValidityPeriod& validityPeriod = aCert.ValidityPeriod();
     TTime startValue = validityPeriod.Start();
     startValue += offSet;
@@ -1994,7 +2009,7 @@ void CCTSecurityDialogsAO::AddValidityPeriodL(
     aMessage.Append( startString );
     aMessage.Append( KEnterEnter );
 
-    DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_VALID_UNTIL );
+    //DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_VALID_UNTIL );
     TTime finishValue = validityPeriod.Finish();
     finishValue += offSet;
     TBuf<KMaxLengthTextDateString> finishString;
@@ -2021,25 +2036,26 @@ void CCTSecurityDialogsAO::AddCertFormatL( TDes& aMessage, TCertificateFormat aC
         case EX509CertificateUrl:
         case EX509Certificate:
             {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_CERT_FORMAT_X509;
+            //fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_CERT_FORMAT_X509;
             break;
             }
         default:
             {
-            fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_NOT_DEFINED;
+            //fieldType = R_TEXT_RESOURCE_DETAILS_VIEW_NOT_DEFINED;
             break;
             }
         }
-    DetailsFieldResourceL( aMessage,
-        R_TEXT_RESOURCE_DETAILS_VIEW_CERT_FORMAT, fieldType );
+    //DetailsFieldResourceL( aMessage,
+    //    R_TEXT_RESOURCE_DETAILS_VIEW_CERT_FORMAT, fieldType );
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddCertAlgorithmsL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddCertAlgorithmsL( TDes& aMessage, const CX509Certificate& aCert )
+void CCTSecurityDialogsAO::AddCertAlgorithmsL( TDes& /*aMessage*/, const CX509Certificate& /*aCert*/ )
     {
+/*
     TInt fieldType = 0;
     TInt fieldType2 = 0;
     // digest algorithm
@@ -2113,14 +2129,16 @@ void CCTSecurityDialogsAO::AddCertAlgorithmsL( TDes& aMessage, const CX509Certif
         CleanupStack::PopAndDestroy();  // stringHolder
         aMessage.Append( KEnterEnter );
         }
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddCertSerialNumberL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddCertSerialNumberL( TDes& aMessage, const CX509Certificate& aCert )
+void CCTSecurityDialogsAO::AddCertSerialNumberL( TDes& /*aMessage*/, const CX509Certificate& /*aCert*/ )
     {
+/*
     // certificate serial number
     DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_SERIAL_NUMBER );
     TPtrC8 serialNumber = aCert.SerialNumber();
@@ -2133,14 +2151,16 @@ void CCTSecurityDialogsAO::AddCertSerialNumberL( TDes& aMessage, const CX509Cert
        }
 
     aMessage.Append( KEnterEnter );
+*/
     }
 
 // -----------------------------------------------------------------------------
 // CCTSecurityDialogsAO::AddCertFingerprintsL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddCertFingerprintsL( TDes& aMessage, const CX509Certificate& aCert )
+void CCTSecurityDialogsAO::AddCertFingerprintsL( TDes& /*aMessage*/, const CX509Certificate& /*aCert*/ )
     {
+/*
      // certificate fingerprint SHA-1
     DetailsResourceL( aMessage, R_TEXT_RESOURCE_DETAILS_VIEW_FINGERPRINT );
 
@@ -2158,6 +2178,7 @@ void CCTSecurityDialogsAO::AddCertFingerprintsL( TDes& aMessage, const CX509Cert
     CleanupStack::PopAndDestroy( md5 );
 
     DevideToBlocks( fingerprint, aMessage );
+*/
     }
 
 // ---------------------------------------------------------

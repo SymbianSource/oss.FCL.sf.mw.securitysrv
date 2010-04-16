@@ -26,7 +26,7 @@
 #include <smsclnt.h> //CSmsClientMtm
 #include <txtrich.h>
 #include <bautils.h> //file system utilities
-#include <remotelock.rsg>
+#include <RemoteLock.rsg>
 #ifdef RD_MULTIPLE_DRIVE 
 #include <driveinfo.h>
 #else

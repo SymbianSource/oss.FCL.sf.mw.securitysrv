@@ -39,5 +39,7 @@ PRJ_MMPFILES
 
 ../group/SecUi.mmp
 //SIM security plugin for General Settings
+/*
+Not any more. The settings are replaced by Qt-style plugins
 ../GSSimSecPlugin/GSSimSecPlugin.mmp
-
+*/

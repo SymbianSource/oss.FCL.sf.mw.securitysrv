@@ -24,13 +24,14 @@
 #include "DevEncLog.h"
 #include "DevEncUids.hrh"
 
+
 #include <pbe.h>
 #include <pbedata.h>
 //#include <PathInfo.h> // for system path literals
 #include <pkcs5kdf.h>
 #include <s32file.h>
 #include <s32mem.h>
-#include <imcvcodc.h>
+#include <tconvbase64.h>
 
 #include <DevEncEngineConstants.h>
 #include <DevEncEngineBase.h>
@@ -273,8 +274,7 @@ void CDevEncKeyUtils::DoCreateSetKeyL( HBufC8*& aResult,
     aResult = HBufC8::NewL( resultPtr.Length()*4/3+3 );
     TPtr8 returnPtr = aResult->Des();
     returnPtr.SetLength( 0 );
-    TImCodecB64 b64codec;
-    b64codec.Initialise();
+    TBase64 b64codec;
     b64codec.Encode( *result, returnPtr );
     
     // Destroy the evidence
@@ -320,8 +320,7 @@ void CDevEncKeyUtils::DoSetKeyL( const TDesC8& aPkcs5Key,
     HBufC8* decodedKey = HBufC8::NewLC( aPkcs5Key.Length()*3/4 );
     TPtr8 keyPtr = decodedKey->Des();
     keyPtr.SetLength( 0 );
-    TImCodecB64 b64codec;
-    b64codec.Initialise();
+    TBase64 b64codec;
     b64codec.Decode( aPkcs5Key, keyPtr );
 
     // Read the parameters and ciphertext from the input

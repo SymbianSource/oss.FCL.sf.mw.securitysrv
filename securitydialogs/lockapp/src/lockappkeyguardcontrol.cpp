@@ -35,7 +35,7 @@
 
 #include "AutolockPrivateCRKeys.h"
 #include <settingsinternalcrkeys.h>
-#include <ScreensaverInternalPSKeys.h>
+// #include <ScreensaverInternalPSKeys.h>
 #include <hwrmdomainpskeys.h>
 #include <activeidle2domainpskeys.h>
 //#include <CoreApplicationUIsPrivateCRKeys.h> TODO remove
@@ -298,12 +298,20 @@ TBool CLockAppKeyguardControl::AutoActivationAllowedL( )
     idle = (value == EPSAiForeground);
     INFO_2("CLockAppKeyguardControl::AutoActivationAllowedL - idle: %d %d", value, idle);
     value = 0;
+		/* This is not used any more because screensavers are removed now
     RProperty::Get( KPSUidScreenSaver, KScreenSaverOn, value );
     screenSaverOn = (value > 0);
+    */
+    screenSaverOn = ETrue;
+    
     INFO_2("CLockAppKeyguardControl::AutoActivationAllowedL - screenSaverOn: %d %d", value, screenSaverOn);
     value = 0;
+		/* This is not used any more because screensavers are removed now
     RProperty::Get( KPSUidScreenSaver, KScreenSaverActivatedFromIdle, value );
     screenSaverStertedFromIdle = (value == KSsStartedFromIdle);
+    */
+    screenSaverStertedFromIdle = ETrue;
+    
     INFO_2("CLockAppKeyguardControl::AutoActivationAllowedL - screenSaverStertedFromIdle: %d %d", value, screenSaverStertedFromIdle);
 
     // If a call is ongoing or idle doesnt have foreground and

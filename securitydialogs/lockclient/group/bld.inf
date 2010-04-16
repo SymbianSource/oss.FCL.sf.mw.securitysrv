@@ -24,4 +24,7 @@ PRJ_EXPORTS
 
 PRJ_MMPFILES
 
+/*
+Not any more. This should be done in the QT way, using  lockclient.pro
 lockclient.mmp
+*/

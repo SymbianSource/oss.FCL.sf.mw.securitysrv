@@ -22,6 +22,10 @@
 #include <apgtask.h> // TApaTask, TApaTaskList
 #include <coemain.h> // CCoeEnv
 
+#include <xqservicerequest.h>
+#include <xqserviceutil.h>
+#include <xqrequestinfo.h>
+#include <QDebug>
 
 // Constants
 const TInt KTimesToConnectServer( 2);
@@ -41,6 +45,8 @@ TVersion RLockAccessExtension::GetVersion( )
 TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 	{
 	TInt ret(KErrNone);
+	/*
+	this is the old methd. Now we use QtHighway
 	TApaTaskList list(aWsSession);
 	// check that lockapp is running
 	TApaTask task = list.FindApp( KLockAppUid );
@@ -62,6 +68,9 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 		RDebug::Printf( "%s %s (%u) ???? LockApp task not found=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KLockAppUid );
 		ret = KErrNotReady;
 		}
+	*/
+	qDebug() << "============= RLockAccessExtension::TryConnect";
+	qDebug() << ret;
 	return ret;
 	}
 
@@ -71,6 +80,8 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 TInt RLockAccessExtension::EnsureConnected( )
 	{
 	TInt ret(KErrNone);
+	/*
+	this is the old methd. Now we use QtHighway
 	// we need CCoeEnv because of window group list
 	CCoeEnv* coeEnv = CCoeEnv::Static( );
 	if ( coeEnv )
@@ -90,6 +101,9 @@ TInt RLockAccessExtension::EnsureConnected( )
 		// No CCoeEnv
 		ret = KErrNotSupported;
 		}
+	*/
+	qDebug() << "============= RLockAccessExtension::EnsureConnected";
+	qDebug() << ret;
 	return ret;
 	}
 
@@ -101,7 +115,8 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage )
 	TInt ret = EnsureConnected( );
 	if ( ret == KErrNone )
 		{
-		ret = SendReceive( aMessage );
+		// ret = SendReceive( aMessage );
+		ret = SendMessage( aMessage, -1, -1 );
 		}
 	return ret;
 	}
@@ -116,7 +131,8 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 		{
 		// assign parameters to IPC argument
 		TIpcArgs args(aParam1);
-		ret = SendReceive( aMessage, args );
+		// ret = SendReceive( aMessage, args );
+		ret = SendMessage( aMessage, aParam1, -1 );
 		}
 	return ret;
 	}
@@ -131,7 +147,29 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1, TInt aParam
 		{
 		// assign parameters to IPC argument
 		TIpcArgs args( aParam1, aParam2);
-		ret = SendReceive( aMessage, args );
+		// this is the old methd. Now we use QtHighway
+		// ret = SendReceive( aMessage, args );
+    qDebug() << "============= RLockAccessExtension::SendMessage 123.1";
+    qDebug() << aMessage;
+    qDebug() << aParam1;
+    qDebug() << aParam2;
+    XQServiceRequest* mServiceRequest;
+    qDebug() << "============= RLockAccessExtension::SendMessage 2";
+    mServiceRequest = new XQServiceRequest("com.nokia.services.AutolockSrv.AutolockSrv","dial(QString,bool)");// use   , false    to make async
+    qDebug() << "============= RLockAccessExtension::SendMessage 2.1";
+    qDebug() << mServiceRequest;
+    QString label = "";
+    label += QString("%1").arg(aMessage);
+    *mServiceRequest << QString(label);
+    qDebug() << "============= RLockAccessExtension::SendMessage 2.2";
+    bool isSync = false;
+    *mServiceRequest << isSync;
+    qDebug() << "============= RLockAccessExtension::SendMessage 3";
+    int returnvalue;
+    bool ret = mServiceRequest->send(returnvalue);
+    qDebug() << "============= RLockAccessExtension::SendMessage 4";
+    qDebug() << ret;
+    
 		}
 	return ret;
 	}

@@ -33,7 +33,7 @@
 #include <featmgr.h>
 
 #include <settingsinternalcrkeys.h>
-#include <ScreensaverInternalPSKeys.h>
+// #include <ScreensaverInternalPSKeys.h>
 #include <ctsydomainpskeys.h>
 #include <activeidle2domainpskeys.h>
 
@@ -194,7 +194,9 @@ void CLockAppStateControl::ConstructL( )
     AddObserverL( lockPublisher ); // ownership is transfered
 
     // PubSub observers
+		/* This is not used any more because screensavers are removed now
     iPSScreenSaverObserver = CLockAppPubSubObserver::NewL( this, KPSUidScreenSaver, KScreenSaverOn );
+    */
     iPSTelephonyObserver = CLockAppPubSubObserver::NewL( this, KPSUidCtsyCallInformation, KCTsyCallState );
     iPSGripObserver = CLockAppPubSubObserver::NewL( this, KPSUidHWRM, KHWRMGripStatus );
 
@@ -497,6 +499,7 @@ void CLockAppStateControl::HandleCenRepNotify(TUid aCenRepUid, TUint32 aKeyId, T
 void CLockAppStateControl::HandlePubSubNotify(TUid aPubSubUid, TUint aKeyId, TInt aValue )
     {
     INFO_3( "CLockAppStateControl::HandlePubSubNotify %x %x = %d", aPubSubUid.iUid, aKeyId, aValue );
+		/* This is not used any more because screensavers are removed now
     INFO_3( "CLockAppStateControl::HandlePubSubNotify KPSUidScreenSaver=%x KPSUidCtsyCallInformation=%x KPSUidAiInformation=%x", KPSUidScreenSaver, KPSUidCtsyCallInformation, KPSUidAiInformation );
     INFO_3( "CLockAppStateControl::HandlePubSubNotify KPSUidHWRM=%x KHWRMGripStatus=%x KPSUidAiInformation=%x", KPSUidHWRM, KHWRMGripStatus, KPSUidAiInformation );
     if ( aPubSubUid == KPSUidScreenSaver )
@@ -570,6 +573,7 @@ void CLockAppStateControl::HandlePubSubNotify(TUid aPubSubUid, TUint aKeyId, TIn
                 break;
             }
         }
+    */
     }
 
 // ---------------------------------------------------------------------------
