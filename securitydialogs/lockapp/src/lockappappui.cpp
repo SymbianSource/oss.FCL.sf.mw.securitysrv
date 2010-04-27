@@ -33,7 +33,9 @@
 // ---------------------------------------------------------------------------
 void CLockAppAppUi::ConstructL( )
     {
+    	#if defined(_DEBUG)
     	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x8 );
+    	#endif
     	    
    // default appui constructor has to be called
     BaseConstructL( );    	    
@@ -42,7 +44,9 @@ void CLockAppAppUi::ConstructL( )
     if(use_old_autolock)
     	{
 			// start autolock instead of lockapp . This is a backup solution to use in case that not all SysAp and Avkon changes are implemented
+			#if defined(_DEBUG)
 	 	  RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
+ 	  	#endif
 	    TApaTaskList taskList( iCoeEnv->WsSession() );
 	    TApaTask task( taskList.FindApp( _L("autolock.exe" )) );
 	    if ( !task.Exists() )
@@ -57,7 +61,9 @@ void CLockAppAppUi::ConstructL( )
 	        
 		    // Try to launch the application.        
 	        User::LeaveIfError(ls.StartApp(*commandLine));
+	        #if defined(_DEBUG)
 	    	  RDebug::Printf( "%s %s (%u) autolock.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x7 );
+	    	  #endif
 	        
 	        CleanupStack::PopAndDestroy(2); // commandLine, ls
 			}
@@ -182,10 +188,14 @@ MCoeMessageObserver::TMessageResponse CLockAppAppUi::HandleMessageL(
 // ----------------------------------------------------------
 void CLockAppAppUi::HandleWsEventL( const TWsEvent& aEvent, CCoeControl* aDestination )
     {
+    #if defined(_DEBUG)
 		RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		#endif
     if ( aEvent.Type() == TRawEvent::EKeyDown )
         {
+        #if defined(_DEBUG)
         RDebug::Printf("CLockAppAppUi::HandleWsEventL() - aEvent.Key()->iCode: %d", aEvent.Key()->iCode );
+        #endif
         }
 
     // call super-class

@@ -24,7 +24,6 @@
 #include "DevEncLog.h"
 #include "DevEncUids.hrh"
 
-
 #include <pbe.h>
 #include <pbedata.h>
 //#include <PathInfo.h> // for system path literals

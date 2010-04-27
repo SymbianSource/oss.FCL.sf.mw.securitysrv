@@ -407,7 +407,6 @@ void CWimAuthObjHandler::GetPINsInfoL( const RMessage2& aMessage )
 void CWimAuthObjHandler::VerifyDisabledPINRequestL( 
      const RMessage2& aMessage )
     {
-    __ASSERT_DEBUG( iResponseID == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iResponseID = new ( ELeave )CWimResponse( aMessage );
     iResponseID->iOpcode = EVerifyDisabledPinReq;
     
@@ -436,11 +435,9 @@ void CWimAuthObjHandler::VerifyPINRequestL(
     {
     _WIMTRACE(_L("WIM|WIMServer|CWimAuthObjHandler::VerifyPINRequestL|Begin"));
 
-    __ASSERT_DEBUG( iResponseID == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iResponseID = new ( ELeave )CWimResponse( aMessage );
     iResponseID->iOpcode = EVerifyPinReq;
     
-    __ASSERT_DEBUG( iTrId == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iTrId = iWimUtilFuncs->TrIdLC( iResponseID, EWimMgmtReq );
     CleanupStack::Pop( iTrId );
     
@@ -568,11 +565,9 @@ void CWimAuthObjHandler::EnablePINReqL( const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM|WIMServer|CWimAuthObjHandler::EnablePINReqL|Begin"));
 
-    __ASSERT_DEBUG( iResponseID == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iResponseID = new( ELeave )CWimResponse( aMessage );
     iResponseID->iOpcode =EEnablePINReq;
     
-    __ASSERT_DEBUG( iTrId == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iTrId = iWimUtilFuncs->TrIdLC( iResponseID, EWimMgmtReq );
     CleanupStack::Pop( iTrId );
     
@@ -681,11 +676,9 @@ void CWimAuthObjHandler::ChangePINRequestL( const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimAuthObjHandler::ChangePINRequestL | Begin"));
 
-    __ASSERT_DEBUG( iResponseID == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iResponseID = new ( ELeave ) CWimResponse( aMessage );
     iResponseID->iOpcode = EChangePINReq;
     
-    __ASSERT_DEBUG( iTrId == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iTrId = iWimUtilFuncs->TrIdLC( iResponseID, EWimMgmtReq );
     CleanupStack::Pop( iTrId ); 
 
@@ -781,11 +774,9 @@ void CWimAuthObjHandler::UnblockPinReqL( const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM | WIMServer | CWimAuthObjHandler::UnblockPinReqL | Begin"));
 
-    __ASSERT_DEBUG( iResponseID == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iResponseID = new ( ELeave ) CWimResponse( aMessage );
     iResponseID->iOpcode = EUnblockPinReq;
     
-    __ASSERT_DEBUG( iTrId == NULL, User::Panic( KWimAuthObjPanic, KErrGeneral ) );
     iTrId = iWimUtilFuncs->TrIdLC( iResponseID, EWimMgmtReq );
     CleanupStack::Pop( iTrId );
     

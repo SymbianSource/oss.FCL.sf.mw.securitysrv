@@ -43,7 +43,7 @@ class CDevEncDiskUtils : public CBase
         static void DoVerifyTestFileL();
         static TInt64 FindCriticalLevelTresholdL();
         static TInt FindValueL( const TUid aRepositoryUid, const TUint aCRKey );
-        static TInt64 FindWarningLevelTresholdL();
+        static TInt64 FindWarningLevelTresholdL( const TDriveNumber aNumber );
     };
 
 #endif // DEVENCDISKUTILS_H

@@ -255,18 +255,23 @@ EXPORT_C TInt CDevEncDiskUtils::DiskFinalize( TDriveNumber aNumber )
     if (!err)
         return err;
     TInt64 memoryWarningSpace(0);
-    TRAP(err, memoryWarningSpace = FindWarningLevelTresholdL());
+    TRAP(err, memoryWarningSpace = FindWarningLevelTresholdL( aNumber ));
     if (!err)
         return err;
     
     DFLOG2( "CDevEncDiskUtils::DiskFinalize => memoryCriticalSpace = %d", (TInt) memoryCriticalSpace );
     DFLOG2( "CDevEncDiskUtils::DiskFinalize => memoryWarningSpace = %d", (TInt) memoryWarningSpace );
     
-    //create the number of files needed to fill the mmc free space
+    //create the number of files needed to fill the mmc or phone memory free space
     while( freeSpace )
         {
-        /* The real warning space is a percentage of the free space */
-        TInt64 newMemoryWarningSpace = ( TInt64 ) ( volumeInfo.iSize*( 100 - memoryWarningSpace ) ) / 100;
+        TInt64 newMemoryWarningSpace(0);
+        if( aNumber == EDriveC )
+        	{
+            // The real warning space is a percentage of the free space. This applies only on drive C. 
+            newMemoryWarningSpace = ( TInt64 ) ( volumeInfo.iSize*( 100 - memoryWarningSpace ) ) / 100;
+        	}
+        
         DFLOG2( "CDevEncDiskUtils::DiskFinalize => newMemoryWarningSpace = %d", (TInt) newMemoryWarningSpace );
 
         if( TInt64( volumeInfo.iFree ) > TInt64( KMaxInt ) )
@@ -275,7 +280,14 @@ EXPORT_C TInt CDevEncDiskUtils::DiskFinalize( TDriveNumber aNumber )
             }
         else
         	{
-        	size = Max( 0LL, TInt64( volumeInfo.iFree ) - memoryCriticalSpace - newMemoryWarningSpace );
+            if( aNumber == EDriveC )
+                {
+        	    size = Max( 0LL, TInt64( volumeInfo.iFree ) - memoryCriticalSpace - newMemoryWarningSpace );
+                }
+            else
+                {
+                size = Max( 0LL, TInt64( volumeInfo.iFree ) - memoryCriticalSpace - memoryWarningSpace );
+                }
         	}
 
         TFileName temp;
@@ -302,9 +314,19 @@ EXPORT_C TInt CDevEncDiskUtils::DiskFinalize( TDriveNumber aNumber )
         if( err )
             DFLOG2( "..fs.Volume fail %d", err );    
 
-        if( TInt64( volumeInfo.iFree ) <= memoryCriticalSpace + newMemoryWarningSpace )
+        if( aNumber == EDriveC )
         	{
-            freeSpace = EFalse;
+            if( TInt64( volumeInfo.iFree ) <= memoryCriticalSpace + newMemoryWarningSpace )
+        	    {
+                freeSpace = EFalse;
+                }
+            }
+        else
+            {
+            if( TInt64( volumeInfo.iFree ) <= memoryCriticalSpace + memoryWarningSpace )
+                {
+                freeSpace = EFalse;
+                }
             }
         }
 
@@ -348,9 +370,16 @@ TInt64 CDevEncDiskUtils::FindCriticalLevelTresholdL()
 // CDevEncDiskUtils::FindWarningLevelTresholdL()
 // 
 // --------------------------------------------------------------------------
-TInt64 CDevEncDiskUtils::FindWarningLevelTresholdL()
+TInt64 CDevEncDiskUtils::FindWarningLevelTresholdL( const TDriveNumber aNumber )
 	{
-	return (TInt64) FindValueL( KCRUidUiklaf, /*KUikOODDiskWarningThreshold*/KUikOODDiskFreeSpaceWarningNoteLevel );
+      if( aNumber == EDriveC )
+          {
+	      return (TInt64) FindValueL( KCRUidUiklaf, KUikOODDiskFreeSpaceWarningNoteLevel );
+          }
+      else
+          {
+          return (TInt64) FindValueL( KCRUidUiklaf, KUikOODDiskFreeSpaceWarningNoteLevelMassMemory );
+          }
 	}
 
 // End of file

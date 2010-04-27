@@ -57,6 +57,7 @@
 
 //  LOCAL CONSTANTS AND MACROS  
 #define KSysApUid TUid::Uid(0x100058F3)
+#define KPhoneAppUid TUid::Uid(0x100058B3)
 
 const TInt KTriesToConnectServer( 2 );
 const TInt KTimeBeforeRetryingServerConnection( 50000 );
@@ -93,6 +94,7 @@ void CAutolockAppUi::ConstructL()
 	iAppKey = 0;
 
 	aCallButtonRect = TRect (0,0,0,0);
+	iGotEventDownDuringCall = -1;
 	//connect to ETel
 
 	TInt err( KErrGeneral );
@@ -165,6 +167,16 @@ void CAutolockAppUi::ConstructL()
 	iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
 	TInt res = iWait->WaitForRequestL();
 	User::LeaveIfError(res);
+	    
+  // Eventhough we might lock the device on boot-up (systemLocked == ETrue), we
+  // want to hide the app until the handshake is done. StartUp application will
+  // active the app when it is finished.   
+  TApaTask self(iCoeEnv->WsSession());
+  self.SetWgId(iCoeEnv->RootWin().Identifier());
+  self.SendToBackground();
+  // flush
+  iCoeEnv->WsSession().Flush();	    
+		    
     TInt lockValue = 0;
     CRepository* repository = CRepository::NewL(KCRUidSecuritySettings);
     TInt cRresult = repository->Get(KSettingsAutolockStatus, lockValue);
@@ -492,8 +504,8 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			CAknView* view = View(KAutoLockViewId);
 			if(view)
 				{	
-		  		TRect aCallRect;
-				STATIC_CAST(CAutolockView*, view)->HandleCall(0x15, aCallRect);
+		  		TRect aInitialRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x15, aInitialRect);
 				}
 		
 			}
@@ -519,8 +531,8 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			CAknView* view = View(KAutoLockViewId);
 			if(view)
 				{	
-				TRect aCallRect;
-				STATIC_CAST(CAutolockView*, view)->HandleCall(0x19, aCallRect);
+				TRect aInitialRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x19, aInitialRect);
 				}
 			TApaTask self(iCoeEnv->WsSession());
 			self.SetWgId(iCoeEnv->RootWin().Identifier());
@@ -533,8 +545,8 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
 			CAknView* view = View(KAutoLockViewId);
 			if(view)
 				{	
-			  	TRect aCallRect;
-				STATIC_CAST(CAutolockView*, view)->HandleCall(0x16, aCallRect);
+			  	TRect aInitialRect;
+				STATIC_CAST(CAutolockView*, view)->HandleCall(0x16, aInitialRect);
 				}
 			}
 		}
@@ -755,7 +767,7 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
 			TBool iAppKeyBelongedToBigClock=EFalse;
 			if(!iAppKey)
 				{
-				RDebug::Printf( "%s %s (%u) stealing EStdKeyApplication0 from BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+				// RDebug::Printf( "%s %s (%u) stealing EStdKeyApplication0 from BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 				RWindowGroup& groupWin=iCoeEnv->RootWin();
 				iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key now, in case that it was given to BigClock
 				iAppKeyBelongedToBigClock=ETrue;
@@ -773,7 +785,7 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
 				{  // make sure that we will be topmost still
 					if(iAppKey && iAppKeyBelongedToBigClock)
 						{
-						RDebug::Printf( "%s %s (%u) giving EStdKeyApplication0 to BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						// RDebug::Printf( "%s %s (%u) giving EStdKeyApplication0 to BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 						RWindowGroup& groupWin=iCoeEnv->RootWin();
 						groupWin.CancelCaptureKeyUpAndDowns(iAppKey);	// give S60-Application key back to BigClock
 						iAppKey = 0;
@@ -940,7 +952,6 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 	if ( AknLayoutUtils::PenEnabled() )
      	{ 		
    			TApaTaskList apaTaskList(CCoeEnv::Static()->WsSession());
-   			#define KPhoneAppUid TUid::Uid(0x100058B3)
 
    			TApaTask apaTask = apaTaskList.FindApp(KPhoneAppUid);
    			if (apaTask.Exists())
@@ -963,8 +974,8 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 	CAknView* view = View(KAutoLockViewId);
 	if(view)
 	  {
-	  TRect aCallRect;
-      STATIC_CAST(CAutolockView*, view)->HandleCall(0x17, aCallRect);
+	  TRect aInitialRect;
+      STATIC_CAST(CAutolockView*, view)->HandleCall(0x17, aInitialRect);
 	  STATIC_CAST(CAutolockView*, view)->MakeVisible(ETrue);
 	  }
 	else
@@ -1278,7 +1289,14 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 		           	{
 		             	#if defined(_DEBUG)
 		    			RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::HandleWsEventL: ENABLE call bubble"));
-		    			#endif                      
+		    			#endif
+   						CAknView* view = View(KAutoLockViewId);
+							if(view)
+								{	
+								TRect aInitialRect;
+								STATIC_CAST(CAutolockView*, view)->HandleCall(0x1A, aInitialRect);
+								}
+
 		                iIncallBubble->SetIncallBubbleAllowedInIdleL( ETrue );
 		            }
 		    	break;	
@@ -1290,28 +1308,36 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
     	    		{
     	    		TInt callState = 0;
     	    		RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
-			        if ( 1==1 || callState == EPSCTsyCallStateNone || callState == EPSCTsyCallStateUninitialized )
-			        	{
 	    	        TPointerEvent *pointer = aEvent.Pointer();
 	    	          CAknView* view = View(KAutoLockViewId);
 								  if(view)
 								    {	
 								        STATIC_CAST(CAutolockView*, view)->ScreenDeviceChanged();
-								    	TRect aCallRect;
-								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x1, aCallRect);
-   								    	if(aCallButtonRect.iBr.iX==0)
-   								    		aCallButtonRect = TRect (aCallRect);
+								    	TRect aInitialRect;
+								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x1, aInitialRect);
+   								    	if(aCallButtonRect.iBr.iX==0)	// initialize if not done already
+   								    		aCallButtonRect = TRect (aInitialRect);
 								    }
+			        if ( callState != EPSCTsyCallStateNone && callState != EPSCTsyCallStateUninitialized )
+			        	{
+	    	        if(pointer->iType==TPointerEvent::EButton1Down)
+	    	        	{
+		    	        TPoint iPosition = pointer->iPosition;
+									if(aCallButtonRect.iBr.iX<iPosition.iX && iPosition.iX<aCallButtonRect.iBr.iX+aCallButtonRect.iTl.iX && iPosition.iY>400 )
+	    		        	{
+	    		        	iGotEventDownDuringCall=1;
+	    		        	}
+	    		        }
 	    	        if(pointer->iType==TPointerEvent::EButton1Up)
 	    	        	{
 		    	        TPoint iPosition = pointer->iPosition;
-						if(aCallButtonRect.iBr.iX<iPosition.iX && iPosition.iX<aCallButtonRect.iBr.iX+aCallButtonRect.iTl.iX && iPosition.iY>400 )
+		    	        // touching at any point inside and below the BigRedButton. This is to handle the case where another dialog overlaps
+						if(iGotEventDownDuringCall==1 && aCallButtonRect.iBr.iX<iPosition.iX && iPosition.iX<aCallButtonRect.iBr.iX+aCallButtonRect.iTl.iX && iPosition.iY>400 )
 	    		        	{
-	    		        		#define KPhoneAppUid1 TUid::Uid(0x100058B3)
 	    		        		TApaTaskList tasklist( iCoeEnv->WsSession() );
-                      TApaTask phonetask = tasklist.FindApp( KPhoneAppUid1 );
+                      TApaTask phonetask = tasklist.FindApp( KPhoneAppUid );
 	    		        		if ( phonetask.Exists() )
-                        {
+                        {	// send End key to Telephony to end the call
 										    TRawEvent event;
 										    event.Set(TRawEvent::EKeyDown, EStdKeyNo);
 										    iEikonEnv->WsSession().SimulateRawEvent(event);
@@ -1320,6 +1346,7 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 										    iEikonEnv->WsSession().SimulateRawEvent(event);
                         }
 	    		        	}
+	    		        iGotEventDownDuringCall=0;	// even if outside
 	    		        }
 	    		      }
     		      }
@@ -1331,6 +1358,7 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 	    	        SendMessageToSysAp( EEikSecurityQueryLights );
 	    	        break;
 		    default:
+		    	iGotEventDownDuringCall=0;	// any other event invalidates the Press inside the BigRedButton
 		    	break;
     	}
     	
@@ -1379,10 +1407,10 @@ void CAutolockAppUi::HandleWindowGroupListChange()
 		            CAknView* view = View(KAutoLockViewId);
 								  if(view)
 								    {	
-								    	TRect aCallRect;
-								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x10, aCallRect);
-												if(aCallButtonRect.iBr.iX==0)
-   								    		aCallButtonRect = TRect (aCallRect);
+								    	TRect aInitialRect;
+								        STATIC_CAST(CAutolockView*, view)->HandleCall(0x10, aInitialRect);
+												if(aCallButtonRect.iBr.iX==0)	// initialize if not done already
+   								    		aCallButtonRect = TRect (aInitialRect);
 								    }
         // So now system is locked. When call is not ongoing, autolock should
         // be on the foreground.

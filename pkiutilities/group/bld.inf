@@ -27,7 +27,7 @@
 //Stub SIS
 PRJ_EXPORTS
 ../StubSIS/CenRepStub.sis   /epoc32/data/z/system/install/CenRepStub.sis
-../StubSIS/c32exe.sis   /epoc32/data/z/system/install/c32exe.sis
+
 
 //SWI and TLSProvider config files
 ../StubSIS/swipolicy.ini    /epoc32/release/winscw/udeb/z/system/data/swipolicy.ini

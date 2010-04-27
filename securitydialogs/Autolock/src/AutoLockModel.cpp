@@ -399,7 +399,7 @@ else
          // Reset inactivity time so that Screensaver gets to
         // run again after its timeout. We'll ignore the new
         // inactivity timeout, if already locked
-        RDebug::Printf( "%s %s (%u) CR 428-469 avoid User::ResetInactivityTime=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+        // RDebug::Printf( "%s %s (%u) CR 428-469 avoid User::ResetInactivityTime=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
         // User::ResetInactivityTime();
     }
     #if defined(_DEBUG)

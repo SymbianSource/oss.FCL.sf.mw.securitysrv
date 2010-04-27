@@ -1337,6 +1337,7 @@ TInt CCertSaverModel::QueryTrusterUidsL( RArray<TUid>& aUids )
     dlg->SetOwnershipType( ELbmDoesNotOwnItemArray );
     if ( dlg->RunLD() )
         {
+        aUids.Reset();
         for ( TInt i = 0; i < selectionArray->Count(); ++i )
             {
             TInt ii = (*selectionArray)[ i ];

@@ -596,23 +596,23 @@ void CCertManUIContainerTrust::UpdateTrustListboxItemL(CCTCertInfo& aEntry,
             }
         else if ( id == KCertManUIViewTrustMailAndImageConnId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexMailAndImageConn ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexMailAndImageConn ];
             }
         else if ( id == KCertManUIViewTrustJavaInstallingId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexJavaInstall ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexJavaInstall ];
             }
         else if ( id == KCertManUIViewOCSPCheckInstallingId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexOCSPCheck ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexOCSPCheck ];
             }
         else if ( id == KCertManUIViewTrustVPNId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexVPN ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexVPN ];
+            }
+        else if ( id == KCertManUIViewTrustWidgetInstallingId )
+            {
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexWidget ];
             }
         else
             {

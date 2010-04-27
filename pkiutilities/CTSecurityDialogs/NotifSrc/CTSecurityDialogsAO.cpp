@@ -541,7 +541,6 @@ void CCTSecurityDialogsAO::DoHandleSignTextL( const TDesC8& aBuffer )
             }
         case EUserAuthentication:
             {
-            DoHandleMessageL( EUserAuthentication, KNullDesC, KNullDesC, 1, KMaxTInt );
             break;
             }
         case ESignText:

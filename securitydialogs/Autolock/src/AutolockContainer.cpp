@@ -29,6 +29,9 @@
 #include <Autolock.rsg>
 #include "autolock.hrh"
 #include <eikdef.h>
+#include <aknnotedialog.h>
+#include <aknkeylock.h>
+#include <AknSoftNotifier.h>
 
 #include <coreapplicationuisdomainpskeys.h>
 
@@ -303,7 +306,24 @@ void CAutolockContainer::Draw(const TRect& aRect) const
 					gc.SetPenStyle(CGraphicsContext::EDottedPen);
 					gc.DrawRoundRect(box,cornerSize);
         	gc.BitBltMasked(TPoint(aCallRect_x,aCallRect_y),iBitmapCall,TRect(TPoint(0,0),TPoint(aCallRect_width,aCallRect_height)), iMaskCall, ETrue);
-    	  	aCallRect_y+=100;	// coordinates are realtive to TRect, not to Screen
+    	  	aCallRect_y+=100;	// coordinates are relative to TRect, not to Screen
+    	  	
+    	  	// if active call, dismiss all pending notes. This avoids them on top of the BigRedButton
+    	  	CAknSoftNotifier *softNotifier = NULL;
+			    TRAPD (err, {
+			            softNotifier = CAknSoftNotifier::NewL();
+			            softNotifier->AddNotificationL(ESetIdleState, 0);
+			            // softNotifier->SetIdleStateL(EFalse);
+			    };)
+			    delete softNotifier;
+			    // during any call ,the touch need to be enabled, so that BigRedButton is available
+			    // It will be re-enabled when the call ends
+		    	RAknKeyLock keylock;
+			    if ( keylock.Connect() == KErrNone )
+				    {
+				    keylock.DisableWithoutNote();
+				    keylock.Close();
+				    }
         	}
         }
     else if (iBitmap && !iMask)

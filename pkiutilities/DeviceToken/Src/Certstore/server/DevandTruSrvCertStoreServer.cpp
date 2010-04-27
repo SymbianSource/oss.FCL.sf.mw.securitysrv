@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -331,12 +331,6 @@ void CDevandTruSrvCertStoreServer::AddL(const TDevTokenAddCertDataStruct& aInfo,
                 const TDesC8& aCert,
                 const RMessage2& aMessage, TBool aFromTruSiteSrv )
     {
-    // Check if a certificate with this name already exists
-    if (iEntryList->LabelExists(aInfo.iLabel))
-        {
-        User::Leave(KErrBadName);
-        }
-
     // Check subject key id and cert data are supplied, issuer key id is optional
     if (aInfo.iSubjectKeyId == KNullDesC8 || aCert == KNullDesC8)
         {
@@ -403,16 +397,19 @@ void CDevandTruSrvCertStoreServer::DoAddL(const CDevTokenCertInfo& aCertInfo, co
         {
         CX509Certificate* cert = CX509Certificate::NewLC( aCertData );
         TBuf8<KSHA1Length> certHash;
-        certHash.Copy(cert->Fingerprint()); 
-         
-          
+        certHash.Copy(cert->Fingerprint());
+
         const CX500DistinguishedName& dName = cert->SubjectName();
         // Retrieve CN
-        HBufC* cn = dName.ExtractFieldL( KX520CommonName );  
-        CleanupStack::PushL(cn);  
-        iTrustedSitesServer->AddL( certHash, *cn );
+        HBufC* cn = dName.ExtractFieldL( KX520CommonName );
+        if( cn )
+            {
+            CleanupStack::PushL( cn );
+            iTrustedSitesServer->AddL( certHash, *cn );
+            CleanupStack::PopAndDestroy( cn );
+            }
 
-        CleanupStack::PopAndDestroy( 2 );//cert, cn	
+        CleanupStack::PopAndDestroy( cert );
         }
     if (err != KErrNone)
         {

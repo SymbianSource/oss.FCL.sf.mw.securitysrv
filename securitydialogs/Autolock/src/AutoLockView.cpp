@@ -99,18 +99,18 @@ void CAutolockView::HandleCommandL(TInt aCommand)
     }
 void CAutolockView::HandleCall(TInt aCommand, TRect &aRect)
     {
-    	RDebug::Printf( "%s %s (%u) aCommand=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCommand );
+    	// RDebug::Printf( "%s %s (%u) aCommand=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCommand );
     if (iView)
     	{
         TRect cr = ClientRect();
         iView->SetRect( cr );
-    		RDebug::Printf( "%s %s (%u) got 2 cr=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCommand );
+    		// RDebug::Printf( "%s %s (%u) got 2 cr=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCommand );
         iView->DrawNow( );
         iView->GiveCoords( aRect );
 			}
     else
 			{
-			RDebug::Printf( "%s %s (%u) !iView ???=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iView );
+			// RDebug::Printf( "%s %s (%u) !iView ???=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iView );
 			}
     }
 void CAutolockView::MakeVisible(TBool aVisibility)

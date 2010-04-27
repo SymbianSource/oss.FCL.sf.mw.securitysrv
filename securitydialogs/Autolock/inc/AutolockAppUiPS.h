@@ -258,6 +258,7 @@ class CAutolockAppUi : public CAknViewAppUi, public MAknEcsObserver,
         TBool            iEmergencySupportReady;
         CWait*			 iWait;	
 		TRect aCallButtonRect;
+		TInt iGotEventDownDuringCall;
 	};
 
 	inline CAutoLockModel* CAutolockAppUi::Model() const

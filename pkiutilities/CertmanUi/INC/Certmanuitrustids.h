@@ -28,7 +28,7 @@ const TUid KCertManUIViewTrustMailAndImageConnId = {268441661};
 const TUid KCertManUIViewTrustJavaInstallingId = {270506792};
 const TUid KCertManUIViewOCSPCheckInstallingId = {268478646};
 const TUid KCertManUIViewTrustVPNId = {270498195};
-const TUid KCertManUIViewTrustWidgetInstallingId = {537028544};
+const TUid KCertManUIViewTrustWidgetInstallingId = {537028562};
 
 #endif // __CERTMANUITRUSTIDS_H
 
