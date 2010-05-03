@@ -629,6 +629,8 @@ void CWimSession::RefreshWimi()
         {
         _WIMTRACE(_L("WIM | CWimSession::RefreshWimi: FAILED to get sessions."));
         }
+
+    sessions.Close();
     }
 
 //  End of File

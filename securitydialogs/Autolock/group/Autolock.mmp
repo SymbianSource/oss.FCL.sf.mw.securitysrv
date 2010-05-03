@@ -74,7 +74,7 @@ LIBRARY euser.lib apparc.lib cone.lib eikcore.lib
 LIBRARY eikcoctl.lib avkon.lib
 LIBRARY	activitymanager.lib
 LIBRARY	apgrfx.lib
-LIBRARY ws32.lib secui.lib commonengine.lib
+LIBRARY ws32.lib commonengine.lib
 LIBRARY etel.lib etelmm.lib eikdlg.lib 
 LIBRARY	sysutil.lib
 LIBRARY aknlayout.lib
@@ -90,6 +90,7 @@ LIBRARY scpclient.lib
 LIBRARY gdi.lib
 LIBRARY aknnotify.lib
 LIBRARY     customapi.lib
+// LIBRARY   secui.lib 
 
 
 SMPSAFE

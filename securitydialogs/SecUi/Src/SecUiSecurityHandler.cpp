@@ -25,7 +25,7 @@
 
 #ifdef __COVER_DISPLAY
 #include <aknmediatorfacade.h>
-#include <secondarydisplay/SecondaryDisplayStartupAPI.h>
+// #include <secondarydisplay/SecondaryDisplayStartupAPI.h>
 #endif //__COVER_DISPLAY
 
 #include <centralrepository.h> 
@@ -70,11 +70,11 @@ const TInt KTimeBeforeRetryingRequest( 50000 );
 // CSecurityHandler::CSecurityHandler()
 // C++ constructor
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C CSecurityHandler::CSecurityHandler(RMobilePhone& aPhone):
         iPhone(aPhone), iQueryCanceled(ETrue), iSecurityDlg(NULL), iNoteDlg(NULL) 
     {
-    		RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    		RDEBUG( "0", 0 );
 
         TInt result = iCustomPhone.Open(aPhone);
         TRAP_IGNORE( FeatureManager::InitializeLibL() ); //Shouldn't this panic if FM does not initialise??
@@ -85,14 +85,11 @@ EXPORT_C CSecurityHandler::CSecurityHandler(RMobilePhone& aPhone):
 // CSecurityHandler::~CSecurityHandler()
 // Destructor
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C CSecurityHandler::~CSecurityHandler()
     {
-    	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("CSecurityHandler::~CSecurityHandler()"));
-    #endif
     if ( iDestroyedPtr )
         {
         *iDestroyedPtr = ETrue;
@@ -107,11 +104,11 @@ EXPORT_C CSecurityHandler::~CSecurityHandler()
 // CSecurityHandler::HandleEventL()
 // Handles different security events
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C void CSecurityHandler::HandleEventL(
     RMobilePhone::TMobilePhoneSecurityEvent aEvent )
     {
-    	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
 
     TInt result = KErrNone;
     HandleEventL( aEvent, result );
@@ -122,12 +119,12 @@ EXPORT_C void CSecurityHandler::HandleEventL(
 // CSecurityHandler::HandleEventL()
 // Handles different security events
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C void CSecurityHandler::HandleEventL(
     RMobilePhone::TMobilePhoneSecurityEvent aEvent,
     TBool aStartup, TInt& aResult )
     {
-    	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
 
     iStartup = aStartup;
     HandleEventL( aEvent, aResult );
@@ -138,23 +135,19 @@ EXPORT_C void CSecurityHandler::HandleEventL(
 // CSecurityHandler::HandleEventL()
 // Handles different security events
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C void CSecurityHandler::HandleEventL(
     RMobilePhone::TMobilePhoneSecurityEvent aEvent, TInt& aResult )
     {
-    	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
 
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::HandleEventL()"));
-    RDebug::Print(_L("(SECUI)CSecurityHandler::HandleEventL() EVENT: %d"), aEvent);
-    #endif
     TBool wcdmaSupported(FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma ));
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin ));
-		RDebug::Printf( "%s %s (%u) aEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aEvent );
+		RDEBUG( "aEvent", aEvent );
  
     switch(aEvent)
             {
@@ -168,10 +161,7 @@ EXPORT_C void CSecurityHandler::HandleEventL(
                 #if defined(_DEBUG)
                 RDebug::Print(_L("(SECUI)CSecurityHandler::HandleEventL() PUK1Required"));
                 #endif
-                ((CAknNotifierAppServerAppUi*)(CEikonEnv::Static())->EikAppUi())->SuppressAppSwitching(ETrue);
-                TRAPD(err,aResult = Puk1RequiredL());
-                ((CAknNotifierAppServerAppUi*)(CEikonEnv::Static())->EikAppUi())->SuppressAppSwitching(EFalse);
-                User::LeaveIfError(err);
+                Puk1RequiredL();
                 break;
             case RMobilePhone::EPin2Required:
                 Pin2RequiredL();
@@ -204,16 +194,14 @@ EXPORT_C void CSecurityHandler::HandleEventL(
             default:
                 break;
             }
-    #if defined(_DEBUG)
-    RDebug::Print( _L( "CSecurityHandler::HandleEventL() returning %d." ), aResult );
-    #endif
+    RDEBUG( "aResult", aResult );
     }
 //
 // ----------------------------------------------------------
 // CSecurityHandler::AskSecCodeL()
 // For asking security code e.g in settings
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C TBool CSecurityHandler::AskSecCodeL()
     {        
     /*****************************************************
@@ -231,12 +219,12 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
     CRepository* repository = CRepository::NewL(KCRUidSCPLockCode);
     TInt currentLockStatus = -1;
     TInt res=-1;
+    TInt lAlphaSupported=0;
+    TInt lCancelSupported=0;
 
     res = repository->Get(KSCPLockCodeDefaultLockCode , currentLockStatus);
-    #if defined(_DEBUG)
-    RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
-    RDebug::Printf( "%s %s (%u) currentLockStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, currentLockStatus );
-    #endif
+    RDEBUG( "res", res );
+    RDEBUG( "currentLockStatus", currentLockStatus );
     delete repository;
     if(res==0 && currentLockStatus==1)
         {
@@ -250,46 +238,53 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
     RMobilePhone::TMobilePassword required_fourth;
         
     TInt ret = KErrNone;
-    TInt err = KErrNone;
     TInt status = KErrNone;
     
 		RMobilePhone::TMobilePassword iSecUi_password;
-    TBool queryAccepted = EFalse;
+    TInt queryAccepted = KErrCancel;
 
-
-        while (!queryAccepted)
+        while (queryAccepted!=KErrNone)
             {
 		        RMobilePhone::TMobilePhoneSecurityCode secCodeType;
 		        secCodeType = RMobilePhone::ESecurityCodePhonePassword;
 
 						/* request PIN using QT */
 						CSecQueryUi *iSecQueryUi;
-						RDebug::Printf( "%s %s (%u) CSecQueryUi=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						RDEBUG( "CSecQueryUi", 0 );
 						iSecQueryUi = CSecQueryUi::NewL();
-						RDebug::Printf( "%s %s (%u) Copy=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-						iSecUi_password.Copy(_L("666"));
-						RDebug::Printf( "%s %s (%u) InstallConfirmationQueryL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-						queryAccepted = iSecQueryUi->SecQueryDialog( _L("AskSecCodeL"), iSecUi_password, 4, 8, secCodeType /*aMode*/ );
-						RDebug::Printf( "%s %s (%u) iSecUi_password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						lAlphaSupported = ESecUiAlphaSupported;
+						lCancelSupported = ESecUiCancelSupported;
+						TBuf<0x100> title;	title.Zero();	title.Append(_L("AskSecCodeL"));	title.Append(_L("#"));	title.AppendNum(-1);
+						queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_MAX_LENGTH, lAlphaSupported | lCancelSupported | secCodeType /*aMode*/ );
+						RDEBUG( "iSecUi_password", 0 );
 						RDebug::Print( iSecUi_password );
-						RDebug::Printf( "%s %s (%u) delete=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						RDEBUG( "delete", 0 );
 						delete iSecQueryUi;
-						RDebug::Printf( "%s %s (%u) done=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-		        if(queryAccepted)	res=0xFFFFFFFE;	// this is the value returned from iSecurityDlg
+						RDEBUG( "queryAccepted", queryAccepted );
 						/* end request PIN using QT */
-		
-		        CWait* wait = CWait::NewL();
-		        iPhone.VerifySecurityCode(wait->iStatus,secCodeType, iSecUi_password, required_fourth);
-		        status = wait->WaitForRequestL();
-		        delete wait;
-		
-						ret = ETrue;
-		        if (!queryAccepted)
+		        if (queryAccepted!=KErrNone)
 		            {
 		            ret = EFalse;
 		            return ret;
 		            }
-		        queryAccepted = EFalse;	// because it's not yet validated
+		
+		        CWait* wait = CWait::NewL();
+        		RDEBUG( "VerifySecurityCode", 0 );
+		        iPhone.VerifySecurityCode(wait->iStatus,secCodeType, iSecUi_password, required_fourth);
+       			RDEBUG( "WaitForRequestL", 0 );
+		        status = wait->WaitForRequestL();
+      			RDEBUG( "status", status );
+		        delete wait;
+        		#ifdef __WINS__
+		        if(status==KErrNotSupported )
+		        	{
+		        	RDEBUG( "status", status );
+	        		status=KErrNone;
+		        	}
+		        #endif
+
+						ret = ETrue;
+		        queryAccepted = KErrCancel;	// because it's not yet validated
             switch(status)
                 {        
                 case KErrNone:
@@ -297,6 +292,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                     if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ) &&
     										!(FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements)))
     								{
+   											RDEBUG( "calling RSCPClient", 0 );
                         RSCPClient scpClient;
                         User::LeaveIfError( scpClient.Connect() );
                         CleanupClosePushL( scpClient );
@@ -304,9 +300,10 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                         TSCPSecCode newCode;
                         newCode.Copy( iSecUi_password );
                         scpClient.StoreCode( newCode );
+                       	RDEBUG( "called StoreCode", 1 );
 
                         CleanupStack::PopAndDestroy(); //scpClient
-                       	queryAccepted = ETrue;
+                       	queryAccepted = KErrNone;
                   	}
                             	
                     iQueryCanceled = ETrue;	// TODO
@@ -316,18 +313,18 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                 case KErrLocked:
                     {
                     // security code blocked! 
-                    CSecuritySettings::ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);	// TODO
+                    CSecuritySettings::ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
                     break;
                     }
                 case KErrGsm0707IncorrectPassword:
                 case KErrAccessDenied:
                     {    
                     // code was entered erroneusly
-                    CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);	// TODO
+                    CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
                     }    
                 default:
                     {
-                    CSecuritySettings::ShowResultNoteL(status, CAknNoteDialog::EErrorTone);	// TODO
+                    CSecuritySettings::ShowResultNoteL(status, CAknNoteDialog::EErrorTone);
                     }
                 }     
         } // while
@@ -339,8 +336,9 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
 // ----------------------------------------------------------
 // CSecurityHandler::CancelSecCodeQuery()    
 // Cancels PIN2 and security code queries
+// TODO is this used?
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C void CSecurityHandler::CancelSecCodeQuery()                
     {
     #if defined(_DEBUG)
@@ -366,7 +364,7 @@ EXPORT_C void CSecurityHandler::CancelSecCodeQuery()
 // CSecurityHandler::AskSecCodeInAutoLock()
 // for asking security code in autolock
 // ----------------------------------------------------------
-//
+// qtdone
 EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
     {
     /*****************************************************
@@ -374,9 +372,9 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
     *    Series 60  ETel API
     *****************************************************/
     
-    #ifdef __WINS__
-    return ETrue;
-    #else
+			RDEBUG( "0", 0 );
+			
+
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL()"));
     #endif
@@ -396,12 +394,15 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
     res = repository->Get(KSettingsAutoLockTime, period);
     delete repository;
 
+			RDEBUG( "res", res );
+
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() autolock period:%d"), res);
     #endif
     if (res == KErrNone)
         {
         // disable autolock in Domestic OS side too if autolock period is 0.
+					RDEBUG( "period", period );
         if (period == 0 )
             {
             #if defined(_DEBUG)
@@ -419,6 +420,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
 
             if ( remoteLockSettings->GetEnabled( remoteLockStatus ) )
                 {
+									RDEBUG( "0", 0 );
                 if ( remoteLockStatus )
                     {
                     // Remote lock is enabled
@@ -455,49 +457,57 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
 
 #endif // RD_REMOTELOCK
 
+									RDEBUG( "lockChange", lockChange );
                 wait = CWait::NewL();
+									RDEBUG( "0", 0 );
+								// this also calls PassPhraseRequiredL ???
+									RDEBUG( "SetLockSetting", 1 );
                 iPhone.SetLockSetting(wait->iStatus,lockType,lockChange);
+				        res = KErrNone;
+        					RDEBUG( "WaitForRequestL", 0 );
                 res = wait->WaitForRequestL();
+									RDEBUG( "res", res );
                 delete wait;
                 #if defined(_DEBUG)
                 RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() SetLockSetting RESULT:%d"), res);
                 #endif
-            }
+            }	// from   period == 0
         else
             {	// ask security code
                 #if defined(_DEBUG)
             	RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() Ask sec code via notifier"));
             	#endif
+									RDEBUG( "0", 0 );
                 RNotifier codeQueryNotifier;
                 User::LeaveIfError(codeQueryNotifier.Connect());
                 CWait* wait = CWait::NewL();
                 CleanupStack::PushL(wait);
                 TInt queryResponse = 0;
                 TPckg<TInt> response(queryResponse);
+									RDEBUG( "0", 0 );
                 TSecurityNotificationPckg params;
                 params().iEvent = static_cast<TInt>(RMobilePhone::EPhonePasswordRequired);
                 params().iStartup = EFalse;
                 #if defined(_DEBUG)
     			RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() Start Notifier"));
     			#endif
+									RDEBUG( "0", 0 );
+									RDEBUG( "StartNotifierAndGetResponse", 0 );
                 codeQueryNotifier.StartNotifierAndGetResponse(wait->iStatus, KSecurityNotifierUid,params, response);
                 // this will eventually call PassPhraseRequiredL
+									RDEBUG( "WaitForRequestL", 0 );
                 res = wait->WaitForRequestL();
+									RDEBUG( "WaitForRequestL", 1 );
+									RDEBUG( "res", res );
                 CleanupStack::PopAndDestroy(); // wait
-              	#if defined(_DEBUG)
-            	RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() results:"));
-            	RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() res:%d"), res);
-            	RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() queryResponse:%d"), queryResponse);
-            	#endif
             	if(res == KErrNone)
                 	res = queryResponse;
-            }
+            }	// from   else period == 0
+         	RDEBUG( "0", 0 );
         }
     else
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() KERRSOMETHING:Call SetLockSetting"));
-        #endif
+        {	// can't read repository for KSettingsAutoLockTime
+									RDEBUG( "KERRSOMETHING:Call SetLockSetting", 0 );
 
 #ifdef RD_REMOTELOCK
 
@@ -547,29 +557,34 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
         lockChange = RMobilePhone::ELockSetDisabled;
 
 #endif // RD_REMOTELOCK
+									RDEBUG( "0", 0 );
 
         wait = CWait::NewL();
+       		RDEBUG( "SetLockSetting", 0 );
         iPhone.SetLockSetting(wait->iStatus,lockType,lockChange);
+					RDEBUG( "WaitForRequestL", 0 );
         res = wait->WaitForRequestL();
+					RDEBUG( "WaitForRequestL", 1 );
         delete wait;
         #if defined(_DEBUG)
         RDebug::Print(_L("(SECUI)CSecurityHandler::AskSecCodeInAutoLockL() KES: SetLockSetting RESULT:%d"), res);
         #endif
         }
         
+			RDEBUG( "res", res );
     switch (res)
         {
         case KErrNone:
             {
                 return ETrue;
             }
-
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             {
-			return AskSecCodeInAutoLockL();
+            	RDEBUG( "KErrAccessDenied", KErrAccessDenied );
+						return AskSecCodeInAutoLockL();
             }
         case KErrAbort:
         case KErrCancel:
@@ -577,42 +592,39 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
             return EFalse;
         default:
             {
+            	RDEBUG( "default", res );
             return AskSecCodeInAutoLockL();
             }
         }
-#endif // WINS
     }
 //
 // ----------------------------------------------------------
 // CSecurityHandler::PassPhraseRequired()    
 // Handles PassPhraseRequired event
 // ----------------------------------------------------------
-//
+// qtdone
 TInt CSecurityHandler::PassPhraseRequiredL()
     {
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL()"));
-    #endif
+    	RDEBUG( "0", 0 );
     TBool StartUp = iStartup;
 
     RMobilePhone::TMobilePassword iSecUi_password;
     RMobilePhone::TMobilePassword required_fourth;
-	  TBool queryAccepted = EFalse;
+	  TInt queryAccepted = KErrCancel;
 
-    TInt status=0;
     TInt autolockState=0;
     TInt lCancelSupported=0;
     TInt lEmergencySupported=0;
+    TInt lAlphaSupported=0;
     
     TInt err( KErrGeneral );
     err = RProperty::Get(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, autolockState);
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() Autolock Status result: %d"), err);
-    #endif
+    	RDEBUG( "StartUp", StartUp );
+    	RDEBUG( "err", err );
     if(!StartUp)
         User::LeaveIfError( err );
 TBool isConditionSatisfied = EFalse;
@@ -648,12 +660,12 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
         #endif
         // Security code at bootup: No "cancel" softkey; Emergency calls enabled.
 						RMobilePhone::TMobilePhoneSecurityCode secCodeTypeToAsk = RMobilePhone::ESecurityCodePhonePassword;	// for starters
-			        	
+    					RDEBUG( "isConditionSatisfied", isConditionSatisfied );
 						if (isConditionSatisfied)
 				        {
 				        	// starter or special TARM. NoCancel+Emergency
 				        	lCancelSupported = ESecUiCancelNotSupported;
-				        	lEmergencySupported = ESecUiEmergencyNotSupported;
+				        	lEmergencySupported = ESecUiEmergencySupported;
 				      	}
 	        	else if (autolockState > EAutolockOff)
 	        		{
@@ -667,45 +679,26 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 				        	lCancelSupported = ESecUiCancelSupported;
 				        	lEmergencySupported = ESecUiEmergencyNotSupported;
 	        		}
-
+						lAlphaSupported = ESecUiAlphaSupported;
+						
 						/* request PIN using QT */
-	        	status = KErrNone;
 						CSecQueryUi *iSecQueryUi;
-						RDebug::Printf( "%s %s (%u) CSecQueryUi=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 						iSecQueryUi = CSecQueryUi::NewL();
-						RDebug::Printf( "%s %s (%u) Copy=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-						iSecUi_password.Copy(_L("666"));
-						RDebug::Printf( "%s %s (%u) SecQueryDialog aType=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lCancelSupported | lEmergencySupported | secCodeTypeToAsk );
-						queryAccepted = iSecQueryUi->SecQueryDialog( _L("PassPhraseRequiredL"), iSecUi_password, 4, 8, lCancelSupported | lEmergencySupported | secCodeTypeToAsk );
-						RDebug::Printf( "%s %s (%u) iSecUi_password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						TInt lType = lAlphaSupported | lCancelSupported | lEmergencySupported | secCodeTypeToAsk;
+							RDEBUG( "lType", lType );
+						queryAccepted = iSecQueryUi->SecQueryDialog( _L("PassPhraseRequiredL"), iSecUi_password, SEC_C_SECURITY_CODE_MIN_LENGTH,SEC_C_SECURITY_CODE_MAX_LENGTH, lType );
+						RDEBUG( "iSecUi_password", 0 );
 						RDebug::Print( iSecUi_password );
-						RDebug::Printf( "%s %s (%u) delete=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						RDEBUG( "queryAccepted", queryAccepted );
 						delete iSecQueryUi;
-						RDebug::Printf( "%s %s (%u) done=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-		        if(queryAccepted)	status=0xFFFFFFFE;	// this is the value returned from iSecurityDlg
 						/* end request PIN using QT */
 
-	        // TODO if Emergency was possible, then consider status == ESecUiEmergencyCall
-	        /* I don't think I need this
-	        TInt secUiOriginatedQuery(ESecurityUIsETelAPIOriginated);
-        	RProperty::Get(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, secUiOriginatedQuery);
-        	CSecUiLockObserver* deviceLockStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg);
-				  */
 
 TBool wasCancelledOrEmergency = EFalse;		
-if(!FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements))
-{
-    if (!status || (status == ESecUiEmergencyCall)  
-        || (status == EAknSoftkeyEmergencyCall) || (status == ESecUiDeviceLocked))
+	RDEBUG( "KFeatureIdSapDeviceLockEnhancements", KFeatureIdSapDeviceLockEnhancements );
+if ( (queryAccepted==KErrAbort /* =emergency */) || (queryAccepted == KErrCancel))
     wasCancelledOrEmergency = ETrue;
-}
-else
-{
-    if  ( ( status == KErrCancel ) || (status == ESecUiEmergencyCall)  ||
-         (status == EAknSoftkeyEmergencyCall) || (status == ESecUiDeviceLocked))
-    wasCancelledOrEmergency = ETrue;
-}
-RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, wasCancelledOrEmergency );
+	RDEBUG( "wasCancelledOrEmergency", wasCancelledOrEmergency );
 			if (wasCancelledOrEmergency)
         {
 		#if defined(_DEBUG)
@@ -713,28 +706,38 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
 		#endif
         if (!StartUp)
             {
-            #if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() ABORT CALLED!!!!!!"));
-            #endif
+            	RDEBUG( "AbortSecurityCode", 0 );
             iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePhonePassword);
+            	RDEBUG( "AbortSecurityCode", 1 );
             }
         return KErrCancel;
         }
 
-    RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePhonePassword;
-     CWait* wait = NULL;
-
-        RDebug::Printf( "%s %s (%u) VerifySecurityCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    	RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePhonePassword;
+     	CWait* wait = NULL;
+     	TInt status = KErrNone;;
         wait = CWait::NewL();
+        	RDEBUG( "VerifySecurityCode", 0 );
+        #ifndef __WINS__
         iPhone.VerifySecurityCode(wait->iStatus,secCodeType, iSecUi_password, required_fourth);
+        	RDEBUG( "WaitForRequestL", 0 );
         status = wait->WaitForRequestL();
-        RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() VerifySecurityCode STATUS: %d"), status);
+        #else
+        status = KErrTimedOut;
+        	RDEBUG( "WaitForRequestL not waint WINS", 0 );
+        #endif
+        	RDEBUG( "WaitForRequestL status", status );
+				#ifdef __WINS__
+		   	if (status == KErrTimedOut)
+		   		{
+		   		status = KErrNone;
+		   		}
+		    #endif
         delete wait;
     
     TInt returnValue = status;
-        RDebug::Printf( "%s %s (%u) status=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, status );
-        RDebug::Printf( "%s %s (%u) tarmFlag=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, tarmFlag );
-        RDebug::Printf( "%s %s (%u) StartUp=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, StartUp );
+        	RDEBUG( "tarmFlag", tarmFlag );
+        	RDEBUG( "StartUp", StartUp );
     switch(status)
         {        
         case KErrNone:
@@ -743,8 +746,10 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
             #endif
             // code approved 
             CSecuritySettings::ShowResultNoteL(R_CONFIRMATION_NOTE, CAknNoteDialog::EConfirmationTone);
+            	RDEBUG( "R_CONFIRMATION_NOTE", R_CONFIRMATION_NOTE );
         if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw))    
         {
+        				RDEBUG( "KFeatureIdSapTerminalControlFw", KFeatureIdSapTerminalControlFw );
                 // Unset the admin flag if set
                 if ( tarmFlag & KSCPFlagResyncQuery )
                     {
@@ -763,20 +768,24 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
                             FAILED to unset TARM Admin Flag"));
                         #endif
                         }                    
-                    }                    	            
+                    }
 				        if(!FeatureManager::FeatureSupported(KFeatureIdSapDeviceLockEnhancements)) 
-				        {           
+				        {
+                	RDEBUG( "KFeatureIdSapDeviceLockEnhancements", KFeatureIdSapDeviceLockEnhancements );
     						RSCPClient scpClient;
+    							RDEBUG( "scpClient.Connect", 0 );
                 User::LeaveIfError( scpClient.Connect() );
+    							RDEBUG( "scpClient.Connect", 1 );
                 CleanupClosePushL( scpClient );
                 TSCPSecCode newCode;
                 newCode.Copy( iSecUi_password );
                 scpClient.StoreCode( newCode );
+    							RDEBUG( "scpClient.StoreCode", 1 );
                 CleanupStack::PopAndDestroy(); //scpClient
                 }
 
           }
-        		
+        			RDEBUG( "StartUp", StartUp );
             if (StartUp)
                 {
                 #if defined(_DEBUG)
@@ -819,9 +828,11 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
                                 #endif // _DEBUG
 
                                 // Disable DOS device lock setting
+                                	RDEBUG( "iCustomPhone.DisablePhoneLock", 0 );
                                 wait = CWait::NewL();
                                 iCustomPhone.DisablePhoneLock(wait->iStatus,iSecUi_password);
                                 wait->WaitForRequestL();
+                                	RDEBUG( "iCustomPhone.DisablePhoneLock", 1 );
                                 delete wait;
                                 }
                             }
@@ -838,22 +849,18 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
 
 #else // not defined RD_REMOTELOCK
 
-                        #if defined(_DEBUG)
-                        RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL()KErrNone: Startup; DisablePhoneLock."));
-                        #endif
+                        	RDEBUG( "iCustomPhone.DisablePhoneLock", 0 );
                         wait = CWait::NewL();
                         iCustomPhone.DisablePhoneLock(wait->iStatus,iSecUi_password);
                         wait->WaitForRequestL();
-                        #if defined(_DEBUG)
-                        RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL()KErrNone: Startup; DisablePhoneLock completed."));
-                        #endif
+                        	RDEBUG( "iCustomPhone.DisablePhoneLock", 1 );
                         delete wait;
 #endif // RD_REMOTELOCK
                         }
                     }
                 else	// error getting repository
                     {
-        					RDebug::Printf( "%s %s (%u) error getting repository=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+        						RDEBUG( "error getting repository", 0 );
 #ifdef RD_REMOTELOCK
                     // If remote lock is enabled, don't disable the domestic OS device lock
                     // since that would render the RemoteLock useless.
@@ -866,13 +873,11 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
                         if ( !remoteLockStatus )
                             {
                             // Remote lock is disabled
-                            #ifdef _DEBUG
-                            RDebug::Print( _L( "(SecUi)CSecurityHandler::PassPhraseRequiredL() - Failed to get Autolock period and RemoteLock is disabled -> disable DOS device lock" ) );
-                            #endif // _DEBUG
-
+                            	RDEBUG( "iCustomPhone.DisablePhoneLock", 0 );
                             wait = CWait::NewL();
                             iCustomPhone.DisablePhoneLock(wait->iStatus,iSecUi_password);
                             wait->WaitForRequestL();
+                            	RDEBUG( "iCustomPhone.DisablePhoneLock", 1 );
                             delete wait;
                             }
                         }
@@ -889,22 +894,18 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
 
 #else // not defined RD_REMOTELOCK
 
-                    #if defined(_DEBUG)
-                    RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL()KErrNone: Startup; Could not get autolock period."));
-                    #endif
-                    // could not get the current autolock time... disable autolock in Domestic OS side. 
+                    // could not get the current autolock time... disable autolock in Domestic OS side.
+                    	RDEBUG( "iCustomPhone.DisablePhoneLock", 0 );
                     wait = CWait::NewL();
                     iCustomPhone.DisablePhoneLock(wait->iStatus,iSecUi_password);
                     wait->WaitForRequestL();
-                    #if defined(_DEBUG)
-                    RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL()KErrNone: Startup; NO AUTOLOCK PERIOD; DisablePhoneLock completed."));
-                    #endif
+                    	RDEBUG( "iCustomPhone.DisablePhoneLock", 1 );
                     delete wait;
 
 #endif // RD_REMOTELOCK
                     }
                 
-                }
+                } // no Startup
 
             break;    
         case KErrGsmSSPasswordAttemptsViolation:
@@ -917,6 +918,7 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
             break;
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
+        			RDEBUG( "KErrAccessDenied", KErrAccessDenied );
             	// TODO should this try again? It seems that it's not asked again.
             #if defined(_DEBUG)
             RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() KErrGsm0707IncorrectPassword"));
@@ -924,34 +926,32 @@ RDebug::Printf( "%s %s (%u) wasCancelledOrEmergency=%x", __FILE__, __PRETTY_FUNC
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
             break;
         default:
-            #if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecurityHandler::PassPhraseRequiredL() DEFAULT"));
-            #endif
+        			RDEBUG( "default", status );
             CSecuritySettings::ShowErrorNoteL(status);
             	// TODO should this try again? It seems that it's not asked again.
             break;
         }
-        
-    return returnValue;
+			RDEBUG( "returnValue", returnValue );
+	  return returnValue;
     }
 //
 // ----------------------------------------------------------
 // CSecurityHandler::Pin1Required()    
 // Handles Pin1Required event
 // ----------------------------------------------------------
-//
+// qtdone
 TInt CSecurityHandler::Pin1RequiredL()
     {
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-RDebug::Printf( "%s %s (%u) 11=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+	RDEBUG( "0", 0 );
 
-RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 		RMobilePhone::TMobilePassword iSecUi_password;
 		TInt lCancelSupported = ESecUiCancelNotSupported;
-    TBool queryAccepted = EFalse;
+    TInt queryAccepted = KErrCancel;
+    TInt lAlphaSupported=0;
     RMobilePhone::TMobilePassword required_fourth;
     RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePin1;
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
@@ -962,16 +962,11 @@ RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     TInt res = KErrGeneral;
     CWait* wait = CWait::NewL();
     CleanupStack::PushL(wait);
-RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
-    
+	RDEBUG( "0", 0 );
 
     StartUp = iStartup;
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin1RequiredL()"));
-    #endif
-
-RDebug::Printf( "%s %s (%u) StartUp=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, StartUp );
+	RDEBUG( "StartUp", StartUp );
     if(!StartUp)
     {
         // read a flag to see whether the query is SecUi originated. For example, from CSecuritySettings::ChangePinRequestParamsL
@@ -996,39 +991,31 @@ RDebug::Printf( "%s %s (%u) StartUp=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__
     RDebug::Print(_L("CSecurityHandler::Pin1RequiredL() Execute dlg"));
     #endif
 
-RDebug::Printf( "%s %s (%u) StartUp=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, StartUp );
-RDebug::Printf( "%s %s (%u) secUiOriginatedQuery=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, secUiOriginatedQuery );
-RDebug::Printf( "%s %s (%u) ESecurityUIsSecUIOriginated=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ESecurityUIsSecUIOriginated );
-RDebug::Printf( "%s %s (%u) err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
+	RDEBUG( "StartUp", StartUp );
+	RDEBUG( "secUiOriginatedQuery", secUiOriginatedQuery );
+	RDEBUG( "ESecurityUIsSecUIOriginated", ESecurityUIsSecUIOriginated );
+	RDEBUG( "err", err );
     if(StartUp || (secUiOriginatedQuery != ESecurityUIsSecUIOriginated) || (err != KErrNone))
     {	
-				RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
-					lCancelSupported = ESecUiCancelSupported;
+					RDEBUG( "0", 0 );
+					lCancelSupported = ESecUiCancelNotSupported;
 		}
 		else
 			{
-        /* TODO do I need this ? */
-        /*
-        CSecUiLockObserver* deviceLockStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg);
-        CleanupStack::PushL(deviceLockStatusObserver);
-        CSecUiLockObserver* queryStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg, ESecUiRequestStateObserver);
-        CleanupStack::PushL(queryStatusObserver);
-        ...
-        CleanupStack::PopAndDestroy(2); //deviceLockStatusObserver, queryStatusObserver
-				*/
+				lCancelSupported = ESecUiCancelSupported;
 				// it will be RMobilePhone::ESecurityCodePin1 , equivalent to ESecUiNone
 			}
         wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+        	RDEBUG( "GetSecurityCodeInfo", 0 );
         iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
         res = wait->WaitForRequestL();
-        #if defined(_DEBUG)
+
         TInt attempts(codeInfo.iRemainingEntryAttempts);
-        RDebug::Print(_L("CSecurityHandler::Pin1RequiredL() Remaining Attempts query status: %d"), res);
-        RDebug::Print(_L("CSecurityHandler::Pin1RequiredL() Remaining Attempts: %d"), attempts);
-        #endif
-				RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+        	RDEBUG( "attempts", attempts );
+
+					RDEBUG( "res", res );
     		#ifdef __WINS__
-					RDebug::Printf( "%s %s (%u) emulator can't read PIN attempts=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
+						RDEBUG( "emulator can't read PIN attempts", res );
     			res=KErrNone;
     			codeInfo.iRemainingEntryAttempts=3;
  		    #endif
@@ -1036,54 +1023,50 @@ RDebug::Printf( "%s %s (%u) err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, er
         User::LeaveIfError(res);
 				/* request PIN using QT */
 				CSecQueryUi *iSecQueryUi;
-				RDebug::Printf( "%s %s (%u) CSecQueryUi=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+					RDEBUG( "CSecQueryUi", 0 );
 				iSecQueryUi = CSecQueryUi::NewL();
-				RDebug::Printf( "%s %s (%u) Copy=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				iSecUi_password.Copy(_L("666"));
-				RDebug::Printf( "%s %s (%u) SecQueryDialog=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				// TODO use codeInfo.iRemainingEntryAttempts for setting the Caption
+					RDEBUG( "SecQueryDialog", 1 );
 				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
 				// TODO also support Emergency
-				queryAccepted = iSecQueryUi->SecQueryDialog( _L("Pin1RequiredL"), iSecUi_password, 4, 8, lCancelSupported | secCodeType /*aMode*/ );
-				RDebug::Printf( "%s %s (%u) iSecUi_password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+				lAlphaSupported = ESecUiAlphaNotSupported;
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("Pin1RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				TInt amode = lAlphaSupported | lCancelSupported | ESecUiEmergencySupported | secCodeType;
+					RDEBUG( "amode", amode );
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, amode );
+					RDEBUG( "iSecUi_password", 0 );
 				RDebug::Print( iSecUi_password );
-				RDebug::Printf( "%s %s (%u) delete=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 				delete iSecQueryUi;
-				RDebug::Printf( "%s %s (%u) done=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-        if(queryAccepted)	res=0xFFFFFFFE;	// this is the value returned from iSecurityDlg
+					RDEBUG( "queryAccepted", queryAccepted );
         	// TODO handle emergency
 				/* end request PIN using QT */
 
-				RDebug::Printf( "%s %s (%u) res=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, res );
-        if ((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
+        if ( queryAccepted == KErrAbort )	// emergency call
             { 
             #if defined(_DEBUG)
             RDebug::Print(_L("CSecurityHandler::Pin1RequiredL() R_PIN_REQUEST_QUERY CANCEL!"));
             #endif
-            CleanupStack::PopAndDestroy(wait);   // TODO this is needed ???
+            CleanupStack::PopAndDestroy(wait);   // this is needed
             return KErrCancel;
             }
-        if( lCancelSupported && (!res || (res == ESecUiDeviceLocked)))
+        if( lCancelSupported && (queryAccepted == KErrCancel) )
         	  {
         	  // cancel code request
+        	  	RDEBUG( "AbortSecurityCode", 0 );
             iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePin1);
-            CleanupStack::PopAndDestroy(wait);   // TODO this is needed ???
+            	RDEBUG( "AbortSecurityCode", 1 );
+            CleanupStack::PopAndDestroy(wait);   // this is needed
             return KErrCancel;
           }
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("CSecurityNotifier::Pin1RequiredL()VerifySecurityCode"));
-    #endif
-
-		RDebug::Printf( "%s %s (%u) iSecUi_password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+			RDEBUG( "iSecUi_password", iSecUi_password );
 		RDebug::Print( iSecUi_password );
+			RDEBUG( "VerifySecurityCode", 0 );
 		iPhone.VerifySecurityCode(wait->iStatus,secCodeType, iSecUi_password, required_fourth);
-    
+    	RDEBUG( "WaitForRequestL", 0 );
     res = wait->WaitForRequestL();
+    	RDEBUG( "WaitForRequestL res", res );
     CleanupStack::PopAndDestroy(wait); 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin1RequiredL() VerifySecurityCode STATUS: %d"), res);
-    #endif
+
     TInt returnValue = res;
     switch(res)
         {        
@@ -1129,7 +1112,7 @@ RDebug::Printf( "%s %s (%u) err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, er
 // CSecurityHandler::Puk1Required()
 // Handles Puk1Required event
 // ----------------------------------------------------------
-//
+// qtdone
 TInt CSecurityHandler::Puk1RequiredL()
     {
     /*****************************************************
@@ -1139,7 +1122,8 @@ TInt CSecurityHandler::Puk1RequiredL()
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL()"));
     #endif            
-    RMobilePhone::TMobilePassword aPassword;
+		TInt queryAccepted = KErrCancel;
+    RMobilePhone::TMobilePassword iSecUi_password;
     RMobilePhone::TMobilePassword aNewPassword;
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
@@ -1153,20 +1137,19 @@ TInt CSecurityHandler::Puk1RequiredL()
 
     TInt res(KErrNone);
     wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL(): Get Code info"));
-    #endif
-    iPhone.GetSecurityCodeInfo(wait->iStatus, blockCodeType, codeInfoPkg);
-    res = wait->WaitForRequestL();
     
     TInt thisTry = 0;
 
 	// If there was a problem (as there might be in case we're dropping off SIM Access Profile); try again a couple of times.
 	while ( res != KErrNone && ( thisTry++ ) <= KTriesToConnectServer )
         {
-        User::After( KTimeBeforeRetryingRequest );
+        if(thisTry>0)
+        	User::After( KTimeBeforeRetryingRequest );
+        	RDEBUG( "GetSecurityCodeInfo", 0 );
         iPhone.GetSecurityCodeInfo(wait->iStatus, blockCodeType, codeInfoPkg);
-        res = wait->WaitForRequestL();
+		    	RDEBUG( "WaitForRequestL", 0 );
+		    res = wait->WaitForRequestL();
+		    	RDEBUG( "WaitForRequestL res", res );
         }
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL(): Get Code info result: %d"), res);
@@ -1177,119 +1160,62 @@ TInt CSecurityHandler::Puk1RequiredL()
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL(): Show last note"));
     #endif
+
+    	RDEBUG( "StartUp", StartUp );
+    	RDEBUG( "codeInfo.iRemainingEntryAttempts", codeInfo.iRemainingEntryAttempts );
     //show the last "Code Error" note of PIN verify result here so it won't be left under the PUK1 dialog
     if(!StartUp && (codeInfo.iRemainingEntryAttempts == KMaxNumberOfPUKAttempts))
         CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
     
     // ask PUK code
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (aPassword,SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH,ESecUiPukRequired);
-    if(AknLayoutUtils::PenEnabled())
-        iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-    else
-        iSecurityDlg->SetEmergencyCallSupport(ETrue);
-    #ifdef __COVER_DISPLAY
-    iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-    CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided
-	if (covercl) // returns null if __COVER_DISPLAY is not defined
-    	{
-    	// … -  add data that cover ui is interested in
-    	covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowPUK1); // adds int to additional data to be posted to cover ui
-    	covercl->BufStream().CommitL(); // no more data to send so commit buf
-     	}  
-    #endif //__COVER_DISPLAY   
+				/* request PIN using QT */
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+					RDEBUG( "SecQueryDialog", 1 );
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("Puk1RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | ESecUiPukRequired );
+					RDEBUG( "iSecUi_password", 0 );
+				RDebug::Print( iSecUi_password );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
     
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL(): Show dialog"));
-    #endif    
-    if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPUKAttempts)
-            res = iSecurityDlg->ExecuteLD(R_PUK_REQUEST_QUERY);
-    else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_PUK_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-         res = iSecurityDlg->ExecuteLD(R_PUK_REQUEST_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);
-       }
-    else
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_PUK_ATTEMPT);
-         res = iSecurityDlg->ExecuteLD(R_PUK_REQUEST_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);   
-       }
-    
-    if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
+    if( (queryAccepted == KErrAbort) || (queryAccepted==KErrCancel) )
         {
-        CleanupStack::PopAndDestroy(wait);
+        CleanupStack::PopAndDestroy(wait);	// TODO this is needed ???
         return KErrCancel;
         }
-        
-    RMobilePhone::TMobilePassword verifcationPassword;
-    // new pin code query
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-    if(AknLayoutUtils::PenEnabled())
-        iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-    else
-        iSecurityDlg->SetEmergencyCallSupport(ETrue);
-    res = iSecurityDlg->ExecuteLD(R_NEW_PIN_CODE_REQUEST_QUERY);
-    if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
+
+				{
+    		// new pin code query
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+					RDEBUG( "SecQueryDialog", 1 );
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+
+				queryAccepted = iSecQueryUi->SecQueryDialog( _L("Puk1-New|Puk1-Verif"), aNewPassword, SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | ESecUiPukRequired );
+					RDEBUG( "aNewPassword", 0 );
+				RDebug::Print( aNewPassword );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
+      	}
+
+    if( (queryAccepted == KErrAbort) || (queryAccepted==KErrCancel) )
         {
         CleanupStack::PopAndDestroy(wait);    
         return KErrCancel;
         }
-  
-    // verification code query
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-    if(AknLayoutUtils::PenEnabled())
-        iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-    else
-        iSecurityDlg->SetEmergencyCallSupport(ETrue);
-    res = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_PIN_CODE_REQUEST_QUERY);
-    if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-        {
-        CleanupStack::PopAndDestroy(wait);
-        return KErrCancel;
-        }
-                            
-    while (aNewPassword.CompareF(verifcationPassword) != 0) 
-        {
-        // codes do not match -> note -> ask new pin and verification codes again  
-        CSecuritySettings::ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
-        
-        verifcationPassword = _L("");
-        aNewPassword = _L("");
-
-        // new pin code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-        if(AknLayoutUtils::PenEnabled())
-            iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-        else
-            iSecurityDlg->SetEmergencyCallSupport(ETrue);
-        res = iSecurityDlg->ExecuteLD(R_NEW_PIN_CODE_REQUEST_QUERY);
-        if ((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-            {
-            CleanupStack::PopAndDestroy(wait);
-            return KErrCancel;
-            }
-                
-        // verification code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-        if(AknLayoutUtils::PenEnabled())
-            iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-        else
-            iSecurityDlg->SetEmergencyCallSupport(ETrue);
-        res = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_PIN_CODE_REQUEST_QUERY);
-    	if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-            {
-            CleanupStack::PopAndDestroy(wait);
-            return KErrCancel;
-            }
-        }            
         
     // send code
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Puk1RequiredL(): Verify Code"));
-    #endif
-    iPhone.VerifySecurityCode(wait->iStatus,blockCodeType,aNewPassword,aPassword);
+    	RDEBUG( "VerifySecurityCode", 0 );
+    iPhone.VerifySecurityCode(wait->iStatus,blockCodeType,aNewPassword,iSecUi_password);
+    	RDEBUG( "WaitForRequestL", 0 );
     res = wait->WaitForRequestL();
+    	RDEBUG( "WaitForRequestL res", res );
     CleanupStack::PopAndDestroy(wait);
     
     TInt returnValue = res;
@@ -1307,6 +1233,7 @@ TInt CSecurityHandler::Puk1RequiredL()
             break;
         case KErrGsm0707SimWrong:
             // sim lock active
+            // TODO no message ?
             break;
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
@@ -1325,36 +1252,19 @@ TInt CSecurityHandler::Puk1RequiredL()
 // CSecurityHandler::Pin2Required()
 // Handles Pin2Required event
 // ----------------------------------------------------------
-//    
+// qtdone
 void CSecurityHandler::Pin2RequiredL()
     {
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-				/* request PIN using QT */
-				TBool queryAccepted = EFalse;
-    		RMobilePhone::TMobilePassword iSecUi_password;
-				CSecQueryUi *iSecQueryUi;
-				RDebug::Printf( "%s %s (%u) CSecQueryUi=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				iSecQueryUi = CSecQueryUi::NewL();
-				RDebug::Printf( "%s %s (%u) Copy=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				iSecUi_password.Copy(_L("666"));
-				RDebug::Printf( "%s %s (%u) SecQueryDialog=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				queryAccepted = iSecQueryUi->SecQueryDialog( _L("Pin2RequiredL"), iSecUi_password, 4, 8, RMobilePhone::ESecurityCodePin2 /*aMode*/ );
-				RDebug::Printf( "%s %s (%u) iSecUi_password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				RDebug::Print( iSecUi_password );
-				RDebug::Printf( "%s %s (%u) delete=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				delete iSecQueryUi;
-				RDebug::Printf( "%s %s (%u) done=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-        // if(queryAccepted)	res=0xFFFFFFFE;	// this is the value returned from iSecurityDlg
-				/* end request PIN using QT */
-
 
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL() BEGIN"));
     #endif
-    RMobilePhone::TMobilePassword password;
+		TInt queryAccepted = KErrCancel;
+    RMobilePhone::TMobilePassword iSecUi_password;
     RMobilePhone::TMobilePassword required_fourth;
     RMobilePhone::TMobilePhoneSecurityCode secCodeType(RMobilePhone::ESecurityCodePin2);
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
@@ -1362,75 +1272,48 @@ void CSecurityHandler::Pin2RequiredL()
     CWait* wait = CWait::NewL();
     CleanupStack::PushL(wait);
     
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): create dialog"));
-    #endif
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (password,SEC_C_PIN2_CODE_MIN_LENGTH,SEC_C_PIN2_CODE_MAX_LENGTH,ESecUiNone);
-    #ifdef __COVER_DISPLAY
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): publish dialog"));
-    #endif
-    iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-    CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided 
-	if (covercl) // returns null if __COVER_DISPLAY is not defined
-    	{
-    	// … -  add data that cover ui is interested in
-    	covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowPIN2); // adds int to additional data to be posted to cover ui
-    	covercl->BufStream().CommitL(); // no more data to send so commit buf
-     	}  
-    #endif //__COVER_DISPLAY
-    
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): get PIN2 info"));
-    #endif
-    
-	wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+		wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+			RDEBUG( "GetSecurityCodeInfo", 0 );
     iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
+    	RDEBUG( "WaitForRequestL", 0 );
     TInt ret = wait->WaitForRequestL();
-        
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): get PIN2 info result: %d"), ret);
-    TInt attempts(codeInfo.iRemainingEntryAttempts);
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): attempts remaining: %d"), attempts);
-    #endif
+    	RDEBUG( "WaitForRequestL ret", ret );
+
     User::LeaveIfError(ret);
-    
-        CSecUiLockObserver* deviceLockStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg);
-	    CleanupStack::PushL(deviceLockStatusObserver);
-        CSecUiLockObserver* queryStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg, ESecUiRequestStateObserver);
-        CleanupStack::PushL(queryStatusObserver);
-        
-        if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
-            ret = iSecurityDlg->ExecuteLD(R_PIN2_QUERY);
-        else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-            {
-                HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_PIN2_ATTEMPTS, codeInfo.iRemainingEntryAttempts );
-                ret = iSecurityDlg->ExecuteLD(R_PIN2_QUERY, *queryPrompt);
-                CleanupStack::PopAndDestroy(queryPrompt);
-            }
-        else
-            {
-                HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_PIN2_ATTEMPT);
-                ret = iSecurityDlg->ExecuteLD(R_PIN2_QUERY, *queryPrompt);
-                CleanupStack::PopAndDestroy(queryPrompt);   
-            }
-    CleanupStack::PopAndDestroy(2); //deviceLockStatusObserver, queryStatusObserver
-    iSecurityDlg = NULL;
-    if (!ret  || (ret == ESecUiDeviceLocked))
+
+    TInt attempts(codeInfo.iRemainingEntryAttempts);
+    	RDEBUG( "attempts", attempts );
+
+				/* request PIN using QT */
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+					RDEBUG( "SecQueryDialog", 1 );
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful	against KLastRemainingInputAttempt
+				// TODO also support Emergency
+
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("Pin2RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PIN2_CODE_MIN_LENGTH, SEC_C_PIN2_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | secCodeType );
+					RDEBUG( "iSecUi_password", 0 );
+				RDebug::Print( iSecUi_password );
+					RDEBUG( "queryAccepted", queryAccepted );
+				delete iSecQueryUi;
+
+		// If failed or device became locked, any pending request should be cancelled.
+    if ( queryAccepted!=KErrNone )
         {
-        iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePin2);
+        	RDEBUG( "AbortSecurityCode", 0 );
+        iPhone.AbortSecurityCode(secCodeType);
+        	RDEBUG( "AbortSecurityCode", 1 );
         CleanupStack::PopAndDestroy(wait);
         return;
         }
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): Verify Code"));
-    #endif
-    iPhone.VerifySecurityCode(wait->iStatus,secCodeType,password,required_fourth);
+    	RDEBUG( "VerifySecurityCode", 0 );
+    iPhone.VerifySecurityCode(wait->iStatus,secCodeType,iSecUi_password,required_fourth);
+    	RDEBUG( "WaitForRequestL", 0 );
     TInt status = wait->WaitForRequestL();
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Pin2RequiredL(): destroy wait"));
-    #endif
+    	RDEBUG( "WaitForRequestL status", status );
     CleanupStack::PopAndDestroy(wait);
 
     switch(status)
@@ -1460,21 +1343,21 @@ void CSecurityHandler::Pin2RequiredL()
 // CSecurityHandler::Puk2Required()
 // Handles Puk2Required event
 // ----------------------------------------------------------
-//    
+// qtdone
 void CSecurityHandler::Puk2RequiredL()
     {    
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    RMobilePhone::TMobilePassword aPassword;
+		TInt queryAccepted = KErrCancel;
+    RMobilePhone::TMobilePassword iSecUi_password;
     RMobilePhone::TMobilePassword aNewPassword;
     RMobilePhone::TMobilePassword verifcationPassword;
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
     RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
     
-    RMobilePhone::TMobilePhoneSecurityCode blockCodeType;
-    blockCodeType = RMobilePhone::ESecurityCodePuk2;
+    RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePuk2;
     CWait* wait = CWait::NewL();
     CleanupStack::PushL(wait);
     
@@ -1482,127 +1365,71 @@ void CSecurityHandler::Puk2RequiredL()
     RDebug::Print(_L("(SECUI)CSecurityHandler::Puk2RequiredL()"));
     #endif
     // ask PUK2
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (aPassword,SEC_C_PUK2_CODE_MIN_LENGTH,SEC_C_PUK2_CODE_MAX_LENGTH,ESecUiNone);
-    #ifdef __COVER_DISPLAY
-    iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-    CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided 
-	if (covercl) // returns null if __COVER_DISPLAY is not defined
-    	{
-    	// … -  add data that cover ui is interested in
-    	covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowPUK2); // adds int to additional data to be posted to cover ui
-    	covercl->BufStream().CommitL(); // no more data to send so commit buf
-     	}  
-    #endif //__COVER_DISPLAY
-    CSecUiLockObserver* deviceLockStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg);
-	CleanupStack::PushL(deviceLockStatusObserver);
 	
 	TInt ret(KErrNone);
     wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
-    iPhone.GetSecurityCodeInfo(wait->iStatus, blockCodeType, codeInfoPkg);
+    	RDEBUG( "GetSecurityCodeInfo", 0 );
+    iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
+    	RDEBUG( "WaitForRequestL", 0 );
     ret = wait->WaitForRequestL();
+    	RDEBUG( "WaitForRequestL ret", ret );
     User::LeaveIfError(ret);
         
-    if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPUKAttempts)
-            ret = iSecurityDlg->ExecuteLD(R_PUK2_REQUEST_QUERY);
-    else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_PUK2_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-         ret = iSecurityDlg->ExecuteLD(R_PUK2_REQUEST_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);
-       }
-    else
-       {
-         HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_PUK2_ATTEMPT);
-         ret = iSecurityDlg->ExecuteLD(R_PUK2_REQUEST_QUERY, *queryPrompt);
-         CleanupStack::PopAndDestroy(queryPrompt);   
-       }
-	
-	iSecurityDlg = NULL;
-    if(!ret  || (ret == ESecUiDeviceLocked))
+				/* request PIN using QT */
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+					RDEBUG( "SecQueryDialog", 1 );
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("Puk2RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PUK2_CODE_MIN_LENGTH,SEC_C_PUK2_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | secCodeType /*aMode*/ );
+					RDEBUG( "iSecUi_password", 0 );
+				RDebug::Print( iSecUi_password );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
+
+    if( queryAccepted!=KErrNone )
         {
-        #if defined(_DEBUG)
-    	RDebug::Print(_L("(SECUI)CSecurityHandler::Puk2RequiredL() PUK QUERY CANCEL"));
-    	#endif    
         // cancel "get security unblock code" request
-        iPhone.AbortSecurityCode(blockCodeType);
-		CleanupStack::PopAndDestroy(2); //wait, deviceLockStatusObserver
-        return;
-        }
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecurityHandler::Puk2RequiredL() NEW QUERY"));
-    #endif
-    // new pin2 code query
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN2_CODE_MIN_LENGTH,SEC_C_PIN2_CODE_MAX_LENGTH,ESecUiNone);
-    deviceLockStatusObserver->SetAddress(iSecurityDlg);
-    ret = iSecurityDlg->ExecuteLD(R_NEW_PIN2_CODE_QUERY);
-    if(!ret  || (ret == ESecUiDeviceLocked))
-        {
-        #if defined(_DEBUG)
-    	RDebug::Print(_L("(SECUI)CSecurityHandler::Puk2RequiredL() NEW QUERY CANCEL"));
-    	#endif 
-        // cancel "get security unblock code" request
-        iPhone.AbortSecurityCode(blockCodeType);
-        CleanupStack::PopAndDestroy(2); //wait, deviceLockStatusObserver
+        	RDEBUG( "AbortSecurityCode", 0 );
+        iPhone.AbortSecurityCode(secCodeType);
+        	RDEBUG( "AbortSecurityCode", 1 );
+				CleanupStack::PopAndDestroy(1); //wait
         return;
         }
 
-     // verification code query
-    iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-    deviceLockStatusObserver->SetAddress(iSecurityDlg);
-    ret = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_PIN2_CODE_QUERY);
-    if (!ret || (ret == ESecUiDeviceLocked))    
-        {
-        #if defined(_DEBUG)
-    	RDebug::Print(_L("(SECUI)CSecurityHandler::Puk2RequiredL() VERIFY QUERY CANCEL"));
-    	#endif 
-        // cancel "get security unblock code" request
-        iPhone.AbortSecurityCode(blockCodeType);
-        CleanupStack::PopAndDestroy(2); //wait, deviceLockStatusObserver
-        return;
-        }
-        
-    while (aNewPassword.CompareF(verifcationPassword) != 0) 
-        {
-        // codes do not match -> note -> ask new pin and verification codes again  
-        CSecuritySettings::ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
-        
-        verifcationPassword = _L("");
-        aNewPassword = _L("");
+				{
+    		// new pin code query
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
 
-        // new pin2 code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN2_CODE_MIN_LENGTH,SEC_C_PIN2_CODE_MAX_LENGTH,ESecUiNone);
-        deviceLockStatusObserver->SetAddress(iSecurityDlg);
-        deviceLockStatusObserver->StartObserver();
-        
-        ret = iSecurityDlg->ExecuteLD(R_NEW_PIN2_CODE_QUERY);
-    
-        if(!ret || (ret == ESecUiDeviceLocked))
-            {
-            // cancel "get security unblock code" request
-            iPhone.AbortSecurityCode(blockCodeType);
-            CleanupStack::PopAndDestroy(2); //wait, deviceLockStatusObserver
-            return;
-            }
-                    
-        // verification code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-        deviceLockStatusObserver->SetAddress(iSecurityDlg);
-        deviceLockStatusObserver->StartObserver();
-        ret = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_PIN2_CODE_QUERY);
-        
-        if (!ret || (ret == ESecUiDeviceLocked))    
-            {
-            // cancel "get security unblock code" request
-            iPhone.AbortSecurityCode(blockCodeType);
-            CleanupStack::PopAndDestroy(2); //wait, deviceLockStatusObserver
-            return;
-            }
-        }            
-    CleanupStack::PopAndDestroy(deviceLockStatusObserver);            
+				queryAccepted = iSecQueryUi->SecQueryDialog( _L("Puk2-New|Puk2-Verif"), aNewPassword, SEC_C_PUK2_CODE_MIN_LENGTH,SEC_C_PUK2_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | secCodeType );
+					RDEBUG( "aNewPassword", 0 );
+				RDebug::Print( aNewPassword );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
+		    if( queryAccepted!=KErrNone )
+		        {
+		        // cancel "get security unblock code" request
+		        	RDEBUG( "AbortSecurityCode", 0 );
+		        iPhone.AbortSecurityCode(secCodeType);
+		        	RDEBUG( "AbortSecurityCode", 1 );
+						CleanupStack::PopAndDestroy(1); //wait
+		        return;
+		        }
+      	}
     // send code
-    
-    iPhone.VerifySecurityCode(wait->iStatus,blockCodeType,aNewPassword,aPassword);
+    // TODO the current code should be verified before
+    	RDEBUG( "VerifySecurityCode", 0 );
+    iPhone.VerifySecurityCode(wait->iStatus,secCodeType,aNewPassword,iSecUi_password);
+    	RDEBUG( "WaitForRequestL", 0 );
     TInt res = wait->WaitForRequestL();
+    	RDEBUG( "WaitForRequestL res", res );
     CleanupStack::PopAndDestroy(wait);
     
     switch(res)
@@ -1634,7 +1461,7 @@ void CSecurityHandler::Puk2RequiredL()
 // CSecurityHandler::UPinRequiredL()
 // Hendles UniversalPinRequired event
 // ----------------------------------------------------------
-//  
+// qtdone
 TInt CSecurityHandler::UPinRequiredL()
     {
     /*****************************************************
@@ -1645,7 +1472,9 @@ TInt CSecurityHandler::UPinRequiredL()
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin ));
     if(wcdmaSupported || upinSupported)
        {
-        RMobilePhone::TMobilePassword password;
+				TInt queryAccepted = KErrCancel;
+				TInt lCancelSupported = ESecUiCancelNotSupported;
+        RMobilePhone::TMobilePassword iSecUi_password;
         RMobilePhone::TMobilePassword required_fourth;
         RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
         RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
@@ -1658,124 +1487,56 @@ TInt CSecurityHandler::UPinRequiredL()
         TInt res = KErrGeneral;
     
         StartUp = iStartup;
+        	RDEBUG( "StartUp", StartUp );
     
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecurityHandler::UPinRequiredL()"));
-        #endif
-    
+            
+            wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+            	RDEBUG( "GetSecurityCodeInfo", 0 );
+            iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
+            	RDEBUG( "WaitForRequestL", 0 );
+            res = wait->WaitForRequestL();
+            	RDEBUG( "WaitForRequestL res", res );
+            User::LeaveIfError(res);
+
         if(!StartUp)
         {
             // read a flag to see whether the query is SecUi originated. 
             err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, secUiOriginatedQuery);
         }
-        
-        #if defined(_DEBUG)
-        RDebug::Print(_L("CSecurityHandler::UPinRequiredL() Execute dlg"));
-        #endif 
-        if(StartUp || (secUiOriginatedQuery != ESecurityUIsSecUIOriginated) || (err != KErrNone))
-        {
-            iSecurityDlg = new (ELeave) CCodeQueryDialog (password,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiCodeEtelReqest);
-            if(AknLayoutUtils::PenEnabled())
-                iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-            else
-                iSecurityDlg->SetEmergencyCallSupport(ETrue);
-            #ifdef __COVER_DISPLAY
-            iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-            CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided 
-    		if (covercl) // returns null if __COVER_DISPLAY is not defined
-        		{
-        		// … -  add data that cover ui is interested in
-        		covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowUPIN); // adds int to additional data to be posted to cover ui
-        		covercl->BufStream().CommitL(); // no more data to send so commit buf
-         		}  
-            #endif //__COVER_DISPLAY
-            
-            wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
-            iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
-            res = wait->WaitForRequestL();
-            User::LeaveIfError(res);
-            
-            if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
-                res = iSecurityDlg->ExecuteLD(R_UPIN_REQUEST_QUERY);
-            else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-                {
-                    HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_UPIN_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-                    res = iSecurityDlg->ExecuteLD(R_UPIN_REQUEST_QUERY, *queryPrompt);
-                    CleanupStack::PopAndDestroy(queryPrompt);
-                }
-            else
-                {
-                    HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_UPIN_ATTEMPT);
-                    res = iSecurityDlg->ExecuteLD(R_UPIN_REQUEST_QUERY, *queryPrompt);
-                    CleanupStack::PopAndDestroy(queryPrompt);   
-                }
-            
-            
-            if ((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-                { 
-                CleanupStack::PopAndDestroy(wait);   
-                return KErrCancel;
-                }
-        }
-        else
-        {
-            iSecurityDlg = new (ELeave) CCodeQueryDialog (password,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiNone);
-            #ifdef __COVER_DISPLAY
-            iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-            CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided 
-    		if (covercl) // returns null if __COVER_DISPLAY is not defined
-        		{
-        		// … -  add data that cover ui is interested in
-        		covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowUPIN); // adds int to additional data to be posted to cover ui
-        		covercl->BufStream().CommitL(); // no more data to send so commit buf
-         		}  
-            #endif //__COVER_DISPLAY
-            
-    		wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
-            iPhone.GetSecurityCodeInfo(wait->iStatus, secCodeType, codeInfoPkg);
-            res = wait->WaitForRequestL();
-            User::LeaveIfError(res);
-            
-            CSecUiLockObserver* deviceLockStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg);
-    		CleanupStack::PushL(deviceLockStatusObserver);
-    		CSecUiLockObserver* queryStatusObserver = CSecUiLockObserver::NewL(iSecurityDlg, ESecUiRequestStateObserver);
-            CleanupStack::PushL(queryStatusObserver);
-            
-            if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
-                res = iSecurityDlg->ExecuteLD(R_UPIN_QUERY);
-            else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-                {
-                    HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_UPIN_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-                    res = iSecurityDlg->ExecuteLD(R_UPIN_QUERY, *queryPrompt);
-                    CleanupStack::PopAndDestroy(queryPrompt);
-                }
-            else
-                {
-                    HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_UPIN_ATTEMPT);
-                    res = iSecurityDlg->ExecuteLD(R_UPIN_QUERY, *queryPrompt);
-                    CleanupStack::PopAndDestroy(queryPrompt);   
-                }
-    		
-    		CleanupStack::PopAndDestroy(2); //deviceLockStatusObserver, queryStatusObserver
-    		iSecurityDlg = NULL;
-            if( !res || (res == ESecUiDeviceLocked))
-                {
-                // cancel code request
-                CleanupStack::PopAndDestroy(wait);
-                iPhone.AbortSecurityCode(RMobilePhone::ESecurityUniversalPin);
-                return KErrCancel;
-                }      
-        }
-        
-        #if defined(_DEBUG)
-        RDebug::Print(_L("CSecurityNotifier::UPinRequiredL()VerifySecurityCode"));
-        #endif
-        iPhone.VerifySecurityCode(wait->iStatus,secCodeType, password, required_fourth);
+
+				/* request PIN using QT */
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+				if(StartUp || (secUiOriginatedQuery != ESecurityUIsSecUIOriginated) || (err != KErrNone))
+					lCancelSupported = ESecUiCancelNotSupported;
+				else
+					lCancelSupported = ESecUiCancelSupported;
+
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("UPin1RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | lCancelSupported | ESecUiCodeEtelReqest );
+					RDEBUG( "iSecUi_password", 0 );
+				RDebug::Print( iSecUi_password );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
+        if ( queryAccepted!=KErrNone )
+            { 
+            CleanupStack::PopAndDestroy(wait);
+           		RDEBUG( "AbortSecurityCode", 0 );
+            iPhone.AbortSecurityCode(RMobilePhone::ESecurityUniversalPin);
+            	RDEBUG( "AbortSecurityCode", 1 );
+            	
+            return KErrCancel;
+            }
+        	RDEBUG( "VerifySecurityCode", 0 );
+        iPhone.VerifySecurityCode(wait->iStatus,secCodeType, iSecUi_password, required_fourth);
+        	RDEBUG( "WaitForRequestL", 0 );
         res = wait->WaitForRequestL();
+        	RDEBUG( "WaitForRequestL res", res );
         CleanupStack::PopAndDestroy(wait);
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecurityHandler::UPinRequiredL() VerifySecurityCode STATUS: %d"), res);
-        #endif
+
         TInt returnValue = res;
         switch(res)
             {        
@@ -1823,17 +1584,16 @@ TInt CSecurityHandler::UPinRequiredL()
 // CSecurityHandler::UPukRequiredL()
 // Handles UPukRequired event
 // ----------------------------------------------------------
-//
+// qtdone
 TInt CSecurityHandler::UPukRequiredL()
     {
     TBool wcdmaSupported(FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma ));
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin ));
     if(wcdmaSupported || upinSupported)
        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecurityHandler::UPukRequiredL()"));
-        #endif            
-        RMobilePhone::TMobilePassword aPassword;
+        	RDEBUG( "0", 0 );
+				TInt queryAccepted = KErrCancel;
+        RMobilePhone::TMobilePassword iSecUi_password;
         RMobilePhone::TMobilePassword aNewPassword;
         RMobilePhone::TMobilePhoneSecurityCodeInfoV5 codeInfo;
         RMobilePhone::TMobilePhoneSecurityCodeInfoV5Pckg codeInfoPkg(codeInfo);
@@ -1848,117 +1608,65 @@ TInt CSecurityHandler::UPukRequiredL()
     
         TInt res(KErrNone);
         wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
+        	RDEBUG( "GetSecurityCodeInfo", 0 );
         iPhone.GetSecurityCodeInfo(wait->iStatus, blockCodeType, codeInfoPkg);
+        	RDEBUG( "WaitForRequestL", 0 );
         res = wait->WaitForRequestL();
+        	RDEBUG( "WaitForRequestL res", res );
         User::LeaveIfError(res);
         //show last "Code Error" note for UPIN verify result so it won't be left under the PUK1 dialog
         if(!StartUp && (codeInfo.iRemainingEntryAttempts == KMaxNumberOfPUKAttempts))
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
         
         // ask UPUK code
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (aPassword,SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH,ESecUiPukRequired);
-        if(AknLayoutUtils::PenEnabled())
-            iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-        else
-            iSecurityDlg->SetEmergencyCallSupport(ETrue);
-        #ifdef __COVER_DISPLAY
-        iSecurityDlg->PublishDialogL(SecondaryDisplay::ECmdShowSecurityQuery, SecondaryDisplay::KCatStartup);
-        CAknMediatorFacade* covercl = AknMediatorFacade(iSecurityDlg); // uses MOP, so control provided 
-    		if (covercl) // returns null if __COVER_DISPLAY is not defined
-        		{
-        		// … -  add data that cover ui is interested in
-        		covercl->BufStream().WriteInt32L(SecondaryDisplay::EShowUPUK);// adds int to additional data to be posted to cover ui
-        		covercl->BufStream().CommitL(); // no more data to send so commit buf
-         		}  
-        #endif //__COVER_DISPLAY
+				/* request PIN using QT */
+				{
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+
+				TBuf<0x100> title;	title.Zero();	title.Append(_L("Pin1RequiredL"));	title.Append(_L("#"));	title.AppendNum(codeInfo.iRemainingEntryAttempts);
+				queryAccepted = iSecQueryUi->SecQueryDialog( title, iSecUi_password, SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | ESecUiPukRequired );
+					RDEBUG( "iSecUi_password", 0 );
+				RDebug::Print( iSecUi_password );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
        
-            
-        if(codeInfo.iRemainingEntryAttempts == KMaxNumberOfPUKAttempts)
-                res = iSecurityDlg->ExecuteLD(R_UPUK_REQUEST_QUERY);
-        else if(codeInfo.iRemainingEntryAttempts > KLastRemainingInputAttempt)
-           {
-             HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_REMAINING_UPUK_ATTEMPTS, codeInfo.iRemainingEntryAttempts);
-             res = iSecurityDlg->ExecuteLD(R_UPUK_REQUEST_QUERY, *queryPrompt);
-             CleanupStack::PopAndDestroy(queryPrompt);
-           }
-        else
-           {
-             HBufC* queryPrompt = StringLoader::LoadLC(R_SECUI_FINAL_UPUK_ATTEMPT);
-             res = iSecurityDlg->ExecuteLD(R_UPUK_REQUEST_QUERY, *queryPrompt);
-             CleanupStack::PopAndDestroy(queryPrompt);   
-           }
-        
-        if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
+        if( queryAccepted!=KErrNone )
             {
             CleanupStack::PopAndDestroy(wait);
             return KErrCancel;
             }
-            
-        RMobilePhone::TMobilePassword verifcationPassword;
-        // new upin code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-        if(AknLayoutUtils::PenEnabled())
-            iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-        else
-            iSecurityDlg->SetEmergencyCallSupport(ETrue);
-        res = iSecurityDlg->ExecuteLD(R_NEW_UPIN_CODE_REQUEST_QUERY);
-        if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
+        }
+      
+      	{
+				/* request PIN using QT */
+				CSecQueryUi *iSecQueryUi;
+					RDEBUG( "CSecQueryUi", 0 );
+				iSecQueryUi = CSecQueryUi::NewL();
+				// TODO ESecUiCodeEtelReqest/ESecUiNone might be useful
+				// TODO also support Emergency
+
+				queryAccepted = iSecQueryUi->SecQueryDialog( _L("UPuk-New|UPuk-Verif"), aNewPassword, SEC_C_PUK_CODE_MIN_LENGTH,SEC_C_PUK_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported | ESecUiPukRequired );
+					RDEBUG( "aNewPassword", 0 );
+				RDebug::Print( aNewPassword );
+				delete iSecQueryUi;
+					RDEBUG( "queryAccepted", queryAccepted );
+        if( queryAccepted!=KErrNone )
             {
             CleanupStack::PopAndDestroy(wait);    
             return KErrCancel;
             }
-      
-        // verification code query
-        iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-        if(AknLayoutUtils::PenEnabled())
-            iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-        else
-            iSecurityDlg->SetEmergencyCallSupport(ETrue);
-        res = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_UPIN_CODE_REQUEST_QUERY);
-        if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-            {
-            CleanupStack::PopAndDestroy(wait);
-            return KErrCancel;
-            }
-                                
-        while (aNewPassword.CompareF(verifcationPassword) != 0) 
-            {
-            // codes do not match -> note -> ask new upin and verification codes again  
-            CSecuritySettings::ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
-            
-            verifcationPassword = _L("");
-            aNewPassword = _L("");
-    
-            // new upin code query
-            iSecurityDlg = new (ELeave) CCodeQueryDialog (aNewPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-            if(AknLayoutUtils::PenEnabled())
-                iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-            else
-                iSecurityDlg->SetEmergencyCallSupport(ETrue);
-            res = iSecurityDlg->ExecuteLD(R_NEW_UPIN_CODE_REQUEST_QUERY);
-        	if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-                {
-                CleanupStack::PopAndDestroy(wait);
-                return KErrCancel;
-                }
-                    
-            // verification code query
-            iSecurityDlg = new (ELeave) CCodeQueryDialog (verifcationPassword,SEC_C_PIN_CODE_MIN_LENGTH,SEC_C_PIN_CODE_MAX_LENGTH,ESecUiPukRequired);
-            if(AknLayoutUtils::PenEnabled())
-                iSecurityDlg->SetEmergencyCallSupportForCBA( ETrue );
-            else
-                iSecurityDlg->SetEmergencyCallSupport(ETrue);
-            res = iSecurityDlg->ExecuteLD(R_VERIFY_NEW_UPIN_CODE_REQUEST_QUERY);
-        	if((!res) || (res == ESecUiEmergencyCall) || (res == EAknSoftkeyEmergencyCall))
-                {
-                CleanupStack::PopAndDestroy(wait);
-                return KErrCancel;
-                }
-            }            
-            
+				}
+
         // send code
-        iPhone.VerifySecurityCode(wait->iStatus,blockCodeType,aNewPassword,aPassword);
+        	RDEBUG( "VerifySecurityCode", 0 );
+        iPhone.VerifySecurityCode(wait->iStatus,blockCodeType,aNewPassword,iSecUi_password);
+        	RDEBUG( "WaitForRequestL", 0 );
         res = wait->WaitForRequestL();
+        	RDEBUG( "WaitForRequestL res", res );
         CleanupStack::PopAndDestroy(wait);
         
         TInt returnValue = res;
@@ -1989,7 +1697,7 @@ TInt CSecurityHandler::UPukRequiredL()
     
         return returnValue;
        }
-    else
+    else	// not wcdmaSupported || upinSupported
         return KErrNone;
     }
 
@@ -1998,12 +1706,10 @@ TInt CSecurityHandler::UPukRequiredL()
 // CSecurityHandler::SimLockEventL()
 // Shows "SIM restriction on" note
 // ----------------------------------------------------------
-//    
+// qtdone
 void CSecurityHandler::SimLockEventL()
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("CSecurityHandler::SimLockEventL()"));
-    #endif
+    	RDEBUG( "0", 0 );
     CSecuritySettings::ShowResultNoteL(R_SIM_ON, CAknNoteDialog::EConfirmationTone);    
     }
 // ---------------------------------------------------------
@@ -2019,10 +1725,13 @@ void CSecurityHandler::RemoveSplashScreenL() const
 // CSecurityHandler::ShowGenericErrorNoteL(TInt aStatus)
 // Shows a generic error note
 // ---------------------------------------------------------
-
+// qtdone
 void CSecurityHandler::ShowGenericErrorNoteL(TInt aStatus)
     {
        // Let's create TextResolver instance for error resolving...
+       	RDEBUG( "aStatus", aStatus );
+       	RDEBUG( "!!!!! this should never be called !!!!", 0 );
+       	
        CTextResolver* textresolver = CTextResolver::NewLC(); 
        // Resolve the error
        TPtrC errorstring;

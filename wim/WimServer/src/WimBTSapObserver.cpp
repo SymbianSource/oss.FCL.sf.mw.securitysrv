@@ -175,6 +175,8 @@ void CWimBTSapObserver::RunL()
                     WIMI_CloseDownReq();
                     _WIMTRACE(_L("WIM | CWimSatRefreshObserver::Refresh | WIMI closed."));
                     }
+
+                sessions.Close();
                 }
             else
                 {

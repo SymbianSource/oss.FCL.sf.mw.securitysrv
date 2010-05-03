@@ -19,12 +19,35 @@
 #include "secuinotificationcontentwidget.h"
 #include "secuinotificationdialogpluginkeys.h"
 #include <QGraphicsLinearLayout>
+#include <QToolButton>
 #include <hblabel.h>
 #include <hbpushbutton.h>
+#include <hbiconitem.h>
 #include <hbcombobox.h>
 #include <hblineedit.h>
 #include <hbinputeditorinterface.h>
 #include <QDebug>
+
+#include <HbEmailAddressFilter>
+
+#define ESecUiCancelSupported  0x1000000
+#define ESecUiCancelNotSupported  0x0000000
+
+#define ESecUiEmergencySupported  0x2000000
+#define ESecUiEmergencyNotSupported  0x0000000
+
+#define ESecUiAlphaSupported  0x4000000
+#define ESecUiAlphaNotSupported  0x0000000
+
+#define ESecUiMaskFlags  0xFF000000
+#define ESecUiMaskType   0x00FFFFFF
+
+#define ESecUiTypeDeviceLock		0x00100000
+#define ESecUiTypeKeyguard			0x00200000
+#define ESecUiTypeClock  				0x00300000
+#define ESecUiTypeScreensaver		0x00400000
+
+#define ESecUiTypeMaskLock			0x00F00000
 
 
 // ----------------------------------------------------------------------------
@@ -51,50 +74,149 @@ SecUiNotificationContentWidget::~SecUiNotificationContentWidget()
 //
 void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &parameters)
 {
-		qDebug() << "SecUiNotificationContentWidget::constructFromParameters";
+		qDebug() << "SecUiNotificationContentWidget::constructFromParameters 1";
 		qDebug() << parameters;
     QGraphicsLinearLayout *mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
 
-    // TODO: add another layout for icon + text_block, and yet other for text_block
-
-    // KApplicationIcon
-    if (1==0 && parameters.contains(KApplicationIcon)) {
-				qDebug() << "SecUiNotificationContentWidget::KApplicationIcon";
-        QString iconName = parameters.value(KApplicationIcon).toString();
-        HbLabel *iconLabel = new HbLabel;
-        iconLabel->setIcon(HbIcon(iconName));
-        mainLayout->addItem(iconLabel);
-    }
-
-    // KApplicationName + KApplicationVersion
-    if (1==0 && parameters.contains(KApplicationName)) {
-				qDebug() << "SecUiNotificationContentWidget::KApplicationName";
-        QString appName = "";
-        QString nameStr = parameters.value(KApplicationName).toString();
-        appName = nameStr;
-        HbLabel *appLabel = new HbLabel(appName);
-        mainLayout->addItem(appLabel);
-    }
+    lMinLength = 4;	// might be replaced later
+    lMaxLength = 8;	// might be replaced later
+ 		queryDual=0;
+ 		isEmergency=0;
 
     // KApplicationSize
     if (parameters.contains(KQueryType)) {
 				qDebug() << "SecUiNotificationContentWidget::KQueryType";
         queryType = parameters.value(KQueryType).toUInt();
 				qDebug() << queryType;
+				if( (queryType & ESecUiTypeMaskLock) )
+					{
+					qDebug() << "SecUiNotificationContentWidget::KQueryType=ESecUiTypeLock";
+					// showing "Lock" icon. All other params are irrelevant. codeTop is not even created
+
+					
+        	HbLabel *iconLabel = new HbLabel("Locked");
+        	HbIcon *icon = new HbIcon("qtg_large_device_lock");
+        	// iconLabel->setAspectRatioMode(Qt::IgnoreAspectRatio);
+    			// iconLabel->setGeometry(QRectF(QPointF(10,10),QSizeF(300,300)));
+        	iconLabel->setIcon(*icon);
+        	if( (queryType & ESecUiTypeMaskLock)==ESecUiTypeDeviceLock )
+        		{	// really big icon for the devicelock
+	        	iconLabel->setPreferredHeight(500);
+  	      	iconLabel->setPreferredWidth(500);
+  	      	}
+        	else if( (queryType & ESecUiTypeMaskLock)==ESecUiTypeKeyguard )
+        		{	// smaller icon for the keyguard
+	        	iconLabel->setPreferredHeight(100);
+  	      	iconLabel->setPreferredWidth(100);
+  	      	}
+
+        	// icon->setWidth(300);
+        	// icon->setHeight(350);
+        	// icon->setGeometry(QRectF(QPointF(10,10),QSizeF(500,300)));
+        	// icon->setSize(QSizeF(300,300));
+        	
+        	mainLayout->addItem(iconLabel);
+        	mainLayout->setAlignment(iconLabel, Qt::AlignCenter );
+        	// mainLayout->setGeometry(QRectF(QPointF(10,10),QSizeF(300,300)));
+        	
+					/*
+					QToolButton* mLabelIcon = new QToolButton;
+					mLabelIcon->setIcon(QIcon(":/AutolockSrv_hbicon/qtg_large_device_lock.svg"));
+					mLabelIcon->setIconSize(QSize(300,300));
+					HbLabel *iconLabel = new HbLabel("Locked");
+					iconLabel->setIcon(*mLabelIcon);
+					mainLayout->addItem(iconLabel);
+					*/
+
+        	// mainLayout->setContentsMargins(10,10,300,500);	// this makes the dialog really big
+					setLayout(mainLayout);	// same as at the end
+					return;
+					}
+				// not ESecUiTypeMaskLock
+				lEmergencySupported = ESecUiEmergencyNotSupported;
+				if((queryType & ESecUiEmergencySupported)==ESecUiEmergencySupported)
+					{
+					lEmergencySupported = ESecUiEmergencySupported;
+					}
+				qDebug() << "SecUiNotificationContentWidget::lEmergencySupported =" << lEmergencySupported;
     }
+
+    if (parameters.contains(KQueryMinLength)) {
+				qDebug() << "SecUiNotificationContentWidget::KQueryMinLength";
+        lMinLength = parameters.value(KQueryMinLength).toUInt();
+				qDebug() << lMinLength;
+    }
+    if (parameters.contains(KQueryMaxLength)) {
+				qDebug() << "SecUiNotificationContentWidget::KQueryMaxLength";
+        lMaxLength = parameters.value(KQueryMaxLength).toUInt();
+				qDebug() << lMaxLength;
+    }
+
+    if (parameters.contains(KEmergency)) {
+				qDebug() << "SecUiNotificationContentWidget::KEmergency";
+        QString emergencyText = parameters.value(KEmergency).toString();
+        qDebug() << emergencyText;
+        if(!emergencyText.compare("emergencyYes"))
+        	{
+        	qDebug() << "SecUiNotificationContentWidget::KEmergency emergencyYes";
+        	isEmergency = 1;
+        	}
+        if(!emergencyText.compare("emergencyNo"))
+        	{
+        	qDebug() << "SecUiNotificationContentWidget::KEmergency emergencyNo";
+        	isEmergency = 0;
+        	}
+    }
+
 
     // KCodeTop
     if (parameters.contains(KCodeTop)) {
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop 1";
         codeTop = new HbLineEdit("");	// no default value
+        qDebug() << "SecUiNotificationContentWidget::KCodeTop lMaxLength=";
+        qDebug() << lMaxLength;
+        if(lMaxLength>2)
+	        codeTop->setMaxLength(lMaxLength);
         // HbLineEdit *codeTop2 = new HbLineEdit;
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop 2";
-    		HbEditorInterface editorInterface(codeTop);
-    		editorInterface.setUpAsPhoneNumberEditor();
+				qDebug() << "SecUiNotificationContentWidget::KCodeTop queryType=";
+				qDebug() << queryType;
+				codeTop->setInputMethodHints(Qt::ImhDigitsOnly);	// default
+ 		    if (queryType & ESecUiAlphaSupported)
+		    	{
+		    	qDebug() << "SecUiNotificationContentWidget::KCodeTop setUpAsLatinAlphabetOnlyEditor";
+ 	    		codeTop->setInputMethodHints(Qt::ImhNone);
+			    // what about this: editorInterface.setEditorClass(HbInputEditorClassPassword);
+		  		}
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop 3";
         connect(codeTop, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
+        connect(codeTop, SIGNAL(contentsChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
     		mainLayout->addItem(codeTop);
-        // mainLayout->addItem(codeTop2);
+    		if (parameters.contains(KCodeBottom))
+    			{
+    			queryDual=1;
+    			QString titleText = parameters.value(KDialogTitle).toString();
+    			if(titleText.indexOf('|')>0)
+    				{	// if no separator, don't create label
+    				QString titleBottomStr = titleText.right(titleText.length()-titleText.indexOf('|')-1);
+    				HbLabel *titleBottom = new HbLabel(titleBottomStr);
+    				mainLayout->addItem(titleBottom);
+    				}
+    			
+        	codeBottom = new HbLineEdit("");	// no default value
+	        if(lMaxLength>2)
+		        codeBottom->setMaxLength(lMaxLength);
+	    		codeBottom->setInputMethodHints(Qt::ImhDigitsOnly);	// default
+	 		    if (queryType & ESecUiAlphaSupported)
+			    	{
+			    	qDebug() << "SecUiNotificationContentWidget::KCodeBottom setUpAsLatinAlphabetOnlyEditor";
+	 	    		codeTop->setInputMethodHints(Qt::ImhNone);
+			  		}
+					qDebug() << "SecUiNotificationContentWidget::KCodeBottom 3";
+	        connect(codeBottom, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));
+        	connect(codeBottom, SIGNAL(contentsChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));
+	    		mainLayout->addItem(codeBottom);
+	    		}
 
     		QGraphicsLinearLayout *mainLayoutButtons = new QGraphicsLinearLayout(Qt::Horizontal);
         HbPushButton *but1 = new HbPushButton("1234");
@@ -112,9 +234,6 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
         codeTop->setFocus();
 
     }
-
-    // KCertificates
-    // KDrmDetails
 
     setLayout(mainLayout);
     }

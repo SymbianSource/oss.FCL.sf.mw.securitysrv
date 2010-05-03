@@ -20,7 +20,8 @@
 
     #ifdef RD_GS_RENOVATION
 
-        data=DATAZ_\RESOURCE_FILES_DIR\GSSimSecPluginRsc.rsc     RESOURCE_FILES_DIR\GSSimSecPluginRsc.rsc
+        // Now replaced by a QT plugin
+        // data=DATAZ_\RESOURCE_FILES_DIR\GSSimSecPluginRsc.rsc     RESOURCE_FILES_DIR\GSSimSecPluginRsc.rsc
 
     #endif // RD_GS_RENOVATION
 

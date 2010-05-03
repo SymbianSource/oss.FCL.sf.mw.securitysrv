@@ -23,11 +23,16 @@
 #include <hb/hbcore/hbsymbiandevicedialog.h>    // MHbDeviceDialogObserver
 #include <etelmm.h>
 
+#define ESecUiTypeMask  0x0FFFFFF
+
 #define ESecUiCancelSupported  0x1000000
 #define ESecUiCancelNotSupported  0x0000000
 
 #define ESecUiEmergencySupported  0x2000000
 #define ESecUiEmergencyNotSupported  0x0000000
+
+#define ESecUiAlphaSupported  0x4000000
+#define ESecUiAlphaNotSupported  0x0000000
 
 class MSecQueryUiCertificateDetailsProvider;
 class MSecQueryUiDrmDetailsProvider;

@@ -21,6 +21,9 @@
 #include <hb/hbcore/hbsymbianvariant.h>         // CHbSymbianVariantMap
 #include <apgicnfl.h>                           // CApaMaskedBitmap
 
+#include <CPhCltEmergencyCall.h>
+#include <SCPClient.h>
+#include "SecUiWait.h"
 
 // Variant map keys for notification device dialog
 _LIT( KNotifDeviceDialogLiteral, "com.nokia.hb.devicenotificationdialog/1.0" );
@@ -87,32 +90,9 @@ EXPORT_C TBool CSecQueryUi::InstallConfirmationQueryL( TInt aType, RMobilePhone:
         const TDesC& aIconFile, const TDesC& aAppVersion, TInt aAppSize,
         const TDesC& aAppDetails ) */
     {
-    RDebug::Printf( "%s %s (%u) aType=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aType );
-    RDebug::Printf( "%s %s (%u) password=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-    TInt	ESecQueryUiInstallConfirmationQueryType=0x101;
-    ClearParamsAndSetNoteTypeL( ESecQueryUiInstallConfirmationQueryType );
 
-    AddParamL( _L("KSecQueryUiApplicationName"), _L("SecUi") );
-
-		_LIT(KTitle, "title");
-    _LIT(KTitleValue1, "Enter PIN");
-    _LIT(KTitleValue2, "Enter PIN with care");
-    _LIT(KTitleValue3, "Enter PIN last");
-    if(aType==KMaxNumberOfPINAttempts)
-    	AddParamL( KTitle, KTitleValue1 );
-    else if(aType> KLastRemainingInputAttempt)
-    	AddParamL( KTitle, KTitleValue2 );
-    else
-    	AddParamL( KTitle, KTitleValue3 );
-    
-		_LIT( KCodeTop, "codeTop" );						_LIT( KCodeTopValue, "codeTop" );
-    AddParamL( KCodeTop, KCodeTopValue );
-
-		RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-	  DisplayDeviceDialogL();
-    User::LeaveIfError( WaitUntilDeviceDialogClosed() );
-    password.Copy(iPassword);
-    return( iReturnValue == KErrNone );
+    RDEBUG( "This should never be called. Obsolete", 0 );
+    return KErrAbort ;
     }
 
 // ---------------------------------------------------------------------------
@@ -121,9 +101,9 @@ EXPORT_C TBool CSecQueryUi::InstallConfirmationQueryL( TInt aType, RMobilePhone:
 //
 EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption, TDes& aDataText, TInt aMinLength,TInt aMaxLength,TInt aMode)
     {
-    RDebug::Printf( "%s %s (%u) aCaption=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+    	RDEBUG( "aCaption", 0 );
     RDebug::Print( aCaption );
-    RDebug::Printf( "%s %s (%u) aMode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aMode );
+    	RDEBUG( "aMode", aMode );
 
     ClearParamsAndSetNoteTypeL( aMode );
     AddParamL( _L("KSecQueryUiApplicationName"), aCaption );
@@ -131,15 +111,28 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption, TDes& aDataText
 		_LIT(KTitle, "title");
     // _LIT(KTitleValue1, "Enter PIN");
    	AddParamL( KTitle, aCaption );
+		AddParamL( _L("MinLength"), aMinLength );
+		AddParamL( _L("MaxLength"), aMaxLength );
     
 		_LIT( KCodeTop, "codeTop" );						_LIT( KCodeTopValue, "codeTop" );
     AddParamL( KCodeTop, KCodeTopValue );
 
-		RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		if( aCaption.Find(_L("|"))>0 )
+			{
+				RDEBUG( "codeBottom aMode", aMode );
+			_LIT( KCodeBottom, "codeBottom" );						_LIT( KCodeBottomValue, "codeBottom" );
+  	  AddParamL( KCodeBottom, KCodeBottomValue );
+  		}
+
+			RDEBUG( "0", 0 );
 	  DisplayDeviceDialogL();
-    User::LeaveIfError( WaitUntilDeviceDialogClosed() );
+	  TInt error = WaitUntilDeviceDialogClosed();
+	  	RDEBUG( "error", error );
+    User::LeaveIfError( error );
+
     aDataText.Copy(iPassword);
-    return( iReturnValue == KErrNone );
+    	RDEBUG( "iReturnValue", iReturnValue );
+    return iReturnValue;
     }
 
 // ---------------------------------------------------------------------------
@@ -262,12 +255,13 @@ EXPORT_C void CSecQueryUi::LaunchHelpL( const TDesC& aContext )
 //
 void CSecQueryUi::DoCancel()
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     if( iWait && iWait->IsStarted() && iWait->CanStopNow() )
         {
         iCompletionCode = KErrCancel;
         iWait->AsyncStop();
         }
+    	RDEBUG( "0", 0 );
     }
 
 // ---------------------------------------------------------------------------
@@ -276,11 +270,12 @@ void CSecQueryUi::DoCancel()
 //
 void CSecQueryUi::RunL()
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     if( iWait )
         {
         iWait->AsyncStop();
         }
+    	RDEBUG( "0", 0 );
     }
 
 // ---------------------------------------------------------------------------
@@ -289,28 +284,123 @@ void CSecQueryUi::RunL()
 //
 void CSecQueryUi::DataReceived( CHbSymbianVariantMap& aData )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     const CHbSymbianVariant* acceptedVariant = aData.Get( _L("accepted") );	// KSecQueryUiQueryAccepted
+    	RDEBUG( "0", 0 );
     if( acceptedVariant )
         {
-        TBool* acceptedValue = acceptedVariant->Value<TBool>();
-        if( acceptedValue && *acceptedValue )
+    			RDEBUG( "0", 0 );
+        TInt* acceptedValue = acceptedVariant->Value<TInt>();
+    			RDEBUG( "acceptedValue", acceptedValue );
+    			RDEBUG( "*acceptedValue", *acceptedValue );
+        if( acceptedValue )
             {
-            iReturnValue = KErrNone;
-            }
-        else
-            {
-            iReturnValue = KErrCancel;
+            iReturnValue = *acceptedValue;
             }
         }
     const CHbSymbianVariant* acceptedVariantTop = aData.Get( _L("codeTop") );	// KSecQueryUiQueryAccepted
+    	RDEBUG( "0", 0 );
     if( acceptedVariantTop )
         {
         TPtrC acceptedValueTop = *acceptedVariantTop->Value<TDesC>();
-        RDebug::Printf( "%s %s (%u) acceptedValueTop=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+        	RDEBUG( "acceptedValueTop", 0 );
    	    RDebug::Print( acceptedValueTop );
    	    iPassword.Copy(acceptedValueTop);
-        }
+   	    
+   	    if(iReturnValue == KErrCompletion )	// the user didn't OK. It was send automatically because validating new lock code
+   	    	{
+					_LIT( KInvalidNewLockCode, "invalidNewLockCode" );
+					_LIT( KInvalidNewLockCode0, "invalidNewLockCode#0" );
+					_LIT( KInvalidNewLockCode1, "invalidNewLockCode#1" );
+					_LIT( KInvalidNewLockCode2, "invalidNewLockCode#2" );
+   				AddParamL( KInvalidNewLockCode, KInvalidNewLockCode0 );	// for starter
+            RSCPClient scpClient;
+            TSCPSecCode newCode;
+            newCode.Copy( acceptedValueTop );
+            	RDEBUG( "scpClient.Connect", 0 );
+            if ( scpClient.Connect() == KErrNone )
+                {
+                /*
+                RArray<TDevicelockPolicies> aFailedPolicies;
+                TDevicelockPolicies failedPolicy;
+                TInt retLockcode = KErrNone;
+									RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
+                retLockcode = scpClient.VerifyNewLockcodeAgainstPolicies( newCode, aFailedPolicies );
+                	RDEBUG( "retLockcode", retLockcode );
+                	RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
+                for(TInt i=0; i<aFailedPolicies.Count(); i++)
+                	{
+               		failedPolicy = aFailedPolicies[i];
+                		RDEBUG( "failedPolicy", failedPolicy );
+									TBuf<0x100> KInvalidNewLockCodeX;	KInvalidNewLockCodeX.Zero();	KInvalidNewLockCodeX.Append(_L("invalidNewLockCode"));	KInvalidNewLockCodeX.Append(_L("#"));
+									KInvalidNewLockCodeX.AppendNum(failedPolicy);
+                	AddParamL( KInvalidNewLockCode, KInvalidNewLockCodeX );
+                	}
+                */
+                scpClient.Close();
+                }                                               
+						RDEBUG( "iDeviceDialog->Update", 0 );
+					iDeviceDialog->Update( *iVariantMap );
+					}	// KErrCompletion
+
+				if(acceptedValueTop.Length()<=4)	// TODO store aMinLenght and check it here, instead of "4"
+					{
+	   	    	RDEBUG( "CPhCltEmergencyCall", 0 );
+					CPhCltEmergencyCall* emergencyCall = CPhCltEmergencyCall::NewL( NULL );
+						RDEBUG( "PushL", 0 );
+					CleanupStack::PushL( emergencyCall );
+					TPhCltEmergencyNumber emNumber;
+					
+					// this relies on the fact that emergency has 3 digits, and password needs at least 4
+					TBool isEmergency( EFalse );
+						RDEBUG( "calling IsEmergencyPhoneNumber", 0 );
+					TInt error = emergencyCall->IsEmergencyPhoneNumber( acceptedValueTop, isEmergency );
+						RDEBUG( "error", error );
+						RDEBUG( "emNumber", 0 );
+					
+						RDEBUG( "isEmergency", isEmergency );
+					#ifdef __WINS__
+						RDEBUG( "__WINS__ checking", 0 );
+					if(!acceptedValueTop.CompareF(_L("112")) || !acceptedValueTop.CompareF(_L("911")) || !acceptedValueTop.CompareF(_L("555")) )
+						{
+							isEmergency = ETrue;
+							error = KErrNone;
+								RDEBUG( "__WINS__ isEmergency", isEmergency );
+						}
+					#endif
+	
+					if ( !error )	// oddly enough, missing capabilities also gives KErrNone
+						{
+		   	    if(iReturnValue == KErrAbort )	// the user didn't OK. It was send automatically because short code
+		   	    	{
+							_LIT( KEmergency, "emergency" );						_LIT( KEmergencyValueYes, "emergencyYes" );	_LIT( KEmergencyValueNo, "emergencyNo" );
+							if(isEmergency)
+								{
+									RDEBUG( "KEmergencyValueYes", 1 );
+		    				AddParamL( KEmergency, KEmergencyValueYes );
+								}
+							else
+								{
+									RDEBUG( "KEmergencyValueNo", 0 );
+		    				AddParamL( KEmergency, KEmergencyValueNo );
+								}
+							iDeviceDialog->Update( *iVariantMap );
+							}
+						else if(iReturnValue == KErrNone )
+							{	// user pressed Call and number is valid
+							if(isEmergency)
+								{
+									 RDEBUG( "DialEmergencyCallL", isEmergency );
+								emergencyCall->DialEmergencyCallL( emNumber );
+								iReturnValue = KErrAbort;	// this means emergency call
+								}
+							}
+						}	// if !error
+						RDEBUG( "0", 0 );
+					CleanupStack::PopAndDestroy( emergencyCall );
+					}	// lenght<3
+				}	// acceptedVariantTop
+    	RDEBUG( "iReturnValue", iReturnValue );
     }
 
 // ---------------------------------------------------------------------------
@@ -319,12 +409,14 @@ void CSecQueryUi::DataReceived( CHbSymbianVariantMap& aData )
 //
 void CSecQueryUi::DeviceDialogClosed( TInt aCompletionCode )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "aCompletionCode", aCompletionCode );
     iCompletionCode = aCompletionCode;
     iIsDisplayingDialog = EFalse;
 
     TRequestStatus* status( &iStatus );
+    	RDEBUG( "0", 0 );
     User::RequestComplete( status, KErrNone );
+    	RDEBUG( "0", 0 );
     }
 
 // ---------------------------------------------------------------------------
@@ -333,7 +425,7 @@ void CSecQueryUi::DeviceDialogClosed( TInt aCompletionCode )
 //
 CSecQueryUi::CSecQueryUi() : CActive( CActive::EPriorityStandard )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     CActiveScheduler::Add( this );
     }
 
@@ -343,7 +435,7 @@ CSecQueryUi::CSecQueryUi() : CActive( CActive::EPriorityStandard )
 //
 void CSecQueryUi::ConstructL()
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     iWait = new( ELeave ) CActiveSchedulerWait;
     // iDeviceDialog is allocated later, first call of DisplayDeviceDialogL()
     }
@@ -354,6 +446,7 @@ void CSecQueryUi::ConstructL()
 //
 void CSecQueryUi::ClearParamsL()
     {
+    	RDEBUG( "0", 0 );
     if( iVariantMap )
         {
         delete iVariantMap;
@@ -368,7 +461,7 @@ void CSecQueryUi::ClearParamsL()
 //
 void CSecQueryUi::ClearParamsAndSetNoteTypeL( TInt aType )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "aType", aType );
     ClearParamsL();
     AddParamL( _L("type"), aType );
     }
@@ -379,7 +472,7 @@ void CSecQueryUi::ClearParamsAndSetNoteTypeL( TInt aType )
 //
 void CSecQueryUi::AddParamL( const TDesC& aKey, TInt aValue )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "aValue", aValue );
     CHbSymbianVariant* variant = NULL;
     variant = CHbSymbianVariant::NewL( &aValue, CHbSymbianVariant::EInt );
     iVariantMap->Add( aKey, variant );
@@ -391,7 +484,7 @@ void CSecQueryUi::AddParamL( const TDesC& aKey, TInt aValue )
 //
 void CSecQueryUi::AddParamL( const TDesC& aKey, const TDesC& aValue )
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     CHbSymbianVariant* variant = NULL;
     variant = CHbSymbianVariant::NewL( &aValue, CHbSymbianVariant::EDes );
     iVariantMap->Add( aKey, variant );
@@ -411,7 +504,7 @@ TInt strlen( const char* aStr )
 //
 void CSecQueryUi::DisplayDeviceDialogL()
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     if( iDeviceDialog && iIsDisplayingDialog )
         {
         iDeviceDialog->Update( *iVariantMap );
@@ -423,11 +516,13 @@ void CSecQueryUi::DisplayDeviceDialogL()
             iDeviceDialog = CHbDeviceDialog::NewL();
             }
         _LIT( KSecQueryUiDeviceDialog, "com.nokia.secuinotificationdialog/1.0" );
-        RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+        	RDEBUG( "Show", 0 );
         iDeviceDialog->Show( KSecQueryUiDeviceDialog, *iVariantMap, this );
-        RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+        	RDEBUG( "iIsDisplayingDialog", iIsDisplayingDialog );
         iIsDisplayingDialog = ETrue;
+        	RDEBUG( "iIsDisplayingDialog", iIsDisplayingDialog );
         }
+    	RDEBUG( "0", 0 );
     }
 
 // ---------------------------------------------------------------------------
@@ -436,15 +531,18 @@ void CSecQueryUi::DisplayDeviceDialogL()
 //
 TInt CSecQueryUi::WaitUntilDeviceDialogClosed()
     {
-    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	RDEBUG( "0", 0 );
     iCompletionCode = KErrInUse;
     iReturnValue = KErrUnknown;
     if( !IsActive() && iWait && !iWait->IsStarted() )
         {
         iStatus = KRequestPending;
         SetActive();
+        	RDEBUG( "Start", 0 );
         iWait->Start();
+    			RDEBUG( "Started", 1 );
         }
+    	RDEBUG( "iCompletionCode", iCompletionCode );
     return iCompletionCode;
     }
 

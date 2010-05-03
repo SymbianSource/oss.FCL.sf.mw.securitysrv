@@ -71,363 +71,17 @@ const TInt PhoneIndex( 0 );
 //
 void CAutolockAppUi::ConstructL()
     {
+    	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    		
 	#if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL"));
     #endif
     
+   	RDebug::Printf( "%s %s (%u) EAutolockOff=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EAutolockOff );
+    RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, EAutolockOff);
+
     BaseConstructL( EAknEnableSkin | EAknEnableMSK );
     
-    //Disable priority control so that Autolock process priority isn't set to "background" by 
-	//window server when it is not active.
-	iEikonEnv->WsSession().ComputeMode( RWsSession::EPriorityControlDisabled ); 
-	RThread().SetProcessPriority( EPriorityHigh );
-
-    FeatureManager::InitializeLibL();
-
-	RTelServer::TPhoneInfo PhoneInfo;
-	// prevent autolock shutdown
-	iEikonEnv->SetSystem( ETrue ); 
-
-	iSideKey1 = 0;
-	iSideKey2 = 0;
-	iAppKey = 0;
-
-	aCallButtonRect = TRect (0,0,0,0);
-	//connect to ETel
-
-	TInt err( KErrGeneral );
-    TInt thisTry( 0 );
-    
-	/*All server connections are tried to be made KTiesToConnectServer times because occasional
-    fails on connections are possible at least on some servers*/
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() connect to etel server"));
-    #endif
-	// connect etel server
-	while ( ( err = iServer.Connect() ) != KErrNone && ( thisTry++ ) <= KTriesToConnectServer )
-        {
-        User::After( KTimeBeforeRetryingServerConnection );
-        }
-    User::LeaveIfError( err );
-
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() load tsy"));
-    #endif
-    // load tsy
-    err = iServer.LoadPhoneModule( KMmTsyModuleName );
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() load tsy ERROR: %d"), err);
-    #endif
-    if ( err != KErrAlreadyExists )
-        {
-        // may return also KErrAlreadyExists if some other
-        // is already loaded the tsy module. And that is
-        // not an error.
-        User::LeaveIfError( err );
-        }
-	
-	thisTry = 0;
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() open phone"));
-    #endif
-	//open phone
-	User::LeaveIfError(iServer.SetExtendedErrorGranularity(RTelServer::EErrorExtended));
-	User::LeaveIfError(iServer.GetPhoneInfo(PhoneIndex, PhoneInfo));
-	User::LeaveIfError(iPhone.Open(iServer,PhoneInfo.iName));
-    User::LeaveIfError(iCustomPhone.Open(iPhone));
- 	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() phone opened"));
-    #endif
-
-    TBool systemLocked = EFalse;
-	TBool autolockValue = EAutolockStatusUninitialized;
-
-    iWait = NULL;
-    iWait = CWait::NewL();
-
-	#ifndef __WINS__
-
-
-	/*****************************************************
-	*	Series 60 Customer / ETEL
-	*	Series 60 ETEL API
-	*****************************************************/
-
-	// set autolock period to 0, if lock is disabled in DOS side
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() set autolock period to 0"));
-    #endif
-	RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
-	RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
-	RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
-    
-	iWait->SetRequestType(EMobilePhoneGetLockInfo);
-	iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
-	TInt res = iWait->WaitForRequestL();
-	User::LeaveIfError(res);
-    TInt lockValue = 0;
-    CRepository* repository = CRepository::NewL(KCRUidSecuritySettings);
-    TInt cRresult = repository->Get(KSettingsAutolockStatus, lockValue);
-    TBool hiddenReset = HiddenReset();
-    #if defined(_DEBUG)
-    if(hiddenReset)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Hidden reset"));
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() CR get result: %d"), cRresult);
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() CR lock value: %d"), lockValue);
-    #endif
-	if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
-		{
-        repository->Set(KSettingsAutoLockTime, 0);
-        if ( FeatureManager::FeatureSupported( KFeatureIdProtocolCdma ) )
-            {
-            repository->Set(KSettingsLockOnPowerUp, 0);
-            }
-        }
-    // In CDMA, the system can stay locked on after the boot-up sequence.
-    else if ( FeatureManager::FeatureSupported( KFeatureIdProtocolCdma ) || (hiddenReset && (lockValue == 1)))
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Hidden reset when locked"));
-        #endif
-        systemLocked = ETrue;
-        }
-
-        
- 		if ( lockInfo.iSetting == RMobilePhone::ELockSetEnabled && lockValue != EAutolockOff && !hiddenReset)
-		{
-		    #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() EAutolockStatusUninitialized %d"),EAutolockStatusUninitialized);
-        #endif
-        autolockValue = EAutolockStatusUninitialized;					            
-    }
-    else if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled || (hiddenReset && (lockValue == 0)) )
-		{
-		    #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() EAutolockOff %d"),EAutolockOff);
-        #endif
-        autolockValue = EAutolockOff;
-    }
-     
-    delete repository;
-	#endif   //__WINS__
-
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Enable emergency call support"));
-    #endif
-	
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() Autolock view"));
-    #endif
-    
-
-
-    // -------------------------------------------------------------------------------------------------------------
-    // part of emergency call handling when telephony+devicelock is active
-    // this solution is meant only for 3.1 and 3.2
-
-    iEcsNote = new (ELeave) CEcsNote();
-    iEcsNote->ConstructSleepingNoteL(R_AVKON_EMERGENCY_CALL_NOTE);
-    iEcsNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition(0,2);
-    
-    if (AknLayoutUtils::PenEnabled())	// on touch devices, if Autolock is activated from IdleScreen in landscape, the buttons need to be drawn.
-	{
-	iEcsNote->ButtonGroupContainer().SetCommandL( 0, _L("") );	// as keyboard is locked, these buttons do nothing. Better to hide their labels.
-  	iEcsNote->ButtonGroupContainer().SetCommandL( EAknSoftkeyCancel, _L("") );
-	iEcsNote->ButtonGroupContainer().ButtonGroup()->AsControl()->MakeVisible(ETrue);
-  	}
-
-	// Emergency call support
-    iEcsDetector = CAknEcsDetector::NewL();
-    iEcsDetector->SetObserver( this );
-	iEmergencySupportReady = ETrue;
-    // -------------------------------------------------------------------------------------------------------------
-        
-
-	// Autolock view	
-	CAutolockView* lockView = new(ELeave) CAutolockView;
-    CleanupStack::PushL(lockView);
-    lockView->ConstructL();
-    CleanupStack::Pop();	// lockView
-    AddViewL(lockView);    // transfer ownership to CAknViewAppUi
-	SetDefaultViewL(*lockView);
-
-	// start autolock timer
-	iModel = CAutoLockModel::NewL(this, autolockValue);	
-
-	// phone event observer
-	iPhoneObserver = CValueObserver::NewL(this);
-	//call bubble
-	iIncallBubble = CAknIncallBubble::NewL();
-
-	//Autokeyguard Period observer
-	#ifdef RD_AUTO_KEYGUARD
-	iKeyguardObserver = CAutoKeyguardObserver::NewL();
-	#else //!RD_AUTO_KEYGUARD
-	iKeyguardObserver = NULL;
-	#endif //RD_AUTO_KEYGUARD
-    // Create the write policy. Also processes with write device data can write the value.
-    TSecurityPolicy writePolicy( ECapabilityWriteDeviceData ); 
-	// Create the read policy. Also processes with read device data can read the value.	
-	TSecurityPolicy readPolicy( ECapabilityReadDeviceData ); 
-	
-	TInt tRet = RProperty::Define( KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, RProperty::EInt, readPolicy, writePolicy );
-        
-    if ( tRet != KErrNone )
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-            FAILED to define the SECUI query Flag: %d"), tRet);
-        #endif
-        }	
-    
-    tRet = RProperty::Define( KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, RProperty::EInt, readPolicy, writePolicy );
-    if ( tRet != KErrNone )
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-            FAILED to define the SECUI query request state Flag: %d"), tRet);
-        #endif
-        }
-
-if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))  
-{
-
-    // Define the TARM admin flag.
-    
-    tRet = RProperty::Define( KSCPSIDAutolock, SCP_TARM_ADMIN_FLAG_UID, RProperty::EInt,
-        readPolicy, writePolicy );    
-    if ( tRet != KErrNone )
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-            FAILED to define the TARM Admin Flag"));
-        #endif
-        }
-        
-    // The following sequence is used to validate the configuration on SCP server.
-    // This is needed on the first boot (initial or RFS) or if the C-drive has been formatted
-    // (3-button format) and Autolock is not active.
-
-    RSCPClient scpClient;
-    if ( scpClient.Connect() == KErrNone )
-        {
-        TInt confStatus = scpClient.CheckConfiguration( KSCPInitial );
-        
-        if ( confStatus == KErrAccessDenied )
-            {
-            #ifndef __WINS__            
-            if ( ( lockInfo.iSetting == RMobilePhone::ELockSetDisabled ) )    
-            #else // __WINS__                    
-            if ( 1 ) // DOS lock is never active in WINS            
-            #endif // __WINS__     
-		        {					
-		        // DOS lock is not active. Note that if DOS is locked, checking the code here will
-		        // mess up the query sequence. On initial startup DOS is not locked.		                
-                
-                TInt finalConfStatus = scpClient.CheckConfiguration( KSCPComplete );
-                
-                if ( finalConfStatus == KErrAccessDenied )
-                    {                
-                    #ifdef __WINS__   
-                    #if defined(_DEBUG)
-                    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-                        DOS validation FAILED in WINS, something wrong!"));
-                    #endif                                  
-                    #else // !__WINS__                                            
-
-                    // The SCP server is out of sync and Autolock is not active. (c-drive formatted)
-                    // We must ask the security code. ( Note that it is very rare that this is executed )
-	                #if defined(_DEBUG)
-                    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-                        Lock setting disabled, calling setlocksetting"));
-                    #endif
-                
-                    // Wait here until the startup is complete
-                
-                    TInt tarmErr = KErrNone;
-                    while ( tarmErr == KErrNone )
-                        {                              
-                        TInt sysState=0;
-                            tarmErr = RProperty::Get(KPSUidStartup, KPSGlobalSystemState, sysState);
-
-                            if ((sysState == ESwStateNormalRfOn) || (sysState == ESwStateNormalRfOff) 
-                                 || (sysState == ESwStateNormalBTSap))
-                                {
-                                break;
-                                }                                        
-                        User::After(500000);
-                        }
-                
-                    // Just change the lock setting again to disabled to request the security code.
-                    // Set the TARM flag so SecUi knows it should display the "login" query.
-	                TInt tarmFlag=0;
-	                tRet = RProperty::Get( KSCPSIDAutolock, SCP_TARM_ADMIN_FLAG_UID, tarmFlag );
-	                if ( tRet == KErrNone )
-    	                {
-	                    tarmFlag |= KSCPFlagResyncQuery;
-	                    tRet = RProperty::Set( KSCPSIDAutolock, SCP_TARM_ADMIN_FLAG_UID, tarmFlag );
-	                    }
-	            
-	                if ( tRet != KErrNone )
-                        {
-                        #if defined(_DEBUG)
-                        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL():\
-                            FAILED to set TARM Admin Flag"));
-                        #endif
-                        }
-	            
-    	            RMobilePhone::TMobilePhoneLockSetting lockChange;
-	                lockChange = RMobilePhone::ELockSetDisabled;
-	                iWait->SetRequestType(EMobilePhoneSetLockSetting);
-                    iPhone.SetLockSetting(iWait->iStatus, lockType, lockChange);
-                
-                    res = iWait->WaitForRequestL();
-                    #endif // __WINS__                                 
-                    }
-                }                        
-                                   
-            } // if ( confStatus == KErrAccessDenied )
-            
-        scpClient.Close();               
-        }
-      
-}
-
-    // Eventhough we might lock the device on boot-up (systemLocked == ETrue), we
-    // want to hide the app until the handshake is done. StartUp application will
-    // active the app when it is finished.
-    if( !systemLocked )
-        {// app to background
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() app to background"));
-        #endif
-        TApaTask self(iCoeEnv->WsSession());
-        self.SetWgId(iCoeEnv->RootWin().Identifier());
-        self.SendToBackground();
-        // flush
-        iCoeEnv->WsSession().Flush();      
-        }
-    else
-        {
-        #if defined(_DEBUG)
-        RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL() LOCK SYSTEM"));
-        #endif
-        TInt lockState = 0;
-        
-        #ifdef RD_REMOTELOCK
-	    lockState = EManualLocked; 	    
-	    #else //!RD_REMOTELOCK	    
-	    lockState = EAutolockOn; 	    
-	    #endif//RD_REMOTELOCK
-        iModel->LockSystemL(lockState);  
-        }
-        
-    iGripStatusObserver = CAutolockGripStatusObserver::NewL( this, iEikonEnv->WsSession() ); 
-    iFpsStatusObserver = CAutolockFpsStatusObserver::NewL( this, iEikonEnv->WsSession() ); 
-    iDeviceLockQueryStatus = EFalse;
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL()  END"));
-    #endif
 	}
 // ----------------------------------------------------
 // CAutolockAppUi::~CAutolockAppUi()
@@ -437,6 +91,7 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 //
 CAutolockAppUi::~CAutolockAppUi()
     {
+    RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::~CAutolockAppUi() BEGIN"));
     #endif
@@ -464,23 +119,27 @@ CAutolockAppUi::~CAutolockAppUi()
         iServer.UnloadPhoneModule(KMmTsyModuleName);
         iServer.Close();
         }
+  RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 	delete iModel;
 	delete iPhoneObserver;
 	delete iIncallBubble;
-#ifdef RD_AUTO_KEYGUARD
+RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+	#ifdef RD_AUTO_KEYGUARD
 	delete iKeyguardObserver;
 #endif
 
     delete iEcsDetector;
     delete iEcsNote; // Ecs change
-    delete iWait;
+	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+	  delete iWait;
     FeatureManager::UnInitializeLib();
     delete iGripStatusObserver;
     delete iFpsStatusObserver;
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::~CAutolockAppUi() END"));
     #endif
-	}
+RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		}
 // ----------------------------------------------------
 // CAutolockAppUi::HandleForegroundEventL()
 // Handles foreground event.
@@ -721,74 +380,7 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
 			}
         case ESecUiCmdUnlock:
 			{
-			#if defined(_DEBUG)
-			RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::HandleCommandL() ESecUiCmdUnlock"));
-			#endif
-			// stop observing emergency call event
-			iEmergencySupportReady = EFalse;
-			iEcsDetector->Reset(); // Ecs queue is cleared; keys up til here are forgotten
-			// ask secuity code
-			CSecurityHandler* handler = new (ELeave) CSecurityHandler(iPhone);
-			CleanupStack::PushL(handler);
-			TSecUi::InitializeLibL();	
-	        
-	        // Put the lights on when security query is shown
-	        SendMessageToSysAp( EEikSecurityQueryLights );
-	        HideSoftNotification();	// dismiss all the pending notes just before asking the unlocking code
-	        
-            TRAPD(err,
-			{
-			iDeviceLockQueryStatus = ETrue;
-			if(handler->AskSecCodeInAutoLockL())
-				{		
-				iLocked = EFalse;
-				DisableWGListChangeEventListening();
-				iDeviceLockQueryStatus = EFalse;
-				UnLockKeys();
-				iModel->SetLockedL(EFalse);
-				SwitchToPreviousAppL();
-				}
-            else
-				{  // make sure that we will be topmost still
-				    iDeviceLockQueryStatus = EFalse;
-                    TInt callState;
-                    RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
-                if ( callState == EPSCTsyCallStateNone &&
-                     !FeatureManager::FeatureSupported( KFeatureIdProtocolCdma ) )
-                    {
-				    TApaTask self(CCoeEnv::Static()->WsSession());
-				    self.SetWgId(CCoeEnv::Static()->RootWin().Identifier());
-				    self.BringToForeground();
-                    TBool featureNoPowerkey = FeatureManager::FeatureSupported( KFeatureIdNoPowerkey );
-                    if ( featureNoPowerkey )
-                        {//set lights on in case user pressed "red button". If he pressed cancel the lights are on anyway so it doesn't matter.
-                        SendMessageToSysAp(EEikKeyLockLightsOnRequest);              
-                        }
-				    // we don't want enable lock if call in progress    
-                    RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
-                    TInt keyguardDisableState(ECoreAppUIsDisableKeyguardUninitialized);
-                    //If there is alarm on the keyguard status is set to disabled. In that case don't enable keyguard as it will be done by SysAp 
-                    //after the alarm has been disabled/snoozed. Otherwise the alarm CBA is left under keyguard CBA.
-                    RProperty::Get( KPSUidCoreApplicationUIs, KCoreAppUIsDisableKeyguard, keyguardDisableState );
-                    if ((callState == EPSCTsyCallStateNone) && (keyguardDisableState != ECoreAppUIsDisableKeyguard))
-                        {   
-				    	RAknKeyLock keylock;
-					    if ( keylock.Connect() == KErrNone )
-						    {
-						    keylock.EnableAutoLockEmulation();
-						    keylock.Close();
-						    }
-					    }
-                    }
-                }
-			};)
-
-			// start observing emergency call event
-			iEmergencySupportReady = ETrue;
-			CleanupStack::PopAndDestroy(handler); // handler
-			TSecUi::UnInitializeLib();  // secui 		
-			
-			User::LeaveIfError(err);
+			RDebug::Printf( "%s %s (%u) ESecUiCmdUnlock is not longer handled by Autolock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ESecUiCmdUnlock );
 
 			break;
 			}

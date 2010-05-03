@@ -130,6 +130,8 @@ LIBRARY aknnotify.lib
 
 LIBRARY HbCore.lib
 LIBRARY HbWidgets.lib
+LIBRARY lockclient.lib 
+LIBRARY phoneclient.lib
 
 SMPSAFE
 

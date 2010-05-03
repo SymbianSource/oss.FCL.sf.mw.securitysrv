@@ -37,6 +37,7 @@ public:
 signals:
     void memorySelectionChanged(const QString &text);
     void codeTopChanged(const QString &text);
+    void codeBottomChanged(const QString &text);
     void but1Changed();
     void but2Changed();
     void but3Changed();
@@ -47,7 +48,13 @@ private:
 private:    // data
 public:
 		HbLineEdit *codeTop;
+		HbLineEdit *codeBottom;
     int queryType;
+    int lMinLength;
+    int lMaxLength;
+    int queryDual;
+    int lEmergencySupported;
+    int isEmergency;
 };
 
 #endif // SECUINOTIFICATIONCONTENTWIDGET_H

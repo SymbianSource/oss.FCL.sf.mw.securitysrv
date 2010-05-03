@@ -28,17 +28,23 @@
 const QString KDialogTitle = "title";
 const QString KApplicationName = "application";
 const QString KQueryType = "type";
+const QString KQueryMinLength = "MinLength";
+const QString KQueryMaxLength = "MaxLength";
 const QString KApplicationIcon = "icon";
 const QString KSupplier = "supplier";
 const QString KMemorySelection = "memory";
 const QString KCertificates = "certificates";
 const QString KDrmDetails = "drmDetails";
 const QString KCodeTop = "codeTop";
+const QString KCodeBottom = "codeBottom";	// not really needed because is never sent back
+const QString KEmergency = "emergency";
+const QString KInvalidNewLockCode = "invalidNewLockCode";
 
 // Keys for the return values passed back to calling application
-const QString KResultAccepted = "accepted";         // bool
+const QString KResultAccepted = "accepted";         // int
 const QString KSelectedMemoryIndex = "memory";      // int
 const QString KCodeTopIndex = "codeTop";      // int
+const QString KCodeBottomIndex = "codeBottom";      // int	// not really needed because is never sent back
 
 // Error values
 const int KNoError = 0;

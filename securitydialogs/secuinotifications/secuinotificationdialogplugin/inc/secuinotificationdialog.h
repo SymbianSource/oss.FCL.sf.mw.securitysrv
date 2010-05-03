@@ -22,7 +22,7 @@
 #include <hbdevicedialoginterface.h>    // HbDeviceDialogInterface
 #include <hbwidget.h>       // HbWidget
 #include <hblineedit.h>       // HbWidget
-
+#include <hblabel.h>
 
 /**
  * SW Install notification widget class.
@@ -51,13 +51,14 @@ protected:  // from HbPopup (via HbDialog)
 
 private:    // new functions
     bool constructDialog(const QVariantMap &parameters);
-    void sendResult(bool accepted);
+    void sendResult(int accepted);
 
 private slots:
     void handleAccepted();
     void handleCancelled();
     void handleMemorySelectionChanged(const QString &text);
     void handleCodeTopChanged(const QString &text);
+    void handleCodeBottomChanged(const QString &text);
 		void saveFocusWidget(QWidget*,QWidget*);
 		void handlebut1Changed();
 		void handlebut2Changed();
@@ -70,9 +71,16 @@ private:
     bool mShowEventReceived;
     QVariantMap mResultMap;
     HbLineEdit *codeTop;
+    HbLineEdit *codeBottom;
     HbAction *okAction;
     HbAction *cancelAction;
+    HbLabel *title;
     int queryType;
+    int lMinLength;
+    int lMaxLength;
+    int queryDual;
+    int lEmergencySupported;
+    int isEmergency;
 };
 
 #endif // SECUINOTIFICATIONDIALOG_H

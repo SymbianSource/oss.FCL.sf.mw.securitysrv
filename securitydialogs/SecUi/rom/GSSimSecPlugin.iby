@@ -19,8 +19,8 @@
 #define GSSIMSECPLUGIN_IBY
 
     #ifdef RD_GS_RENOVATION
-
-        ECOM_PLUGIN( GSSimSecPlugin.dll, 10207438.rsc )
+				// Now replaced by a QT plugin
+        // ECOM_PLUGIN( GSSimSecPlugin.dll, 10207438.rsc )
 
     #endif // RD_GS_RENOVATION
 

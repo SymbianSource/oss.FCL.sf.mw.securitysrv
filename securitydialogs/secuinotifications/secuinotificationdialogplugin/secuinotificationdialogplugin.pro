@@ -38,7 +38,8 @@ RESOURCES += secuinotificationdialogplugin.qrc
 
 symbian: {
     TARGET.EPOCALLOWDLLDATA = 1
-    TARGET.CAPABILITY = CAP_GENERAL_DLL
+    # NetworkControl NetworkServices needed for emergency calls
+    TARGET.CAPABILITY = CAP_GENERAL_DLL NetworkControl NetworkServices
     TARGET.UID3 = 0x2102432C    # TODO: allocate UID
 
     pluginstub.sources = secuinotificationdialogplugin.dll
@@ -51,6 +52,7 @@ BLD_INF_RULES.prj_exports += \
   "rom/secuinotificationdialogplugin.iby    CORE_APP_LAYER_IBY_EXPORT_PATH(secuinotificationdialogplugin.iby)"
   
 LIBS += -lxqservice
+LIBS += -lphoneclient
 
 tests {
     test.depends = sub-src
