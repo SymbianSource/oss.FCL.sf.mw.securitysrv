@@ -394,6 +394,7 @@ else
     #endif//RD_REMOTELOCK
     // lock keys
     iAppUi->LockKeysL();
+    // iAppUi->EnableWGListChangeEventListening();	// this was in previous versions. It's not needed because it will come on top of bigClock
     // app to foreground
     iAppUi->BringAppToForegroundL();
          // Reset inactivity time so that Screensaver gets to

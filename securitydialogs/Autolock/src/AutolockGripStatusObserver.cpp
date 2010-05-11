@@ -20,6 +20,8 @@
 #include <AknCapServerDefs.h>
 #include <apgtask.h>
 #include "AutolockGripStatusObserver.h"
+#include "AutolockApp.h"
+#include <aknkeylock.h>
 
 
 EXPORT_C CAutolockGripStatusObserver* CAutolockGripStatusObserver::NewL( MAutolockGripStatusObserver* aObserver, RWsSession& aSession )
@@ -103,6 +105,7 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
         	#endif
     	    //Grip opened
         	TApaTaskList tasklist( iSession );
+        	/* this is old code. It was changed to a new one, following a suggestion from the Slide-handling team
         	TApaTask capserver = tasklist.FindApp( KAknCapServerUid );
         	if( capserver.Exists() )
         	    {
@@ -113,7 +116,21 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
         	    key.iScanCode = EStdKeyDevice0;
         	    capserver.SendKey( key );
         	    }
-
+					*/
+					TApaTask capserver = tasklist.FindApp( KUidAutolock ); 
+					if( capserver.Exists() ) 
+					        { 
+					        TKeyEvent key; 
+					        key.iCode = EKeyBell; 
+					        capserver.SendKey( key ); 
+					        } 
+					RAknKeylock2 keylock; 
+					TInt error( keylock.Connect() ); 
+					if ( !error ) 
+					    { 
+					    keylock.DisableWithoutNote(); 
+					    keylock.Close(); 
+					    } 
     		}
         }
     else

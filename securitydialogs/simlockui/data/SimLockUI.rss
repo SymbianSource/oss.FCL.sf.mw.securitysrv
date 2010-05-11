@@ -32,7 +32,7 @@ NAME SLUI
 #include <appinfo.rh>
 
 #include "simlockui.hrh"
-#include "simlockui.loc"
+#include <simlockui.loc>
 
 // Resource Identifiers
 RESOURCE RSS_SIGNATURE { }

@@ -55,6 +55,9 @@
 #include <apgwgnam.h>
 #include <aknlayoutscalable_avkon.cdl.h>
 
+#include <AknCapServerDefs.h>
+#include <apgtask.h>
+
 //  LOCAL CONSTANTS AND MACROS  
 #define KSysApUid TUid::Uid(0x100058F3)
 #define KPhoneAppUid TUid::Uid(0x100058B3)
@@ -674,7 +677,7 @@ TKeyResponse CAutolockAppUi::HandleKeyEventL(
     const TKeyEvent& aKeyEvent,TEventCode aType)
     {
         
-    if ( aKeyEvent.iCode == EKeyBell || (aType == EEventKeyUp && aKeyEvent.iScanCode == EStdKeyDeviceF) )      
+    if ( aKeyEvent.iCode == EKeyBell || (aType == EEventKeyUp && aKeyEvent.iScanCode == EStdKeyDeviceF)  || (aKeyEvent.iCode == EKeyDeviceF) )
 		{
 		if(iLocked)    
  		    HandleCommandL(ESecUiCmdUnlock);
@@ -1054,8 +1057,11 @@ void CAutolockAppUi::LockSideKeyL()
 	if (!iSideKey1)
 		{
 		RWindowGroup& groupWin=iCoeEnv->RootWin();
-		iSideKey1 = groupWin.CaptureKey(EKeySide,0,0);
-		iSideKey2 = groupWin.CaptureKeyUpAndDowns(EStdKeyDevice6, 0, 0);
+		iSideKey1 = groupWin.CaptureKey(EKeyDeviceF,0,0);	// EKeySide -> EKeyDeviceF
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) capturing EStdKeyDeviceF=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStdKeyDeviceF );
+		#endif
+		iSideKey2 = groupWin.CaptureKeyUpAndDowns(EStdKeyDeviceF, 0, 0);	// EStdKeyDevice6 -> EStdKeyDeviceF
 		}
 	}
 
@@ -1354,9 +1360,32 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
     	    case EEventKeyUp:	// on touch devices, this happens only for the switch-key, which should turn on the lights.
     	    case EEventKey:
     	    case EEventKeyDown:
-    		if(iLocked)
-	    	        SendMessageToSysAp( EEikSecurityQueryLights );
-	    	        break;
+		    		if(iLocked)
+		    				{	// need to capture the switch-key for the case activeCall because Autolock stays on top, even over Akn
+		    	    	TKeyEvent *key = aEvent.Key();
+		    	    	#if defined(_DEBUG)
+		    	    	RDebug::Printf( "%s %s (%u) key->iCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, key->iCode );
+		    	    	RDebug::Printf( "%s %s (%u) key->iScanCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, key->iScanCode );
+		    	    	#endif
+		    	   		if ( (key->iScanCode == EStdKeyDeviceF) || (key->iCode == EKeyDeviceF) )
+		    	   			{
+		    	   			#if defined(_DEBUG)
+		    	   			RDebug::Printf( "%s %s (%u) good key=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		    	   			#endif
+			    				RWsSession& ws = iEikonEnv->WsSession();
+				        	TApaTaskList tasklist( ws );
+				        	TApaTask capserver = tasklist.FindApp( KAknCapServerUid );
+				        	if( capserver.Exists() )
+				        	    {
+		    	   					#if defined(_DEBUG)
+				        	    RDebug::Printf( "%s %s (%u) found KAknCapServerUid=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KAknCapServerUid );
+			        	    	#endif
+				        	    capserver.SendKey( *key );
+				        	    }
+		   	        	SendMessageToSysAp( EEikSecurityQueryLights );
+									}
+								}
+    	    	break;
 		    default:
 		    	iGotEventDownDuringCall=0;	// any other event invalidates the Press inside the BigRedButton
 		    	break;

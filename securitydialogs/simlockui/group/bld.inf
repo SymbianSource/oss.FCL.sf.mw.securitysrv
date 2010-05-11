@@ -34,7 +34,9 @@ simlockui.mmp
 PRJ_EXPORTS
 // Export IBY files
 ../rom/simlockui.iby            CORE_MW_LAYER_IBY_EXPORT_PATH( simlockui.iby) 
-../rom/simlockui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)   
+../rom/simlockui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby) 
+
+../inc/simlockui.loc            MW_LAYER_LOC_EXPORT_PATH(simlockui.loc)  
 
 // For EE texts
 ../rom/simlockui_resources.iby  CORE_APP_LAYER_IBY_EXPORT_PATH(simlockui_resources.iby)    		

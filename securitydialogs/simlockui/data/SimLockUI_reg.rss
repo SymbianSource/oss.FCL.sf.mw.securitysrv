@@ -39,7 +39,7 @@ RESOURCE APP_REGISTRATION_INFO
     hidden = KAppIsHidden;
     // Uncomment and comment previous line to un-hide
     //hidden = KAppNotHidden;
-    localisable_resource_file="\\resource\\apps\\SimLockUI";
+    //localisable_resource_file="\\resource\\apps\\SimLockUI";
     embeddability = KAppNotEmbeddable;
     newfile = KAppDoesNotSupportNewFile;
     }

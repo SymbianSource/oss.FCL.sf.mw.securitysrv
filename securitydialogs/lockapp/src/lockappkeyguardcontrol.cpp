@@ -28,7 +28,8 @@
 #include <aknnotpi.rsg> // keyguard spesific resources
 #include <AknUtils.h>
 #include <activitymanager.h>
-#include <SecondaryDisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
+// this is not needed
+// #include <SecondaryDisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
 #include <featmgr.h> // feature manager
 #include <eikcba.h> // keyguard soft buttons
 #include <eikspane.h>
@@ -158,13 +159,15 @@ void CLockAppKeyguardControl::ConstructL( )
     iKeypadLockedNote->ConstructSleepingNoteL( touchEnabled ? R_KEYLOCK_NOTE_DISPLAY_LOCK_ON_TOUCH :
                                                R_KEYLOCK_NOTE_LOCK_ON );
     iKeypadLockedNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition( 0, 2 );
-    iKeypadLockedNote->PublishDialogL( EAknKeysLockedNote );
+		// this is not needed
+    // iKeypadLockedNote->PublishDialogL( EAknKeysLockedNote );
 
     iKeypadUnlockedNote = new (ELeave) CLockAppLockedNote();
     iKeypadUnlockedNote->ConstructSleepingNoteL( touchEnabled ? R_KEYLOCK_NOTE_DISPLAY_LOCK_OFF_TOUCH :
                                                  R_KEYLOCK_NOTE_LOCK_OFF );
     iKeypadUnlockedNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition( 0, 2 );
-    iKeypadUnlockedNote->PublishDialogL( EAknKeysReleasedNote );
+		// this is not needed
+    // iKeypadUnlockedNote->PublishDialogL( EAknKeysReleasedNote );
 
     iLockedNote = new (ELeave) CLockAppLockedNote();
     if ( touchEnabled )

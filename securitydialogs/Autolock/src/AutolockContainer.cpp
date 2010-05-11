@@ -254,7 +254,9 @@ void CAutolockContainer::Draw(const TRect& aRect) const
 				#if defined(_DEBUG)
 				RDebug::Printf( "%s %s (%u) no Draw value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, value );
 				#endif
-				return;
+				// If it returns, it will not handle orientation changes.
+				// However it will not really draw because the view is hidden
+				// return;
 				}
 			}
 
