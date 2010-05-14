@@ -48,7 +48,7 @@ enum TSecurityUIsSecUIOriginatedQuery
 
 /**
  * Used by SecUI to tell if a query request set by some ETELMM API lock setting function (i.e. SetXXXXSetting)
- * has been canceled sinnce canceling the setting request does not prompt a query cancel event from ETEL.
+ * has been canceled since canceling the setting request does not prompt a query cancel event from ETEL.
  * Old Shared Data constant name: KSecUIOriginatedQuery
  */    
 const TUint32 KSecurityUIsQueryRequestCancel = 0x00000302;
@@ -59,7 +59,26 @@ enum TSecurityUIsQueryRequestCancel
     ESecurityUIsQueryRequestCanceled
     };
 
+/**
+ * Used by Autolock to tell which application has enabled/disabled the keyguard/devicelock , and at which moment.
+ */    
+const TUint32 KSecurityUIsLockInitiatorUID  = 0x00000303;
+const TUint32 KSecurityUIsLockInitiatorTimeHigh = 0x00000304;
+const TUint32 KSecurityUIsLockInitiatorTimeLow  = 0x00000305;
+
+/**
+ * Used to tell SysAp to switch-on the lights.
+ */    
+const TUint32 KSecurityUIsLights  = 0x00000308;
+enum TSecurityUIsLights
+    {
+    ESecurityUIsLightsUninitialized = 0,
+    ESecurityUIsLightsLockOnRequest,
+    ESecurityUIsLightsQueryOnRequest,
+    ESecurityUIsLightsLockOffRequest,
+    ESecurityUIsLightsLastValue
+    };
+
 #endif // SECURITYUISPRIVATEPSKEYS_H
 
 // End of File
-

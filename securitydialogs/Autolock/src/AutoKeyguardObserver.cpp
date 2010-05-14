@@ -27,7 +27,7 @@
 #include <PSVariables.h>
 #include <startupdomainpskeys.h>
 #include <ctsydomainpskeys.h>
-#include <activeidle2domainpskeys.h>
+// #include <activeidle2domainpskeys.h>
 #include <coreapplicationuisdomainpskeys.h>
 // #include <ScreensaverInternalPSKeys.h>
 #include <hwrmdomainpskeys.h>
@@ -349,8 +349,8 @@ void CAutoKeyguardObserver::LockKeysL()
     
     //See whether we are in idle
  		value = 0;   
-    RProperty::Get(KPSUidAiInformation, KActiveIdleState, value);
-    idle = (value == EPSAiForeground);
+    // RProperty::Get(KPSUidAiInformation, KActiveIdleState, value);
+    // idle = (value == EPSAiForeground);
     idle = ETrue; // don't care about idle state. Phone should autolock on any UI, not only HomeSreeen.
     
     value = 0;

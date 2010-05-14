@@ -59,6 +59,7 @@ private slots:
     void handleMemorySelectionChanged(const QString &text);
     void handleCodeTopChanged(const QString &text);
     void handleCodeBottomChanged(const QString &text);
+    void handleCodeTopContentChanged();
 		void saveFocusWidget(QWidget*,QWidget*);
 		void handlebut1Changed();
 		void handlebut2Changed();

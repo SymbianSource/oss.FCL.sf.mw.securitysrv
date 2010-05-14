@@ -20,8 +20,9 @@
 #define C_SECQUERYUI_H
 
 #include <e32base.h>                            // CActive
-#include <hb/hbcore/hbsymbiandevicedialog.h>    // MHbDeviceDialogObserver
+#include <hb/hbcore/hbdevicedialogsymbian.h>    // MHbDeviceDialogObserver
 #include <etelmm.h>
+#include <e32property.h>
 
 #define ESecUiTypeMask  0x0FFFFFF
 
@@ -34,9 +35,12 @@
 #define ESecUiAlphaSupported  0x4000000
 #define ESecUiAlphaNotSupported  0x0000000
 
+#define ESecUiSecretSupported  0x8000000
+#define ESecUiSecretNotSupported  0x0000000
+
 class MSecQueryUiCertificateDetailsProvider;
 class MSecQueryUiDrmDetailsProvider;
-class CHbDeviceDialog;
+class CHbDeviceDialogSymbian;
 class CHbSymbianVariantMap;
 class CActiveSchedulerWait;
 class CApaMaskedBitmap;
@@ -195,7 +199,7 @@ class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
         TInt WaitUntilDeviceDialogClosed();
 
     private:    // data
-        CHbDeviceDialog* iDeviceDialog;
+        CHbDeviceDialogSymbian* iDeviceDialog;
         CHbSymbianVariantMap* iVariantMap;
         CActiveSchedulerWait* iWait;
         TBool iIsDisplayingDialog;

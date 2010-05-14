@@ -37,6 +37,7 @@ public:
 signals:
     void memorySelectionChanged(const QString &text);
     void codeTopChanged(const QString &text);
+    void codeTopContentChanged();
     void codeBottomChanged(const QString &text);
     void but1Changed();
     void but2Changed();

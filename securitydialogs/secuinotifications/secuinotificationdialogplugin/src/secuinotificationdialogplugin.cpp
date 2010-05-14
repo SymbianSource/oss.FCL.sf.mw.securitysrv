@@ -90,7 +90,8 @@ bool SecUiNotificationDialogPlugin::deviceDialogInfo( const QString &deviceDialo
     Q_UNUSED(deviceDialogType);
     Q_UNUSED(parameters);
 
-    info->group = DeviceNotificationDialogGroup;	// TODO this should be SecurityGroup , but it's still not available
+    //info->group = DeviceNotificationDialogGroup;	// TODO this should be SecurityGroup , but it's still not available, Commented out by 10.1 Integration
+	info->group = SecurityGroup;	// Added by 10.1 Integration... It's working better with this layer.
     info->flags = NoDeviceDialogFlags;
     info->priority = DefaultPriority;
 

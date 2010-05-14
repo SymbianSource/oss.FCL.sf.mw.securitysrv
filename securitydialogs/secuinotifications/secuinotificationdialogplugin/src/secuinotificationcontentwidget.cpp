@@ -39,6 +39,9 @@
 #define ESecUiAlphaSupported  0x4000000
 #define ESecUiAlphaNotSupported  0x0000000
 
+#define ESecUiSecretSupported  0x8000000
+#define ESecUiSecretNotSupported  0x0000000
+
 #define ESecUiMaskFlags  0xFF000000
 #define ESecUiMaskType   0x00FFFFFF
 
@@ -186,11 +189,26 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 		    	{
 		    	qDebug() << "SecUiNotificationContentWidget::KCodeTop setUpAsLatinAlphabetOnlyEditor";
  	    		codeTop->setInputMethodHints(Qt::ImhNone);
-			    // what about this: editorInterface.setEditorClass(HbInputEditorClassPassword);
+		  		}
+ 		    if (queryType & ESecUiSecretSupported)
+		    	{
+		    	qDebug() << "SecUiNotificationContentWidget::KCodeTop ESecUiSecretSupported";
+ 	    		codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
+ 	    		// note that codeButtom is never in secret mode. This nevertheless is restricted by the caller.
 		  		}
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop 3";
+				codeTop->setMaxLength(lMaxLength);
+				
+				if (parameters.contains(KDefaultCode)) {
+					qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+  	      QString defaultCode = parameters.value(KDefaultCode).toString();
+    	    qDebug() << defaultCode;
+					codeTop->setText(defaultCode);
+					}
+				qDebug() << "SecUiNotificationContentWidget::KCodeTop 4";
+
         connect(codeTop, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
-        connect(codeTop, SIGNAL(contentsChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
+        connect(codeTop, SIGNAL(contentsChanged()), this, SIGNAL(codeTopContentChanged()));
     		mainLayout->addItem(codeTop);
     		if (parameters.contains(KCodeBottom))
     			{
@@ -225,9 +243,11 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
         connect(but1, SIGNAL(clicked()), this, SIGNAL(but1Changed()));
         connect(but2, SIGNAL(clicked()), this, SIGNAL(but2Changed()));
         connect(but3, SIGNAL(clicked()), this, SIGNAL(but3Changed()));
+        #if defined(_DEBUG)
         mainLayoutButtons->addItem(but1);
         mainLayoutButtons->addItem(but2);
         mainLayoutButtons->addItem(but3);
+        #endif
 
         mainLayout->addItem(mainLayoutButtons);
         

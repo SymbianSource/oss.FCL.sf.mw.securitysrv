@@ -39,6 +39,7 @@ const QString KCodeTop = "codeTop";
 const QString KCodeBottom = "codeBottom";	// not really needed because is never sent back
 const QString KEmergency = "emergency";
 const QString KInvalidNewLockCode = "invalidNewLockCode";
+const QString KDefaultCode = "DefaultCode";
 
 // Keys for the return values passed back to calling application
 const QString KResultAccepted = "accepted";         // int

@@ -28,7 +28,8 @@
 #include <aknnotpi.rsg> // keyguard spesific resources
 #include <AknUtils.h>
 #include <activitymanager.h>
-#include <SecondaryDisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
+// this is not needed
+// #include <SecondaryDisplay/AknSecondaryDisplayDefs.h> // publishing keyguard notes to secondary display
 #include <featmgr.h> // feature manager
 #include <eikcba.h> // keyguard soft buttons
 #include <eikspane.h>
@@ -37,7 +38,7 @@
 #include <settingsinternalcrkeys.h>
 // #include <ScreensaverInternalPSKeys.h>
 #include <hwrmdomainpskeys.h>
-#include <activeidle2domainpskeys.h>
+// #include <activeidle2domainpskeys.h>
 //#include <CoreApplicationUIsPrivateCRKeys.h> TODO remove
 #include <coreapplicationuisdomainpskeys.h>
 #include <ctsydomainpskeys.h>
@@ -158,13 +159,15 @@ void CLockAppKeyguardControl::ConstructL( )
     iKeypadLockedNote->ConstructSleepingNoteL( touchEnabled ? R_KEYLOCK_NOTE_DISPLAY_LOCK_ON_TOUCH :
                                                R_KEYLOCK_NOTE_LOCK_ON );
     iKeypadLockedNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition( 0, 2 );
-    iKeypadLockedNote->PublishDialogL( EAknKeysLockedNote );
+		// this is not needed
+    // iKeypadLockedNote->PublishDialogL( EAknKeysLockedNote );
 
     iKeypadUnlockedNote = new (ELeave) CLockAppLockedNote();
     iKeypadUnlockedNote->ConstructSleepingNoteL( touchEnabled ? R_KEYLOCK_NOTE_DISPLAY_LOCK_OFF_TOUCH :
                                                  R_KEYLOCK_NOTE_LOCK_OFF );
     iKeypadUnlockedNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition( 0, 2 );
-    iKeypadUnlockedNote->PublishDialogL( EAknKeysReleasedNote );
+		// this is not needed
+    // iKeypadUnlockedNote->PublishDialogL( EAknKeysReleasedNote );
 
     iLockedNote = new (ELeave) CLockAppLockedNote();
     if ( touchEnabled )
@@ -294,8 +297,9 @@ TBool CLockAppKeyguardControl::AutoActivationAllowedL( )
     ongoingCall = (value > EPSCTsyCallStateNone);
     INFO_2("CLockAppKeyguardControl::AutoActivationAllowedL - ongoingCall: %d %d", value, ongoingCall);
     value = 0;
-    RProperty::Get( KPSUidAiInformation, KActiveIdleState, value );
-    idle = (value == EPSAiForeground);
+    // RProperty::Get( KPSUidAiInformation, KActiveIdleState, value );
+    // idle = (value == EPSAiForeground);
+    idle = ETrue; // don't care about idle state. Phone should autolock on any UI, not only HomeSreeen.
     INFO_2("CLockAppKeyguardControl::AutoActivationAllowedL - idle: %d %d", value, idle);
     value = 0;
 		/* This is not used any more because screensavers are removed now

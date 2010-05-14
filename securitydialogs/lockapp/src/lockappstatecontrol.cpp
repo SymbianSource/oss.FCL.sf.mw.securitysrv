@@ -35,7 +35,7 @@
 #include <settingsinternalcrkeys.h>
 // #include <ScreensaverInternalPSKeys.h>
 #include <ctsydomainpskeys.h>
-#include <activeidle2domainpskeys.h>
+// #include <activeidle2domainpskeys.h>
 
 #include "GlobalWindowPriorities.h"
 

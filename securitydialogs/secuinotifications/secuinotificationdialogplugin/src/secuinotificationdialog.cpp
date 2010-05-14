@@ -37,6 +37,9 @@
 #define ESecUiAlphaSupported  0x4000000
 #define ESecUiAlphaNotSupported  0x0000000
 
+#define ESecUiSecretSupported  0x8000000
+#define ESecUiSecretNotSupported  0x0000000
+
 #define ESecUiMaskFlags  0xFF000000
 #define ESecUiMaskType   0x00FFFFFF
 
@@ -316,6 +319,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 
     connect(content, SIGNAL(codeTopChanged(const QString &)), this, SLOT(handleCodeTopChanged(const QString &)));
     connect(content, SIGNAL(codeBottomChanged(const QString &)), this, SLOT(handleCodeBottomChanged(const QString &)));
+    connect(content, SIGNAL(codeTopContentChanged()), this, SLOT(handleCodeTopContentChanged()));
     connect(content, SIGNAL(but1Changed()), this, SLOT(handlebut1Changed()));
     connect(content, SIGNAL(but2Changed()), this, SLOT(handlebut2Changed()));
     connect(content, SIGNAL(but3Changed()), this, SLOT(handlebut3Changed()));
@@ -414,6 +418,13 @@ void SecUiNotificationDialog::handleMemorySelectionChanged(const QString &text)
     mResultMap.insert(KSelectedMemoryIndex, memorySelection);
     //TODO: do we need emit here, or would it be better to send all data at the end?
     //emit deviceDialogData(mResultMap);
+    }
+
+void SecUiNotificationDialog::handleCodeTopContentChanged()
+    {
+    	qDebug() << "SecUiNotificationDialog::handleCodeTopContentChanged";
+    	qDebug() << codeTop->text();
+    	handleCodeTopChanged(codeTop->text());
     }
 
 // ----------------------------------------------------------------------------
@@ -525,6 +536,7 @@ void SecUiNotificationDialog::handlebut3Changed()
     	qDebug() << codeTopText;
     	codeTopText = codeTopText + "5" ;
     	qDebug() << "codeTopText+5";
+    	codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
     	qDebug() << codeTopText;
     	codeTop->setText(codeTopText);
     }

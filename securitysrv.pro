@@ -17,4 +17,4 @@
 TEMPLATE = subdirs
 
 SUBDIRS += securitydialogs/securitydialogs.pro
-
+SUBDIRS += cpsecplugins/cpsecplugins.pro
