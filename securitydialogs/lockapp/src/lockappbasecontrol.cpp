@@ -32,7 +32,7 @@
 CLockAppBaseControl::CLockAppBaseControl( MLockAppStateControl& aStateControl ) :
     iStateControl(aStateControl), iWindowGroup( iEikonEnv->RootWin())
     {
-	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	INFO_4( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     }
 
 // ---------------------------------------------------------------------------
@@ -40,7 +40,7 @@ CLockAppBaseControl::CLockAppBaseControl( MLockAppStateControl& aStateControl ) 
 // ---------------------------------------------------------------------------
 void CLockAppBaseControl::ConstructL( )
     {
-	RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+	INFO_4( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     iKeyPattern = CLockAppKeyPattern::NewL( );
     }
 
@@ -176,8 +176,8 @@ void CLockAppBaseControl::HandleDeActivateEventL( TUint /*aEnvMask*/ )
 // ---------------------------------------------------------------------------
 void CLockAppBaseControl::CapturePrimaryKeys( const TBool aCapture )
     {   
-    	RDebug::Printf( "%s %s (%u) aCapture=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCapture );
-    	RDebug::Printf( "%s %s (%u) iKeyPattern=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iKeyPattern );
+    	INFO_4( "%s %s (%u) aCapture=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCapture );
+    	INFO_4( "%s %s (%u) iKeyPattern=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iKeyPattern );
     if ( iKeyPattern )
         {
         if ( aCapture )

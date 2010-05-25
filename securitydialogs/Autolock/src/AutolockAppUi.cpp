@@ -767,14 +767,6 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
             TRAPD(err,
 			{
 			iDeviceLockQueryStatus = ETrue;
-			TBool iAppKeyBelongedToBigClock=EFalse;
-			if(!iAppKey)
-				{
-				// RDebug::Printf( "%s %s (%u) stealing EStdKeyApplication0 from BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-				RWindowGroup& groupWin=iCoeEnv->RootWin();
-				iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key now, in case that it was given to BigClock
-				iAppKeyBelongedToBigClock=ETrue;
-				}
 			if(handler->AskSecCodeInAutoLockL())
 				{		
 				iLocked = EFalse;
@@ -786,13 +778,6 @@ void CAutolockAppUi::HandleCommandL(TInt aCommand)
 				}
             else
 				{  // make sure that we will be topmost still
-					if(iAppKey && iAppKeyBelongedToBigClock)
-						{
-						// RDebug::Printf( "%s %s (%u) giving EStdKeyApplication0 to BigClock=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-						RWindowGroup& groupWin=iCoeEnv->RootWin();
-						groupWin.CancelCaptureKeyUpAndDowns(iAppKey);	// give S60-Application key back to BigClock
-						iAppKey = 0;
-						}
 				    iDeviceLockQueryStatus = EFalse;
                     TInt callState;
                     RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
@@ -1003,25 +988,7 @@ void CAutolockAppUi::LockKeysL()
 	if (!iAppKey)
 		{
 		RWindowGroup& groupWin=iCoeEnv->RootWin();
-		#if defined(_DEBUG)
-		RDebug::Printf( "%s %s (%u) searching for popupclock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
-		#endif
-		TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
-		const TUid KBigClockUid = { 0x2000FDC3 };
-		TApaTask task( taskList.FindApp( KBigClockUid ) );
-		if ( task.Exists() )
-			{
-			#if defined(_DEBUG)
-			RDebug::Printf( "%s %s (%u) popupclock.exe is running. Not capturing EStdKeyApplication0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStdKeyApplication0 );
-			#endif
-			}
-		else
-			{
-			#if defined(_DEBUG)
-			RDebug::Printf( "%s %s (%u) popupclock.exe not running. Not capturing EStdKeyApplication0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStdKeyApplication0 );
-			#endif
-			iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key
-			}
+		iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key
 		}
 	LockSideKeyL();
 	}

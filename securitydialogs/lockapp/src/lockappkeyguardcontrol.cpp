@@ -526,8 +526,10 @@ void CLockAppKeyguardControl::DisplayConfirmationNote( )
 // ---------------------------------------------------------------------------
 TKeyResponse CLockAppKeyguardControl::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType )
     {
-    RDebug::Printf( "%s %s (%u) aKeyEvent.iCode=%x aType=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyEvent.iCode, aType );
-    RDebug::Printf( "%s %s (%u) iActive=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iActive );
+    
+    INFO_4( "%s %s (%u) iActive=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iActive );
+    INFO_4( "%s (%u) aKeyEvent.iCode=%x aType=%x", __FILE__, __LINE__, aKeyEvent.iCode, aType );
+    
     if ( iActive )
         {
         		if(AknLayoutUtils::PenEnabled())
@@ -551,7 +553,7 @@ TKeyResponse CLockAppKeyguardControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,
                     iStateControl.DisableKeyguardL( ETrue );
                     break;
                 default:
-        						RDebug::Printf( "%s %s (%u) default=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+        						INFO_4( "%s %s (%u) default=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
                     break;
                 }
             }

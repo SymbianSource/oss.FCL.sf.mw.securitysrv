@@ -60,7 +60,7 @@ const TInt KTimeBeforeRetryingServerConnection( 50000 );
 CLockAppDevicelockControl* CLockAppDevicelockControl::NewL(MLockAppStateControl& aStateControl, RWindowGroup& aWg )
     {
     CLockAppDevicelockControl* self = new (ELeave) CLockAppDevicelockControl( aStateControl );
-    RDebug::Printf( "%s %s (%u) self=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, self );
+    INFO_4( "%s %s (%u) self=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, self );
 
     CleanupStack::PushL( self );
     self->ConstructL( aWg );
@@ -74,7 +74,7 @@ CLockAppDevicelockControl* CLockAppDevicelockControl::NewL(MLockAppStateControl&
 CLockAppDevicelockControl::CLockAppDevicelockControl(MLockAppStateControl& aStateControl) :
     CLockAppBaseControl(aStateControl), iShowingSecCodeQuery(EFalse)
     {
-    	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	INFO_4( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 
     }
 
@@ -83,7 +83,7 @@ CLockAppDevicelockControl::CLockAppDevicelockControl(MLockAppStateControl& aStat
 // ---------------------------------------------------------------------------
 CLockAppDevicelockControl::~CLockAppDevicelockControl( )
     {
-    	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	INFO_4( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 
     /*****************************************************
     *    S60 Customer / ETel
@@ -93,31 +93,31 @@ CLockAppDevicelockControl::~CLockAppDevicelockControl( )
     *    S60 Customer / TSY
     *    Needs customer TSY implementation
     *****************************************************/
-    RDebug::Printf( "%s %s (%u) iCustomPhoneInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
+    INFO_4( "%s %s (%u) iCustomPhoneInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
     iCustomPhoneInitialized=-1;
     if ( iCustomPhone.SubSessionHandle( ) )
         {
         iCustomPhone.Close( );
-        RDebug::Printf( "%s %s (%u) iCustomPhoneInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
+        INFO_4( "%s %s (%u) iCustomPhoneInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
         iCustomPhoneInitialized=-2;
         }
 
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=-1;
     if ( iPhone.SubSessionHandle( ) )
         {
         iPhone.Close( );
-        RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+        INFO_4( "%s %s (%u) iPhoneInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 				iPhoneInitialized=-2;
         }
 
-    RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+    INFO_4( "%s %s (%u) iTelServerInitialized=%x -> -1 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
     iTelServerInitialized=-1;
     if ( iTelServer.Handle( ) )
         {
         iTelServer.UnloadPhoneModule( KMmTsyModuleName );
         iTelServer.Close( );
-        RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+        INFO_4( "%s %s (%u) iTelServerInitialized=%x -> -2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
         iTelServerInitialized=-2;
         }
     if ( iActivityManager )
@@ -214,7 +214,7 @@ void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg )
         }
     ERROR(err, "CLockAppDevicelockControl::ConnectToPhoneL - connecting to etel server");
     User::LeaveIfError( err );
-    RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+    INFO_4( "%s %s (%u) iTelServerInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
     iTelServerInitialized=2;
 
 
@@ -235,7 +235,7 @@ void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg )
         ERROR(err, "CLockAppDevicelockControl::ConnectToPhoneL - loading TSY");
         User::LeaveIfError( err );
         }
-    RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> 3 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+    INFO_4( "%s %s (%u) iTelServerInitialized=%x -> 3 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
     iTelServerInitialized=3;
 
     /*****************************************************
@@ -245,16 +245,16 @@ void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg )
     INFO( "CLockAppDevicelockControl::ConnectToPhoneL - opening phone");
     RTelServer::TPhoneInfo PhoneInfo;
     User::LeaveIfError( iTelServer.SetExtendedErrorGranularity( RTelServer::EErrorExtended ) );
-    RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> 5 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+    INFO_4( "%s %s (%u) iTelServerInitialized=%x -> 5 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
     iTelServerInitialized=5;
     User::LeaveIfError( iTelServer.GetPhoneInfo( KPhoneIndex, PhoneInfo ) );
-    RDebug::Printf( "%s %s (%u) iTelServerInitialized=%x -> 6 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
+    INFO_4( "%s %s (%u) iTelServerInitialized=%x -> 6 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iTelServerInitialized );
     iTelServerInitialized=6;
     User::LeaveIfError( iPhone.Open( iTelServer, PhoneInfo.iName ) );
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=2;
     User::LeaveIfError( iCustomPhone.Open( iPhone ) );
-		RDebug::Printf( "%s %s (%u) iCustomPhoneInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
+		INFO_4( "%s %s (%u) iCustomPhoneInitialized=%x -> 2 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iCustomPhoneInitialized );
 		iCustomPhoneInitialized=2;
 
     INFO( "CLockAppDevicelockControl::ConnectToPhoneL - phone opened");
@@ -279,7 +279,7 @@ void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg )
 
     TRequestStatus getLockInfoStatus;
     iPhone.GetLockInfo( getLockInfoStatus, lockType, lockInfoPkg );
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 3 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 3 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=3;
     User::WaitForRequest( getLockInfoStatus );
 
@@ -392,7 +392,7 @@ void CLockAppDevicelockControl::ConnectToPhoneL( RWindowGroup& aWg )
     if ( systemLocked )
         {
         INFO( "CLockAppDevicelockControl::ConnectToPhoneL - Lock system");
-        RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+        INFO_4( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
         iStateControl.EnableDevicelockL( EDevicelockManual );
         INFO( "CLockAppDevicelockControl::ConnectToPhoneL - Lock system. Done");
         }
@@ -458,7 +458,7 @@ void CLockAppDevicelockControl::DefinePubSubKeysL()
 // ----------------------------------------------------------
 TBool CLockAppDevicelockControl::IsHiddenReset( )
     {
-    	    	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    	    	INFO_4( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 
     TBool ret( EFalse );
     TInt startupReason( ENormalStartup );
@@ -476,7 +476,7 @@ TBool CLockAppDevicelockControl::IsHiddenReset( )
 			err=file.Open(fs, KTestHiddenReset, EFileStreamText|EFileRead|EFileShareReadersOnly);
 			if(err==KErrNone)
 				{
-				RDebug::Printf( "%s %s (%u) ??? TestHiddenReset=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+				INFO_4( "%s %s (%u) ??? TestHiddenReset=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
 				ret = ETrue;
 				}
 			file.Close();
@@ -561,12 +561,12 @@ TBool CLockAppDevicelockControl::ETelActivationAllowed( )
     *****************************************************/
 
 
-		RDebug::Printf( "%s %s (%u) 111 value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		INFO_4( "%s %s (%u) 111 value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 
-    // RDebug::Printf( "%s %s (%u) iStateControl=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iStateControl );
+    // INFO_4( "%s %s (%u) iStateControl=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iStateControl );
 
-		RDebug::Printf( "%s %s (%u) checking iPhoneInitialized=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 4 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) checking iPhoneInitialized=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 4 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=4;
 
     RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
@@ -574,14 +574,14 @@ TBool CLockAppDevicelockControl::ETelActivationAllowed( )
     RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
     RMobilePhone::TMobilePhoneLockSetting lockChange(RMobilePhone::ELockSetDisabled);
 
-		RDebug::Printf( "%s %s (%u) before getLockInfoStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		INFO_4( "%s %s (%u) before getLockInfoStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     TRequestStatus getLockInfoStatus;
-		RDebug::Printf( "%s %s (%u) after getLockInfoStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		INFO_4( "%s %s (%u) after getLockInfoStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 		
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 5 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 5 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=5;
     iPhone.GetLockInfo( getLockInfoStatus, lockType, lockInfoPkg );
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 6 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 6 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=6;
     User::WaitForRequest( getLockInfoStatus );
 
@@ -621,10 +621,10 @@ TBool CLockAppDevicelockControl::ETelActivationAllowed( )
         RProperty::Set( KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsSystemLockOriginated );
         TRequestStatus setLockSettingStatus;
         lockChange = RMobilePhone::ELockSetEnabled;
-				RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 8 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+				INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 8 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 				iPhoneInitialized=8;
         iPhone.SetLockSetting( setLockSettingStatus, lockType, lockChange );
-				RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 9 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+				INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 9 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 				iPhoneInitialized=9;
         User::WaitForRequest(setLockSettingStatus);
         INFO_1( "CLockAppDevicelockControl::ETelActivationAllowed - SetLockSetting status: %d ", setLockSettingStatus.Int() );
@@ -658,8 +658,8 @@ TBool CLockAppDevicelockControl::ActivationAllowedL( TDevicelockReason aReason )
 	         };
 	     TInt tRet = RProperty::Get(KHFVuiModePSUid, EHFVuiPSModeId, vuiValue);  // also 0 if can't get because permissions or because doesn't exists
 	     #if defined(_DEBUG)
-	         RDebug::Printf( "%s %s (%u) getting KHFVuiModePSUid+EHFVuiPSModeId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, tRet );
-	         RDebug::Printf( "%s %s (%u) vuiValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, vuiValue );
+	         INFO_4( "%s %s (%u) getting KHFVuiModePSUid+EHFVuiPSModeId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, tRet );
+	         INFO_4( "%s %s (%u) vuiValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, vuiValue );
 	     #endif
 	     if(vuiValue)
 	         {
@@ -673,8 +673,8 @@ TBool CLockAppDevicelockControl::ActivationAllowedL( TDevicelockReason aReason )
 	     TInt secQueryStatus = ESecurityQueryUninitialized;
 	     TInt tRet = RProperty::Get(KPSUidStartup, KStartupSecurityCodeQueryStatus, secQueryStatus);  // also 0 if can't get because permissions or because doesn't exists
 	     #if defined(_DEBUG)
-	         RDebug::Printf( "%s %s (%u) getting KPSUidStartup+KStartupSecurityCodeQueryStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, tRet );
-	         RDebug::Printf( "%s %s (%u) secQueryStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, secQueryStatus );
+	         INFO_4( "%s %s (%u) getting KPSUidStartup+KStartupSecurityCodeQueryStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, tRet );
+	         INFO_4( "%s %s (%u) secQueryStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, secQueryStatus );
 	     #endif
 	     if(secQueryStatus==ESecurityQueryActive)
 	         {
@@ -848,8 +848,8 @@ void CLockAppDevicelockControl::HandleDeActivateEventL( TUint aEnvMask )
 // ---------------------------------------------------------------------------
 void CLockAppDevicelockControl::HandleEnvironmentChange( TUint aEnvMask, TUint aEventMask )
     {
-    RDebug::Printf( "%s %s (%u) aEnvMask=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aEnvMask );
-    RDebug::Printf( "%s %s (%u) aEventMask=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aEventMask );
+    INFO_4( "%s %s (%u) aEnvMask=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aEnvMask );
+    INFO_4( "%s %s (%u) aEventMask=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aEventMask );
 
     if ( IsBitFieldSet( aEventMask, KLockAppEnvScreenSaverOn ) )
         {
@@ -860,13 +860,13 @@ void CLockAppDevicelockControl::HandleEnvironmentChange( TUint aEnvMask, TUint a
         {
         TInt lockValue=0;
     		iPSAutolockState->GetKeyValue( lockValue );
-    		RDebug::Printf( "%s %s (%u) lockValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lockValue );
+    		INFO_4( "%s %s (%u) lockValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lockValue );
     		if(lockValue>EAutolockOff)	// device is locked and query is not open
     			{
     			// indicate to TARM that it should not ask for password
     			TInt secUiOriginatedQuery(ESecurityUIsSecUIOriginatedUninitialized);
     			RProperty::Get(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, secUiOriginatedQuery);
-    			RDebug::Printf( "%s %s (%u) secUiOriginatedQuery=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, secUiOriginatedQuery );
+    			INFO_4( "%s %s (%u) secUiOriginatedQuery=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, secUiOriginatedQuery );
     			RProperty::Set( KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery, ESecurityUIsFpsOriginated );
 
         	HandleUnlockCommandL( );
@@ -877,24 +877,24 @@ void CLockAppDevicelockControl::HandleEnvironmentChange( TUint aEnvMask, TUint a
         }
     if ( IsBitFieldSet( aEnvMask, KLockAppEnvGrip ) )
     	{
-      RDebug::Printf( "%s %s (%u) iShowingSecCodeQuery=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iShowingSecCodeQuery );
+      INFO_4( "%s %s (%u) iShowingSecCodeQuery=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iShowingSecCodeQuery );
 	    if ( IsBitFieldSet( aEventMask, KLockAppEnvGrip ) )	//Grip opened
 	        {
 	        if(iShowingSecCodeQuery==EFalse)
 	        	{
 	        		TInt lockValue=0;
 	        		iPSAutolockState->GetKeyValue( lockValue );
-	        		RDebug::Printf( "%s %s (%u) lockValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lockValue );
+	        		INFO_4( "%s %s (%u) lockValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lockValue );
 	        		if(lockValue>EAutolockOff)
 	        			{
 				        // ask unlock code by sending the menu key. This works on touch?
 			        	TApaTaskList tasklist( iEikonEnv->WsSession() );
 			        	#define KAknCapServerUid TUid::Uid( 0x10207218 )
 			        	TApaTask capserver = tasklist.FindApp( KAknCapServerUid );
-    						RDebug::Printf( "%s %s (%u) KAknCapServerUid=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KAknCapServerUid );
+    						INFO_4( "%s %s (%u) KAknCapServerUid=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KAknCapServerUid );
 			        	if( capserver.Exists() )
 			        	    {
-	        	        RDebug::Printf( "%s %s (%u) capserver.Exists() EStdKeyDevice0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStdKeyDevice0 );
+	        	        INFO_4( "%s %s (%u) capserver.Exists() EStdKeyDevice0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStdKeyDevice0 );
 			        	    TKeyEvent key;
 			        	    key.iCode = EKeyDevice0;
 			        	    key.iModifiers = 0;
@@ -912,7 +912,7 @@ void CLockAppDevicelockControl::HandleEnvironmentChange( TUint aEnvMask, TUint a
             //the device lock query is on top
 	        	//generate cancel key event
 	        	const TInt KCancelKeyCode( 165 );
-	        	RDebug::Printf( "%s %s (%u) KCancelKeyCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KCancelKeyCode );
+	        	INFO_4( "%s %s (%u) KCancelKeyCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KCancelKeyCode );
 
 	        	TRawEvent rawEvent;
 	        	rawEvent.Set( TRawEvent::EKeyDown, KCancelKeyCode );
@@ -927,8 +927,8 @@ void CLockAppDevicelockControl::HandleEnvironmentChange( TUint aEnvMask, TUint a
 // ---------------------------------------------------------------------------
 void CLockAppDevicelockControl::HandleCenRepNotify(TUid /*aCenRepUid*/, TUint32 aKeyId, TInt aValue )
     {
-    RDebug::Printf( "%s %s (%u) aKeyId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyId );
-    RDebug::Printf( "%s %s (%u) aValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aValue );
+    INFO_4( "%s %s (%u) aKeyId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyId );
+    INFO_4( "%s %s (%u) aValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aValue );
     switch ( aKeyId )
         {
         case KSettingsAutoLockTime:
@@ -947,9 +947,9 @@ void CLockAppDevicelockControl::HandleCenRepNotify(TUid /*aCenRepUid*/, TUint32 
 // ---------------------------------------------------------------------------
 void CLockAppDevicelockControl::HandlePubSubNotify(TUid aPubSubUid, TUint aKeyId, TInt aValue )
     {
-    RDebug::Printf( "%s %s (%u) KPSUidCoreApplicationUIs=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KPSUidCoreApplicationUIs );
-    RDebug::Printf( "%s %s (%u) aKeyId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyId );
-    RDebug::Printf( "%s %s (%u) aValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aValue );
+    INFO_4( "%s %s (%u) KPSUidCoreApplicationUIs=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KPSUidCoreApplicationUIs );
+    INFO_4( "%s %s (%u) aKeyId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyId );
+    INFO_4( "%s %s (%u) aValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aValue );
     if ( aPubSubUid == KPSUidCoreApplicationUIs )
         {
         switch ( aKeyId )
@@ -973,8 +973,8 @@ void CLockAppDevicelockControl::HandlePubSubNotify(TUid aPubSubUid, TUint aKeyId
 // ---------------------------------------------------------------------------
 TKeyResponse CLockAppDevicelockControl::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType )
     {
-    RDebug::Printf( "%s %s (%u) aKeyEvent.iCode=%x aType=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyEvent.iCode, aType );
-    RDebug::Printf( "%s %s (%u) iActive=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iActive );
+    INFO_4( "%s (%u) aKeyEvent.iCode=%x aType=%x", __FILE__, __LINE__, aKeyEvent.iCode, aType );
+    INFO_4( "%s %s (%u) iActive=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iActive );
     if ( iActive )
         {
     		if(AknLayoutUtils::PenEnabled())
@@ -1010,18 +1010,18 @@ void CLockAppDevicelockControl::HandleUnlockCommandL( )
     INFO( "CLockAppDevicelockControl::HandleUnlockCommandL" );
     // inform sysap to put lights on left soft key press
     SendMessageToSysAp( EEikKeyLockLightsOnRequest );
-		RDebug::Printf( "%s %s (%u) iPhoneInitialized=%x -> 10 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
+		INFO_4( "%s %s (%u) iPhoneInitialized=%x -> 10 ", __FILE__, __PRETTY_FUNCTION__, __LINE__, iPhoneInitialized );
 		iPhoneInitialized=10;
     CSecurityHandler* handler = new (ELeave) CSecurityHandler( iPhone );
-		RDebug::Printf( "%s %s (%u) got handler=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		INFO_4( "%s %s (%u) got handler=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     CleanupStack::PushL( handler );
     TSecUi::InitializeLibL( );
-		RDebug::Printf( "%s %s (%u) got TSecUi::InitializeLibL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+		INFO_4( "%s %s (%u) got TSecUi::InitializeLibL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
     iShowingSecCodeQuery = ETrue;
     TRAPD(err, {
-								RDebug::Printf( "%s %s (%u) before AskSecCodeInAutoLockL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+								INFO_4( "%s %s (%u) before AskSecCodeInAutoLockL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
                 TBool ret = handler->AskSecCodeInAutoLockL();
-								RDebug::Printf( "%s %s (%u) after AskSecCodeInAutoLockL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ret );
+								INFO_4( "%s %s (%u) after AskSecCodeInAutoLockL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ret );
                 INFO_1( "CLockAppDevicelockControl::HandleUnlockCommandL - AskSecCodeInAutoLockL = %d", ret );
                 if ( ret )
                     {

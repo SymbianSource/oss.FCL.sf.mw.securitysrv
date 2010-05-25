@@ -68,7 +68,7 @@ CLockAppCenRepObserver::CLockAppCenRepObserver( MLockAppObserverInterface* aObse
 void CLockAppCenRepObserver::ConstructL( )
     {
     // init cenrep connection
-RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+INFO_4( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     iRepository = CRepository::NewL( iCenRepUid );
     iNotifyHandler = CCenRepNotifyHandler::NewL( *this, *iRepository,
             CCenRepNotifyHandler::EIntKey, iKeyId );
@@ -88,7 +88,7 @@ TInt CLockAppCenRepObserver::GetValue(TInt& aValue )
 // ---------------------------------------------------------------------------
 TInt CLockAppCenRepObserver::GetKeyValue(TUint32 aKey, TInt& aValue )
     {
-    	    RDebug::Printf( "%s %s (%u) aKey=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKey );
+    	    INFO_4( "%s %s (%u) aKey=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKey );
 
     return iRepository->Get( aKey, aValue );
     }
@@ -114,7 +114,7 @@ TInt CLockAppCenRepObserver::SetKeyValue(TUint32 aKey, TInt aValue )
 // ---------------------------------------------------------------------------
 void CLockAppCenRepObserver::HandleNotifyInt(TUint32 aKeyId, TInt aValue )
     {
-RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+INFO_4( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     if ( aKeyId == iKeyId )
         {
         if ( iObserver )
