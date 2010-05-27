@@ -209,7 +209,17 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
         connect(codeTop, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
         connect(codeTop, SIGNAL(contentsChanged()), this, SIGNAL(codeTopContentChanged()));
+
+				if (parameters.contains(KDefaultCode)) {	// this is done in this step so that the OK becomes valid (if rules are fulfilled)
+					qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+  	      QString defaultCode = parameters.value(KDefaultCode).toString();
+    	    qDebug() << defaultCode;
+					codeTop->setText(defaultCode);
+					}
+				qDebug() << "SecUiNotificationContentWidget::KCodeTop 4";
+
     		mainLayout->addItem(codeTop);
+    		// double-query
     		if (parameters.contains(KCodeBottom))
     			{
     			queryDual=1;
@@ -228,7 +238,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 	 		    if (queryType & ESecUiAlphaSupported)
 			    	{
 			    	qDebug() << "SecUiNotificationContentWidget::KCodeBottom setUpAsLatinAlphabetOnlyEditor";
-	 	    		codeTop->setInputMethodHints(Qt::ImhNone);
+	 	    		codeBottom->setInputMethodHints(Qt::ImhNone);
 			  		}
 					qDebug() << "SecUiNotificationContentWidget::KCodeBottom 3";
 	        connect(codeBottom, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));
@@ -251,7 +261,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
         mainLayout->addItem(mainLayoutButtons);
         
-        codeTop->setFocus();
+        codeTop->setFocus();	// this should open the VKB
 
     }
 

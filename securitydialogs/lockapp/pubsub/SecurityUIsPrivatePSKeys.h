@@ -67,6 +67,25 @@ const TUint32 KSecurityUIsLockInitiatorTimeHigh = 0x00000304;
 const TUint32 KSecurityUIsLockInitiatorTimeLow  = 0x00000305;
 
 /**
+ * Used by Autolock to tell the status of screensaver 
+ */    
+const TUint32 KSecurityUIsScreenSaverStatus  = 0x00000306;
+enum TSecurityUIsScreenSaverValues
+    {
+    ESecurityUIsScreenSaverUninitialized = 0,
+    ESecurityUIsScreenSaverOn,
+    ESecurityUIsScreenSaverOff,
+    ESecurityUIsScreenSaverOffWhileUnguardQuery,
+    ESecurityUIsScreenSaverOffWhileUnlockQuery,
+    ESecurityUIsScreenSaverLastValue
+    };
+
+/**
+ * Used by any applicattion, to send a Code for Secui
+ */    
+const TUint32 KSecurityUIsTestCode  = 0x00000307;
+
+/**
  * Used to tell SysAp to switch-on the lights.
  */    
 const TUint32 KSecurityUIsLights  = 0x00000308;
@@ -77,6 +96,19 @@ enum TSecurityUIsLights
     ESecurityUIsLightsQueryOnRequest,
     ESecurityUIsLightsLockOffRequest,
     ESecurityUIsLightsLastValue
+    };
+
+/**
+ * Used by Autolock to tell the dialog to dismiss. In fact, any app can do this.
+ */    
+const TUint32 KSecurityUIsDismissDialog  = 0x00000309;
+enum TSecurityUIsDismissDialogValues
+    {
+    ESecurityUIsDismissDialogUninitialized = 0,
+    ESecurityUIsDismissDialogOn,
+    ESecurityUIsDismissDialogProcessing,
+    ESecurityUIsDismissDialogDone,
+    ESecurityUIsDismissDialogLastValue
     };
 
 #endif // SECURITYUISPRIVATEPSKEYS_H

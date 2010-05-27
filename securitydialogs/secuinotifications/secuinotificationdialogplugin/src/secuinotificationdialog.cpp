@@ -23,10 +23,16 @@
 #include <hbaction.h>
 #include <QDebug>
 #include <e32debug.h>
-#include <CPhCltEmergencyCall.h>
+#include <cphcltemergencycall.h>
 #include <SCPServerInterface.h>	// for TARM error codes while validating new lock code
 #include <QString>
 #include <QDialogButtonBox>
+#include <e32property.h>
+
+QTM_USE_NAMESPACE
+
+#include <qvaluespacesubscriber.h>
+#include <qvaluespacepublisher.h>
 
 #define ESecUiCancelSupported  0x1000000
 #define ESecUiCancelNotSupported  0x0000000
@@ -49,6 +55,9 @@
 #define ESecUiTypeScreensaver		0x00400000
 
 #define ESecUiTypeMaskLock			0x00F00000
+
+const TUid KPSUidSecurityUIs = { 0x100059b5 };
+const TUint32 KSecurityUIsDismissDialog  = 0x00000309;
 
 // ----------------------------------------------------------------------------
 // SecUiNotificationDialog::SecUiNotificationDialog()
@@ -97,8 +106,9 @@ int SecUiNotificationDialog::deviceDialogError() const
 void SecUiNotificationDialog::closeDeviceDialog(bool byClient)
 {
     Q_UNUSED(byClient);
+		qDebug() << "SecUiNotificationDialog::closeDeviceDialog 0";
     close();
-		qDebug() << "SecUiNotificationDialog::closeDeviceDialog";
+		qDebug() << "SecUiNotificationDialog::closeDeviceDialog 1";
 
     // If show event has been received, close is signalled from hide event.
     // If not, hide event does not come and close is signalled from here.
@@ -135,6 +145,33 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 {
 		qDebug() << "SecUiNotificationDialog::showEvent";
     HbDialog::showEvent(event);
+
+		if(!(queryType & ESecUiTypeMaskLock))
+			{	// not for the "lock icon"
+			qDebug() << "SecUiNotificationDialog::showEvent check default";
+			if(codeTop->text().length()>0)	// there's a default value. Verify it and (might) enable OK
+				{
+				qDebug() << "SecUiNotificationDialog::showEvent checked default";
+				handleCodeTopChanged(codeTop->text());
+				}
+			// for automated testing, read a P&S and use this value as if the user typed it
+			const TUint32 KSecurityUIsTestCode  = 0x00000307;
+			TInt value = 0;
+			TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsTestCode, value );
+			qDebug() << "SecUiNotificationDialog::faking KSecurityUIsTestCode err=" << err;
+			qDebug() << "SecUiNotificationDialog::faking value=" << value;
+			if(value>0 && mShowEventReceived==false)	// show happens 2 times. Dialog can be closed only the second.
+				{
+				QString myString = "";
+				myString += QString("%1").arg(value);
+				qDebug() << "SecUiNotificationDialog::faking myString=" << myString;
+		    codeTop->setText( myString );
+		    TInt err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsTestCode, 0 );	// clear after using it
+				qDebug() << "SecUiNotificationDialog::calling handleAccepted=" << myString;
+		    emit handleAccepted();
+				emit closeDeviceDialog(false);	// false means "not by client", although it's not really used
+				}
+			}
     mShowEventReceived = true;
 }
 
@@ -148,6 +185,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     setTimeout(HbPopup::NoTimeout);
     setDismissPolicy(HbPopup::NoDismiss);
     setModal(true);
+    mShowEventReceived = false;
 
     // Title
     if (parameters.contains(KDialogTitle)) {
@@ -207,8 +245,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	qDebug() << "SecUiNotificationDialog::KInvalidNewLockCode ???";
 	        	// nothing to do
 	        	}
-/*
-	        if(invalidNumber==EDeviceLockAutolockperiod)
+			if(invalidNumber==EDeviceLockAutolockperiod)
 	        	{
 	        	qDebug() << "SecUiNotificationDialog::KInvalidNewLockCode EDeviceLockAutolockperiod";
 	        	title->setPlainText("EDeviceLockAutolockperiod");
@@ -298,7 +335,6 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	qDebug() << "SecUiNotificationDialog::KInvalidNewLockCode EDevicelockTotalPolicies";
 	        	title->setPlainText("EDevicelockTotalPolicies");
 	        	}
-	        	*/
 	        // always keep OK valid.
    				return true;
 	    }
@@ -343,6 +379,17 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     // setAction(cancelAction, QDialogButtonBox::RejectRole);		// it's supposed to use this, when deprecated
     setSecondaryAction(cancelAction);
 
+		// this should had been set by Autolock, but just to be sure
+    TInt ret = RProperty::Define(KPSUidSecurityUIs, KSecurityUIsDismissDialog,
+            RProperty::EInt, TSecurityPolicy(TSecurityPolicy::EAlwaysPass),
+            TSecurityPolicy(TSecurityPolicy::EAlwaysPass));
+    RDEBUG("defined KSecurityUIsDismissDialog", ret);
+    subscriberKSecurityUIsDismissDialog = new QValueSpaceSubscriber(
+            "/KPSUidSecurityUIs/KSecurityUIsDismissDialog", this);
+    connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this,
+            SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+	qDebug() << "subscribed to KSecurityUIsDismissDialog";
+	
 		qDebug() << "SecUiNotificationDialog check Cancel";
     if ((queryType & ESecUiCancelSupported)==ESecUiCancelSupported)
     	{
@@ -547,5 +594,42 @@ void SecUiNotificationDialog::handlebut3Changed()
 //
 void SecUiNotificationDialog::saveFocusWidget(QWidget*,QWidget*)
 {
-		qDebug() << "SecUiNotificationDialog::saveFocusWidget";
+		RDEBUG("0", 0);
 }
+
+// ----------------------------------------------------------------------------
+// SecUiNotificationDialog::subscriberKSecurityUIsDismissDialogChanged()
+// A way for Autolock to dismiss any possible PIN dialog
+// ----------------------------------------------------------------------------
+//
+void SecUiNotificationDialog::subscriberKSecurityUIsDismissDialogChanged()
+    {
+enum TSecurityUIsDismissDialogValues
+    {
+    ESecurityUIsDismissDialogUninitialized = 0,
+    ESecurityUIsDismissDialogOn,
+    ESecurityUIsDismissDialogProcessing,
+    ESecurityUIsDismissDialogDone,
+    ESecurityUIsDismissDialogLastValue
+    };
+
+    TInt ret;
+    RDEBUG("0", 0);
+    TInt aDismissDialog = ESecurityUIsDismissDialogUninitialized;
+    TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog );
+    RDEBUG("err", err);
+	RDEBUG("aDismissDialog", aDismissDialog);
+    if( aDismissDialog == ESecurityUIsDismissDialogOn )
+    	{
+		err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogProcessing );
+		RDEBUG("err", err);
+		// TODO perhaps do this only if Cancel is allowed?
+		RDEBUG("sendResult(KErrDied)", 0);
+		sendResult(KErrDied);	// similar to     emit handleCancelled();
+		RDEBUG("emit closeDeviceDialog", 0);
+		emit closeDeviceDialog(false);	// false means "not by client", although it's not really used
+		RDEBUG("all emited", 0);
+		err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogDone );	// clear after using it
+		RDEBUG("err", err);
+    	}
+	}

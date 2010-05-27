@@ -20,6 +20,7 @@
 #include <rmmcustomapi.h>
 #include <SecUi.rsg>
 #include "secuimanualsecuritysettings.h"
+#include "secuisecuritysettings.h"
 #include <exterror.h>
 #include "SecUiWait.h"
 #include <mmtsy_names.h>
@@ -600,10 +601,7 @@ void CManualSecuritySettings::ShowResultNoteL(CAknNoteDialog::TTone aTone, TInt 
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelUnLockSimL()"));
     #endif
-    iNote = new (ELeave) CAknNoteDialog(REINTERPRET_CAST(CEikDialog**,&iNote));
-    iNote->SetTimeout(CAknNoteDialog::ELongTimeout);
-    iNote->SetTone(aTone);
-    iNote->ExecuteLD(aResourceID);
+    CSecuritySettings::ShowResultNoteL(aResourceID, aTone);
     }
 
 // End of file

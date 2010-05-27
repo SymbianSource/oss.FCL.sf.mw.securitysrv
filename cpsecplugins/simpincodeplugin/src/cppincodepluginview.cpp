@@ -41,7 +41,7 @@
 CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
 	: CpBaseSettingView(0,parent), mSecCodeSettings(new SecCodeSettings())
 {
-    HbDataForm *form = settingForm();
+    HbDataForm *form = qobject_cast<HbDataForm*>(widget());
     if (form) {
         QList<HbAbstractViewItem *> protoTypeList = form->itemPrototypes();
         protoTypeList.append(new SecCodeEditDataFormViewItem());

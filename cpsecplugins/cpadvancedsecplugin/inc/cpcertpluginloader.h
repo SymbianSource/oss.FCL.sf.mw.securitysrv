@@ -18,16 +18,16 @@
 #define	CPCERTPLUGINLOADER_H
 
 #include <qobject.h>
-#include <cppluginplatinterface.h>
+#include <cpplugininterface.h>
 #include <QTranslator>
-class CpCertPluginLoader : public QObject, public CpPluginPlatInterface
+class CpCertPluginLoader : public QObject, public CpPluginInterface
 {
     Q_OBJECT
-    Q_INTERFACES(CpPluginPlatInterface)
+    Q_INTERFACES(CpPluginInterface)
 public:
     CpCertPluginLoader();
     virtual ~CpCertPluginLoader();
-    virtual CpSettingFormItemData *createSettingFormItemData(CpItemDataHelper &itemDataHelper) const;
+      virtual QList<CpSettingFormItemData*>createSettingFormItemData(CpItemDataHelper &itemDataHelper) const;
 private:
 	  QTranslator* mTranslator;
 };

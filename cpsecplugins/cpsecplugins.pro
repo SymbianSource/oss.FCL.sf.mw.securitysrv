@@ -17,6 +17,6 @@
 TEMPLATE = subdirs
 
 # temporarilly skip, because too many deprecations
-# SUBDIRS += devicelockplugin/devicelockplugin.pro
-# SUBDIRS += simpincodeplugin/pincodeplugin.pro
-# SUBDIRS += cpadvancedsecplugin/group/advancedsecplugin.pro
+SUBDIRS += devicelockplugin/devicelockplugin.pro
+SUBDIRS += simpincodeplugin/pincodeplugin.pro
+SUBDIRS += cpadvancedsecplugin/group/advancedsecplugin.pro

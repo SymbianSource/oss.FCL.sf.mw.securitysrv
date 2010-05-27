@@ -36,7 +36,7 @@
 #include <qmobilityglobal.h>
 
 #include "autolockuseractivityservice.h"
-#include "../../SecUi/inc/SecQueryUi.h"
+#include "../../SecUi/Inc/SecQueryUi.h"
 
 QTM_BEGIN_NAMESPACE
     class QValueSpacePublisher;
@@ -108,12 +108,16 @@ public slots:
     void lockAction();
     void test1Action();
     void test2Action();
+    void test3Action();
     void handleAnswerDelivered();
     void subscriberKSettingsAutolockStatusChanged();
     void subscriberKSettingsAutoLockTimeChanged();
     void subscriberKSettingsAutomaticKeyguardTimeChanged();
     void subscriberKDisplayLightsTimeoutChanged();
     void subscriberKProEngActiveProfileChanged();
+    void subscriberKAknKeyguardStatusChanged();
+    void subscriberKCoreAppUIsAutolockStatusChanged();
+    void subscriberKHWRMGripStatusChanged();
 
 private slots:
     void activeKeyguard();
@@ -135,6 +139,9 @@ private:
     QValueSpaceSubscriber *subscriberKSettingsAutomaticKeyguardTime;
     QValueSpaceSubscriber *subscriberKDisplayLightsTimeout;
     QValueSpaceSubscriber *subscriberKProEngActiveProfile;
+    QValueSpaceSubscriber *subscriberKAknKeyguardStatus;
+    QValueSpaceSubscriber *subscriberKCoreAppUIsAutolockStatus;
+    QValueSpaceSubscriber *subscriberKHWRMGripStatus;
 
 		AutolockUserActivityService* serviceKeyguard;
 		AutolockUserActivityService* serviceDevicelock;

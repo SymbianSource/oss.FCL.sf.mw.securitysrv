@@ -33,10 +33,7 @@
 // ---------------------------------------------------------------------------
 void CLockAppAppUi::ConstructL( )
     {
-    	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x8 );
-    	    
-   // default appui constructor has to be called
-    BaseConstructL( );    	    
+    //	RDebug::Printf( "%s %s (%u) 1 value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x8 );
     	    
     TInt use_old_autolock=1;
     if(use_old_autolock)
@@ -44,7 +41,7 @@ void CLockAppAppUi::ConstructL( )
 			// start autolock instead of lockapp . This is a backup solution to use in case that not all SysAp and Avkon changes are implemented
 	 	  RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
 	    TApaTaskList taskList( iCoeEnv->WsSession() );
-	    TApaTask task( taskList.FindApp( _L("autolock.exe" )) );
+	    TApaTask task( taskList.FindApp( _L("autolocksrv.exe" )) );
 	    if ( !task.Exists() )
 	        {
 	        RApaLsSession ls;                   
@@ -52,19 +49,25 @@ void CLockAppAppUi::ConstructL( )
 	        CleanupClosePushL(ls);         
 	        
 	        CApaCommandLine* commandLine = CApaCommandLine::NewLC();
-	        commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
+	        commandLine->SetExecutableNameL( _L("autolocksrv.exe" ) );     
 	        commandLine->SetCommandL( EApaCommandRun );
 	        
 		    // Try to launch the application.        
 	        User::LeaveIfError(ls.StartApp(*commandLine));
-	    	  RDebug::Printf( "%s %s (%u) autolock.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x7 );
+	    	  RDebug::Printf( "%s %s (%u) Start: autolocksrv.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x7 );
 	        
 	        CleanupStack::PopAndDestroy(2); // commandLine, ls
 			}
-	    Exit();
 	  }
 
     INFO( "CLockAppAppUi::ConstructL started" );
+   // default appui constructor has to be called
+    BaseConstructL( );  
+    if(use_old_autolock)
+    	{  	    
+	    Exit();
+	  }
+    	    
 
     // start the server with the specified name
 	iLockServer = CLockAppServer::NewL( KLockAppServerName );

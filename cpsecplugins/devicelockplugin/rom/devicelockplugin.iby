@@ -23,7 +23,6 @@
 
 file=ABI_DIR\BUILD_DIR\devicelockplugin.dll    SHARED_LIB_DIR\devicelockplugin.dll
 
-data=\epoc32\data\c\resource\qt\plugins\controlpanel\devicelockplugin.qtplugin 
-resource\qt\plugins\controlpanel\devicelockplugin.qtplugin
+data=\epoc32\data\c\resource\qt\plugins\controlpanel\devicelockplugin.qtplugin resource\qt\plugins\controlpanel\devicelockplugin.qtplugin
 
 #endif

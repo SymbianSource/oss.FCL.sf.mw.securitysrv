@@ -28,7 +28,6 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
 #include <QImageReader>
-#include <QDebug>
 #include <QTimer>
 #include <QPushButton>
 #include <QLineEdit>
@@ -59,7 +58,7 @@ QTM_USE_NAMESPACE
 #include "autolockuseractivityservice.h"
 
 #include <settingsinternalcrkeys.h>		// CenRep keys
-#include <W32STD.H>
+#include <w32std.h>
 #include <eikenv.h>
 
 #include <qapplication.h>
@@ -78,6 +77,7 @@ QTM_USE_NAMESPACE
 #include <coreapplicationuisdomainpskeys.h>
 #include "../../../inc/securityuisprivatepskeys.h"
 #include <avkondomainpskeys.h>
+#include <hwrmdomainpskeys.h>
 
 #include <hbdevicedialog.h>
 
@@ -89,13 +89,10 @@ const TInt KTimeBeforeRetryingServerConnection(50000);
 
 _LIT( KMmTsyModuleName, "PhoneTsy");
 
-#define XQSERVICE_DEBUG_PRINT(a) qDebug() << (a)
-
 AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
     QWidget(parent, f), mService(NULL)
     {
-    XQSERVICE_DEBUG_PRINT("AutolockSrv::AutolockSrv");
-    RDEBUG("start", 0);
+    RDEBUG("start autolocksrv", 0);
     mService = new AutolockSrvService(this);
 
     /* Adjust the palette */
@@ -122,12 +119,14 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
     QPushButton *quitButton = new QPushButton(tr("Quit"));
     QPushButton *test1Button = new QPushButton(tr("Autolock 10 seconds"));
     QPushButton *test2Button = new QPushButton(tr("Autolock never"));
+    QPushButton *test3Button = new QPushButton(tr("SecUiTest"));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect(lockButton, SIGNAL(clicked()), this, SLOT(lockAction()));
     connect(unlockButton, SIGNAL(clicked()), this, SLOT(unlockAction()));
     connect(unguardButton, SIGNAL(clicked()), this, SLOT(unguardAction()));
     connect(test1Button, SIGNAL(clicked()), this, SLOT(test1Action()));
     connect(test2Button, SIGNAL(clicked()), this, SLOT(test2Action()));
+    connect(test3Button, SIGNAL(clicked()), this, SLOT(test3Action()));
     RDEBUG("connect", 1);
 
     /* there's no use for this */
@@ -163,7 +162,8 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
     vl->addWidget(quitButton);
     vl->addWidget(test1Button);
     vl->addWidget(test2Button);
-    RDEBUG("added test2Button", 1);
+    vl->addWidget(test3Button);
+    RDEBUG("added test3Button", 1);
 
     mLabelIcon = new QToolButton;
     mLabelIcon->setIcon(QIcon(
@@ -191,12 +191,12 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
 
     TInt lockValue = 0;
     TInt lightsTimeout = 0;
-    CRepository* repository;
+    CRepository* repository = NULL;
     TInt cRresult = 0;
 
     iLockStatusPrev = ELockNotActive;
     iLockStatus = ELockNotActive;
-    repository = CRepository::NewL(KCRUidSecuritySettings);
+    QT_TRAP_THROWING( repository = CRepository::NewL(KCRUidSecuritySettings) );
     cRresult = repository->Get(KSettingsAutolockStatus, lockValue);
     RDEBUG("KSettingsAutolockStatus", KSettingsAutolockStatus);
     RDEBUG("cRresult", cRresult);
@@ -207,16 +207,17 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
 
     adjustInactivityTimers(0);
 
-    repository = CRepository::NewL(KCRUidProfileEngine);
+    QT_TRAP_THROWING( repository = CRepository::NewL(KCRUidProfileEngine) );
     cRresult = repository->Get(KProEngActiveProfile, lightsTimeout);
+    // this value is not used for now
     delete repository;
 
-    repository = CRepository::NewL(KCRUidLightSettings);
+    QT_TRAP_THROWING( repository = CRepository::NewL(KCRUidLightSettings) );
     cRresult = repository->Get(KDisplayLightsTimeout, lightsTimeout);
+    // this value is not used for now
     delete repository;
 
-    // TODO flip
-
+    // subscribe to settings changes
     subscriberKSettingsAutolockStatus = new QValueSpaceSubscriber(
             "/KCRUidSecuritySettings/KSettingsAutolockStatus", this);
     connect(subscriberKSettingsAutolockStatus, SIGNAL(contentsChanged()),
@@ -239,6 +240,23 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
     connect(subscriberKProEngActiveProfile, SIGNAL(contentsChanged()), this,
             SLOT(subscriberKProEngActiveProfileChanged()));
 
+    // subscribe to environment changes
+    subscriberKHWRMGripStatus = new QValueSpaceSubscriber(
+            "/KPSUidHWRM/KHWRMGripStatus", this);
+    connect(subscriberKHWRMGripStatus, SIGNAL(contentsChanged()), this,
+            SLOT(subscriberKHWRMGripStatusChanged()));
+
+    subscriberKAknKeyguardStatus = new QValueSpaceSubscriber(
+            "/KPSUidAvkonDomain/KAknKeyguardStatus", this);
+    connect(subscriberKAknKeyguardStatus, SIGNAL(contentsChanged()), this,
+            SLOT(subscriberKAknKeyguardStatusChanged()));
+
+    subscriberKCoreAppUIsAutolockStatus = new QValueSpaceSubscriber(
+            "/KPSUidCoreApplicationUIs/KCoreAppUIsAutolockStatus", this);
+    connect(subscriberKCoreAppUIsAutolockStatus, SIGNAL(contentsChanged()), this,
+            SLOT(subscriberKCoreAppUIsAutolockStatusChanged()));
+
+		/////////////
     TSecurityPolicy readPolicy(ECapabilityReadDeviceData);
     TSecurityPolicy writePolicy(ECapabilityWriteDeviceData);
     TInt ret = RProperty::Define(KPSUidSecurityUIs,
@@ -255,6 +273,10 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
     ret = RProperty::Define(KPSUidCoreApplicationUIs,
             KCoreAppUIsAutolockStatus, RProperty::EInt, KReadPolicy,
             KWritePolicy);
+    //User::LeaveIfError( RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus,	
+    //               EAutolockOff));        
+    RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus,	
+                   EAutolockOff);
     RDEBUG("defined KCoreAppUIsAutolockStatus", ret);
 
     ret = RProperty::Define(KPSUidAvkonDomain, KAknKeyguardStatus,
@@ -280,6 +302,11 @@ AutolockSrv::AutolockSrv(QWidget *parent, Qt::WFlags f) :
             RProperty::EInt, TSecurityPolicy(TSecurityPolicy::EAlwaysPass),
             TSecurityPolicy(TSecurityPolicy::EAlwaysPass));
     RDEBUG("defined KAknKeyguardStatus", ret);
+
+    ret = RProperty::Define(KPSUidSecurityUIs, KSecurityUIsDismissDialog,
+            RProperty::EInt, TSecurityPolicy(TSecurityPolicy::EAlwaysPass),
+            TSecurityPolicy(TSecurityPolicy::EAlwaysPass));
+    RDEBUG("defined KSecurityUIsDismissDialog", ret);
 
     // inactivity
     connect(serviceKeyguard, SIGNAL(active()), this, SLOT(activeKeyguard()));
@@ -321,10 +348,10 @@ void AutolockSrv::adjustInactivityTimers(int aReason)
     RDEBUG("aReason", aReason);
     TInt keyguardTime = 0;
     TInt lockTime = 0;
-    CRepository* repository;
+    CRepository* repository = NULL;
     TInt cRresult = 0;
 
-    repository = CRepository::NewL(KCRUidSecuritySettings);
+    QT_TRAP_THROWING( repository = CRepository::NewL(KCRUidSecuritySettings) );
     cRresult = repository->Get(KSettingsAutoLockTime, lockTime);	// in minutes, handled internally as seconds
     lockTime *= 60;
     RDEBUG("KSettingsAutoLockTime", KSettingsAutoLockTime);
@@ -363,20 +390,23 @@ void AutolockSrv::quit()
 void AutolockSrv::unlockAction()
     {
     RDEBUG("0", 0);
-    TryChangeStatus( ELockAppDisableDevicelock);
+    TInt err = TryChangeStatus( ELockAppDisableDevicelock);
+    RDEBUG("err", err);
     }
 
 void AutolockSrv::unguardAction()
     {
     RDEBUG("0", 0);
-    TryChangeStatus( ELockAppDisableKeyguard);
+    TInt err = TryChangeStatus( ELockAppDisableKeyguard);
+    RDEBUG("err", err);
     }
 
 void AutolockSrv::test1Action()
     {
     RDEBUG("Set(KSettingsAutoLockTime, 2)", 2);
 
-    CRepository* repositorySet = CRepository::NewL(KCRUidSecuritySettings);
+    CRepository* repositorySet = NULL;
+    QT_TRAP_THROWING( repositorySet = CRepository::NewL(KCRUidSecuritySettings) );
     repositorySet->Set(KSettingsAutoLockTime, 2);	// in minutes
     delete repositorySet;
     }
@@ -385,9 +415,15 @@ void AutolockSrv::test2Action()
     {
     RDEBUG("Set(KSettingsAutoLockTime, 0)", 0);
 
-    CRepository* repositorySet = CRepository::NewL(KCRUidSecuritySettings);
+    CRepository* repositorySet = NULL;
+    QT_TRAP_THROWING( repositorySet = CRepository::NewL(KCRUidSecuritySettings) );
     repositorySet->Set(KSettingsAutoLockTime, 0);	// minutes
     delete repositorySet;
+    }
+void AutolockSrv::test3Action()
+    {
+    RDEBUG("SecUiTest", 0);
+    RDEBUG("This should start SecUiTest, but it's not done yet", 0);
     }
 
 int AutolockSrv::AskValidSecCode(int aReason)
@@ -417,22 +453,22 @@ int AutolockSrv::AskValidSecCode(int aReason)
         }
     err = iTelServer.LoadPhoneModule(KMmTsyModuleName);
     RTelServer::TPhoneInfo PhoneInfo;
-    RDEBUG("err", err);
+    RDEBUG("LoadPhoneModule err", err);
     err = iTelServer.SetExtendedErrorGranularity(RTelServer::EErrorExtended);
-    RDEBUG("err", err);
+    RDEBUG("SetExtendedErrorGranularity err", err);
     err = iTelServer.GetPhoneInfo(KPhoneIndex, PhoneInfo);
-    RDEBUG("err", err);
+    RDEBUG("GetPhoneInfo err", err);
     err = iPhone.Open(iTelServer, PhoneInfo.iName);
-    RDEBUG("err", err);
+    RDEBUG("Open err", err);
     err = iCustomPhone.Open(iPhone);
-    RDEBUG("err", err);
+    RDEBUG("Open2 err", err);
 
     RDEBUG("CSecurityHandler", 0);
     CSecurityHandler* handler = new (ELeave) CSecurityHandler(iPhone);
     if (aReason == ELockAppDisableDevicelock)
         {
         RDEBUG("calling AskSecCodeInAutoLockL", 0);
-        validCode = handler->AskSecCodeInAutoLockL(); // this returns true/false
+        QT_TRAP_THROWING( validCode = handler->AskSecCodeInAutoLockL() ); // this returns true/false
         // TODO should this also do iPhone.SetLockSetting(status, lockType, lockChange); ???
         }
     else if (aReason == ELockAppEnableDevicelock)
@@ -480,11 +516,11 @@ int AutolockSrv::AskValidSecCode(int aReason)
 #else
                 RDEBUG("! OLD_METHOD", 0);
                 CWait *iWait = NULL;
-                iWait = CWait::NewL();
+                QT_TRAP_THROWING( iWait = CWait::NewL() );
                 iWait->SetRequestType(EMobilePhoneSetLockSetting);
                 iPhone.SetLockSetting(iWait->iStatus, lockType, lockChange); // ask for PassPhraseRequiredL
                 RDEBUG("WaitForRequestL", 0);
-                ret = iWait->WaitForRequestL();
+                QT_TRAP_THROWING( ret = iWait->WaitForRequestL() );
                 RDEBUG("WaitForRequestL ret", ret);
                 if (iWait)
                     {
@@ -510,10 +546,17 @@ int AutolockSrv::AskValidSecCode(int aReason)
                     validCode = 0;
                 }
             else
+            		{
+            		RDEBUG("RMobilePhone::ELockSetEnabled", RMobilePhone::ELockSetEnabled);
+            		RDEBUG("lockInfo.iSetting = RMobilePhone::ELockSetEnabled", RMobilePhone::ELockSetEnabled);
                 validCode = 0x20;
+              	}
             }
         else
+            {
+            RDEBUG("Error: ret", ret);
             validCode = 0x21;
+          	}
 
         /* Alternative way to ask for password
          RMobilePhone::TMobilePhoneSecurityEvent iEvent;
@@ -528,8 +571,8 @@ int AutolockSrv::AskValidSecCode(int aReason)
          */
         }
     // TODO this doesn't wait on WINS , so how do I get the Acceptation?
-    RDEBUG("validCode (true/false)", validCode);
-    if (validCode)
+    RDEBUG("validCode", validCode);
+    if (validCode>0)
         return KErrNone;
 
 		// no valid code -> switch off the lights
@@ -542,10 +585,7 @@ int AutolockSrv::AskValidSecCode(int aReason)
 void AutolockSrv::lockAction()
     {
     RDEBUG("0", 0);
-
-    XQSERVICE_DEBUG_PRINT("AutolockSrv::lockAction");
     TryChangeStatus( ELockAppOfferDevicelock);
-
     }
 
 void AutolockSrv::handleAnswerDelivered()
@@ -798,12 +838,13 @@ int AutolockSrv::publishStatus(int aReason)
     {
     RDEBUG("aReason", aReason);
     TInt err;
+    // can't use include file because it's private file. However it gives permissions
     const TUid KCRUidCoreApplicationUIsSysAp = { 0x101F8765 };
     const TUint32 KSysApKeyguardActive = 0x00000001;
-    CRepository* repositoryDevicelock;
-    CRepository* repositoryKeyguard;
-    repositoryDevicelock = CRepository::NewL(KCRUidSecuritySettings);
-    repositoryKeyguard = CRepository::NewL(KCRUidCoreApplicationUIsSysAp);
+    CRepository* repositoryDevicelock = NULL;
+    CRepository* repositoryKeyguard = NULL;
+    QT_TRAP_THROWING( repositoryDevicelock = CRepository::NewL(KCRUidSecuritySettings) );
+    QT_TRAP_THROWING( repositoryKeyguard = CRepository::NewL(KCRUidCoreApplicationUIsSysAp) );
     TInt cRresult = KErrNone;
     if (1 == 1) // this is a quick way to disable this functionality, for testing
         {
@@ -842,7 +883,7 @@ int AutolockSrv::publishStatus(int aReason)
             else if (aReason >= EDevicelockActive)
                 {
                 err = RProperty::Set(KPSUidAvkonDomain, KAknKeyguardStatus,
-                        EKeyguardAutolockEmulation); // not EKeyguardLocked, not EKeyguardNotActive
+                        EKeyguardAutolockEmulation); // Other candidates might be: EKeyguardLocked and EKeyguardNotActive
             		RDEBUG("KAknKeyguardStatus err", err);
                 err = RProperty::Set(KPSUidCoreApplicationUIs,
                         KCoreAppUIsAutolockStatus, EManualLocked);
@@ -900,6 +941,10 @@ int AutolockSrv::TryChangeStatus(int aReason)
     int errorInProcess = KErrNone;
     DebugRequest(ret);
 
+    TInt err = RProperty::Set(KPSUidSecurityUIs,
+            KSecurityUIsDismissDialog,
+            ESecurityUIsDismissDialogOn);
+		RDEBUG("err", err);
     switch (ret)
         {
         case ELockAppEnableKeyguard: // 1
@@ -958,11 +1003,12 @@ int AutolockSrv::TryChangeStatus(int aReason)
                 if (!callerHasECapabilityWriteDeviceData) // check permissions for calling process, because doesn't AskValidSecCode
                     errorInProcess = KErrPermissionDenied;
                 DebugError(errorInProcess);
+                break;	// so that "disable while disabled" doesn't mess up
                 }
             if (errorInProcess == KErrNone)
                 {
                 RDEBUG(" calling HbDeviceMessageBox::question", 0);
-                bool value = HbDeviceMessageBox::question("Disable Lock?");
+                bool value = HbDeviceMessageBox::question("Disable Lock?");	// this doesn't block other events, so after return everything might be messed up.
                 RDEBUG("value", value);
                 if (!value)
                     errorInProcess = KErrCancel;
@@ -982,7 +1028,8 @@ int AutolockSrv::TryChangeStatus(int aReason)
                 }
             if (errorInProcess != KErrNone)
                 { // re-lock. For example, if password is wrong
-                setLockDialog(aReason, 1);
+               	if( iLockStatus >=EDevicelockActive)	// this skips the case when unlocking, although it wan't locked.
+                	setLockDialog(aReason, 1);
                 }
             // this never shows a note
             }
@@ -993,7 +1040,7 @@ int AutolockSrv::TryChangeStatus(int aReason)
             DebugError(errorInProcess);
             if (errorInProcess == KErrNone)
                 {
-                bool value = HbDeviceMessageBox::question("Enable Keyguard?");
+                bool value = HbDeviceMessageBox::question("Enable Keyguard?");	// this doesn't block other events, so after return everything might be messed up.
                 // TODO what about a nice icon?
                 RDEBUG("value", value);
                 if (!value)
@@ -1014,6 +1061,7 @@ int AutolockSrv::TryChangeStatus(int aReason)
             errorInProcess = AskValidSecCode(ELockAppEnableDevicelock);
             if (errorInProcess == KErrNone)
                 {
+                RDEBUG("ELockAppOfferDevicelock calling ELockAppEnableDevicelock", ELockAppEnableDevicelock);
                 errorInProcess = TryChangeStatus(ELockAppEnableDevicelock);
                 }
             // this never shows a note. Perhaps ELockAppEnableDevicelock does.
@@ -1092,8 +1140,7 @@ int AutolockSrv::setLockDialog(int aReason, int status)
             RDEBUG("err", err);
             iDeviceDialogCreated = 2;
             }
-        const QString KSecQueryUiDeviceDialog(
-                "com.nokia.secuinotificationdialog/1.0");
+        const QString KSecQueryUiDeviceDialog("com.nokia.secuinotificationdialog/1.0");
         RDEBUG("pre show", aReason);
         err = iDeviceDialog->show(KSecQueryUiDeviceDialog, params); // and continue processing
         RDEBUG("post show. err", err);
@@ -1149,7 +1196,7 @@ int AutolockSrv::updateIndicator(int aReason)
     RDEBUG("aReason", aReason);
     QList<QVariant> list;
     list.insert(0, 1);
-    list.insert(1, "aaa");
+    list.insert(1, "dummy");
     list.insert(2, 2);
 
     HbIndicator indicator;
@@ -1218,36 +1265,31 @@ bool AutolockSrv::event(QEvent *ev)
         if (ev->type() == QEvent::KeyPress)
             {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *> (ev);
-            qDebug() << QString("KeyPress:%1\n").arg(keyEvent->key(), 0, 16);
-            qDebug() << keyEvent->key();
-            qDebug() << EKeyInsert;
-            qDebug() << (keyEvent->key() & 0xFF);
-            qDebug() << (EKeyInsert & 0xFF);
+            RDEBUG("KeyPress", keyEvent->key());
             if ((keyEvent->key() & 0xFF) == (EKeyInsert & 0xFF))
                 {
-                qDebug() << "pressed EKeyInsert";
+                RDEBUG("EKeyInsert", EKeyInsert);
                 // only reacts on release, not on press
                 isSwitchKey = 1;
                 }
             if ((keyEvent->key() & 0xFF) == (EKeyTab & 0xFF))
                 {
-                qDebug() << "pressed EKeyTab";
+                RDEBUG("EKeyTab", EKeyTab);
                 }
             if ((keyEvent->key() & 0xFF) == (EKeyDeviceF & 0xFF))
                 {
-                qDebug() << "pressed EKeyDeviceF";
+                RDEBUG("EKeyDeviceF", EKeyDeviceF);
                 }
             if (keyEvent->key() == 0x1ffffff)
                 {
-                qDebug() << "pressed EKeyDeviceF-1ffffff";
+                RDEBUG("0x1ffffff", 0x1ffffff);
                 isSwitchKey = 1;
                 }
             }
         else if (ev->type() == QEvent::KeyRelease)
             {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *> (ev);
-            qDebug()
-                    << QString("KeyRelease:%1\n").arg(keyEvent->key(), 0, 16);
+            RDEBUG("KeyRelease", keyEvent->key());
             if (keyEvent->key() == 0x1ffffff)
                 {
                 RDEBUG("released EKeyDeviceF-1ffffff", 1);
@@ -1291,14 +1333,13 @@ bool AutolockSrv::eventFilter(QObject *o, QEvent *ev)
     return QWidget::eventFilter(o, ev);
 
     }
-
+// some setting changed
 void AutolockSrv::subscriberKSettingsAutolockStatusChanged()
     {
     RDEBUG("0", 0);
     QVariant v = subscriberKSettingsAutolockStatus->value(
             "/KCRUidSecuritySettings/KSettingsAutolockStatus");
     adjustInactivityTimers( KSettingsAutolockStatus);
-    qDebug() << "AutolockSrv::subscriberKSettingsAutolockStatusChanged" << v;
     }
 void AutolockSrv::subscriberKSettingsAutoLockTimeChanged()
     {
@@ -1306,7 +1347,6 @@ void AutolockSrv::subscriberKSettingsAutoLockTimeChanged()
     QVariant v = subscriberKSettingsAutoLockTime->value(
             "/KCRUidSecuritySettings/KSettingsAutoLockTime");
     adjustInactivityTimers( KSettingsAutoLockTime);
-    qDebug() << "AutolockSrv::subscriberKSettingsAutoLockTimeChanged" << v;
     }
 void AutolockSrv::subscriberKSettingsAutomaticKeyguardTimeChanged()
     {
@@ -1314,9 +1354,6 @@ void AutolockSrv::subscriberKSettingsAutomaticKeyguardTimeChanged()
     QVariant v = subscriberKSettingsAutomaticKeyguardTime->value(
             "/KCRUidSecuritySettings/KSettingsAutomaticKeyguardTime");
     adjustInactivityTimers( KSettingsAutoLockTime);
-    qDebug()
-            << "AutolockSrv::subscriberKSettingsAutomaticKeyguardTimeChanged"
-            << v;
     }
 void AutolockSrv::subscriberKDisplayLightsTimeoutChanged()
     {
@@ -1324,7 +1361,6 @@ void AutolockSrv::subscriberKDisplayLightsTimeoutChanged()
     QVariant v = subscriberKDisplayLightsTimeout->value(
             "/KCRUidLightSettings/KDisplayLightsTimeout");
     // nothing to do
-    qDebug() << "AutolockSrv::subscriberKDisplayLightsTimeoutChanged" << v;
     }
 void AutolockSrv::subscriberKProEngActiveProfileChanged()
     {
@@ -1332,7 +1368,44 @@ void AutolockSrv::subscriberKProEngActiveProfileChanged()
     QVariant v = subscriberKProEngActiveProfile->value(
             "/KCRUidProfileEngine/KProEngActiveProfile");
     // nothing to do
-    qDebug() << "AutolockSrv::subscriberKProEngActiveProfileChanged" << v;
+    }
+// some environment changed
+void AutolockSrv::subscriberKAknKeyguardStatusChanged()
+    {
+    RDEBUG("Error only AutolockSrv should be able to change it", 0);
+  	}
+void AutolockSrv::subscriberKCoreAppUIsAutolockStatusChanged()
+    {
+    RDEBUG("Error only AutolockSrv should be able to change it", 0);
+  	}
+void AutolockSrv::subscriberKHWRMGripStatusChanged()
+    {
+    TInt ret;
+    RDEBUG("0", 0);
+    TInt aGripStatus;
+    TInt err = RProperty::Get(KPSUidHWRM, KHWRMGripStatus, aGripStatus );
+    RDEBUG("err", err);
+    RDEBUG("value", aGripStatus);
+    if( aGripStatus == EPSHWRMGripOpen )
+    	{
+      if (iLockStatus == EKeyguardActive)
+          {
+          iShowKeyguardNote = 1; // note on disable keyguard
+          ret = TryChangeStatus(ELockAppDisableKeyguard);
+          }
+      else if (iLockStatus == EDevicelockActive)
+          {
+          ret = TryChangeStatus(ELockAppDisableDevicelock);
+          }
+      }
+    else if( aGripStatus == EPSHWRMGripClosed )
+    	{
+      if (iLockStatus == ELockNotActive)
+          {
+          iShowKeyguardNote = 1; // note on enable keyguard
+          ret = TryChangeStatus(ELockAppEnableKeyguard);
+          }
+    	}
     }
 
 // ----------AutolockSrvService---------------
@@ -1358,19 +1431,18 @@ void AutolockSrvService::complete(QString number)
     RDEBUG("0", 0);
     if (mAsyncReqId == -1)
         return;
-    XQSERVICE_DEBUG_PRINT("AutolockSrvService::complete");
     completeRequest(mAsyncReqId, number.toInt());
     }
 
-// gor API request
+// got API request from lockaccessextension
 int AutolockSrvService::service(const QString& number,
         const QString& aParam1, const QString& aParam2)
     {
     RDEBUG("0", 0);
     TInt err = KErrNone;
-    qDebug() << "number=" << number;
-    qDebug() << "aParam1=" << aParam1;
-    qDebug() << "aParam2=" << aParam2;
+    RDEBUG("number", number.toInt());
+    RDEBUG("aParam1", aParam1.toInt());
+    RDEBUG("aParam2", aParam2.toInt());
     mAsyncAnswer = false;
     XQRequestInfo info = requestInfo();
     QSet<int> caps = info.clientCapabilities();
@@ -1405,8 +1477,8 @@ int AutolockSrvService::service(const QString& number,
     RDEBUG("err", err);
     RDEBUG("myTimeLow", myTimeLow);
     
-    myTimeHigh = myTime.Int64() >> 16;
-    myTimeLow = myTime.Int64() & 0xFFFFFFFF ;
+    myTimeHigh = I64HIGH( myTime.Int64() );
+    myTimeLow = I64LOW( myTime.Int64() );
     RDEBUG("myTimeHigh", myTimeHigh);
     RDEBUG("myTimeLow", myTimeLow);
     err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLockInitiatorTimeHigh, myTimeHigh );

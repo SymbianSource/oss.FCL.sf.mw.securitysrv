@@ -18,11 +18,22 @@
 #ifndef SECUINOTIFICATIONDIALOG_H
 #define SECUINOTIFICATIONDIALOG_H
 
+// #define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#define RDEBUG( x, y )
+
 #include <hbdialog.h>                   // HbDialog
 #include <hbdevicedialoginterface.h>    // HbDeviceDialogInterface
 #include <hbwidget.h>       // HbWidget
 #include <hblineedit.h>       // HbWidget
 #include <hblabel.h>
+
+#include <qmobilityglobal.h>
+
+QTM_BEGIN_NAMESPACE
+    class QValueSpacePublisher;
+    class QValueSpaceSubscriber;
+QTM_END_NAMESPACE
+QTM_USE_NAMESPACE
 
 /**
  * SW Install notification widget class.
@@ -65,6 +76,8 @@ private slots:
 		void handlebut2Changed();
 		void handlebut3Changed();
 
+public slots:    
+    void subscriberKSecurityUIsDismissDialogChanged();
 private:
     Q_DISABLE_COPY(SecUiNotificationDialog)
 
@@ -82,6 +95,7 @@ private:
     int queryDual;
     int lEmergencySupported;
     int isEmergency;
+    QValueSpaceSubscriber *subscriberKSecurityUIsDismissDialog;
 };
 
 #endif // SECUINOTIFICATIONDIALOG_H

@@ -41,10 +41,10 @@ CpCertPluginLoader::~CpCertPluginLoader()
         }	
 	}
 
-CpSettingFormItemData *CpCertPluginLoader::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
+QList<CpSettingFormItemData*> CpCertPluginLoader::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
 		{
-		 return new CpSettingFormEntryItemDataImpl<CpSecurityView>(
-			itemDataHelper,tr("Advanced Security"), QString());    
+  return QList<CpSettingFormItemData*>() 
+           << new CpSettingFormEntryItemDataImpl<CpSecurityView>(itemDataHelper,tr("Advanced Security"), QString());			
 		}
 
 Q_EXPORT_PLUGIN2(cpcertpluginloader, CpCertPluginLoader);

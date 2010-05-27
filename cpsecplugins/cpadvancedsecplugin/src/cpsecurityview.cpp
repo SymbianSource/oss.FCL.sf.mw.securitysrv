@@ -54,7 +54,8 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 	  mPreView(NULL),
 	  mCertView(NULL),
 	  mCurrentView(NULL),
-	  mPos(0)
+	  mPos(0),
+	  mNote(NULL)
 	{
 	setTitle(hbTrId("txt_certificate_manager_setlabel_advanced_security"));
 	
@@ -153,29 +154,26 @@ CpSecurityView::~CpSecurityView()
 	if(mSecModView)
 		{
 		mSecModView->deleteLater();
-		mSecModView= NULL;
 		}
 	
 	if(mPreView)
 		{
 		mPreView->deleteLater();
-		mPreView= NULL;
 		}
 	
 	if(mCertView)
 		{
 		mCertView->deleteLater();
-		mCertView= NULL;
 		}
 	
 	if(mCurrentView)
 		{
 		mCurrentView->deleteLater();
-		mCurrentView= NULL;
 		}
 	
 	delete mSecModUIModel;  
-	mSecModUIModel = NULL;
+	
+	delete mNote;
 	}
 
 void CpSecurityView::showCodeView()
@@ -299,27 +297,44 @@ void CpSecurityView::deleteModule()
 	{
 	try
 		{
-		HbMessageBox note(HbMessageBox::MessageTypeQuestion);
-		note.setHeadingWidget(q_check_ptr(new HbLabel(tr("Delete..."))));
-		note.setText("Delete keystore and password?");
-		note.setPrimaryAction(q_check_ptr(new HbAction("Yes")));
-		note.setSecondaryAction(q_check_ptr(new HbAction("No")));
-		note.setTimeout(HbPopup::NoTimeout);
-		note.setIconVisible (EFalse);
-		HbAction* result = note.exec();
-	
-		if (result != note.primaryAction())
-			{
-			return;
-			}
-	
-		QT_TRAP_THROWING(mSecModUIModel->DeleteKeysL(mPos));
+		
+		delete mNote;
+		mNote = NULL;
+		
+		mNote = new HbMessageBox(HbMessageBox::MessageTypeQuestion);
+		mNote->setHeadingWidget(q_check_ptr(new HbLabel(tr("Delete..."))));
+		mNote->setText("Delete keystore and password?");
+		mNote->setPrimaryAction(q_check_ptr(new HbAction("Yes")));
+		mNote->setSecondaryAction(q_check_ptr(new HbAction("No")));
+		mNote->setTimeout(HbPopup::NoTimeout);
+		mNote->setIconVisible (EFalse);
+		mNote->open(this,SLOT(dialogClosed(HbAction*)));
 		}
 	catch(const std::exception& exception)
 		{
-		HbMessageBox::information(exception.what());
+	    HbMessageBox *box = new HbMessageBox(exception.what());
+    	box->setAttribute(Qt::WA_DeleteOnClose);
+    	box->open();	
 		}
-	// refresh current view
+
+}
+void CpSecurityView::dialogClosed(HbAction* action)
+{
+	if (action != mNote->primaryAction())
+		{
+		return;
+		}
+		
+	try
+		{
+		QT_TRAP_THROWING(mSecModUIModel->DeleteKeysL(mPos));
+   		}		
+	catch(const std::exception& exception)
+		{
+	    HbMessageBox *box = new HbMessageBox(exception.what());
+    	box->setAttribute(Qt::WA_DeleteOnClose);
+    	box->open();
+		}
 	}
 
 void CpSecurityView::moduleDetails()

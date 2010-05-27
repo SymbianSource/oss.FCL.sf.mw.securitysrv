@@ -22,19 +22,9 @@
 #include <apgicnfl.h>                           // CApaMaskedBitmap
 #include <securityuisprivatepskeys.h>
 
-#include <CPhCltEmergencyCall.h>
+#include <cphcltemergencycall.h>
 #include <SCPClient.h>
 #include "SecUiWait.h"
-
-// Variant map keys for notification device dialog
-_LIT( KNotifDeviceDialogKeyTimeOut, "timeout" );
-_LIT( KNotifDeviceDialogKeyIconName, "iconName" );
-_LIT( KNotifDeviceDialogKeyText, "text" );
-_LIT( KNotifDeviceDialogKeyTitle, "title" );
-_LIT( KNotifDeviceDialogKeyTouchActivation, "touchActivation" );
-_LIT( KNotifDeviceDialogKeyActivated, "result" );
-_LIT( KNotifDeviceDialogKeyActivatedValue, "activated" );
-_LIT( KNotifDeviceDialogKeyTitleTextWrapping, "titleTextWrapping" );
 
 const TUid KSWInstHelpUid =
     {
@@ -349,8 +339,6 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
             {
             _LIT(KInvalidNewLockCode, "invalidNewLockCode");
             _LIT(KInvalidNewLockCode0, "invalidNewLockCode#0");
-            _LIT(KInvalidNewLockCode1, "invalidNewLockCode#1");
-            _LIT(KInvalidNewLockCode2, "invalidNewLockCode#2");
             AddParamL(KInvalidNewLockCode, KInvalidNewLockCode0); // for starter
             RSCPClient scpClient;
             TSCPSecCode newCode;
@@ -358,7 +346,6 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
             RDEBUG("scpClient.Connect", 0);
             if (scpClient.Connect() == KErrNone)
                 {
-                /*
                  RArray<TDevicelockPolicies> aFailedPolicies;
                  TDevicelockPolicies failedPolicy;
                  TInt retLockcode = KErrNone;
@@ -374,7 +361,6 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
                  KInvalidNewLockCodeX.AppendNum(failedPolicy);
                  AddParamL( KInvalidNewLockCode, KInvalidNewLockCodeX );
                  }
-                 */
                 // TODO this should be able to modify MinLenght, MaxLenght
                 scpClient.Close();
                 }
