@@ -18,7 +18,7 @@
     </layer>
     <layer name="api_test_layer">
       <module name="securitysrv_test">
-        <unit unitID="sedo.securitysrv_test" mrp="" bldFile="&layer_real_source_path;/tsrc/group" name="securitysrv_test" />
+        <unit unitID="sedo.securitysrv_test" mrp="" bldFile="&layer_real_source_path;/tsrc/group" name="securitysrv_test" filter="TA_SECURITYSRV" />
       </module>
     </layer>
   </systemModel>

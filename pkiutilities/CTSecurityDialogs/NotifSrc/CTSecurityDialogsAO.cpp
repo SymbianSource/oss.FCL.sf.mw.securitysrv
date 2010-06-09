@@ -45,6 +45,7 @@
 #include <x509certext.h>
 #include <TrustedSitesStore.h>
 #include <mctwritablecertstore.h>
+#include <coreapplicationuisdomainpskeys.h>			// KCoreAppUIsAutolockStatus
 
 // LOCAL CONSTANTS AND MACROS
 const TInt KCertArrayGranularity = 3;
@@ -1473,92 +1474,117 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
 //
 void CCTSecurityDialogsAO::ShowNoTrustDialogL()
     {
-    CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
-    TInt dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-    TInt promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
-    TBool showPermAccept = ETrue;
-
-    if( iAuthFailReason == ESignatureInvalid || iAuthFailReason == ECertificateRevoked )
+    // Cannot display untrusted certificate dialog if device is locked. Untrusted
+    // certificate dialog would be displayed on top of possible lock code query.
+    TInt value = 0;
+    TInt err = RProperty::Get( KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, value );
+    if( !err && value > EAutolockOff )
         {
-        // Invalid or revoked certificate
-        CCTInvalidCertificateNote* note =
-            new( ELeave ) CCTInvalidCertificateNote( *this, iStatus );
-        note->ExecuteLD( R_WIM_INVALID_CERTIFICATE_INFORMATION_NOTE );
         iRetValue = EServerCertNotAccepted;
+        iStatus = KRequestPending;
+        TRequestStatus* status( &iStatus );
+        User::RequestComplete( status, KErrNone );
         }
     else
         {
-        if( iAuthFailReason == EValidatedOK || iAuthFailReason == EDateOutOfRange )
+        CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
+        TInt dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+        TInt promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
+        TBool showPermAccept = ETrue;
+
+        if( iAuthFailReason == ESignatureInvalid || iAuthFailReason == ECertificateRevoked )
             {
-            // Trusted certificate, but problems with CN or date
+            // Invalid or revoked certificate
+            CCTInvalidCertificateNote* note =
+                new( ELeave ) CCTInvalidCertificateNote( *this, iStatus );
+            note->ExecuteLD( R_WIM_INVALID_CERTIFICATE_INFORMATION_NOTE );
+            iRetValue = EServerCertNotAccepted;
 
-            // Retrieve subject name
-            const CX500DistinguishedName& dName = cert->SubjectName();
-
-            // Retrieve common name
-            HBufC* cn = dName.ExtractFieldL( KX520CommonName );
-
-            // Check common name first and then date
-            if( !cn )
-                {
-                // Couldn't retrieve CN from certificate
-                dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
-                }
-            else if( iServerName->Des() != cn->Des() )
-                {
-                // Domain name doesn't match with CN
-                dialogResourceId = R_WIM_NO_TRUST_QUERY_SITE;
-                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_SITE;
-                }
-            else if( iAuthFailReason == EDateOutOfRange )
-                {
-                // Certificate is out of date
-                dialogResourceId = R_WIM_NO_TRUST_QUERY_OOD;
-                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_OOD;
-                showPermAccept = EFalse;
-                }
-            else
-                {
-                // Otherwise show general untrusted note
-                dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
-                }
+            // CCTNoTrustQuery below self-completes this active object. It is necessary to
+            // complete it here too, in order to run the next step EServerCertCheckUserResp.
+            iStatus = KRequestPending;
+            TRequestStatus* status( &iStatus );
+            User::RequestComplete( status, KErrNone );
             }
         else
             {
-            // Untrusted certificate
-            dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-            promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
+            if( iAuthFailReason == EValidatedOK || iAuthFailReason == EDateOutOfRange )
+                {
+                // Trusted certificate, but problems with CN or date
+
+                // Retrieve subject name
+                const CX500DistinguishedName& dName = cert->SubjectName();
+
+                // Retrieve common name
+                HBufC* cn = dName.ExtractFieldL( KX520CommonName );
+
+                // Check common name first and then date
+                if( !cn )
+                    {
+                    // Couldn't retrieve CN from certificate
+                    dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                    promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
+                    }
+                else if( iServerName->Des() != cn->Des() )
+                    {
+                    // Domain name doesn't match with CN
+                    dialogResourceId = R_WIM_NO_TRUST_QUERY_SITE;
+                    promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_SITE;
+                    }
+                else if( iAuthFailReason == EDateOutOfRange )
+                    {
+                    // Certificate is out of date
+                    dialogResourceId = R_WIM_NO_TRUST_QUERY_OOD;
+                    promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_OOD;
+                    showPermAccept = EFalse;
+                    }
+                else
+                    {
+                    // Otherwise show general untrusted note
+                    dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                    promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
+                    }
+                }
+            else
+                {
+                // Untrusted certificate
+                dialogResourceId = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
+                promptResourceId = R_QTN_ICS_SSL_CONF_Q_ACCEPT_UNTRUSTED;
+                }
+
+            // No "Accept Permanently" option if certificate is out of date, or
+            // if domain name is not defined, or if trusted site store failed to
+            // open (and it's not possible to save the server certificate).
+            const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
+            const TTime& startValue = validityPeriod.Start();
+            const TTime& finishValue = validityPeriod.Finish();
+            TTime current;
+            current.UniversalTime();
+
+            if( (( startValue > current ) || ( finishValue < current )) ||
+                    ( iServerName->Des().Length() == 0 ) ||
+                    ( !iTrustedSiteCertStore ) )
+                {
+                showPermAccept = EFalse;
+                }
+
+            // CCTNoTrustQuery completes iStatus asynchronously when ready. Note that
+            // it happens after ExecuteLD() and also this function have returned.
+            iStatus = KRequestPending;
+
+            iQueryDialog = new( ELeave ) CCTNoTrustQuery( *this, iRetValue, iStatus,
+                    iServerName, showPermAccept, iQueryDialogDeleted );
+            HBufC* prompt = StringLoader::LoadLC( promptResourceId, *iServerName );
+
+            iQueryDialog->ExecuteLD( dialogResourceId, *prompt );
+
+            CleanupStack::PopAndDestroy( prompt );
             }
 
-        // No "Accept Permanently" option if certificate is out of date, or
-        // if domain name is not defined, or if trusted site store failed to
-        // open (and it's not possible to save the server certificate).
-        const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
-        const TTime& startValue = validityPeriod.Start();
-        const TTime& finishValue = validityPeriod.Finish();
-        TTime current;
-        current.UniversalTime();
-
-        if( (( startValue > current ) || ( finishValue < current )) ||
-                ( iServerName->Des().Length() == 0 ) ||
-                ( !iTrustedSiteCertStore ) )
-            {
-            showPermAccept = EFalse;
-            }
-
-        iQueryDialog = new( ELeave ) CCTNoTrustQuery( *this, iRetValue, iStatus, iServerName,
-                    showPermAccept, iQueryDialogDeleted );
-        HBufC* prompt = StringLoader::LoadLC( promptResourceId, *iServerName );
-        iQueryDialog->ExecuteLD( dialogResourceId, *prompt );
-        CleanupStack::PopAndDestroy( prompt );
+        CleanupStack::PopAndDestroy( cert );
         }
 
-    CleanupStack::PopAndDestroy( cert );
-
     iNextStep = EServerCertCheckUserResp;
-    iStatus = KRequestPending;
     SetActive();
     }
 

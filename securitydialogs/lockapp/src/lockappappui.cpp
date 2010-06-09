@@ -70,7 +70,9 @@ void CLockAppAppUi::ConstructL( )
 	    Exit();
 	  }
 
+    #if defined(_DEBUG)
     INFO( "CLockAppAppUi::ConstructL started" );
+    #endif
 
     // start the server with the specified name
 	iLockServer = CLockAppServer::NewL( KLockAppServerName );
@@ -100,7 +102,9 @@ void CLockAppAppUi::ConstructL( )
     // the main control is given high stack priority
     // ECoeStackPriorityEnvironmentFilter-1 used to allow hw keys for keyfiler even if keypad is locked.
     AddToStackL( iStateControl, ECoeStackPriorityEnvironmentFilter-1, ECoeStackFlagStandard );
+    #if defined(_DEBUG)
     INFO( "CLockAppAppUi::ConstructL finished" );
+    #endif
     }
 
 // ---------------------------------------------------------------------------
@@ -158,18 +162,24 @@ MCoeMessageObserver::TMessageResponse CLockAppAppUi::HandleMessageL(
             CleanupClosePushL( scpClient );
             if ( scpClient.QueryAdminCmd( ESCPCommandUnlockPhone ) )
                 {
+                #if defined(_DEBUG)    
                 INFO( "CLockAppAppUi::HandleMessageL(): Admin command received, unlocking" );
+                #endif
                 iStateControl->DisableDevicelockL();
                 }
             else
                 {
+                #if defined(_DEBUG)    
                 INFO( "CLockAppAppUi::HandleMessageL(): Unauthorized attempt to unlock" );
+                #endif
                 }
             CleanupStack::PopAndDestroy(); // calls Close() on scpClient
             }
         else
             {
+            #if defined(_DEBUG)    
             INFO( "CLockAppAppUi::HandleMessageL(): Failed to connect to SCP, ignoring unlock-message." );
+            #endif
             }
         }
     else // aMessageUid.iUid != SCP_CMDUID_UNLOCK

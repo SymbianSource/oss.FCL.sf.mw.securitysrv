@@ -21,8 +21,7 @@
 
 #include <data_caging_paths_for_iby.hrh>
 
-//S60_APP_EXE(lockapp)
-S60_APP_EXE_UDEB(lockapp)
+S60_APP_EXE(lockapp)
 S60_APP_AIF_RSC(lockapp)
 
 // To enable updating
