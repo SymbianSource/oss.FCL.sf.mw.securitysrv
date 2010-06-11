@@ -29,7 +29,7 @@
 #include <hbpushbutton.h>
 #include <hbmenu.h>
 #include <hbaction.h>
-#include <hbmessageBox.h>
+#include <hbmessagebox.h>
 #include <hblistwidget.h>
 #include <hblistwidgetitem.h>
 #include <hbgroupbox.h>

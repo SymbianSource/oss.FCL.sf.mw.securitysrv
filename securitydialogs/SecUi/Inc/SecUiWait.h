@@ -20,12 +20,6 @@
 #ifndef     __SECUIWAIT_H
 #define     __SECUIWAIT_H
 
-#if defined(_DEBUG)
-#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
-#else
-#define RDEBUG( x, y )
-#endif
-
 //  INCLUDES
 
 #include    <e32base.h>
@@ -82,9 +76,24 @@ class  CWait : public CActive
         TInt iRequestType;
     };
 
+// CAutolockQuery, absorbs all the key presses.
+class CAutolockQuery : public CBase
+    {
+    public:
+        static CAutolockQuery* NewLC();
+        virtual ~CAutolockQuery();
+    private:
+        virtual TKeyResponse OfferKeyEventL(const TKeyEvent& /*aKeyEvent*/,TEventCode /*aType*/);
+    private:
+        CAutolockQuery();
+        void ConstructL();
+    private: // Data
+         CEikAppUi*  iAppUi;
 
+
+    };
 // CWaitAbsorbingControl, absorbs all the key presses.
-class CWaitAbsorbingControl : public CCoeControl
+class CWaitAbsorbingControl : public CBase
     {
     public:
         static CWaitAbsorbingControl* NewLC();

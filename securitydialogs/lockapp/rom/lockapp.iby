@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,21 +11,12 @@
 *
 * Contributors:
 *
-* Description:  LockApp files needed to image
- *
+* Description: Implementation of lockapp
+*
 */
-
-
 #ifndef __LOCKAPP_IBY__
 #define __LOCKAPP_IBY__
 
-#include <data_caging_paths_for_iby.hrh>
+S60_APP_EXE(LockApp)
 
-//S60_APP_EXE(lockapp)
-S60_APP_EXE_UDEB(lockapp)
-S60_APP_AIF_RSC(lockapp)
-
-// To enable updating
-data=ZSYSTEM\install\lockapp_stub.sis system\install\lockapp_stub.sis
-
-#endif // __LOCKAPP_IBY__
+#endif

@@ -34,6 +34,14 @@ TARGETPATH      RESOURCE_FILES_DIR
 LANGUAGE_IDS
 END
 
+// CTSecuritydialognotifier uses CertManUi resources that are not compiled in builds any more
+SOURCEPATH ../../CertmanUi/data
+START RESOURCE  certmanui.rss
+HEADER
+TARGETPATH      RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
 SYSTEMINCLUDE ../../CertmanUi/INC
 SYSTEMINCLUDE ../../CertSaver/inc
 SYSTEMINCLUDE ../../DeviceToken/Inc

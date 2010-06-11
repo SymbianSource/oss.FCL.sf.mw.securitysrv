@@ -24,7 +24,7 @@
 #include "cpremotelockdataformviewitem.h"
 #include <hblabel.h>
 #include <hbpushbutton.h>
-#include <hbmessagebox>
+#include <HbMessageBox>
 #include <hbdataform.h>
 #include <QGraphicsLinearLayout>
 #include <secuisecuritysettings.h>

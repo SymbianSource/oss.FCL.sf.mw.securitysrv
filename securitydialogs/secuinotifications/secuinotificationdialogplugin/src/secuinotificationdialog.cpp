@@ -160,7 +160,7 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 			TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsTestCode, value );
 			qDebug() << "SecUiNotificationDialog::faking KSecurityUIsTestCode err=" << err;
 			qDebug() << "SecUiNotificationDialog::faking value=" << value;
-			if(value>0 && mShowEventReceived==false)	// show happens 2 times. Dialog can be closed only the second.
+			if(value>0 && mShowEventReceived==true)	// show happens 2 times. Dialog can be closed only the second.
 				{
 				QString myString = "";
 				myString += QString("%1").arg(value);
@@ -230,7 +230,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     				return true;
 	        	}
 	    }
-	    
+	    // after TARM validation.
 	    if (parameters.contains(KInvalidNewLockCode)) {
 					qDebug() << "SecUiNotificationDialog::KInvalidNewLockCode";
 	        QString invalidText = parameters.value(KInvalidNewLockCode).toString();
@@ -335,7 +335,20 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	qDebug() << "SecUiNotificationDialog::KInvalidNewLockCode EDevicelockTotalPolicies";
 	        	title->setPlainText("EDevicelockTotalPolicies");
 	        	}
-	        // always keep OK valid.
+	        if(invalidNumber<0)	// everything is ok
+	        	{
+	        	okAction->setEnabled(true);	// TODO check this : invalid -> valid. This allows verif ?
+	        	okAction->setText("Ok");
+	        	codeBottom->setEnabled(true);
+	        	}
+	        else
+	        	{
+	        	okAction->setEnabled(false);
+	        	codeBottom->setEnabled(false);
+	        	codeBottom->setText("");
+	        	okAction->setText("Ok");
+	        	}
+	        // need to return because all objects are already created
    				return true;
 	    }
 	
@@ -486,11 +499,11 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     		{
     		codeBottom->setText("");	// any change resets the verification.
     		}
-    	if( queryType == 0x1000004 )
+    	if( queryType == 0x1000004 )	// new codeLock
     		{	// ChangeSecCodeParamsL change RMobilePhone::ESecurityCodePhonePassword
 			    QVariant codeTop(text);
 			    mResultMap.insert(KCodeTopIndex, codeTop);
-					sendResult(KErrCompletion);	// send the current password back to the client for further TARM validation
+					sendResult(KErrCompletion);	// send the current password back to the client for further TARM validation. This is done on any key-press, not in the OK
     		}
     	if(text.length() < lMinLength )
     		{
@@ -613,7 +626,6 @@ enum TSecurityUIsDismissDialogValues
     ESecurityUIsDismissDialogLastValue
     };
 
-    TInt ret;
     RDEBUG("0", 0);
     TInt aDismissDialog = ESecurityUIsDismissDialogUninitialized;
     TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog );

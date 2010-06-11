@@ -18,3 +18,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += securitydialogs/securitydialogs.pro
 SUBDIRS += cpsecplugins/cpsecplugins.pro
+SUBDIRS += pkiutilities/pkiutilities.pro
+

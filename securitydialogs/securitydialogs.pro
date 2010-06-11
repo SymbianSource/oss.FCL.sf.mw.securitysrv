@@ -18,7 +18,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += secuinotifications/secuinotifications.pro
 SUBDIRS += lockclient/group/lockclient.pro
-SUBDIRS += AutolockSrv/indicatorplugin/indicatorautolockplugin.pro
-SUBDIRS += AutolockSrv/autolockuseractivityservice.pro
-SUBDIRS += AutolockSrv/AutolockSrv.pro
+SUBDIRS += Autolock/indicatorplugin/indicatorautolockplugin.pro
+SUBDIRS += Autolock/autolockuseractivityservice.pro
+SUBDIRS += Autolock/Autolock.pro
 

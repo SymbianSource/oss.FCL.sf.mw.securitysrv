@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,126 +11,40 @@
 *
 * Contributors:
 *
-* Description:  Keyguard and Devicelock application server LockApp
- *
+* Description: Implementation of lockapp
+*
 */
 
-
+// To get the APP_LAYER_SYSTEMINCLUDE-definition
 #include <platform_paths.hrh>
-#include <data_caging_paths.hrh>
 
-TARGET          lockapp.exe
-TARGETTYPE      exe
-EPOCSTACKSIZE   0x5000
+#include "defaultcaps.hrh"
+CAPABILITY CAP_APPLICATION ProtServ NetworkControl
 
-VENDORID        VID_DEFAULT
+TARGET        lockapp.exe
 
-// ProtServ for being a server
-// WriteDeviceData Devicelock configuration needs it
-// SWEvent for capturing/generating key events
-// NetworkServices for remote lock for devicelock
+targettype exe
 
-CAPABILITY      CAP_APPLICATION ProtServ NetworkControl
+EPOCSTACKSIZE      0x5000
 
 UID             0x100039CE 0x10283322
-
-SECUREID 0x100059B5
-
-//LANG            SC
+SECUREID        0x100059B5
+VENDORID        VID_DEFAULT
 
 SOURCEPATH      ../src
+SOURCE          lockapp.cpp
 
-// AppArc framework
-SOURCE          lockappapplication.cpp
-SOURCE          lockappappui.cpp
-SOURCE          lockappdocument.cpp
+USERINCLUDE     . ../inc 
 
-// State control
-SOURCE          lockappobserverlist.cpp
-SOURCE          lockappstatecontrol.cpp
-SOURCE          lockappbasecontrol.cpp
+MW_LAYER_SYSTEMINCLUDE
 
-// State observers
-SOURCE          lockappidlecontrol.cpp
-SOURCE          lockappkeyguardcontrol.cpp
-SOURCE          lockappdevicelockcontrol.cpp
-SOURCE          lockappdevicelockcontainer.cpp
-SOURCE          lockappecsdetector.cpp
-SOURCE          lockappstatepublisher.cpp
-
-// CenRep and PS observers
-SOURCE          lockappcenrepobserver.cpp
-SOURCE          lockapppubsubobserver.cpp
-
-// Keyguard notes
-SOURCE          lockappsleepingnote.cpp
-SOURCE          lockapplockednote.cpp
-SOURCE          lockappecsnote.cpp
-
-// LockApp Server
-SOURCE          lockappserver.cpp
-SOURCE          lockappsession.cpp
-
-// LockApp Utils
-SOURCE          lockappkeycapturecontroller.cpp
-SOURCE          lockappkeypattern.cpp
-SOURCE          lockapputils.cpp
-SOURCE          lockappwait.cpp
-
-SOURCEPATH      ../group
-
-USERINCLUDE     ../inc ../loc ../cenrep
-
-APP_LAYER_SYSTEMINCLUDE
-SYSTEMINCLUDE   ../../../inc
-
-
-LIBRARY         euser.lib // USER services
-LIBRARY         apparc.lib  // application architecture
-LIBRARY         cone.lib   // Cone
-LIBRARY         bafl.lib // BaflUtils, reading localisation resources
-LIBRARY         ws32.lib // accessing window groups
-LIBRARY         apgrfx.lib // accessing window group names
-LIBRARY         eikcore.lib  // eikon environment
-LIBRARY         eikcoctl.lib // ceikstatuspane
-LIBRARY         eikdlg.lib // eikdialogs
-LIBRARY         gdi.lib  // drawing
-LIBRARY         fbscli.lib // required for CFbsBitmap
-LIBRARY         efsrv.lib // server library
-LIBRARY         etel.lib  // telephony
-LIBRARY         etelmm.lib // telephony
-LIBRARY         customapi.lib // custom api
-LIBRARY         centralrepository.lib // central repository
-LIBRARY         cenrepnotifhandler.lib // central repository notify handler
-LIBRARY         featmgr.lib // feature manager
-LIBRARY         cdlengine.lib // layout engine
-LIBRARY         avkon.lib  // Avkon
-LIBRARY         aknicon.lib // icon support
-LIBRARY         aknlayout2.lib // old layouts
-LIBRARY         aknlayout2scalable.lib // new layouts
-LIBRARY         aknskins.lib // skins
-LIBRARY         aknnotify.lib // aknsmallindicator
-LIBRARY         activitymanager.lib // Activity manager
-LIBRARY         secui.lib // Security UI
-
-LIBRARY         flogger.lib // File logging
-
-LIBRARY         keylockpolicyapi.lib // Keylock policy
-
-#ifdef __SAP_TERMINAL_CONTROL_FW
-LIBRARY         scpclient.lib
-#endif // __SAP_TERMINAL_CONTROL_FW
-
-START RESOURCE ../data/lockapp.rss
-HEADER
-TARGETPATH APP_RESOURCE_DIR
-//LANG SC
-LANGUAGE_IDS
-END
-
-START RESOURCE ../data/lockapp_reg.rss
-TARGETPATH	/private/10003a3f/apps
-END
-
+// Symbian
+LIBRARY         euser.lib
+LIBRARY         efsrv.lib
+LIBRARY	ws32.lib
+LIBRARY	eikcore.lib
+LIBRARY	apgrfx.lib
+LIBRARY	apparc.lib
+LIBRARY	cone.lib
 
 SMPSAFE

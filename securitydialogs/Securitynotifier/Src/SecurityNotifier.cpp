@@ -226,30 +226,29 @@ void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMes
 void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const RMessagePtr2& aMessage)
     {
 	#if defined(_DEBUG)
-	RDebug::Printf( "%s %s (%u) searching for autolocksrv.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
+	RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
 	#endif
 		
 	TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
 	const TUid KAutolockUid = { 0x100059B5 };
-	//TApaTask task( taskList.FindApp( KAutolockUid ) );
-	TApaTask task( taskList.FindApp( _L("autolocksrv.exe" )) );
+	TApaTask task( taskList.FindApp( KAutolockUid ) );
 	if ( !task.Exists() )
 		{
 		#if defined(_DEBUG)
-		RDebug::Printf( "%s %s (%u) sutolocksrv.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
+		RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
 		#endif
 		RApaLsSession ls;                   
 		User::LeaveIfError(ls.Connect());   
 		CleanupClosePushL(ls);         
 		
 		CApaCommandLine* commandLine = CApaCommandLine::NewLC();
-		commandLine->SetExecutableNameL( _L("autolockarv.exe" ) );     
+		commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
 		commandLine->SetCommandL( EApaCommandRun );
 		
 		// Try to launch the application.        
-		User::LeaveIfError(ls.StartApp(*commandLine));
+		TInt err = ls.StartApp(*commandLine);
 		#if defined(_DEBUG)
-		RDebug::Printf( "%s %s (%u) autolocksrv.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x2 );
+		RDebug::Printf( "%s %s (%u) autolock.exe err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
 		#endif
 		
 		CleanupStack::PopAndDestroy(2); // commandLine, ls

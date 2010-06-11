@@ -24,7 +24,7 @@
 
 #include <cphcltemergencycall.h>
 #include <SCPClient.h>
-#include "SecUiWait.h"
+#include "SecUi.h"
 
 const TUid KSWInstHelpUid =
     {

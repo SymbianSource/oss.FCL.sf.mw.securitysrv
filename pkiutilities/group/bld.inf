@@ -40,6 +40,7 @@ PRJ_EXPORTS
 ../rom/pkcs12.iby               CORE_MW_LAYER_IBY_EXPORT_PATH( pkcs12.iby )
 ../rom/CTSecurityDialogs.iby    CORE_MW_LAYER_IBY_EXPORT_PATH( CTSecurityDialogs.iby )
 ../rom/CTSecurityDialogs_resources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( CTSecurityDialogs_resources.iby )
+../rom/certmanui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( certmanui_resources.iby )    // needed by CTSecurityDialogs
 ../rom/CertSaver.iby            CORE_MW_LAYER_IBY_EXPORT_PATH( CertSaver.iby )
 ../rom/CertSaver_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( CertSaver_resources.iby )
 ../rom/DevToken.iby             CORE_MW_LAYER_IBY_EXPORT_PATH( DevToken.iby )

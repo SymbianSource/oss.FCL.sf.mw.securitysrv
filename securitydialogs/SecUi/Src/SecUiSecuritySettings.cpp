@@ -19,7 +19,6 @@
 #include <etelmm.h>
 #include <exterror.h>
 #include <textresolver.h>
-#include <SecUi.rsg>
 #include <aknnotedialog.h>
 #include <mmtsy_names.h>
 #include <centralrepository.h> 
@@ -30,19 +29,16 @@
 #include <PSVariables.h>   // Property values
 #include <securityuisprivatepskeys.h>
 #include <startupdomainpskeys.h>
+#include "SecUi.h"
 #include "secuisecuritysettings.h"
-#include "SecUiAutoLockSettingPage.h"
 #include "secui.hrh"
 #include "secuisecurityhandler.h"
 #include "secuicodequerydialog.h"
 #include "SecUiWait.h"
 
-#ifdef RD_REMOTELOCK
 #include <aknnotewrappers.h>
 #include <StringLoader.h>
 #include <RemoteLockSettings.h>
-#include "SecUiRemoteLockSettingPage.h"
-#endif // RD_REMOTELOCK
 #include <featmgr.h>
 
 #include "SecQueryUi.h"
@@ -102,15 +98,13 @@ EXPORT_C void CSecuritySettings::ConstructL()
      *    Needs customer TSY implementation
      *****************************************************/
 
+		RDEBUG("0", 0);
     TInt err(KErrGeneral);
     TInt thisTry(0);
     iWait = CWait::NewL();
     RTelServer::TPhoneInfo PhoneInfo;
     /* All server connections are tried to be made KTriesToConnectServer times because occasional
      fails on connections are possible, at least on some servers */
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ConstructL()"));
-#endif
 
     FeatureManager::InitializeLibL();
     // connect to ETel server
@@ -161,9 +155,7 @@ EXPORT_C CSecuritySettings::~CSecuritySettings()
     // Cancel active requests
     if (iWait->IsActive())
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CManualSecuritySettings::~CSecuritySettings() CANCEL REQ"));
-#endif
+				RDEBUG("CancelAsyncRequest", 0);
         iPhone.CancelAsyncRequest(iWait->GetRequestType());
 
         switch (iWait->GetRequestType())
@@ -320,21 +312,8 @@ EXPORT_C TInt CSecuritySettings::ChangeRemoteLockStatusL(
 		RDEBUG("aRemoteLockStatus", aRemoteLockStatus);
 		RDEBUG("aAutoLockPeriod", aAutoLockPeriod);
 
-    TInt currentItem( 0 );
-
     if ( aRemoteLockStatus )
         {
-        currentItem = KRemoteLockSettingItemOn;
-        }
-    else
-        {
-        currentItem = KRemoteLockSettingItemOff;
-        }
-		RDEBUG("currentItem", currentItem);
-
-    if ( currentItem == KRemoteLockSettingItemOn )
-        {
-				RDEBUG("KRemoteLockSettingItemOn", KRemoteLockSettingItemOn);
         aRemoteLockStatus = ETrue;
 
         // If user wishes to enable remote lock
@@ -342,9 +321,8 @@ EXPORT_C TInt CSecuritySettings::ChangeRemoteLockStatusL(
         // RemoteLockCodeQueryL also 
         retValue = RemoteLockCodeQueryL( aRemoteLockCode );
         }
-    else if ( currentItem == KRemoteLockSettingItemOff )
+    else
         {
-				RDEBUG("KRemoteLockSettingItemOff", KRemoteLockSettingItemOff);
         aRemoteLockStatus = EFalse;
         retValue = KErrNone;
 				// TODO this should calculate aAutoLockPeriod itself, and not trust the input
@@ -374,14 +352,25 @@ EXPORT_C TInt CSecuritySettings::ChangeRemoteLockStatusL(
 // Pops up remote lock code query. Requires user to enter a new remote lock 
 // code (RemoteMsg) twice and if they match enables the domestic OS device lock (which as 
 // a side effect pops up security code query).
+// Note: if the RemoteMsg is cancelled, nevertheless the lock is activated. This is done because the code is askedirst, and the only way to do so is by enabling the lock.
+// This is not a problem, because:
+// a) first the RemoteMsg is enable, and this function is used to change it
+// b) if lock was disabled, the "change RemoteMsg" menu is not available.
 // ----------------------------------------------------------
 // no qtdone
 TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
     {
-#ifdef RD_REMOTELOCK
+
     TInt retValue( KErrNone );
 
+      // This is done because lock-code needs to be asked first.
+      // Enable lock setting in domestic OS. It is safe to enable the 
+      // lock setting since RemoteLock API requires remote locking to
+      // be enabled when changing or setting the remote lock message.
+      retValue = RemoteLockSetLockSettingL( ETrue );
 		RDEBUG( "retValue", retValue );
+		if (retValue != KErrNone)
+            return retValue;
     aRemoteLockCode.Zero();
 
     TInt queryAccepted = KErrCancel;
@@ -401,21 +390,14 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
         if (queryAccepted != KErrNone)
             return KErrAbort;
 
-		// TODO it should ask first for the code, and _later_ for the RemoteMsg
-		
-            // ----- Check against security code ------------------------------
-
-            // Check that the new remote lock code doesn't match the security 
-            // code of the device.
-
-            RMobilePhone::TMobilePhoneSecurityCode secCodeType;
-            secCodeType = RMobilePhone::ESecurityCodePhonePassword;
+            // Check that the new remote lock code doesn't match the security code of the device.
+            RMobilePhone::TMobilePhoneSecurityCode secCodeType = RMobilePhone::ESecurityCodePhonePassword;
             RMobilePhone::TMobilePassword securityCode;
             RMobilePhone::TMobilePassword unblockCode; // Required here only as a dummy parameter 
 
-						RDEBUG( "RMobilePhone::KMaxMobilePasswordSize", RMobilePhone::KMaxMobilePasswordSize );
 
                 securityCode = aRemoteLockCode;
+								RDEBUG( "EMobilePhoneVerifySecurityCode", EMobilePhoneVerifySecurityCode );
                 iWait->SetRequestType( EMobilePhoneVerifySecurityCode );
                 RDEBUG( "VerifySecurityCode", 0 );
                 iPhone.VerifySecurityCode( iWait->iStatus, secCodeType, securityCode, unblockCode );
@@ -424,32 +406,21 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
                 RDEBUG( "WaitForRequestL res", res );
 #ifdef __WINS__
                 if (res == KErrNotSupported || res == KErrTimedOut)
-                res = KErrNone;
+                res = 0xffffec50;	// TODO this means KErrGsm0707IncorrectPassword = incorrect code
 #endif
-                if(res != KErrNone)
+								RDEBUG( "KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword );
+                if(res == KErrNone)
                     {
-		                // The remote lock code matches the security code 
+                    // The message is also valid as a lock-code, this means that
+		                // remote lock code matches the security code 
 		                // and that is not allowed
-		                RDEBUG( "res", res );
-		                return res;
+		                RDEBUG( "return KErrCancel because msg matches code", KErrCancel );
+		                ShowResultNoteL(R_REMOTELOCK_INVALID_CODE, CAknNoteDialog::EErrorTone);
+		                return KErrCancel;
                     }
 
-            // ----- Enable DOS device lock (Security code query) -------------
-            if ( retValue == KErrNone )
-                {
-                // Enable lock setting in domestic OS. It is safe to enable the 
-                // lock setting since RemoteLock API requires remote locking to
-                // be enabled when changing or setting the remote lock message.
-                retValue = RemoteLockSetLockSettingL( ETrue );
-                }
-RDEBUG( "retValue", retValue );
-#ifdef _DEBUG
-    RDebug::Print(_L("(SecUi)CSecuritySettings::ChangeRemoteLockCodeL() - Exit" ) );
-#endif // _DEBUG
+		RDEBUG( "retValue", retValue );
     return retValue;
-#else //! RD_REMOTELOCK
-    return KErrNotSupported;
-#endif //RD_REMOTELOCK
     }
 //
 // ----------------------------------------------------------
@@ -463,9 +434,34 @@ TInt CSecuritySettings::RemoteLockSetLockSettingL(TBool aLockSetting)
     TInt retValue( KErrNone );
 		RDEBUG( "aLockSetting", aLockSetting );
 
+
     RMobilePhone::TMobilePhoneLockSetting lockSetting = RMobilePhone::ELockSetEnabled;
     RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
 
+
+    RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
+    RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
+
+    //get lock info
+    iWait->SetRequestType(EMobilePhoneGetLockInfo);
+    RDEBUG("GetLockInfo", 0);
+    iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
+    RDEBUG("WaitForRequestL", 0);
+    TInt status = iWait->WaitForRequestL();
+    RDEBUG("WaitForRequestL status", status);
+
+#ifdef __WINS__
+    if (status == KErrNotSupported || status == KErrTimedOut)
+        {
+        lockInfo.iSetting = RMobilePhone::ELockSetDisabled;
+        status = KErrNone;
+        }
+#endif
+    User::LeaveIfError(status);
+		RDEBUG("current lockInfo.iSetting", lockInfo.iSetting);
+
+		// disabled->disabled	should not happen
+		// enabled->enabled		happens because a change of message also forces a code re-validation
     if ( aLockSetting )
         {
         lockSetting = RMobilePhone::ELockSetEnabled;
@@ -474,7 +470,7 @@ TInt CSecuritySettings::RemoteLockSetLockSettingL(TBool aLockSetting)
         {
         lockSetting = RMobilePhone::ELockSetDisabled;
         }
-		RDEBUG("lockSetting", lockSetting);
+		RDEBUG("future lockSetting", lockSetting);
 
     iWait->SetRequestType( EMobilePhoneSetLockSetting );
     RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
@@ -524,10 +520,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeSimSecurityL()"));
-#endif
-
+		RDEBUG("0", 0);
     RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
     RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
     RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneToICC;
@@ -550,12 +543,9 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
 #endif
     User::LeaveIfError(status);
     TInt currentItem = 0;
-
+		RDEBUG("lockInfo.iSetting", lockInfo.iSetting);
     if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeSimSecurityL()lockInfo: ELockSetDisabled"));
-#endif
         currentItem = 1; // off
         }
 
@@ -583,9 +573,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
 #endif
 
     // the error was displayed in the handler
-#if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::ChangeSimSecurityL(): RETURN CODE: %d"), status);
-#endif        
+		RDEBUG("status", status);
     switch (status)
         {
         case KErrNone:
@@ -652,12 +640,10 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
     TBool wcdmaSupported(
             FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma));
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin));
+		RDEBUG("wcdmaSupported", wcdmaSupported);
+		RDEBUG("upinSupported", upinSupported);
     if (wcdmaSupported || upinSupported)
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL()"));
-#endif
-
         TInt simState;
         TInt err(KErrGeneral);
         err = RProperty::Get(KPSUidStartup, KPSSimStatus, simState);
@@ -692,33 +678,21 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
         User::LeaveIfError(status);
         TInt currentItem = 0;
 
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() GetLockInfo"));
-#endif
-
+				RDEBUG("lockInfo.iSetting", lockInfo.iSetting);
         if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() lockInfo: ELockSetDisabled"));
-#endif
             currentItem = 1; // off
             }
 
         if (currentItem == 0) // switch the flag
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() currentItem: ELockSetDisabled"));
-#endif
             lockChangeSetting = RMobilePhone::ELockSetDisabled;
             }
         else
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeUPinRequestL() currentItem: ELockSetEnabled"));
-#endif
             lockChangeSetting = RMobilePhone::ELockSetEnabled;
             }
-
+				RDEBUG("lockChangeSetting", lockChangeSetting);
         // Raise a flag to indicate that the UPIN
         // request coming from ETEL has originated from SecUi and not from Engine.
         RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
@@ -734,7 +708,7 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
         RDEBUG("WaitForRequestL status", status);
         // Lower the flag                           
         RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
-                ESecurityUIsETelAPIOriginated);
+                ESecurityUIsSecUIOriginatedUninitialized);
 #ifdef __WINS__
         if (status == KErrNotSupported || status == KErrTimedOut)
         status = KErrNone;
@@ -794,12 +768,10 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
     TBool wcdmaSupported(
             FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma));
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin));
+				RDEBUG("wcdmaSupported", wcdmaSupported);
+				RDEBUG("upinSupported", upinSupported);
     if (wcdmaSupported || upinSupported)
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL()"));
-#endif 
-
         // If we are in simless offline mode the PIN codes can't obviously be switched
         TInt simState;
         TInt err(KErrGeneral);
@@ -823,9 +795,7 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
 
         RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
         RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() GetLockInfo"));
-#endif    
+				RDEBUG("EMobilePhoneGetLockInfo", EMobilePhoneGetLockInfo);
         iWait->SetRequestType(EMobilePhoneGetLockInfo);
 
         if (activeCode == RMobilePhone::ESecurityUniversalPin)
@@ -856,11 +826,10 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
             }
 
         // code request must be ON to change active code.
+				RDEBUG("lockInfo.iSetting", lockInfo.iSetting);
         if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() CODE REQ NOT ON."));
-#endif
+
             if (activeCode != RMobilePhone::ESecurityUniversalPin)
                 {
                 ShowResultNoteL(R_UPIN_NOT_ALLOWED,
@@ -870,41 +839,26 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
                 {
                 ShowResultNoteL(R_PIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
                 }
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() CODE REQ NOT ON NOTE END."));
-#endif 
             return EFalse;
             }
 
         iCustomPhone.GetActivePin(activeCode);
         TInt currentItem = 0;
 
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() GetLockInfo"));
-#endif
-
+				RDEBUG("activeCode", activeCode);
         if (activeCode == RMobilePhone::ESecurityUniversalPin)
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() active code: UPIN"));
-#endif
             currentItem = 1; // UPIN
             }
-
         if (currentItem == 0) // switch the flag
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() currentItem: UPIN"));
-#endif
             lockType = RMobilePhone::ELockUniversalPin;
             }
         else
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::SwitchPinCodesL() currentItem: PIN1"));
-#endif
             lockType = RMobilePhone::ELockICC;
             }
+				RDEBUG("lockType", lockType);
 
         // Raise a flag to indicate that the code
         // request coming from ETEL has originated from SecUi and not from Engine.
@@ -921,7 +875,7 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
         RDEBUG("WaitForRequestL status", status);
         // Lower the flag                            
         RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
-                ESecurityUIsETelAPIOriginated);
+                ESecurityUIsSecUIOriginatedUninitialized);
 #ifdef __WINS__
         if (status == KErrNotSupported || status == KErrTimedOut)
         status = KErrNone;
@@ -1162,9 +1116,7 @@ EXPORT_C void CSecuritySettings::SetFdnModeL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::SetFdnModeL()"));
-#endif
+		RDEBUG("0", 0);
     RMmCustomAPI::TSecurityCodeType secCodeType =
             RMmCustomAPI::ESecurityCodePin2;
 
@@ -1230,9 +1182,7 @@ EXPORT_C void CSecuritySettings::SetFdnModeL()
     status = KErrNone;
 #endif
 
-#if defined(_DEBUG)
-    RDebug::Print( _L("(SECUI)CSecuritySettings::SetFdnModeL(): RETURN CODE: %d"), status);
-#endif
+		RDEBUG("status", status);
     switch (status)
         {
         case KErrNone:
@@ -1270,9 +1220,7 @@ EXPORT_C TInt CSecuritySettings::GetFdnMode(
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::GetFdnMode()"));
-#endif
+		RDEBUG("0", 0);
     return iPhone.GetFdnStatus(aFdnMode);
     }
 
@@ -1300,12 +1248,6 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID,
     {
     RDEBUG("aResourceID", aResourceID);
 
-    /*
-     CAknNoteDialog* noteDlg = new (ELeave) CAknNoteDialog(REINTERPRET_CAST(CEikDialog**,&noteDlg));
-     noteDlg->SetTimeout(CAknNoteDialog::ELongTimeout);
-     noteDlg->SetTone(aTone);
-     noteDlg->ExecuteLD(aResourceID);
-     */
     CHbDeviceMessageBoxSymbian* messageBox =
             CHbDeviceMessageBoxSymbian::NewL(
                     CHbDeviceMessageBoxSymbian::EWarning);
@@ -1441,6 +1383,10 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID,
             titleTr.Append(_L("R_SIM_NOT_ALLOWED"));
             title.Append(_L("SIM NOT ALLOWED"));
             break;
+        case R_REMOTELOCK_INVALID_CODE:
+            titleTr.Append(_L("R_REMOTELOCK_INVALID_CODE"));
+            title.Append(_L("REMOTELOCK INVALID CODE"));
+            break;
 
         default: // " "
             titleTr.Append(_L("Specific Error"));
@@ -1476,12 +1422,10 @@ EXPORT_C TBool CSecuritySettings::IsUpinSupportedL()
             FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma));
     TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin));
     TBool isSupported = EFalse;
+		RDEBUG("wcdmaSupported", wcdmaSupported);
+		RDEBUG("upinSupported", upinSupported);
     if (wcdmaSupported || upinSupported)
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::IsUpinSupported() BEGIN"));
-#endif
-
         RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
 
         //get lock info
@@ -1495,15 +1439,12 @@ EXPORT_C TBool CSecuritySettings::IsUpinSupportedL()
         RDEBUG("WaitForRequestL res", res);
         if ((res == KErrNotSupported) || (res == KErrGsmInvalidParameter))
             {
-#if defined(_DEBUG)
-            RDebug::Print(_L("(SECUI)CSecuritySettings::IsUpinSupported(): NOT SUPPORTED"));
-#endif
+            RDEBUG("0", 0);
             isSupported = EFalse;
             }
         else
             {
-            RDEBUG("0", 0);
-
+            RDEBUG("1", 1);
             isSupported = ETrue;
             }
         }
@@ -1593,14 +1534,12 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(
     User::LeaveIfError(err);
     TBool simRemoved(simState == ESimNotPresent);
 
+		RDEBUG("simRemoved", simRemoved);
     if (simRemoved)
         {
         ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
         return KErrAccessDenied;
         }
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinParamsL()"));
-#endif    
     RMobilePhone::TMobilePhoneSecurityCode secCodeType;
     secCodeType = RMobilePhone::ESecurityCodePin1;
 
@@ -2214,9 +2153,6 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangeSecCodeParamsL()"));
-#endif
     TInt res = KErrNone;
     TInt queryAccepted = KErrCancel;
     RMobilePhone::TMobilePassword newPassword;
@@ -2355,7 +2291,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(
                 if (scpClient.Connect() == KErrNone)
                     {
                     RDEBUG("scpClient.StoreCode", 0);
-                    /*
+                     // this is the old method. Obsolete now
                      // scpClient.StoreCode( newCode );
                      RArray<TDevicelockPolicies> aFailedPolicies;
                      TDevicelockPolicies failedPolicy;
@@ -2364,11 +2300,10 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(
                      RDEBUG( "retLockcode", retLockcode );
                      RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
                      for(TInt i=0; i<aFailedPolicies.Count(); i++)
-                     {
-                     failedPolicy = aFailedPolicies[i];
-                     RDEBUG( "failedPolicy", failedPolicy );
-                     }
-                     */
+	                     {
+	                     failedPolicy = aFailedPolicies[i];
+	                     RDEBUG( "failedPolicy", failedPolicy );
+	                     }
                     scpClient.Close();
                     }
                 }
@@ -2608,10 +2543,6 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
 #endif
     User::LeaveIfError(status);
 
-#if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestParamsL() GetLockInfo"));
-#endif
-
     if (aOldPassword.Length() == 0) // only if input parameters are empty
         {
         // switch the value.
@@ -2621,32 +2552,22 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
             lEnable = 0; // off
         }
 
+		RDEBUG("lEnable", lEnable);
     if (lEnable == 0)
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestParamsL() currentItem: ELockSetDisabled"));
-#endif
         lockChangeSetting = RMobilePhone::ELockSetDisabled;
         }
     else
         {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestParamsL() currentItem: ELockSetEnabled"));
-#endif
         lockChangeSetting = RMobilePhone::ELockSetEnabled;
         }
 
+		RDEBUG("lockChangeSetting", lockChangeSetting);
     // Raise a flag to indicate that the PIN
     // request coming from ETEL has originated from SecUi and not from Engine.
     TInt tRet = RProperty::Set(KPSUidSecurityUIs,
             KSecurityUIsSecUIOriginatedQuery, ESecurityUIsSecUIOriginated);
-    if (tRet != KErrNone)
-        {
-#if defined(_DEBUG)
-        RDebug::Print(_L("(SECUI)CSecuritySettings::ChangePinRequestParamsL():\
-            FAILED to set the SECUI query Flag: %d"), tRet);
-#endif
-        }
+		RDEBUG("tRet", tRet);
 
     // Change the lock setting
     iWait->SetRequestType(EMobilePhoneSetLockSetting);
@@ -2664,7 +2585,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
 
     // Lower the flag                             
     RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
-            ESecurityUIsETelAPIOriginated);
+            ESecurityUIsSecUIOriginatedUninitialized);
 
     switch (status)
         {

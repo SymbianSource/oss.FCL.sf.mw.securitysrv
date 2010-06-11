@@ -14,7 +14,7 @@
 * Description:  
 *
 */
-#include <CCTCertInfo.h>
+#include <cctcertinfo.h>
 #include <x509cert.h>
 #include <unifiedcertstore.h>
 #include <X509CertNameParser.h>
@@ -35,9 +35,9 @@
 #include <hbdataformmodelitem.h>
 #include <hblabel.h>
 #include <hbpushbutton.h>
-#include <HbMenu.h>
+#include <hbmenu.h>
 #include <hbaction.h>
-#include <HbMessageBox.h>
+#include <hbmessagebox.h>
 #include <HbListWidget>
 #include <HbListWidgetItem>
 #include <HbGroupBox>

@@ -28,9 +28,9 @@
 #include <hbdataformmodelitem.h>
 #include <hblabel.h>
 #include <hbpushbutton.h>
-#include <HbMenu.h>
+#include <hbmenu.h>
 #include <hbaction.h>
-#include <HbMessageBox.h>
+#include <hbmessagebox.h>
 #include <HbListWidget>
 #include <HbListWidgetItem>
 #include <HbGroupBox>

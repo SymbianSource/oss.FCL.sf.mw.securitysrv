@@ -22,7 +22,7 @@
 #include    <coreapplicationuisdomainpskeys.h>
 #include    "SecUiSystemLock.h"
 #include    <eikenv.h>
-#include    <AknNotifierController.h>
+// #include    <AknNotifierController.h>
 #include    <rmmcustomapi.h>
 #include    "secuisecuritysettings.h"
 #include    "SecUiWait.h"
@@ -50,6 +50,7 @@ const TInt KTimeBeforeRetryingServerConnection( 50000 );
 // 
 EXPORT_C CSystemLock* CSystemLock::NewL()
     {
+    RDebug::Printf( "%s %s (%u) this should not be called=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     CSystemLock* self = new(ELeave) CSystemLock();
     CleanupStack::PushL(self);
     self->ConstructL();
@@ -64,6 +65,7 @@ EXPORT_C CSystemLock* CSystemLock::NewL()
 // 
 void CSystemLock::ConstructL()    
     {    
+    RDebug::Printf( "%s %s (%u) this should not be called=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     /*****************************************************
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
@@ -143,7 +145,8 @@ EXPORT_C CSystemLock::~CSystemLock()
 //
 // ----------------------------------------------------------
 // CSystemLock::SetLockedL()
-// Activates system lock 
+// Activates system lock
+// this was used by SysAp, but it's not longer used
 // ----------------------------------------------------------
 //
 EXPORT_C void CSystemLock::SetLockedL()
@@ -152,6 +155,7 @@ EXPORT_C void CSystemLock::SetLockedL()
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
+    RDebug::Printf( "%s %s (%u) this should not be called=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CSystemLock::SetLockedL()"));
     #endif
@@ -160,17 +164,20 @@ EXPORT_C void CSystemLock::SetLockedL()
             CDevicelockAccessApi* iDevicelockAccess = CDevicelockAccessApi::NewL( );
            	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 						iDevicelockAccess->OfferDevicelock();
-						//				EnableDevicelock( EDevicelockManual );
+						// this will do				EnableDevicelock( EDevicelockManual );
 						RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
     }
 //
 // ----------------------------------------------------------
 // CSystemLock::RunL()
 // Handles query result
+// this was used by SysAp, but it's not longer used
 // ----------------------------------------------------------
 // 
 void CSystemLock::RunL()
     {    
+    RDebug::Printf( "%s %s (%u) this should not be called=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+
     #if defined(_DEBUG)
     TInt status(iStatus.Int());
     RDebug::Print(_L("(SECUI)CSystemLock::RunL(): %d"), status);
@@ -188,14 +195,16 @@ void CSystemLock::RunL()
         		RDebug::Print(_L("(SECUI)CSystemLock::RunL() KErrNone"));
         		#endif
         		// clear notifiers
-        		AknNotifierController::HideAllNotifications(ETrue);
+        		// not any more. Avkon is deprecated. Besides, this function should not be called.
+        		// AknNotifierController::HideAllNotifications(ETrue);
         		// query approved -> lock system  
 			#ifdef RD_REMOTELOCK
 				iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, EManualLocked);
 			#else// !RD_REMOTELOCK
         		iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, EAutolockOn);
         	#endif//RD_REMOTELOCK
-        		AknNotifierController::HideAllNotifications(EFalse);
+        		// not any more. Avkon is deprecated. Besides, this function should not be called.
+        		// AknNotifierController::HideAllNotifications(EFalse);
     		}
         }
     else if((iStatus != KErrCancel) && (iStatus != KErrAbort))

@@ -19,6 +19,7 @@
 
 // INCLUDE FILES
 
+#include <platform/e32notif.h>
 #include "CTNoTrustQuery.h"
 #include "CTSecurityDialogsAO.h"
 #include "CTCertificateQuery.h"

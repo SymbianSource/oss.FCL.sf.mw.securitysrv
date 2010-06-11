@@ -45,6 +45,34 @@ class CHbSymbianVariantMap;
 class CActiveSchedulerWait;
 class CApaMaskedBitmap;
 
+typedef TBuf<80> TSecUiPassword;
+
+enum R_SECUI_ERROR_CODES
+	{
+	R_CODE_ERROR=0x58ED0100,
+	R_SEC_BLOCKED,
+	R_CONFIRMATION_NOTE,
+	R_PIN_CODE_CHANGED_NOTE,
+	R_PIN2_CODE_CHANGED_NOTE,
+	R_PIN2_REJECTED,
+	R_UPIN_CODE_CHANGED_NOTE,
+	R_SIM_NOT_ALLOWED,
+	R_SIM_ALLREADY_OFF,
+	R_SIM_OFF,
+	R_SIM_ALLREADY_ON,
+	R_OPERATION_NOT_ALLOWED,
+	R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE,
+	R_PIN_NOT_ALLOWED,
+	R_REMOTELOCK_INVALID_CODE,
+	R_SIM_ON,
+	R_INSERT_SIM,
+	R_CODES_DONT_MATCH,
+	R_PIN_BLOCKED_NOTE,
+	R_UPIN_NOT_ALLOWED,
+	R_SECURITY_CODE_CHANGED_NOTE,
+	R_SECUI_ERROR_CODE_LAST
+	};
+
 /**
  * CSecQueryUi provides UI dialogs for SW installation. UI dialogs are
  * global and they can be used in a non-UI code (like in SIF plugins).
@@ -206,7 +234,7 @@ class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
         TInt iCompletionCode;
         TInt iReturnValue;
 public:
-	      RMobilePhone::TMobilePassword iPassword;
+	      TSecUiPassword iPassword;
     };
 
 

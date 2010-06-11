@@ -15,7 +15,6 @@
  *
 */
 
-
 #include "lockaccessextension.h"
 #include <lockappclientserver.h>
 #include <e32property.h> // P&S API
@@ -25,13 +24,8 @@
 #include <xqservicerequest.h>
 #include <xqserviceutil.h>
 #include <xqrequestinfo.h>
-#include <QDebug>
 #include <xqaiwrequest.h>
 #include <xqappmgr.h>
-
-// Constants
-const TInt KTimesToConnectServer( 2);
-const TInt KTimeoutBeforeRetrying( 50000);
 
 // ---------------------------------------------------------------------------
 // Gets server version, needed for connection
@@ -71,8 +65,7 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 		ret = KErrNotReady;
 		}
 	*/
-	qDebug() << "============= RLockAccessExtension::TryConnect";
-	qDebug() << ret;
+	RDEBUG("ret", ret);
 	return ret;
 	}
 
@@ -83,8 +76,10 @@ TInt RLockAccessExtension::EnsureConnected( )
 	{
 	TInt ret(KErrNone);
 	/*
-	this is the old methd. Now we use QtHighway
+	this is the old method. Now we use QtHighway
 	// we need CCoeEnv because of window group list
+	const TInt KTimesToConnectServer( 2);
+	const TInt KTimeoutBeforeRetrying( 50000);
 	CCoeEnv* coeEnv = CCoeEnv::Static( );
 	if ( coeEnv )
 		{
@@ -104,8 +99,7 @@ TInt RLockAccessExtension::EnsureConnected( )
 		ret = KErrNotSupported;
 		}
 	*/
-	qDebug() << "============= RLockAccessExtension::EnsureConnected";
-	qDebug() << ret;
+	RDEBUG("ret", ret);
 	return ret;
 	}
 
@@ -145,74 +139,80 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1, TInt aParam2 )
 	{
 	TInt ret = EnsureConnected( );
+	RDEBUG("ret", ret);
 	if ( ret == KErrNone )
 		{
 		// assign parameters to IPC argument
 		// TIpcArgs args( aParam1, aParam2);
 		// this is the old methd. Now we use QtHighway
 		// ret = SendReceive( aMessage, args );
-    qDebug() << "============= RLockAccessExtension::SendMessage 123.2";
-    qDebug() << aMessage;
-    qDebug() << aParam1;
-    qDebug() << aParam2;
+    RDEBUG("aMessage", aMessage);
+    RDEBUG("aParam1", aParam1);
+    RDEBUG("aParam2", aParam2);
 
-		if(1==0)
-			{	// old method. Not used any more
+		
+			{	// old method. Not used any more. Kept as reference
+			/*
 	    XQServiceRequest* mServiceRequest;
-	    qDebug() << "============= RLockAccessExtension::SendMessage 2";
-	    mServiceRequest = new XQServiceRequest("com.nokia.services.AutolockSrv.AutolockSrv","service(QString,QString,QString)");// use   , false    to make async
-	    qDebug() << "============= RLockAccessExtension::SendMessage 2.1";
-	    qDebug() << mServiceRequest;
+      RDEBUG("XQServiceRequest", 0);
+	    mServiceRequest = new XQServiceRequest("com.nokia.services.Autolock.Autolock","service(QString,QString,QString)");// use   , false    to make async
+      RDEBUG("aMessage", 0);
 	    QString label;
 	    label = "" + QString("%1").arg(aMessage);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage aParam1";
+      RDEBUG("aParam1", 0);
 	    label = "" + QString("%1").arg(aParam1);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage aParam2";
+      RDEBUG("aParam2", 0);
 	    label = "" + QString("%1").arg(aParam2);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage 3";
 	    int returnvalue;
+      RDEBUG("send", 0);
 	    bool ret = mServiceRequest->send(returnvalue);
-	    qDebug() << "============= RLockAccessExtension::SendMessage ret=" << ret;
-	    qDebug() << "============= RLockAccessExtension::SendMessage returnvalue=" << returnvalue;
+      RDEBUG("ret", ret);
+      RDEBUG("returnvalue", returnvalue);
+      */
 			}
-		else
-			{
-	 		// TODO this always seems to fail because request is NULL
+
+			RDEBUG("args", 0);
+			QList<QVariant> args;
+	    args << QVariant(QString(QString::number(aMessage)));
+	    args << QVariant(QString(QString::number(aParam1)));
+	    args << QVariant(QString(QString::number(aParam2)));
+
 	    XQApplicationManager mAppManager;
 	    XQAiwRequest *request;
-			request = mAppManager.create("com.nokia.services.AutolockSrv", "AutolockSrv", "service(QString,QString,QString)", false);
-			// also works with		create("AutolockSrv", "service(QString,QString,QString)", false);
+	    RDEBUG("create", 0);
+			request = mAppManager.create("com.nokia.services.Autolock", "Autolock", "service(QString,QString,QString)", false);
+			// also works with		create("Autolock", "service(QString,QString,QString)", false);
 			if(request)
-	    	qDebug() << "============= RLockAccessExtension::SendMessage got request";
+				{
+	    	RDEBUG("got request", 0);
+	    	}
 	    else
 	    	{
-	 	    qDebug() << "============= RLockAccessExtension::SendMessage not got request";
+	 	    RDEBUG("not got request", 0);
+	 	    RDebug::Printf( "%s %s (%u) not got request=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+	 	    return KErrAbort;
 	 	  	}
 				
-	    qDebug() << "============= RLockAccessExtension::SendMessage 121.3";
-			QList<QVariant> args;
-			QString label ;
-			label = "" + QString("%1").arg(aMessage);
-	    args << QVariant(QString(label));
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.4";
-			label = "" + QString("%1").arg(aParam1);
-	    args << QVariant(QString(label));
-			label = "" + QString("%1").arg(aParam2);
-	    args << QVariant(QString(label));
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.4";
+			RDEBUG("setArguments", 0);
 			request->setArguments(args);
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.5";
-			bool ret = request->send();
-	    qDebug() << "============= RLockAccessExtension::SendMessage ret=" << ret;
+			RDEBUG("args", 0);
+	    int returnvalue=0;
+	    QVariant var = QVariant(returnvalue);
+			RDEBUG("send", 0);
+			bool retSend = request->send(var);
+			returnvalue = var.toInt();
+			RDEBUG("retSend", retSend);
+			RDEBUG("returnvalue", returnvalue);
 	    int error = request->lastError();
-	    qDebug() << "============= RLockAccessExtension::SendMessage error=" << error;
+			RDEBUG("error", error);
+	    ret = returnvalue;
 	
 	    delete request;
-			}
 		}
+  RDEBUG("ret", ret);
 	return ret;
 	}
 
