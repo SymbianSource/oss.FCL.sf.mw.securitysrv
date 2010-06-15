@@ -51,7 +51,7 @@
 /**
 * Prefix macro for strings
 */
-#define _PREFIX_CHAR( aMsg ) (const char*)"[LockApp]: " ##aMsg
+#define _PREFIX_CHAR( aMsg ) (const char*)"[LockApp]: " #aMsg
 
 /**
 * Define needed directories if TRACE_INTO_FILE macro in use
