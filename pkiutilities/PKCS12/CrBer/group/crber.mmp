@@ -38,7 +38,7 @@ LIBRARY         euser.lib efsrv.lib asn1.lib cryptography.lib
 CAPABILITY	  CAP_GENERAL_DLL
 VENDORID    	VID_DEFAULT
 
-#if defined(ARMCC)
+#if defined(EABI)
 deffile ../eabi/ 
 #elif defined( WINSCW )
 deffile ../bwinscw/ 
