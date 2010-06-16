@@ -39,7 +39,7 @@ LIBRARY		euser.lib
 LIBRARY		estor.lib 
 LIBRARY     ctframework.lib
 
-#if defined(ARMCC)
+#if defined(EABI)
 deffile ../eabi/ 
 #elif defined( WINSCW )
 deffile ../BWINSCW/ 
