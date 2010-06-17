@@ -83,7 +83,7 @@ LIBRARY   DevTokenClient.lib
 
 DEBUGLIBRARY     flogger.lib
 
-#if defined(ARMCC)
+#if defined(EABI)
     DEFFILE ../eabi/CTSecDilogImpl.DEF
 #elif defined( WINSCW )
     DEFFILE ../BWINSCW/CTSecDilogImpl.DEF
