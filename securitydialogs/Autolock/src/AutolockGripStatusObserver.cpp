@@ -21,10 +21,11 @@
 #include <apgtask.h>
 #include "AutolockGripStatusObserver.h"
 #include "AutolockApp.h"
+#include "AutolockAppUiInterface.h"
 #include <aknkeylock.h>
 
 
-EXPORT_C CAutolockGripStatusObserver* CAutolockGripStatusObserver::NewL( MAutolockGripStatusObserver* aObserver, RWsSession& aSession )
+EXPORT_C CAutolockGripStatusObserver* CAutolockGripStatusObserver::NewL( MAutolockAppUiInterface* aObserver, RWsSession& aSession )
     {
     CAutolockGripStatusObserver* self = new (ELeave) CAutolockGripStatusObserver( aSession );
     CleanupStack::PushL( self );
@@ -33,7 +34,7 @@ EXPORT_C CAutolockGripStatusObserver* CAutolockGripStatusObserver::NewL( MAutolo
     return self;
     }
 
-void CAutolockGripStatusObserver::ConstructL( MAutolockGripStatusObserver* aObserver )
+void CAutolockGripStatusObserver::ConstructL( MAutolockAppUiInterface* aObserver )
     {
     #if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::ConstructL") );
@@ -146,9 +147,7 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
         	#endif
             //the device lock query is on top
         	//generate cancel key event
-        	TRawEvent rawEvent;
-        	rawEvent.Set( TRawEvent::EKeyDown, KCancelKeyCode );
-        	iSession.SimulateRawEvent( rawEvent );        	
+        	iObserver->CancelDeviceLockQuery();
             }
         }
     }

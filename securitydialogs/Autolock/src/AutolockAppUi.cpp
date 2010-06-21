@@ -65,6 +65,8 @@
 const TInt KTriesToConnectServer( 2 );
 const TInt KTimeBeforeRetryingServerConnection( 50000 );
 const TInt PhoneIndex( 0 );
+const TInt KCancelKeyScanCode( EStdKeyDevice1 ); // 165
+
 
 // ================= MEMBER FUNCTIONS =======================
 //
@@ -79,7 +81,7 @@ void CAutolockAppUi::ConstructL()
     RDebug::Print(_L("(AUTOLOCK)CAutolockAppUi::ConstructL"));
     #endif
     
-    BaseConstructL( EAknEnableSkin | EAknEnableMSK );
+    BaseConstructL( EAknEnableSkin | EAknEnableMSK | EAknDisableAnimationBackground );
     
     //Disable priority control so that Autolock process priority isn't set to "background" by 
 	//window server when it is not active.
@@ -268,7 +270,7 @@ void CAutolockAppUi::ConstructL()
 
 	//Autokeyguard Period observer
 	#ifdef RD_AUTO_KEYGUARD
-	iKeyguardObserver = CAutoKeyguardObserver::NewL();
+	iKeyguardObserver = CAutoKeyguardObserver::NewL(this);
 	#else //!RD_AUTO_KEYGUARD
 	iKeyguardObserver = NULL;
 	#endif //RD_AUTO_KEYGUARD
@@ -1245,7 +1247,10 @@ TBool CAutolockAppUi::IsPinBlocked()
 void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestination )
     {
     	const TInt type = aEvent.Type();
-    	
+		#if defined(_DEBUG)
+	    RDebug::Printf( "%s %s (%u) type=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, type );
+	    #endif
+
     	switch ( type )
     	{
     		case KAknFullOrPartialForegroundLost: // partial or full fg lost
@@ -1366,6 +1371,9 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
         // Emergency detector only handles key down events
         if ( iEmergencySupportReady )
         	iEcsDetector->HandleWsEventL( aEvent, aDestination);    	
+	#if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) 0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    #endif
     }
 
 TBool CAutolockAppUi::DeviceLockQueryStatus()
@@ -1378,6 +1386,18 @@ TBool CAutolockAppUi::DeviceLockStatus()
     return iLocked;
     }
 
+void CAutolockAppUi::CancelDeviceLockQuery()
+    {
+	#if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) 0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+    #endif
+    TRawEvent rawEvent;
+    rawEvent.Set( TRawEvent::EKeyDown, KCancelKeyScanCode );
+    iCoeEnv->WsSession().SimulateRawEvent( rawEvent );          
+    rawEvent.Set( TRawEvent::EKeyUp, KCancelKeyScanCode );
+    iCoeEnv->WsSession().SimulateRawEvent( rawEvent );          
+    }
+
 TBool CAutolockAppUi::DeviceFpsLock(TInt iStatus)
     {
 		if(iStatus)
@@ -1388,6 +1408,9 @@ TBool CAutolockAppUi::DeviceFpsLock(TInt iStatus)
     }
 void CAutolockAppUi::HandleWindowGroupListChange()
     {
+	#if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) iLocked=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iLocked );
+    #endif
     if ( !iLocked )
         {
         // System is not locked, make sure app is not on the foreground.
@@ -1471,6 +1494,9 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
         }  
 
 }
+	#if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) ret=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ret );
+    #endif
 return ret;
 }
 

@@ -25,6 +25,7 @@
 
 class CUserActivityManager;
 class CAutoKeyguardCenRepI;
+class MAutolockAppUiInterface;
 
 class CAutoKeyguardObserver : public CBase
 	{
@@ -34,7 +35,7 @@ class CAutoKeyguardObserver : public CBase
         *
 		* @return Returns the instance just created.
         */
-		static CAutoKeyguardObserver* NewL();
+		static CAutoKeyguardObserver* NewL( MAutolockAppUiInterface* aAppUiI );
 		/**
         * Symbian OS constructor.
         */
@@ -56,7 +57,7 @@ class CAutoKeyguardObserver : public CBase
 		/**
         * C++ default constructor.
         */
-		CAutoKeyguardObserver(); 
+		CAutoKeyguardObserver( MAutolockAppUiInterface* aAppUiI ); 
 	private:
 		/**
         * Return current autokeyguard period
@@ -97,6 +98,7 @@ class CAutoKeyguardObserver : public CBase
 	private: //data
 		CUserActivityManager*    iActivityManager;
         CAutoKeyguardCenRepI*    iCenRepI;
+        MAutolockAppUiInterface* iAppUiI;
 	};
 #endif
 // END OF FILE

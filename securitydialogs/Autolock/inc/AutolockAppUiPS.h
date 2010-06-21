@@ -35,6 +35,7 @@
 
 #include "AutolockGripStatusObserver.h"
 #include "AutolockFpsStatusObserver.h"
+#include "AutolockAppUiInterface.h"
 
 // FORWARD DECLARATIONS
 class CAutolockContainer;
@@ -95,7 +96,7 @@ class CEcsNote : public CAknNoteDialog
 * 
 */
 class CAutolockAppUi : public CAknViewAppUi, public MAknEcsObserver,
-                       public MAutolockGripStatusObserver,
+                       public MAutolockAppUiInterface,
                        public MAutolockFpsStatusObserver
     {
     public: // // Constructors and destructor
@@ -111,12 +112,14 @@ class CAutolockAppUi : public CAknViewAppUi, public MAknEcsObserver,
         ~CAutolockAppUi();
         
         /**
-         * From MAutolockGripStatusObserver
+         * From MAutolockAppUiInterface
          */
         TBool DeviceLockQueryStatus();
         
         TBool DeviceLockStatus();
 
+        void CancelDeviceLockQuery();
+        
         /**
          * From MAutolockFpsStatusObserver
          */

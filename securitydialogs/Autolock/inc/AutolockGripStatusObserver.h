@@ -24,36 +24,24 @@
 #include <w32std.h>
 #include <hwrmdomainpskeys.h>
 
-//CONSTANTS
-const TInt KCancelKeyCode( 165 );
-
-class MAutolockGripStatusObserver
-    {
-    public:
-        /**
-         * Implement this method to be notified when grip status
-         * changes.
-         */
-        IMPORT_C virtual TInt DeviceLockQueryStatus() = 0;
-        IMPORT_C virtual TInt DeviceLockStatus() = 0;
-    };
+class MAutolockAppUiInterface;
 
 class CAutolockGripStatusObserver : public CActive
     {
     public:
-        IMPORT_C static CAutolockGripStatusObserver* NewL( MAutolockGripStatusObserver* aObserver, RWsSession& aSession );
+        IMPORT_C static CAutolockGripStatusObserver* NewL( MAutolockAppUiInterface* aObserver, RWsSession& aSession );
 
         void RunL();
         void DoCancel();
         ~CAutolockGripStatusObserver();
     
     private:
-        void ConstructL( MAutolockGripStatusObserver* aObserver );   
+        void ConstructL( MAutolockAppUiInterface* aObserver );   
         CAutolockGripStatusObserver( RWsSession& aSession );
         void GripStatusChangedL( TInt aGripStatus );
 
     private:
-        MAutolockGripStatusObserver* iObserver;
+        MAutolockAppUiInterface* iObserver;
         RProperty iGripStatus;
         RWsSession& iSession;
     };

@@ -34,6 +34,7 @@
 #include "AutoKeyguardCenRepI.h"
 #include "AutoKeyguardObserver.h"
 #include "AutolockPrivateCRKeys.h"
+#include "AutolockAppUiInterface.h"
 
 const TInt AutoKeyguardOff(60000);
 // Screensaver "On" status value
@@ -50,13 +51,13 @@ const TInt KFlipOpen = 1;
 // ----------------------------------------------------------
 //
 
-CAutoKeyguardObserver* CAutoKeyguardObserver::NewL()
+CAutoKeyguardObserver* CAutoKeyguardObserver::NewL( MAutolockAppUiInterface* aAppUiI )
 	{
 	#ifdef RD_AUTO_KEYGUARD
 	#if defined(_DEBUG)
     RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::NewL() BEGIN"));
     #endif
-	CAutoKeyguardObserver* self = new (ELeave) CAutoKeyguardObserver();
+	CAutoKeyguardObserver* self = new (ELeave) CAutoKeyguardObserver( aAppUiI );
 	CleanupStack::PushL(self);
 	self->ConstructL(self);
 	CleanupStack::Pop(); //self
@@ -74,7 +75,8 @@ CAutoKeyguardObserver* CAutoKeyguardObserver::NewL()
 // C++ default constructor
 // ----------------------------------------------------------
 // 
-CAutoKeyguardObserver::CAutoKeyguardObserver()	
+CAutoKeyguardObserver::CAutoKeyguardObserver( MAutolockAppUiInterface* aAppUiI ):
+    iAppUiI( aAppUiI )
 	{
 	}
 
@@ -341,6 +343,7 @@ void CAutoKeyguardObserver::LockKeysL()
 	TBool screenSaverOn = EFalse;
 	TBool screenSaverStertedFromIdle = EFalse;
         TBool startupOver = EFalse;
+	TBool codeQueryOpen = EFalse;
     //Get keyguard status
     RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     keylockOn = (value == EKeyguardLocked);
@@ -374,8 +377,24 @@ void CAutoKeyguardObserver::LockKeysL()
     RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() startupOver: %d"), startupOver);
     RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() Startup state: %d"), value);
     #endif
+	//See if the lock code query is open
+    codeQueryOpen = iAppUiI->DeviceLockQueryStatus();
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() codeQueryOpen: %d"), codeQueryOpen);
+    RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() autolockOn: %d"), autolockOn);
+    #endif
     if (startupOver)
         {
+		// If lock code query is open and device lock is on, cancel the query.
+        // AppUi will enable keylock when the query is cancelled
+        if (autolockOn && codeQueryOpen)
+            {
+            #if defined(_DEBUG)
+            RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() Query open, cancel it"));
+            #endif
+            iAppUiI->CancelDeviceLockQuery();
+            return;
+            }
         // If keylock is already ON, there is a ongoing call, 
         // autolock is already ON or phone is not in idle, don't lock.
         if (keylockOn || (callState > EPSCTsyCallStateNone) || autolockOn || !idle)
