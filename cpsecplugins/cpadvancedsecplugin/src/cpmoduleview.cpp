@@ -41,7 +41,7 @@
 #include <hbabstractviewitem.h>
 
 #include <memory>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpmoduleview.h"
 #include "cpsecmodmodel.h"
 #include "cpsecmodview.h"
@@ -53,8 +53,11 @@ CpModuleView::CpModuleView( CpSecModView::TSecModViews currentView,
   mCurrentView(currentView),
   mSecModUIModel(secModUIModel)
 	{
+	RDEBUG("0", 0);
 	QString title = mSecModUIModel.TokenLabelForTitle();
 	setTitle(title);
+	
+	mContextMenu = (q_check_ptr(new HbMenu()));
 	
 	if(currentView == CpSecModView::EAccessView)
 		{	
@@ -71,6 +74,7 @@ CpModuleView::~CpModuleView()
 
 void CpModuleView::showAccessView()
 	{
+	RDEBUG("0", 0);
 	HbMenu* menu = this->menu();   
 	std::auto_ptr<HbAction> endAction(q_check_ptr(new HbAction("Module Info")));     
 	connect(endAction.get(), SIGNAL(triggered()), this, SLOT(saveProv()));    
@@ -95,7 +99,7 @@ void CpModuleView::showAccessView()
 		const TDesC& label = mSecModUIModel.AuthObj(KPinGSettIndex).Label();
 		titleName = QString((QChar*)label.Ptr(), label.Length());
 		}
-	
+	RDEBUG("0", 0);
 	HbListWidget* accessDetails = q_check_ptr(new HbListWidget(this)); 
 	
 	std::auto_ptr<HbListWidgetItem> codeLabel(q_check_ptr(new HbListWidgetItem()));
@@ -122,7 +126,7 @@ void CpModuleView::showAccessView()
 		}	
 	accessDetails->addItem(requestText.get());
 	requestText.release();
-	
+	RDEBUG("0", 0);
 	std::auto_ptr<HbListWidgetItem> statusLabel(q_check_ptr(new HbListWidgetItem()));
 	statusLabel->setText("Status");
 	accessDetails->addItem(statusLabel.get());
@@ -142,10 +146,12 @@ void CpModuleView::showAccessView()
 	form.release();
 	setLayout(layout.get());
 	layout.release();
+	RDEBUG("0", 0);
 	}
 
 void CpModuleView::showSignatureView(TBool showBlockedNote)
 	{
+	RDEBUG("0", 0);
 	mCurrentView = CpSecModView::ESignatureView;
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
 	std::auto_ptr<HbDataForm> form(q_check_ptr(new HbDataForm()));
@@ -158,8 +164,7 @@ void CpModuleView::showSignatureView(TBool showBlockedNote)
 		
 	while(authDetailsIter.hasNext())
 		{
-		authDetailsIter.next();
-		QPair<QString, TUint32> pair;
+		QPair<QString, TUint32> pair = authDetailsIter.next();
 		QString label = pair.first;
 		TUint32 status = pair.second;
 		QString blockedDetails = NULL;
@@ -176,7 +181,7 @@ void CpModuleView::showSignatureView(TBool showBlockedNote)
 				HbMessageBox::information(totalBlocked);
 				}
 			blockedDetails = label.append(" Blocked");
-		
+		RDEBUG("0", 0);
 		std::auto_ptr<HbListWidgetItem> statusLabel(q_check_ptr(new HbListWidgetItem()));
 		statusLabel->setText(tr("Status"));
 		accessDetails->addItem(statusLabel.get());
@@ -212,13 +217,15 @@ void CpModuleView::showSignatureView(TBool showBlockedNote)
 	form.release();
 	setLayout(layout.get());
 	layout.release();
+	RDEBUG("0", 0);
 	}
 
 void CpModuleView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	{
+	RDEBUG("0", 0);
 	try
 		{
-		std::auto_ptr<HbMenu> contextMenu(q_check_ptr(new HbMenu()));
+		mContextMenu->clearActions();
 		mPos = item->modelIndex().row();   
 		
 		if(mCurrentView == CpSecModView::EAccessView)
@@ -229,21 +236,21 @@ void CpModuleView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 				{
 				std::auto_ptr<HbAction> changePIN(q_check_ptr(new HbAction("Change")));     
 				connect(changePIN.get(), SIGNAL(triggered()), this, SLOT( handleAccessView()));    
-				contextMenu->addAction(changePIN.get());
+				mContextMenu->addAction(changePIN.get());
 				changePIN.release();
 				}
 			if( mSecModUIModel.PinUnblockable(KPinGSettIndex) )
 				{
 				std::auto_ptr<HbAction> unblockPIN(q_check_ptr(new HbAction("Unblock")));     
 				connect(unblockPIN.get(), SIGNAL(triggered()), this, SLOT( handleAccessView()));    
-				contextMenu->addAction(unblockPIN.get());
+				mContextMenu->addAction(unblockPIN.get());
 				unblockPIN.release();
 				}
 			if( mSecModUIModel.PinOpen(KPinGSettIndex) )
 				{
 				std::auto_ptr<HbAction> closePIN(q_check_ptr(new HbAction("Close")));     
 				connect(closePIN.get(), SIGNAL(triggered()), this, SLOT( handleAccessView()));    
-				contextMenu->addAction(closePIN.get());
+				mContextMenu->addAction(closePIN.get());
 				closePIN.release();
 				}
 			}
@@ -253,29 +260,31 @@ void CpModuleView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 				{
 				std::auto_ptr<HbAction> changePIN(q_check_ptr(new HbAction("Change")));     
 				connect(changePIN.get(), SIGNAL(triggered()), this, SLOT( handleSigViewCommand()));    
-				contextMenu->addAction(changePIN.get());
+				mContextMenu->addAction(changePIN.get());
 				changePIN.release();
 				}
 			if (mSecModUIModel.PinUnblockable(KPinNrSettIndex))
 				{
 				std::auto_ptr<HbAction> unblockPIN(q_check_ptr(new HbAction("Unblock")));     
 				connect(unblockPIN.get(), SIGNAL(triggered()), this, SLOT( handleSigViewCommand()));    
-				contextMenu->addAction(unblockPIN.get());
+				mContextMenu->addAction(unblockPIN.get());
 				unblockPIN.release();
 				}
 			}
 				
-		contextMenu->open();
-		contextMenu->setPreferredPos(coords);
+		mContextMenu->setPreferredPos(coords);
+		mContextMenu->open();
 		}
 	catch(const std::exception& exception)
 		{
 		HbMessageBox::information(exception.what());
 		}
+	RDEBUG("0", 0);
 	}
 
 void CpModuleView::handleAccessView( const QModelIndex& modelIndex )
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mPos = modelIndex.row();
@@ -289,6 +298,7 @@ void CpModuleView::handleAccessView( const QModelIndex& modelIndex )
 
 void CpModuleView::handleAccessView()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		if(mPos == EIndexCodeLabel)
@@ -316,6 +326,7 @@ void CpModuleView::handleAccessView()
 
 void CpModuleView::handleSigView()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		QT_TRAP_THROWING(mSecModUIModel.ChangeOrUnblockPinL(KPinNrSettIndex));
@@ -329,6 +340,7 @@ void CpModuleView::handleSigView()
 
 void CpModuleView::handleSigViewCommand()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		switch(mPos)

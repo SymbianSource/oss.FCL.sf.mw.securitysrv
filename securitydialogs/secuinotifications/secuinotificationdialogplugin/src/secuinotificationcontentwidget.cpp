@@ -28,6 +28,10 @@
 #include <hbinputeditorinterface.h>
 #include <QDebug>
 
+#include <HbCheckBox>  // needed for a checkbox dialog
+#include <HbListWidget>  // needed for multicheckbox dialog
+#include <HbListWidgetItem>
+#include <HbAbstractItemView>
 #include <HbEmailAddressFilter>
 
 #define ESecUiCancelSupported  0x1000000
@@ -85,6 +89,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
     lMaxLength = 8;	// might be replaced later
  		queryDual=0;
  		isEmergency=0;
+       codeTop=0;
 
     // KApplicationSize
     if (parameters.contains(KQueryType)) {
@@ -264,6 +269,53 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
         codeTop->setFocus();	// this should open the VKB
 
     }
+
+    if (parameters.contains(KChecboxType)) {
+    		qDebug() << "SecUiNotificationContentWidget::KChecboxType";
+        if (parameters.contains(KDialogTitle)) {
+            //TODO position of the label is not centered
+            QString tmpText=parameters.value(KDialogTitle).toString();
+            if (tmpText.endsWith("\n"))  tmpText=tmpText.left(tmpText.length()-1);
+            DialogText= new HbLabel(tmpText);   
+            DialogText->setTextWrapping(Hb::TextWordWrap);
+            DialogText->setAlignment(Qt::AlignVCenter);
+            mainLayout->addItem(DialogText);                   
+        }
+
+        checkbox = new HbCheckBox("Caption");   
+        if (parameters.contains(KDefaultCode)) {
+    				qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+            QStringList list1 = parameters.value(KDefaultCode).toString().split("|");
+            if (!list1.isEmpty() && list1.count()==2) {
+                if (!list1[0].isNull() && !list1[0].isEmpty()) checkbox->setText(list1[0]);
+                if (!list1[1].isNull() && !list1[1].isEmpty()) checkbox->setChecked(list1[1].toInt());
+            }
+
+        }
+        mainLayout->addItem(checkbox);
+    }
+
+    if (parameters.contains(KMultiChecboxType) && parameters.contains(KDefaultCode)) 
+    	{
+ 				qDebug() << "SecUiNotificationContentWidget::KMultiChecboxType";
+        QStringList list1 = parameters.value(KDefaultCode).toString().split("1\t");
+        if (!list1.isEmpty()) {
+            listWidget = new HbListWidget();
+            for (int i = 0; (i < list1.count()); i++)
+                if (!list1[i].isEmpty() && !list1[i].isNull()) {
+                    HbListWidgetItem* modelItem = new HbListWidgetItem();
+                    modelItem->setData(QVariant(list1[i]), Qt::DisplayRole);
+                    listWidget->addItem(modelItem);  
+                }
+            listWidget->setCurrentRow(0);
+            listWidget->setSelectionMode(HbAbstractItemView::MultiSelection);
+            //listWidget->setClampingStyle(HbScrollArea::BounceBackClamping);
+            listWidget->setVerticalScrollBarPolicy(HbScrollArea::ScrollBarAsNeeded);
+            listWidget->setMaximumHeight(150);
+            mainLayout->addItem(listWidget); 
+            //     delete listWidget;
+            }
+        }
 
     setLayout(mainLayout);
     }

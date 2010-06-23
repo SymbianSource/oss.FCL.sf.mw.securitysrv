@@ -21,7 +21,12 @@
 #include <hbwidget.h>       // HbWidget
 #include <hblineedit.h>       // HbWidget
 
+#include <HbCheckBox>
+#include <HbListWidget>
+#include <HbListWidgetItem>
 class HbLabel;
+class HbCheckBox;
+class HbListWidget;
 
 
 class SecUiNotificationContentWidget : public HbWidget
@@ -50,6 +55,9 @@ private:    // data
 public:
 		HbLineEdit *codeTop;
 		HbLineEdit *codeBottom;
+        HbCheckBox *checkbox;
+        HbLabel *DialogText;
+        HbListWidget *listWidget;
     int queryType;
     int lMinLength;
     int lMaxLength;

@@ -71,58 +71,12 @@ const QByteArray UntrustedCertificateInfoBase::fingerprint() const
 }
 
 // ----------------------------------------------------------------------------
-// UntrustedCertificateInfoBase::formattedFingerprint()
-// ----------------------------------------------------------------------------
-//
-const QString UntrustedCertificateInfoBase::formattedFingerprint() const
-{
-    QString formatted;
-    QByteArray fp = fingerprint();
-
-    QString number;
-    int blockIndex = 0;
-    int count = fp.count();
-    for (int index = 0; index < count; ++index) {
-        if (blockIndex == KCharsPerBlock) {
-            formatted.append(KBlockSeparator);
-            blockIndex = 0;
-        }
-        number.sprintf(KHexNumberFormatTwoDigitsWithLeadingZeroes,
-            static_cast<unsigned char>(fp.at(index)));
-        formatted.append(number);
-        ++blockIndex;
-    }
-
-    return formatted;
-}
-
-// ----------------------------------------------------------------------------
 // UntrustedCertificateInfoBase::serialNumber()
 // ----------------------------------------------------------------------------
 //
 const QByteArray UntrustedCertificateInfoBase::serialNumber() const
 {
     return mSerialNumber;
-}
-
-// ----------------------------------------------------------------------------
-// UntrustedCertificateInfoBase::formattedSerialNumber()
-// ----------------------------------------------------------------------------
-//
-const QString UntrustedCertificateInfoBase::formattedSerialNumber() const
-{
-    QString formatted;
-    QByteArray sn = serialNumber();
-
-    QString number;
-    int count = sn.count();
-    for (int index = 0; index < count; ++index) {
-        number.sprintf(KHexNumberFormatSimple,
-            static_cast<unsigned char>(sn.at(index)));
-        formatted.append(number);
-    }
-
-    return formatted;
 }
 
 // ----------------------------------------------------------------------------
@@ -154,7 +108,7 @@ const QString UntrustedCertificateInfoBase::format() const
         case X509Certificate:
             //: Type name for X509 certificates displayed in certificate details.
             // TODO: localised UI string
-            format = tr("X509");
+            format = tr("X.509");
             break;
         default:
             //: Type name for unknown certificates displayed in certificate details.
@@ -198,6 +152,52 @@ const QString UntrustedCertificateInfoBase::combinedAlgorithmName() const
     //: Algorithm name for unknown algorithm.
     // TODO: localised UI string needed
     return tr("Unknown");
+}
+
+// ----------------------------------------------------------------------------
+// UntrustedCertificateInfoBase::formattedFingerprint()
+// ----------------------------------------------------------------------------
+//
+const QString UntrustedCertificateInfoBase::formattedFingerprint(
+    const QByteArray &byteArray) const
+{
+    QString formatted;
+
+    QString number;
+    int blockIndex = 0;
+    int count = byteArray.count();
+    for (int index = 0; index < count; ++index) {
+        if (blockIndex == KCharsPerBlock) {
+            formatted.append(KBlockSeparator);
+            blockIndex = 0;
+        }
+        number.sprintf(KHexNumberFormatTwoDigitsWithLeadingZeroes,
+            static_cast<unsigned char>(byteArray.at(index)));
+        formatted.append(number);
+        ++blockIndex;
+    }
+
+    return formatted;
+}
+
+// ----------------------------------------------------------------------------
+// UntrustedCertificateInfoBase::formattedSerialNumber()
+// ----------------------------------------------------------------------------
+//
+const QString UntrustedCertificateInfoBase::formattedSerialNumber(
+    const QByteArray &serialNumber) const
+{
+    QString formatted;
+
+    QString number;
+    int count = serialNumber.count();
+    for (int index = 0; index < count; ++index) {
+        number.sprintf(KHexNumberFormatSimple,
+            static_cast<unsigned char>(serialNumber.at(index)));
+        formatted.append(number);
+    }
+
+    return formatted;
 }
 
 // ----------------------------------------------------------------------------

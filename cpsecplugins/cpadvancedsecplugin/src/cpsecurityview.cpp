@@ -41,6 +41,8 @@
 
 #include <memory>
 
+#include <../../inc/cpsecplugins.h>
+
 #include "cpsecurityview.h"
 #include "cpsecmodview.h"
 #include "cpcertview.h"
@@ -57,6 +59,7 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 	  mPos(0),
 	  mNote(NULL)
 	{
+	RDEBUG("0", 0);
 	setTitle(hbTrId("txt_certificate_manager_setlabel_advanced_security"));
 	
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
@@ -87,7 +90,7 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
         
     HbListWidget* listSecView = q_check_ptr(new HbListWidget(this)); 
     QMap<QString,QString> keystoreLabels;
-    
+    RDEBUG("0", 0);
     try
 		{
 		QT_TRAP_THROWING(
@@ -123,7 +126,7 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
     	listSecView->addItem(emptyWidget.get());
     	emptyWidget.release();
     	}
-    
+    RDEBUG("0", 0);
     std::auto_ptr<HbGroupBox> certificatesList(q_check_ptr(new HbGroupBox()));
 	certificatesList->setHeading(hbTrId("txt_certificate_manager_setlabel_certificates"));
 	certificatesList->setContentWidget(listCertView);
@@ -143,6 +146,8 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 	securityModuleList->setCollapsed(true);
 	layout->addItem(securityModuleList.get());
 	securityModuleList.release();
+	
+	mContextMenu = q_check_ptr(new HbMenu());
 	
 	setLayout(layout.get()); 
 	layout.release();
@@ -174,10 +179,12 @@ CpSecurityView::~CpSecurityView()
 	delete mSecModUIModel;  
 	
 	delete mNote;
+	delete mContextMenu;
 	}
 
 void CpSecurityView::showCodeView()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mSecModView = q_check_ptr(new CpSecModView(mPos, *mSecModUIModel));    
@@ -200,6 +207,7 @@ void CpSecurityView::showCodeView( const QModelIndex& aModelIndex)
 
 void CpSecurityView::showWIMview()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		QObject::connect(mSecModView , SIGNAL(aboutToClose()), this, SLOT(viewDone()));
@@ -230,6 +238,7 @@ void CpSecurityView::viewDone()
 
 void CpSecurityView::displayCert(const QModelIndex& modelIndex)
 	{
+	RDEBUG("0", 0);
 	try
 	{
 	mCertView = q_check_ptr(new CpCertView(modelIndex));    
@@ -246,6 +255,7 @@ void CpSecurityView::displayCert(const QModelIndex& modelIndex)
 
 void CpSecurityView::displayPrevious()  
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mainWindow()->removeView(mCertView);    
@@ -261,31 +271,32 @@ void CpSecurityView::displayPrevious()
 
 void CpSecurityView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	{
+	RDEBUG("0", 0);
 	try
 		{
-		std::auto_ptr<HbMenu> contextMenu(q_check_ptr(new HbMenu()));
+		mContextMenu->clearActions();
 		mPos = item->modelIndex().row();   
 		
 		std::auto_ptr<HbAction> openModule(q_check_ptr(new HbAction("Open")));     
 		connect(openModule.get(), SIGNAL(triggered()), this, SLOT( showCodeView()));    
-		contextMenu->addAction(openModule.get());
+		mContextMenu->addAction(openModule.get());
 		openModule.release();
 		
 		if(mSecModUIModel->IsTokenDeletable(mPos))
 			{
 			std::auto_ptr<HbAction> deleteModule(q_check_ptr(new HbAction("Delete")));     
 			connect(deleteModule.get(), SIGNAL(triggered()), this, SLOT( deleteModule()));    
-			contextMenu->addAction(deleteModule.get());
+			mContextMenu->addAction(deleteModule.get());
 			deleteModule.release();
 			}
 		
 		std::auto_ptr<HbAction> moduleInfo(q_check_ptr(new HbAction("Module Info")));     
 		connect(moduleInfo.get(), SIGNAL(triggered()), this, SLOT( moduleDetails()));    
-		contextMenu->addAction(moduleInfo.get());
+		mContextMenu->addAction(moduleInfo.get());
 		moduleInfo.release();
 				
-		contextMenu->open();
-		contextMenu->setPreferredPos(coords);
+		mContextMenu->setPreferredPos(coords);
+		mContextMenu->open();
 		}
 	catch(const std::exception& exception)
 		{
@@ -295,6 +306,7 @@ void CpSecurityView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 
 void CpSecurityView::deleteModule()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		
@@ -320,6 +332,7 @@ void CpSecurityView::deleteModule()
 }
 void CpSecurityView::dialogClosed(HbAction* action)
 {
+	RDEBUG("0", 0);
 	if (action != mNote->primaryAction())
 		{
 		return;
@@ -339,6 +352,7 @@ void CpSecurityView::dialogClosed(HbAction* action)
 
 void CpSecurityView::moduleDetails()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		QVector< QPair<QString,QString> > securityDetails;
@@ -358,6 +372,7 @@ void CpSecurityView::moduleDetails()
 
 void CpSecurityView::displayPreviousFromModInfo()  
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mainWindow()->removeView(mModuleinfoView);    

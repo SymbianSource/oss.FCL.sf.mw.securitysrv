@@ -27,7 +27,7 @@
 #include <qstring.h>
 
 #include <hbmessagebox.h>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpsecmodmodel.h"
 #include "cpsecmodsyncwrapper.h"
 
@@ -47,6 +47,7 @@ GLDEF_C void Panic(TInt aPanic)
 //
 CSecModUIModel* CSecModUIModel::NewL()
     {
+    RDEBUG("0", 0);
     CSecModUIModel* self = new( ELeave ) CSecModUIModel();
     CleanupStack::PushL( self );
     self->ConstructL();
@@ -93,6 +94,7 @@ void CSecModUIModel::ResetAndDestroyCTObjects()
 //
 void CSecModUIModel::ResetAndDestroyAOs()
     {
+    RDEBUG("0", 0);
     if (iAOList)
         {
         iAOList->Release();
@@ -125,6 +127,7 @@ void CSecModUIModel::ConstructL()
 //
 void CSecModUIModel::InitializeKeyStoreL()
     {
+    RDEBUG("0", 0);
     ResetAndDestroyCTObjects();
     
     // Ensure that file server session is succesfully created
@@ -184,7 +187,7 @@ void CSecModUIModel::InitializeKeyStoreL()
 //
 QMap<QString,QString> CSecModUIModel::LoadTokenLabelsL()
     {
-	
+		RDEBUG("0", 0);
     TInt keyStoreCount = iAOKeyStores.Count();
     QMap<QString, QString> labelList;
     
@@ -222,6 +225,7 @@ QMap<QString,QString> CSecModUIModel::LoadTokenLabelsL()
 //
 QString CSecModUIModel::Location( TUid aUid ) const
     {
+    RDEBUG("0", 0);
     QString location = 0;
 
     switch ( aUid.iUid )
@@ -252,7 +256,7 @@ QString CSecModUIModel::Location( TUid aUid ) const
 void CSecModUIModel::ShowErrorNote(TInt aError) const
     {
 	QString sError;
-
+		RDEBUG("aError", aError);
     switch (aError)
         {
         case KErrCancel:
@@ -292,6 +296,7 @@ void CSecModUIModel::ShowErrorNote(TInt aError) const
 //
 void CSecModUIModel::OpenTokenL(TInt aTokenIndex)
     {
+    RDEBUG("0", 0);
     ResetAndDestroyAOs();
     iKeyStore = iAOKeyStores[aTokenIndex];
     }
@@ -316,6 +321,7 @@ TInt CSecModUIModel::CheckCodeViewStringsL()
 //
 void CSecModUIModel::InitAuthObjectsL()
     {
+    RDEBUG("0", 0);
     TInt err = KErrNone;
     // Symbian's file key store does not support
     // MCTAuthenticationObjectList interface, so we need to use
@@ -369,6 +375,7 @@ void CSecModUIModel::InitAuthObjectsL()
 //
 void CSecModUIModel::ListAuthObjectsL()
     {
+    RDEBUG("0", 0);
     if (0 >= iAOArray.Count())
         {
         __ASSERT_ALWAYS(iAOList, Panic(EPanicNullPointer));
@@ -420,6 +427,7 @@ TUint32 CSecModUIModel::AuthStatus(TInt aIndex) const
 //
 QString CSecModUIModel::PINStatus(  TInt aIndex, TBool aShowBlockedNote ) const
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aIndex < iAOArray.Count(), Panic(EPanicIndexOutOfRange));
     QString pinStatus;
     TUint32 status = iAOArray[aIndex]->Status();
@@ -486,6 +494,7 @@ TBool CSecModUIModel::PinOpen(TInt aIndex) const
 //
 void CSecModUIModel::ChangeOrUnblockPinL(TInt aIndex)
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aIndex < iAOArray.Count(), Panic(EPanicIndexOutOfRange));
     TUint32 status = iAOArray[aIndex]->Status();
 
@@ -531,6 +540,7 @@ void CSecModUIModel::UnblockPinL(TInt aIndex)
 //
 void CSecModUIModel::ChangePinL(TInt aIndex)
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aIndex < iAOArray.Count(), Panic(EPanicIndexOutOfRange));
     TInt err = KErrNone;
   
@@ -596,6 +606,7 @@ void CSecModUIModel::CloseAuthObjL(TInt aIndex)
 //
 void CSecModUIModel::DeleteKeysL(TInt aTokenIndex)
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aTokenIndex < iAOKeyStores.Count(), Panic(EPanicIndexOutOfRange));
     RMPointerArray<CCTKeyInfo> keyInfos;
 	CleanupClosePushL(keyInfos);
@@ -647,6 +658,7 @@ QVector< QPair<QString,QString> > CSecModUIModel::SecModDetailsL(TInt aTokenInde
 //
 QVector< QPair<QString,QString> > CSecModUIModel::GetSecModDetailsL()
     {
+    RDEBUG("0", 0);
     MCTToken& token = iKeyStore->Token();
     QVector< QPair<QString,QString> > securityModDetails;
     
@@ -723,6 +735,7 @@ void CSecModUIModel::AppendItem( 	QVector< QPair<QString,QString> >& aSecModDeta
 									const TDesC& aValue, 
 									QString aNullDescription)
 	{
+	RDEBUG("0", 0);
 	if( aValue.Length() == 0 )
 		{
 		aSecModDetails.append(QPair<QString,QString>(aLabel, aNullDescription));
@@ -785,6 +798,7 @@ QVector<QPair<QString, TUint32> > CSecModUIModel::AuthDetails()
 //
 void CSecModUIModel::ChangePinNrL(TInt aIndex)
     {
+    RDEBUG("0", 0);
     ChangePinL(aIndex+1);
     }
 
@@ -826,6 +840,7 @@ const MCTAuthenticationObject& CSecModUIModel::AuthObj(TInt aIndex)
 //
 TBool CSecModUIModel::PinChangeable(TInt aIndex) const
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aIndex < iAOArray.Count(), Panic(EPanicIndexOutOfRange));
     TUint32 status = iAOArray[aIndex]->Status();
     TBool ret = ETrue;
@@ -875,6 +890,7 @@ TBool CSecModUIModel::PinUnblockable(TInt aIndex) const
 //
 TBool CSecModUIModel::PinRequestChangeable(TInt aIndex) const
     {
+    RDEBUG("0", 0);
     __ASSERT_ALWAYS(aIndex < iAOArray.Count(), Panic(EPanicIndexOutOfRange));
     TUint32 status = iAOArray[aIndex]->Status();
     TBool ret = EFalse;

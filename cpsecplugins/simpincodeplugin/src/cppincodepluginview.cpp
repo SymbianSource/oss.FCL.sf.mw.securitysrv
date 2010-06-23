@@ -25,6 +25,7 @@
 
 // User includes
 #include "cppincodepluginview.h"
+#include <../../inc/cpsecplugins.h>
 
 /*!
     \class CpPinCodePluginView
@@ -41,6 +42,7 @@
 CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
 	: CpBaseSettingView(0,parent), mSecCodeSettings(new SecCodeSettings())
 {
+		RDEBUG("0", 0);
     HbDataForm *form = qobject_cast<HbDataForm*>(widget());
     if (form) {
         QList<HbAbstractViewItem *> protoTypeList = form->itemPrototypes();
@@ -60,7 +62,7 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
             mPinCodeRequestItem->setContentWidgetData("text",tr("Off"));
             mPinCodeRequestItem->setContentWidgetData("additionalText", tr("Off"));
         }
-
+				RDEBUG("form->addConnection", 1);
         form->addConnection(mPinCodeRequestItem, SIGNAL(clicked()), this,
         		SLOT(changePinCodeRequest()));
         formModel->appendDataFormItem(mPinCodeRequestItem);
@@ -84,7 +86,7 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
         form->addConnection(pin2CodeItem, SIGNAL(clicked()), this,
         		SLOT(changePin2Code()));
         formModel->appendDataFormItem(pin2CodeItem);
-
+				RDEBUG("form->setModel", 1);
         form->setModel(formModel);
     }
 }
@@ -102,6 +104,7 @@ CpPinCodePluginView::~CpPinCodePluginView()
 */
 void CpPinCodePluginView::changePinCode()
 {
+		RDEBUG("0", 0);
     mSecCodeSettings->changePinCode();
 }
 
@@ -110,6 +113,7 @@ void CpPinCodePluginView::changePinCode()
 */
 void CpPinCodePluginView::changePin2Code()
 {
+		RDEBUG("0", 0);
     mSecCodeSettings->changePin2Code();
 }
 
@@ -118,14 +122,17 @@ void CpPinCodePluginView::changePin2Code()
 */
 void CpPinCodePluginView::changePinCodeRequest()
 {
+		RDEBUG("0", 0);
     if (mSecCodeSettings->changePinCodeRequest()) {
         QString text = mPinCodeRequestItem->contentWidgetData("text").toString();
         if (0 == text.compare("On")) {
+        		RDEBUG("On->Off", 0);
             mPinCodeRequestItem->setContentWidgetData("text", 
                     tr("Off"));
             mPinCodeRequestItem->setContentWidgetData("additionalText", 
                     tr("Off"));
         } else {
+        		RDEBUG("Off->On", 0);
             mPinCodeRequestItem->setContentWidgetData("text", 
                     tr("On"));
             mPinCodeRequestItem->setContentWidgetData("additionalText", 

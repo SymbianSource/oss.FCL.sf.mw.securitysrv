@@ -34,7 +34,6 @@
 #include <QMap>
 #include <QStringList>
 #include <xqserviceprovider.h>
-#include <xqsharablefile.h>
 #include <QToolButton>
 #include <qmobilityglobal.h>
 
@@ -65,6 +64,7 @@ enum TDevicelockReason
 	EDevicelockTimer
 	};
 
+class QTimer;
 
 class AutolockService;
 
@@ -109,12 +109,17 @@ public slots:
     void subscriberKAknKeyguardStatusChanged();
     void subscriberKCoreAppUIsAutolockStatusChanged();
     void subscriberKHWRMGripStatusChanged();
+    void subscriberKSecurityUIsDismissDialogChanged();
 
 private slots:
     void activeKeyguard();
     void notActiveKeyguard();
     void activeDevicelock();
     void notActiveDevicelock();
+    void switchScreensaverToActiveMode();
+    void switchScreensaverToPowerSaveMode();
+    void handleMessageFromScreensaver( const QVariantMap &data );
+    void handleLockSwitch();
 
 private:
     AutolockService* mService;
@@ -128,6 +133,7 @@ private:
     QValueSpaceSubscriber *subscriberKAknKeyguardStatus;
     QValueSpaceSubscriber *subscriberKCoreAppUIsAutolockStatus;
     QValueSpaceSubscriber *subscriberKHWRMGripStatus;
+    QValueSpaceSubscriber *subscriberKSecurityUIsDismissDialog;
 
 		AutolockUserActivityService* serviceKeyguard;
 		AutolockUserActivityService* serviceDevicelock;
@@ -138,6 +144,11 @@ private:
 		int iSecQueryUiCreated;
 		HbDeviceDialog *iDeviceDialog;
 		int iDeviceDialogCreated;
+    TInt32 mPowerKeyCaptureHandle;
+    TInt32 mApplicationKeyCaptureHandle;
+    TInt32 mApplicationLongKeyCaptureHandle;
+    
+    QTimer *mScreensaverModeTimer;
 };
 
 class AutolockService : public XQServiceProvider

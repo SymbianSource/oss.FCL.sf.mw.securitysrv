@@ -101,10 +101,15 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
     RDEBUG("secUiOriginatedQuery", secUiOriginatedQuery);
     if (secUiOriginatedQuery != ESecurityUIsSecUIOriginatedUninitialized)
         {
+        RDEBUG("!!!! warning: secUiOriginatedQuery", secUiOriginatedQuery);
         // The query is already shown. This is valid for ESecurityUIsSecUIOriginated, and maybe for ESecurityUIsETelAPIOriginated
         // For ESecurityUIsSystemLockOriginated it means that the "lock" dialog is already present.
-        // What to do? Can't dismiss the dialog because it's not owned. Can't device-unlock without asking code. Only can disable keyguard
-        RDEBUG("!!!! warning: secUiOriginatedQuery", secUiOriginatedQuery);
+        // Try to dismiss the dialog. Do same as CSecurityHandler::CancelSecCodeQuery
+        TInt aDismissDialog = -1;
+        err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog);
+        // it might happen that the dialog is already dismissing. Well, it won't harm to try again.
+        RDEBUG("aDismissDialog", aDismissDialog);
+        err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogOn);
         }
     else
         {
@@ -114,7 +119,7 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
                 ESecurityUIsETelAPIOriginated);
         RDEBUG("setting secUiOriginatedQuery", ESecurityUIsETelAPIOriginated);
         }
-
+		RDEBUG("calling ClearParamsAndSetNoteTypeL aMode=", aMode);
     ClearParamsAndSetNoteTypeL(aMode);
     AddParamL(_L("KSecQueryUiApplicationName"), aCaption);
 
@@ -124,9 +129,24 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
     AddParamL(_L("MinLength"), aMinLength);
     AddParamL(_L("MaxLength"), aMaxLength);
 
-    _LIT(KCodeTop, "codeTop");
-    _LIT(KCodeTopValue, "codeTop");
-    AddParamL(KCodeTop, KCodeTopValue);
+// ESecUiBasicTypeMultiCheck
+
+    switch (aMode & ESecUiBasicTypeMask) {
+    case ESecUiBasicTypeCheck:
+                             _LIT(KChecboxDialog, "ChecboxDialog");
+                             _LIT(KChecbox, "ChecboxDialog");
+                             AddParamL(KChecboxDialog,KChecbox);
+                             break;
+    case ESecUiBasicTypeMultiCheck:
+                            _LIT(KMultiChecboxDialog, "MultiChecboxDialog");
+                            _LIT(KMultiChecbox, "MultiChecboxDialog");
+                            AddParamL(KMultiChecboxDialog,KMultiChecbox);
+                            break;
+    default:
+                            _LIT(KCodeTop, "codeTop");
+                            _LIT(KCodeTopValue, "codeTop");
+                            AddParamL(KCodeTop, KCodeTopValue);
+    }
 
     if (aCaption.Find(_L("|")) > 0)
         {
@@ -144,10 +164,12 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
 
     RDEBUG("0", 0);
     DisplayDeviceDialogL();
+    TSecUi::UnInitializeLib();	// the counterpart is at DisplayDeviceDialogL
     TInt error = WaitUntilDeviceDialogClosed();
     RDEBUG("error", error);
     User::LeaveIfError(error);
-
+    RDEBUG("iPassword", 0);
+		RDebug::Print(iPassword);
     aDataText.Copy(iPassword);
 
     err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
@@ -520,14 +542,6 @@ void CSecQueryUi::AddParamL(const TDesC& aKey, const TDesC& aValue)
     iVariantMap->Add(aKey, variant);
     }
 
-TInt strlen(const char* aStr)
-    {
-    TInt len = 0;
-    while (*aStr++ != 0)
-        ++len;
-    return len;
-    }
-
 // ---------------------------------------------------------------------------
 // CSecQueryUi::DisplayDeviceDialogL()
 // ---------------------------------------------------------------------------
@@ -535,19 +549,26 @@ TInt strlen(const char* aStr)
 void CSecQueryUi::DisplayDeviceDialogL()
     {
     RDEBUG("0", 0);
+    TInt err = KErrNone;
+    RDEBUG("iIsDisplayingDialog", iIsDisplayingDialog);
     if (iDeviceDialog && iIsDisplayingDialog)
         {
+    		RDEBUG("iDeviceDialog", 1);
         iDeviceDialog->Update(*iVariantMap);
         }
     else
         {
+    		RDEBUG("!iDeviceDialog", 0);
         if (!iDeviceDialog)
             {
+            RDEBUG("new iDeviceDialog", 0);
             iDeviceDialog = CHbDeviceDialogSymbian::NewL();
             }
         _LIT(KSecQueryUiDeviceDialog, "com.nokia.secuinotificationdialog/1.0");
         RDEBUG("Show", 0);
-        iDeviceDialog->Show(KSecQueryUiDeviceDialog, *iVariantMap, this);
+        err = iDeviceDialog->Show(KSecQueryUiDeviceDialog, *iVariantMap, this);
+        RDEBUG("err", err);
+        TSecUi::InitializeLibL();
         RDEBUG("iIsDisplayingDialog", iIsDisplayingDialog);
         iIsDisplayingDialog = ETrue;
         RDEBUG("iIsDisplayingDialog", iIsDisplayingDialog);
@@ -566,6 +587,7 @@ TInt CSecQueryUi::WaitUntilDeviceDialogClosed()
     iReturnValue = KErrUnknown;
     if (!IsActive() && iWait && !iWait->IsStarted())
         {
+        RDEBUG("KRequestPending", KRequestPending);
         iStatus = KRequestPending;
         SetActive();
         RDEBUG("Start", 0);

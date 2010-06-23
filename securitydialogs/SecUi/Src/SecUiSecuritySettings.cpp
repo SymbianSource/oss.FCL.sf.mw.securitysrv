@@ -1397,8 +1397,13 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID,
     RDEBUG("aResourceID", aResourceID);
     RDebug::Print(titleTr);
 
-    _LIT(KIconName, "qtg_small_smiley_wondering");
-    messageBox->SetIconNameL(KIconName);
+    _LIT(KIconNameWondering, "qtg_small_smiley_wondering");
+    _LIT(KIconNameSmile, "qtg_small_smiley_smile");
+    if(aResourceID==0 || aResourceID==R_CONFIRMATION_NOTE)
+    	messageBox->SetIconNameL(KIconNameSmile);
+    else
+    	messageBox->SetIconNameL(KIconNameWondering);
+
     if (aTone == CAknNoteDialog::EErrorTone) // another case is EConfirmationTone
         {
         messageBox->SetTimeout(messageBox->Timeout() * 2); // errors are displayed double time

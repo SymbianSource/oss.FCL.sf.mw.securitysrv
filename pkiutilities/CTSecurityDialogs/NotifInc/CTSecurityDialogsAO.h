@@ -323,9 +323,6 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
 
         TBool& iDeleted;
 
-        CAknQueryDialog* iQueryDialog;
-        TBool iQueryDialogDeleted;
-
         CCTPinQueryDialog* iPinQueryDialog;
         TBool iPinQueryDialogDeleted;
         };

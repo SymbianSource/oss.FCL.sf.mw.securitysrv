@@ -18,7 +18,6 @@
 
 // INCLUDE FILES
 #include <sysutil.h>            // For FFSSpaceBelowCriticalLevelL(..)
-#include <aknnotewrappers.h>    // Note dialogs
 #include <mpkcs12.h>
 #include <cryptostrength.h>
 #include <CertSaver.rsg>

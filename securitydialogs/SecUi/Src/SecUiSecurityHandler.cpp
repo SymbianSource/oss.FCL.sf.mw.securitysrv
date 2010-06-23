@@ -29,6 +29,7 @@
 #include <centralrepository.h> 
 #include <starterclient.h>     //used for RemoveSplashScreen
 #include <e32property.h>
+
 #include <PSVariables.h>   // Property values
 #include <coreapplicationuisdomainpskeys.h>
 #include <startupdomainpskeys.h>
@@ -351,6 +352,10 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
 // qtdone
 EXPORT_C void CSecurityHandler::CancelSecCodeQuery()
     {
+		RDEBUG("0", 0);
+		// notify all dialogs, in particular SecUiNotificationDialog::subscriberKSecurityUIsDismissDialogChanged
+    TInt err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogOn );
+    RDEBUG("err", err);
 		RDEBUG("iQueryCanceled", iQueryCanceled);
     if (!iQueryCanceled)
         {
@@ -580,7 +585,7 @@ TInt CSecurityHandler::PassPhraseRequiredL()
     RDEBUG("err", err);
     if (!StartUp)
     		{
-    		RDebug::Printf( "%s %s (%u) Leaving because StartUp=0 and err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
+    		RDebug::Printf( "%s %s (%u) might leave if StartUp=0 and err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
         User::LeaveIfError(err);
       	}
     TBool isConditionSatisfied = EFalse;
@@ -844,14 +849,14 @@ TInt CSecurityHandler::PassPhraseRequiredL()
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             RDEBUG("KErrAccessDenied", KErrAccessDenied);
-            // TODO should this try again? It seems that it's not asked again.
+            // The Settings caller might retry
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR,
                     CAknNoteDialog::EErrorTone);
             break;
         default:
             RDEBUG("default", status);
             CSecuritySettings::ShowErrorNoteL(status);
-            // TODO should this try again? It seems that it's not asked again.
+            // The Settings caller might retry
             break;
         }
     RDEBUG("returnValue", returnValue);

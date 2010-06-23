@@ -61,21 +61,20 @@ public:     // new functions
     virtual const QString subjectName() const;
     virtual const QString issuerName() const;
     virtual const QByteArray fingerprint() const;
-    virtual const QString formattedFingerprint() const;
     virtual const QByteArray serialNumber() const;
-    virtual const QString formattedSerialNumber() const;
     virtual const QDateTime validFrom() const;
     virtual const QDateTime validTo() const;
     virtual const QString format() const;
     virtual const QString digestAlgorithm() const;
     virtual const QString asymmetricAlgorithm() const;
     virtual const QString combinedAlgorithmName() const;
+    virtual const QString formattedFingerprint(const QByteArray &fingerprint) const;
+    virtual const QString formattedSerialNumber(const QByteArray &serialNumber) const;
     virtual bool isDateValid() const;
 
 public:     // new abstract functions
     virtual bool commonNameMatches(const QString &siteName) const = 0;
-    virtual bool isPermanentAcceptAllowed() const = 0;
-    virtual QString certificateDetails() const = 0;
+    virtual QString certificateDetails(const QString &siteName) const = 0;
 
 private:    // new functions
     const QString algorithmName(Algorithm algorithm) const;

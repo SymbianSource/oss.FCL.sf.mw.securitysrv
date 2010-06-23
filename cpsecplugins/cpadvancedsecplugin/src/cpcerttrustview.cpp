@@ -35,7 +35,7 @@
 #include <hblistwidget.h>
 
 #include <memory>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpcerttrustview.h"
 #include "cpcertdatacontainer.h"
 #include "cpcertmanuisyncwrapper.h"
@@ -71,6 +71,7 @@ CpCertTrustView::~CpCertTrustView()
 
 void CpCertTrustView::viewTrustSettings()
 	{
+	RDEBUG("0", 0);
 	mTrustedClients << " \tWAP connection\t\t";
 	mTrustedClients << " \tMail and Image conn.\t\t";
 	mTrustedClients << " \tNative installing\t\t";
@@ -111,6 +112,7 @@ void CpCertTrustView::viewTrustSettings()
 //
 void CpCertTrustView::updateListBoxL()
     {
+    RDEBUG("0", 0);
     mClientUids.Reset();
 
     TInt clientCount = 0;
@@ -196,7 +198,7 @@ void CpCertTrustView::updateListBoxL()
 	certLabel->setText(QString( (QChar*)label.Ptr(),label.Length() ) );
 	mCertLabelList->addItem(certLabel.get());
 	certLabel.release();
-	
+	RDEBUG("0", 0);
 	int count = mTrustedClients.size();
 	for( int index = 0 ;index < count; ++index)
 		{
@@ -226,6 +228,7 @@ void CpCertTrustView::updateListBoxL()
 
 void CpCertTrustView::saveTrustSettings()
 	{
+	RDEBUG("0", 0);
 	CCTCertInfo& entry = *( mCertDataContainer.iCALabelEntries[ mCertificateIndex ]->iCAEntry );
 	if ( entry.IsDeletable() )
 		{
@@ -249,6 +252,7 @@ void CpCertTrustView::saveTrustSettings()
 
 TUid CpCertTrustView::trusterId(const QString& clientDescription) const
 	{
+	RDEBUG("0", 0);
 	TUid retValue = TUid::Uid(0);
 	if( clientDescription ==  " \tWAP connection\t\t" )
 		retValue = KCertManUIViewTrustWapConnectionId;
@@ -273,6 +277,7 @@ TUid CpCertTrustView::trusterId(const QString& clientDescription) const
 //
 TInt CpCertTrustView::trustIdIndex( TUid trustUid ) const
     {
+    RDEBUG("0", 0);
     TInt resIndex = KErrNotFound;
     
     if ( trustUid == KCertManUIViewTrustApplicationControllerId )
@@ -322,6 +327,7 @@ TInt CpCertTrustView::trustIdIndex( TUid trustUid ) const
 TBool CpCertTrustView::checkCertificateClientTrustL(
     const TUid clientUid, const CCTCertInfo& entry ) const
     {
+    RDEBUG("0", 0);
     TBool trustSettingTrusted = EFalse;
     TCertificateFormat format = entry.CertificateFormat();
 

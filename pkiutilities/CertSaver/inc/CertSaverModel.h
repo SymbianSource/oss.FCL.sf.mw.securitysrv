@@ -310,10 +310,12 @@ class CCertSaverModel : public CBase
         */
         void DivideToBlocks( const TDesC8& aInput, TDes& aOutput ) const;
 
-        TBool DoMessageQueryL(
-            TInt aDialogResId,
+/*
+        TBool DoMessageQueryL( 
+            TInt aDialogResId, 
             TInt aHeadingResId,
-            TDesC& aMessage );
+            TDesC& aMessage ); 
+*/
 
     private: //data
         TCertificateOwnerType     iCertOwnerType;
@@ -336,6 +338,8 @@ class CCertSaverModel : public CBase
         TInt  iSavedUserCertsCount;
         TInt  iSelectedKeyStore;
         TBool iKeyAlreadyExists;
+
+        CEikonEnv*        iEikEnv;
     };
 
 #endif

@@ -18,14 +18,20 @@
 #ifndef SECUINOTIFICATIONDIALOG_H
 #define SECUINOTIFICATIONDIALOG_H
 
-// #define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#include <e32debug.h>
+#ifdef _DEBUG
+#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#else
 #define RDEBUG( x, y )
+#endif
 
 #include <hbdialog.h>                   // HbDialog
 #include <hbdevicedialoginterface.h>    // HbDeviceDialogInterface
 #include <hbwidget.h>       // HbWidget
 #include <hblineedit.h>       // HbWidget
 #include <hblabel.h>
+#include <HbCheckBox>
+#include <HbListWidget>
 
 #include <qmobilityglobal.h>
 
@@ -86,6 +92,8 @@ private:
     QVariantMap mResultMap;
     HbLineEdit *codeTop;
     HbLineEdit *codeBottom;
+    HbCheckBox *checkBox;
+    HbListWidget *listWidget;
     HbAction *okAction;
     HbAction *cancelAction;
     HbLabel *title;

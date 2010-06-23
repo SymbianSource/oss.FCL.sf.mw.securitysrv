@@ -18,6 +18,7 @@
 // User includes
 #include "seccodemodel.h"
 #include "seccodemodel_p.h"
+#include <../../inc/cpsecplugins.h>
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -43,6 +44,7 @@ SecCodeModel::~SecCodeModel()
 */
 bool SecCodeModel::pinCodeRequest() const
 {
+		RDEBUG("0", 0);
     return d_ptr->pinCodeRequest();
 }
 
@@ -51,6 +53,7 @@ bool SecCodeModel::pinCodeRequest() const
 */
 bool SecCodeModel::changePinCodeRequest()
 {
+		RDEBUG("0", 0);
     return d_ptr->changePinCodeRequest();
 }
 
@@ -59,6 +62,7 @@ bool SecCodeModel::changePinCodeRequest()
 */
 int SecCodeModel::changePinCode()
 {
+		RDEBUG("0", 0);
     return d_ptr->changePinCode();
 }
 
@@ -67,5 +71,6 @@ int SecCodeModel::changePinCode()
 */
 int SecCodeModel::changePin2Code()
 {
+		RDEBUG("0", 0);
     return d_ptr->changePin2Code();
 }

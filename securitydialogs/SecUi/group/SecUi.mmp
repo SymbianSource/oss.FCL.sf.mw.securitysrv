@@ -55,6 +55,7 @@ SOURCE  ../Src/SecUiSystemLock.cpp
 SOURCE  ../Src/SecUiWait.cpp
 SOURCE  ../Src/SecQueryUi.cpp
 
+// library avkon.lib  eikdlg.lib 
 library     euser.lib
 library     etel.lib etelmm.lib
 library     commonengine.lib

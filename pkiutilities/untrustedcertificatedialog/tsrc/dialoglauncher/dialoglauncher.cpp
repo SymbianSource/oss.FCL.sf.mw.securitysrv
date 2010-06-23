@@ -33,7 +33,7 @@
 #include <securitydefs.h>       // EValidatedOK, ESignatureInvalid, EDateOutOfRange
 #endif
 
-const QString RootDir = "c:/";
+const QString KTestCertDir = "c:/data/testCerts";
 
 
 UntrustedCertDialogLauncher::UntrustedCertDialogLauncher(int& argc, char* argv[])
@@ -50,7 +50,7 @@ UntrustedCertDialogLauncher::UntrustedCertDialogLauncher(int& argc, char* argv[]
 
     mFilesList = new HbComboBox;
     mFilesList->setEditable(false);
-    QDir dir(RootDir);
+    QDir dir(KTestCertDir);
     if (dir.exists()) {
         QFileInfoList list = dir.entryInfoList(QDir::Files);
         QListIterator<QFileInfo> iter(list);
@@ -61,7 +61,7 @@ UntrustedCertDialogLauncher::UntrustedCertDialogLauncher(int& argc, char* argv[]
     }
     layout->addItem(mFilesList);
 
-    mHostName = new HbTextEdit(tr("some.host.name.com"));
+    mHostName = new HbTextEdit(tr("some.host.com"));
     layout->addItem(mHostName);
 
     HbPushButton *button = 0;
@@ -115,7 +115,7 @@ QVariantMap UntrustedCertDialogLauncher::readParams()
 
     QString fileName = mFilesList->currentText();
     QFile file;
-    QDir::setCurrent(RootDir);
+    QDir::setCurrent(KTestCertDir);
     file.setFileName(fileName);
     file.open(QIODevice::ReadOnly);
     QByteArray fileContent = file.readAll();

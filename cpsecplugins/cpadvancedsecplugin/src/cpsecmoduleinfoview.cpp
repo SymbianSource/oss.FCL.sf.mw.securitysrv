@@ -44,13 +44,14 @@
 #include <QModelIndexList>
 
 #include <memory>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpsecmoduleinfoview.h"
 
 
 CpSecmoduleInfoView::CpSecmoduleInfoView(const QVector< QPair<QString,QString> >& securityDetails, QGraphicsItem *parent /*= 0*/)
 	: CpBaseSettingView(0,parent)
 	{
+	RDEBUG("0", 0);
 	setTitle(tr("Module info"));
 		
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
@@ -75,6 +76,7 @@ CpSecmoduleInfoView::CpSecmoduleInfoView(const QVector< QPair<QString,QString> >
 	layout->addItem(listSecurityDetails);		
 	setLayout(layout.get());
 	layout.release();
+	RDEBUG("0", 0);
 	}	
 
 CpSecmoduleInfoView::~CpSecmoduleInfoView()

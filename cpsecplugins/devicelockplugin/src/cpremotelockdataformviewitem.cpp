@@ -18,7 +18,7 @@
 #include "cpremotelockdataformviewitem.h"
 #include <hblabel.h>
 #include <QGraphicsSceneMouseEvent>
-
+#include <../../inc/cpsecplugins.h>
 
 
 /*
@@ -58,6 +58,7 @@ CpRemoteLockDataFormViewItem::~CpRemoteLockDataFormViewItem()
  */
 HbAbstractViewItem* CpRemoteLockDataFormViewItem::createItem()
 {
+	RDEBUG("0", 0);
 	return new CpRemoteLockDataFormViewItem(*this);
 }
 
@@ -73,6 +74,7 @@ HbAbstractViewItem* CpRemoteLockDataFormViewItem::createItem()
 bool CpRemoteLockDataFormViewItem::canSetModelIndex(const QModelIndex &index) const
 {
 	int type = index.data(HbDataFormModelItem::ItemTypeRole).toInt();
+	RDEBUG("type", type);
 	return ((type == CpRemoteLockItem) || (type == CpCodeEditItem));
 }
 
@@ -88,6 +90,7 @@ bool CpRemoteLockDataFormViewItem::canSetModelIndex(const QModelIndex &index) co
 HbWidget *CpRemoteLockDataFormViewItem::createCustomWidget()
     {
     int type = modelIndex().data(HbDataFormModelItem::ItemTypeRole).toInt();
+    RDEBUG("type", type);
     if (type == CpCodeEditItem)
         {
         CpLockEdit *edit = new CpLockEdit("1234");
@@ -140,6 +143,7 @@ CpLockEdit::~CpLockEdit()
  */
 void CpLockEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+		RDEBUG("0", 0);
     if (event->button() != Qt::LeftButton) {
         event->ignore();
         return;

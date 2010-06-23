@@ -17,7 +17,7 @@
 #include "cpdevicelockplugin.h"
 #include "cpdevicelockpluginview.h"
 #include <cpsettingformentryitemdataimpl.h>
-
+#include <../../inc/cpsecplugins.h>
 
 
 /*
@@ -30,6 +30,7 @@
  */
 CpDeviceLockPlugin::CpDeviceLockPlugin()
 {
+	RDEBUG("0", 0);
 }
 
 
@@ -56,6 +57,7 @@ CpDeviceLockPlugin::~CpDeviceLockPlugin()
  */
 QList<CpSettingFormItemData*> CpDeviceLockPlugin::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
 {
+		RDEBUG("0", 0);
     return QList<CpSettingFormItemData*>() 
            << new CpSettingFormEntryItemDataImpl<CpDeviceLockPluginView>(itemDataHelper,tr("Device lock"), QString());
 }

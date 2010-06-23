@@ -27,7 +27,7 @@
 #include <HbMessageBox>
 
 #include <QErrorMessage>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpcertdatacontainer.h"
 #include "cpcertmanuisyncwrapper.h"
 
@@ -108,6 +108,7 @@ CpCertManUICertData::~CpCertManUICertData()
 // Releases Certificate entries.
 void CpCertManUICertData::Release()
     {
+    RDEBUG("0", 0);
     if ( iCAEntry )
         {
         iCAEntry->Release();
@@ -210,6 +211,7 @@ CpCertDataContainer* CpCertDataContainer::NewLC()
 //
 void CpCertDataContainer::ConstructL()
     {
+    RDEBUG("0", 0);
     // Ensure that file server session is succesfully created
     User::LeaveIfError( iRfs.Connect() );
 
@@ -272,6 +274,7 @@ CUnifiedKeyStore*& CpCertDataContainer::KeyManager()
 //
 void CpCertDataContainer::RefreshCAEntriesL()
     {
+    RDEBUG("0", 0);
     iFilter->SetOwnerType( ECACertificate );
     iCAEntries.Close();
     CUnifiedCertStore*& store = CertManager();
@@ -378,6 +381,7 @@ void CpCertDataContainer::RefreshCAEntriesL()
 //
 void CpCertDataContainer::RefreshPeerCertEntriesL()
     {
+    RDEBUG("0", 0);
     iFilter->SetOwnerType( EPeerCertificate );
     iPeerEntries.Close();
     CUnifiedCertStore*& store = CertManager();
@@ -458,6 +462,7 @@ void CpCertDataContainer::RefreshPeerCertEntriesL()
 //
 void CpCertDataContainer::RefreshUserCertEntriesL()
     {
+    RDEBUG("0", 0);
     iFilter->SetOwnerType( EUserCertificate );
     iUserEntries.Close();
     CUnifiedCertStore*& store = CertManager();
@@ -594,6 +599,7 @@ void CpCertDataContainer::RefreshUserCertEntriesL()
 //
 void CpCertDataContainer::RefreshDeviceCertEntriesL()
     {
+    RDEBUG("0", 0);
     iFilter->SetOwnerType( EUserCertificate );
     iDeviceEntries.Close();
     CUnifiedCertStore*& store = CertManager();

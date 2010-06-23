@@ -63,7 +63,7 @@ SOURCE    CTSelectcertificatedialog.cpp
 SOURCE    CTPinPinQueryDialog.cpp
 SOURCE    CTCertificateQuery.cpp
 SOURCE    CTSecurityDialogsAO.cpp
-SOURCE    CTNoTrustQuery.cpp
+SOURCE    CTUntrustedCertQuery.cpp
 SOURCE    CTInvalidCertNote.cpp
 
 LIBRARY   EUSER.LIB
@@ -88,6 +88,7 @@ LIBRARY   crypto.lib
 LIBRARY   aknlayout.lib
 LIBRARY   X500.lib
 LIBRARY   DevTokenClient.lib
+LIBRARY   HbCore.lib                // CHbDeviceDialog
 
 DEBUGLIBRARY     flogger.lib
 

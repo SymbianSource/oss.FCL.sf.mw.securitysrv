@@ -59,19 +59,22 @@ private:    // new functions
     bool constructDialog(const QVariantMap &parameters);
     bool updateFromParameters(const QVariantMap &parameters);
     void sendResult(int result);
+    void confirmPermanentAccept();
 
 private slots:  // new slots
     void handleAccepted();
     void handleRejected();
+    void handlePermanentAcceptance();
 
 private:    // new functions
     Q_DISABLE_COPY(UntrustedCertificateDialog)
 
 private:    // data
     int mLastError;
-    bool mShowEventReceived;
     UntrustedCertificateWidget *mContent;
     QVariantMap mResultMap;
+    bool mShowEventReceived;
+    HbAction *mOkAction;
 };
 
 #endif // UNTRUSTEDCERTIFICATEDIALOG_H

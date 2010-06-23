@@ -45,7 +45,7 @@
 #include <hbdataform.h>
 #include <hbdataformmodel.h>
 #include <hbdataformmodelitem.h>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpcertdetailview.h"
 #include "cpcertview.h"
 #include "cpcertdatacontainer.h"
@@ -117,7 +117,7 @@ CpCertDetailView::~CpCertDetailView()
 
 void CpCertDetailView::viewCertificateDetailsL( TInt aIndex, CpCertView::TCertificateViews aType )
 	{
-	
+	RDEBUG("0", 0);
 	QGraphicsLinearLayout *layout = q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical));	
 	setLayout(layout);
 	
@@ -151,7 +151,7 @@ void CpCertDetailView::viewCertificateDetailsL( TInt aIndex, CpCertView::TCertif
         {
 		addLabel(*entry, *mCertDetails);
         }
-
+		RDEBUG("0", 0);
     // certificate issuer and owner
     if( certificateFormat == EX509Certificate )
         {
@@ -168,7 +168,7 @@ void CpCertDetailView::viewCertificateDetailsL( TInt aIndex, CpCertView::TCertif
 		TKeyUsagePKCS15 usage = keyUsageAndLocationL( *entry, &keyLocation );
         addCertUsage(usage, *mCertDetails);		
         }
-
+		RDEBUG("0", 0);
     if( certificateFormat == EX509Certificate )
         {
 		addValidityPeriod( *details, *mCertDetails );                
@@ -205,7 +205,7 @@ void CpCertDetailView::viewCertificateDetailsL( TInt aIndex, CpCertView::TCertif
         {
         // SetUrlCertAlgorihm()
         }
-
+		RDEBUG("0", 0);
     if( certificateFormat != EX509CertificateUrl )
         {
         CleanupStack::PopAndDestroy( details );
@@ -220,6 +220,7 @@ void CpCertDetailView::viewCertificateDetailsL( TInt aIndex, CpCertView::TCertif
 
 const CCTCertInfo* CpCertDetailView::certInfo( TInt index, CpCertView::TCertificateViews certView )
 	{
+	RDEBUG("0", 0);
 	const CCTCertInfo* certinfo = NULL;
 	
 	if( certView == CpCertView::EAuthorityView )
@@ -243,6 +244,7 @@ const CCTCertInfo* CpCertDetailView::certInfo( TInt index, CpCertView::TCertific
 
 void CpCertDetailView::addTrustedSitesL( const CCertificate& certDetails, HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	CTrustSitesStore* trustedSitesStore = CTrustSitesStore::NewL();
 	CleanupStack::PushL( trustedSitesStore );
 
@@ -271,6 +273,7 @@ void CpCertDetailView::addTrustedSitesL( const CCertificate& certDetails, HbList
 
 void CpCertDetailView::addLabel( const CCTCertInfo& aCertInfo, HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	QString sLabel("Label:");
 	QString sLabelDetails = "(No label)"; 
 	if(aCertInfo.Label().Length()  != 0)
@@ -301,6 +304,7 @@ void CpCertDetailView::addIssuerL( 	const CCertificate& aCertDetails,
 void CpCertDetailView::addSubjectL( const CCertificate& aCertDetails, 
 									HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	HBufC* subject = NULL;
 	X509CertNameParser::SubjectFullNameL( (CX509Certificate&)aCertDetails, subject );
 	CleanupStack::PushL( subject );
@@ -319,6 +323,7 @@ void CpCertDetailView::addSubjectL( const CCertificate& aCertDetails,
 
 void CpCertDetailView::addCertUsage( TKeyUsagePKCS15 usage, HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	QString strUsage;
 	switch( usage )
 		{
@@ -341,6 +346,7 @@ void CpCertDetailView::addCertUsage( TKeyUsagePKCS15 usage, HbListWidget& certDi
 void CpCertDetailView::addValidityPeriod( 	const CCertificate& aCertDetails, 
 											HbListWidget& certDisplayDetails)
 	{
+	RDEBUG("0", 0);
 	// Certificate validity period
 	// Hometime's offset to UTC
 	TLocale locale;
@@ -375,6 +381,7 @@ void CpCertDetailView::addValidityPeriod( 	const CCertificate& aCertDetails,
 
 void CpCertDetailView::setURLLocation( HBufC8& urlDetails, HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	TPtr8 urlPtr = urlDetails.Des();
 		
 	QString certUrl = "Location:"; 
@@ -389,6 +396,7 @@ void CpCertDetailView::setURLLocation( HBufC8& urlDetails, HbListWidget& certDis
 
 void CpCertDetailView::addCertFormat( TCertificateFormat aCertFormat, HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	// certificate format
 	QString certFormat = "Certificate format:";
 	QString certFormatDetails = "(Not defined)";
@@ -402,6 +410,7 @@ void CpCertDetailView::addCertFormat( TCertificateFormat aCertFormat, HbListWidg
 void CpCertDetailView::addAlgoDetails( 	const CCertificate& certificate, 
 										HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	// certificate algorithms
 	QString sDgstAlgoDetails = "Unknown";
 	// digest algorithm
@@ -440,6 +449,7 @@ void CpCertDetailView::addAlgoDetails( 	const CCertificate& certificate,
 void CpCertDetailView::addSerialNo( const CCertificate& certificate, 
 									HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	// certificate serial number
 	QString sCertSerialNo("Serial number:");
 	QString sCertSerialNoDetails = 0;
@@ -457,37 +467,47 @@ void CpCertDetailView::addSerialNo( const CCertificate& certificate,
 void CpCertDetailView::addFingerprint(	const CCertificate& certificate, 
 										HbListWidget& certDisplayDetails)
 	{
+	RDEBUG("0", 0);
 	// certificate fingerprint SHA-1
 	QString sSha1("Fingerprint (SHA1):");
 	TPtrC8 sha1_fingerprint = certificate.Fingerprint();
 	HBufC* finalSha1 = NULL;
-	QT_TRAP_THROWING(	 finalSha1 = HBufC::NewLC(100));
-	TPtr finalShaPtr = finalSha1->Des();
-	divideIntoBlocks( sha1_fingerprint, finalShaPtr );
-	QString sSha1Details = QString( (QChar*)finalShaPtr.Ptr(), finalShaPtr.Length() );
-	CleanupStack::PopAndDestroy(finalSha1);
+	QString sSha1Details = NULL;
+	
+	QT_TRAP_THROWING
+		(	 
+		finalSha1 = HBufC::NewLC(100);
+		TPtr finalShaPtr = finalSha1->Des();
+		divideIntoBlocks( sha1_fingerprint, finalShaPtr );
+		sSha1Details = QString( (QChar*)finalShaPtr.Ptr(), finalShaPtr.Length() );
+		CleanupStack::PopAndDestroy(finalSha1);
+		)
 	
 	addToListWidget(certDisplayDetails, sSha1, sSha1Details);
 		
 	// certificate fingerprint MD5
 	QString sMd5("Fingerprint (MD5):");
 	CMD5* md5= NULL;
-	QT_TRAP_THROWING(	 md5 = CMD5::NewL());
-	QT_TRAP_THROWING(CleanupStack::PushL( md5 ));
-	TBuf8<20> fingerprint = md5->Hash( certificate.Encoding() );
-	CleanupStack::PopAndDestroy( md5 );
-	HBufC* finalMd5 = NULL;
-	QT_TRAP_THROWING(	finalMd5 = HBufC::NewLC(100));
-	TPtr finalMd5Ptr = finalMd5->Des();
-	divideIntoBlocks( fingerprint, finalMd5Ptr );
-	QString sMd5Details = QString( (QChar*)finalMd5Ptr.Ptr(), finalMd5Ptr.Length());
-	CleanupStack::PopAndDestroy(finalMd5);
-	addToListWidget(certDisplayDetails, sMd5, sMd5Details);
+	QT_TRAP_THROWING
+		(	 
+		md5 = CMD5::NewL();
+		CleanupStack::PushL( md5 );
+		TBuf8<20> fingerprint = md5->Hash( certificate.Encoding() );
+		CleanupStack::PopAndDestroy( md5 );
+		HBufC* finalMd5 = NULL;
+		finalMd5 = HBufC::NewLC(100);
+		TPtr finalMd5Ptr = finalMd5->Des();
+		divideIntoBlocks( fingerprint, finalMd5Ptr );
+		QString sMd5Details = QString( (QChar*)finalMd5Ptr.Ptr(), finalMd5Ptr.Length());
+		CleanupStack::PopAndDestroy(finalMd5);
+		addToListWidget(certDisplayDetails, sMd5, sMd5Details);
+		)
 	}
 
 void CpCertDetailView::addPublicKeyDetailsL(	const CCertificate& certificate, 
 											HbListWidget& certDisplayDetails )
 	{
+	RDEBUG("0", 0);
 	// Public key
     // Should look like: "Public key (%0U %1N bit):"
         
@@ -574,6 +594,7 @@ void CpCertDetailView::addPublicKeyDetailsL(	const CCertificate& certificate,
 
 QString CpCertDetailView::asymmetricAlgoId( const CCertificate& certificate )
 	{
+	RDEBUG("0", 0);
 	QString sAsymmetricAlgoId = 0;
 	// public-key algorithm
 	TAlgorithmId algorithmId = certificate.SigningAlgorithm().AsymmetricAlgorithm().Algorithm();
@@ -625,7 +646,7 @@ void CpCertDetailView::addToListWidget(	HbListWidget& certDisplayDetails,
 void CpCertDetailView::validateCertificateL(
     TInt aIndex, const CCertificate& certDetails, const CCTCertInfo& aCertInfo, CpCertView::TCertificateViews aType )
     {
-    
+    RDEBUG("0", 0);
     TInt poppableItems = 0;
     // Check allways first the validity period
     // Show Expired/Not yet valid notes
@@ -738,6 +759,7 @@ void CpCertDetailView::validateCertificateL(
 
 CArrayFixFlat<TValidationError>* CpCertDetailView::validateX509CertificateL( const CX509Certificate& certDetails )
     {
+    RDEBUG("0", 0);
     TInt poppableItems = 0;
     CArrayFixFlat<TValidationError>* validationError =
         new ( ELeave ) CArrayFixFlat<TValidationError>( 1 );
@@ -774,7 +796,7 @@ TKeyUsagePKCS15 CpCertDetailView::keyUsageAndLocationL( const CCTCertInfo& certE
                                                         TUid* keyLocation )
     {
     TKeyUsagePKCS15 keyUsage;
-
+		RDEBUG("0", 0);
     // Check whether we have key for this certificate
     RMPointerArray<CCTKeyInfo> keyEntry;
     TCTKeyAttributeFilter filter;
@@ -806,7 +828,7 @@ TKeyUsagePKCS15 CpCertDetailView::keyUsageAndLocationL( const CCTCertInfo& certE
 //
 void CpCertDetailView::setLocationInfo(TBool certificate, TUid locUid, HbListWidget& certDisplayDetails)
     {
-    
+    RDEBUG("0", 0);
     QString locationDetails = "(Not defined)";
 
     switch ( locUid.iUid )
@@ -847,6 +869,7 @@ void CpCertDetailView::setLocationInfo(TBool certificate, TUid locUid, HbListWid
 //
 void CpCertDetailView::divideIntoBlocks( const TDesC8& input, TPtr& output )
     {
+    RDEBUG("0", 0);
     const TInt KBlockLength = 2;
     TInt blockIndex = 0;
     for ( TInt j = 0 ; j < input.Length() ; j++ )

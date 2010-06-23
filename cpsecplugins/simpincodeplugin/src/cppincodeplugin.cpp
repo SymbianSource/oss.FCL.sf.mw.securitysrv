@@ -17,6 +17,7 @@
 
 // System includes
 #include <cpsettingformentryitemdataimpl.h>
+#include <../../inc/cpsecplugins.h>
 
 // User includes
 #include "cppincodeplugin.h"
@@ -36,6 +37,7 @@
 */
 CpPinCodePlugin::CpPinCodePlugin()
 {
+RDEBUG("0", 0);
 }
 
 /*!
@@ -51,6 +53,7 @@ CpPinCodePlugin::~CpPinCodePlugin()
 QList<CpSettingFormItemData *> CpPinCodePlugin::createSettingFormItemData(
     CpItemDataHelper &itemDataHelper) const
 {
+		RDEBUG("0", 0);
     return  QList<CpSettingFormItemData *>()
         << new CpSettingFormEntryItemDataImpl<CpPinCodePluginView>
         (itemDataHelper, tr("PIN code"), QString());

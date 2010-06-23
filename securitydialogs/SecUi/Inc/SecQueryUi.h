@@ -25,6 +25,7 @@
 #include <e32property.h>
 
 #define ESecUiTypeMask  0x0FFFFFF
+#define ESecUiBasicTypeMask    0x00F0000
 
 #define ESecUiCancelSupported  0x1000000
 #define ESecUiCancelNotSupported  0x0000000
@@ -37,6 +38,9 @@
 
 #define ESecUiSecretSupported  0x8000000
 #define ESecUiSecretNotSupported  0x0000000
+
+#define ESecUiBasicTypeCheck   0x0010000
+#define ESecUiBasicTypeMultiCheck   0x0020000
 
 class MSecQueryUiCertificateDetailsProvider;
 class MSecQueryUiDrmDetailsProvider;
@@ -81,6 +85,8 @@ enum R_SECUI_ERROR_CODES
  * @lib SecQueryUi.lib
  * @since 10.1
  */
+typedef TBuf<80> TSecUiPassword;
+
 class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
     {
     public:  // constructor and destructor
@@ -234,7 +240,8 @@ class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
         TInt iCompletionCode;
         TInt iReturnValue;
 public:
-	      TSecUiPassword iPassword;
+	   // previoulsy it was RMobilePhone::TMobilePassword iPassword; but this was only 10 bytes
+        TSecUiPassword iPassword;
     };
 
 

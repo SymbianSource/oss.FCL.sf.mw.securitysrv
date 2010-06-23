@@ -17,6 +17,7 @@
 
 // User includes
 #include "seccodemodel_p.h"
+#include <../../inc/cpsecplugins.h>
 
 // ======== MEMBER FUNCTIONS ========
 /*!
@@ -54,6 +55,7 @@ SecCodeModelPrivate::~SecCodeModelPrivate()
 */
 bool SecCodeModelPrivate::pinCodeRequest() const
 {
+		RDEBUG("0", 0);
     QString information;
     information = QString("Emulator NOT supported!");
     HbMessageBox messageBox(information);
@@ -66,6 +68,7 @@ bool SecCodeModelPrivate::pinCodeRequest() const
 */
 bool SecCodeModelPrivate::changePinCodeRequest()
 {
+		RDEBUG("0", 0);
     QString information;
     information = QString("Emulator NOT supported!");
     HbMessageBox messageBox(information);
@@ -78,6 +81,7 @@ bool SecCodeModelPrivate::changePinCodeRequest()
 */
 int SecCodeModelPrivate::changePinCode()
 {
+		RDEBUG("0", 0);
     QString information;
     information = QString("Emulator NOT supported!");
     HbMessageBox messageBox(information);
@@ -90,6 +94,7 @@ int SecCodeModelPrivate::changePinCode()
 */
 int SecCodeModelPrivate::changePin2Code()
 {
+		RDEBUG("0", 0);
     QString information;
     information = QString("Emulator NOT supported!");
     HbMessageBox messageBox(information);
