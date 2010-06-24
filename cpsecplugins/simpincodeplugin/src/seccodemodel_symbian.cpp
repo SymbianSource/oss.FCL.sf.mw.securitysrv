@@ -23,6 +23,7 @@
 // User includes
 #include "seccodemodel_p.h"
 #include "seccodeuiglobal.h"
+#include <../../inc/cpsecplugins.h>
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -50,6 +51,7 @@ SecCodeModelPrivate::SecCodeModelPrivate()
 */
 void SecCodeModelPrivate::ConstructL()
 {
+	RDEBUG("0", 0);
 	iSecurity = CSecuritySettings::NewL(); 
 }
 
@@ -68,9 +70,11 @@ SecCodeModelPrivate::~SecCodeModelPrivate()
 */
 bool SecCodeModelPrivate::pinCodeRequest() const
 {
+	RDEBUG("0", 0);
 	bool isLockEnabled = false;
 	QT_TRAP_THROWING(isLockEnabled = iSecurity->IsLockEnabledL(
 		RMobilePhone::ELockICC));
+	RDEBUG("isLockEnabled", isLockEnabled);
 	return isLockEnabled;
 }
 
@@ -79,8 +83,10 @@ bool SecCodeModelPrivate::pinCodeRequest() const
 */
 bool SecCodeModelPrivate::changePinCodeRequest()
 {
+	RDEBUG("0", 0);
     bool result = false;
 	QT_TRAP_THROWING(result =iSecurity->ChangePinRequestL());
+	RDEBUG("result", result);
 	return result;
 }
 
@@ -89,7 +95,9 @@ bool SecCodeModelPrivate::changePinCodeRequest()
 */
 int SecCodeModelPrivate::changePinCode()
 {
+	RDEBUG("0", 0);
 	QT_TRAP_THROWING(iSecurity->ChangePinL());
+	RDEBUG("0", 0);
 	return 0;
 }
 
@@ -98,6 +106,8 @@ int SecCodeModelPrivate::changePinCode()
 */
 int SecCodeModelPrivate::changePin2Code()
 {
+	RDEBUG("0", 0);
 	QT_TRAP_THROWING(iSecurity->ChangePin2L());
+	RDEBUG("0", 0);
 	return 0;
 }

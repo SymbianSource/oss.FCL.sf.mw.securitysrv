@@ -43,7 +43,7 @@ symbian: {
     SOURCES += src/untrustedcertificatewidget_symbian.cpp \
         src/untrustedcertificateinfo_symbian.cpp
     
-    LIBS += -lcrypto -lx509 -lx500
+    LIBS += -lcrypto -lx509 -lx500 -lhash -lX509CertNameParser
     
     pluginstub.sources = untrustedcertdialog.dll
     pluginstub.path = /resource/plugins/devicedialogs

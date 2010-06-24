@@ -18,7 +18,8 @@
 #include "untrustedcertificateinfo_symbian.h"
 #include <signed.h>                             // TAlgorithmId
 #include <x509cert.h>                           // CX509Certificate
-#include <QTextStream>
+#include <X509CertNameParser.h>                 // X509CertNameParser
+#include <hash.h>                               // CMD5
 
 
 // ======== LOCAL FUNCTIONS ========
@@ -72,17 +73,14 @@ UntrustedCertificateInfoBase::Algorithm mapAlgorithm(TAlgorithmId aAlgId)
 // convertDateTime()
 // ----------------------------------------------------------------------------
 //
-QDateTime convertDateTime(const TTime& aTime)
+void convertDateTime(const TTime& aFromTime, QDateTime& aToDateTime)
 {
-    const TDateTime &symbianDateTime = aTime.DateTime();
+    const TDateTime &symbianDateTime = aFromTime.DateTime();
 
-    QDateTime dateTime;
     QDate date(symbianDateTime.Year(), symbianDateTime.Month()+1, symbianDateTime.Day()+1);
     QTime time(symbianDateTime.Hour(), symbianDateTime.Minute(), symbianDateTime.Second());
-    dateTime.setDate(date);
-    dateTime.setTime(time);
-
-    return dateTime;
+    aToDateTime.setDate(date);
+    aToDateTime.setTime(time);
 }
 
 
@@ -93,9 +91,10 @@ QDateTime convertDateTime(const TTime& aTime)
 // ----------------------------------------------------------------------------
 //
 UntrustedCertificateInfoSymbian::UntrustedCertificateInfoSymbian(
-    const CX509Certificate& aCert) : UntrustedCertificateInfoBase(), iCert(0)
+    const QByteArray &aEncodedCert) : UntrustedCertificateInfoBase(),
+    mCert(0), mMd5Fingerprint()
 {
-    QT_TRAP_THROWING(ConstructL(aCert));
+    QT_TRAP_THROWING(ConstructL(aEncodedCert));
 }
 
 // ----------------------------------------------------------------------------
@@ -104,7 +103,7 @@ UntrustedCertificateInfoSymbian::UntrustedCertificateInfoSymbian(
 //
 UntrustedCertificateInfoSymbian::~UntrustedCertificateInfoSymbian()
 {
-    delete iCert;
+    delete mCert;
 }
 
 // ----------------------------------------------------------------------------
@@ -119,39 +118,26 @@ bool UntrustedCertificateInfoSymbian::commonNameMatches(const QString &siteName)
 }
 
 // ----------------------------------------------------------------------------
-// UntrustedCertificateInfoSymbian::isPermanentAcceptAllowed()
-// ----------------------------------------------------------------------------
-//
-bool UntrustedCertificateInfoSymbian::isPermanentAcceptAllowed() const
-{
-    return isDateValid();
-}
-
-// ----------------------------------------------------------------------------
 // UntrustedCertificateInfoSymbian::certificateDetails()
 // ----------------------------------------------------------------------------
 //
-QString UntrustedCertificateInfoSymbian::certificateDetails() const
+QString UntrustedCertificateInfoSymbian::certificateDetails(const QString &siteName) const
 {
-    QString details;
-    QTextStream stream(&details);
-    // TODO: localised UI strings needed
-    stream << tr("Issuer:\n%1\n").arg(issuerName());
-    stream << endl;
-    stream << tr("Subject:\n%1\n").arg(subjectName());
-    stream << endl;
-    stream << tr("Valid from:\n%1\n").arg(validFrom().toString());
-    stream << endl;
-    stream << tr("Valid until:\n%1\n").arg(validTo().toString());
-    stream << endl;
-    stream << tr("Certificate format:\n%1\n").arg(format());
-    stream << endl;
-    stream << tr("Algorithm:\n%1\n").arg(combinedAlgorithmName());
-    stream << endl;
-    stream << tr("Serial number:\n%1\n").arg(formattedSerialNumber());
-    stream << endl;
-    stream << tr("Fingerprint (SHA1):\n%1\n").arg(formattedFingerprint());
-    // TODO: MD5 fingerprint missing
+    // TODO: localized UI string needed
+    QString details = tr("Service:\n%1\n\nIssuer:\n%2\n\nSubject:\n%3\n\n"
+        "Valid from:\n%4\n\nValid until:\n%5\n\nCertificate format:\n%6\n\n"
+        "Algorithm:\n%7\n\nSerial number:\n%8\n\n"
+        "Fingerprint (SHA1):\n%9\n\nFingerprint (MD5):\n%10")
+        .arg(siteName)                                  // %1
+        .arg(issuerName())                              // %2
+        .arg(subjectName())                             // %3
+        .arg(validFrom().toString())                    // %4
+        .arg(validTo().toString())                      // %5
+        .arg(format())                                  // %6
+        .arg(combinedAlgorithmName())                   // %7
+        .arg(formattedSerialNumber(serialNumber()))     // %8
+        .arg(formattedFingerprint(fingerprint()))       // %9
+        .arg(formattedFingerprint(mMd5Fingerprint));    // %10
     return details;
 }
 
@@ -159,34 +145,45 @@ QString UntrustedCertificateInfoSymbian::certificateDetails() const
 // UntrustedCertificateInfoSymbian::ConstructL()
 // ----------------------------------------------------------------------------
 //
-void UntrustedCertificateInfoSymbian::ConstructL(const CX509Certificate& aCert)
+void UntrustedCertificateInfoSymbian::ConstructL(const QByteArray &aEncodedCert)
 {
-    ASSERT( iCert == 0 );
-    iCert = CX509Certificate::NewL( aCert );
+    TPtrC8 encodedCert( reinterpret_cast<const TText8*>( aEncodedCert.constData() ),
+        aEncodedCert.length() );
 
-    HBufC16* subjectBuf = iCert->SubjectL();
-    mSubjectName = QString::fromUtf16(subjectBuf->Ptr(), subjectBuf->Length());
-    delete subjectBuf;
+    ASSERT( mCert == 0 );
+    mCert = CX509Certificate::NewL( encodedCert );
 
-    HBufC16* issuerBuf = iCert->IssuerL();
-    mIssuerName = QString::fromUtf16(issuerBuf->Ptr(), issuerBuf->Length());
-    delete issuerBuf;
+    HBufC16* subjectBuf = NULL;
+    X509CertNameParser::SubjectFullNameL( *mCert, subjectBuf );
+    CleanupStack::PushL( subjectBuf );
+    QT_TRYCATCH_LEAVING( mSubjectName =
+        QString::fromUtf16(subjectBuf->Ptr(), subjectBuf->Length()) );
+    CleanupStack::PopAndDestroy( subjectBuf );
 
-    TPtrC8 fingerprint = iCert->Fingerprint();
-    mFingerprint = QByteArray::fromRawData(
-        reinterpret_cast<const char*>(fingerprint.Ptr()), fingerprint.Length());
+    HBufC16* issuerBuf = NULL;
+    X509CertNameParser::IssuerFullNameL( *mCert, issuerBuf );
+    CleanupStack::PushL( issuerBuf );
+    QT_TRYCATCH_LEAVING( mIssuerName =
+        QString::fromUtf16(issuerBuf->Ptr(), issuerBuf->Length()));
+    CleanupStack::PopAndDestroy( issuerBuf );
 
-    TPtrC8 serialNumber = iCert->SerialNumber();
-    mSerialNumber = QByteArray::fromRawData(
-        reinterpret_cast<const char*>(serialNumber.Ptr()), serialNumber.Length());
+    TPtrC8 fingerprint = mCert->Fingerprint();
+    QT_TRYCATCH_LEAVING( mFingerprint = QByteArray::fromRawData(
+        reinterpret_cast<const char*>(fingerprint.Ptr()), fingerprint.Length()) );
 
-    const CValidityPeriod& validityPeriod = iCert->ValidityPeriod();
-    mValidFrom = convertDateTime(validityPeriod.Start());
-    mValidTo = convertDateTime(validityPeriod.Finish());
+    mMd5Fingerprint = Md5FingerprintL( mCert->Encoding() );
+
+    TPtrC8 serialNumber = mCert->SerialNumber();
+    QT_TRYCATCH_LEAVING( mSerialNumber = QByteArray::fromRawData(
+        reinterpret_cast<const char*>(serialNumber.Ptr()), serialNumber.Length()) );
+
+    const CValidityPeriod& validityPeriod = mCert->ValidityPeriod();
+    convertDateTime(validityPeriod.Start(), mValidFrom);
+    convertDateTime(validityPeriod.Finish(), mValidTo);
 
     mFormat = X509Certificate;
 
-    const CSigningAlgorithmIdentifier& alg = iCert->SigningAlgorithm();
+    const CSigningAlgorithmIdentifier& alg = mCert->SigningAlgorithm();
     mDigestAlgorithm = mapAlgorithm(alg.DigestAlgorithm().Algorithm());
     mAsymmetricAlgorithm = mapAlgorithm(alg.AsymmetricAlgorithm().Algorithm());
 }
@@ -198,7 +195,7 @@ void UntrustedCertificateInfoSymbian::ConstructL(const CX509Certificate& aCert)
 bool UntrustedCertificateInfoSymbian::CommonNameMatchesL(const QString &siteName) const
 {
     bool matches = false;
-    const CX500DistinguishedName& distinguishedName = iCert->SubjectName();
+    const CX500DistinguishedName& distinguishedName = mCert->SubjectName();
     HBufC* commonNameSymbian = distinguishedName.ExtractFieldL( KX520CommonName );
     if (commonNameSymbian) {
         CleanupStack::PushL(commonNameSymbian);
@@ -209,5 +206,22 @@ bool UntrustedCertificateInfoSymbian::CommonNameMatchesL(const QString &siteName
         CleanupStack::PopAndDestroy(commonNameSymbian);
     }
     return matches;
+}
+
+// ----------------------------------------------------------------------------
+// UntrustedCertificateInfoSymbian::Md5FingerprintL()
+// ----------------------------------------------------------------------------
+//
+QByteArray UntrustedCertificateInfoSymbian::Md5FingerprintL( const TDesC8& aEncodedCert ) const
+{
+    CMD5* md5 = CMD5::NewL();
+    CleanupStack::PushL( md5 );
+
+    const TPtrC8 fingerprintSymbian = md5->Hash( aEncodedCert );
+    QByteArray fingerprint( reinterpret_cast<const char*>( fingerprintSymbian.Ptr() ),
+        fingerprintSymbian.Length() );
+
+    CleanupStack::PopAndDestroy( md5 );
+    return fingerprint;
 }
 

@@ -82,7 +82,7 @@ bool UntrustedCertificatePlugin::deviceDialogInfo( const QString &deviceDialogTy
     Q_UNUSED(deviceDialogType);
     Q_UNUSED(parameters);
 
-    info->group = DeviceNotificationDialogGroup;    // TODO: SecurityGroup ?
+    info->group = GenericDeviceDialogGroup;
     info->flags = NoDeviceDialogFlags;
     info->priority = DefaultPriority;
 

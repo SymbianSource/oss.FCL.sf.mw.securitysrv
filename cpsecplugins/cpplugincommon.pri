@@ -16,7 +16,7 @@
 include (common.pri)
 
 
-LIBS += -lcpframework -lcpcategorymodel
+LIBS += -lcpframework
 
 symbian: plugin { # copy qtstub and manifest
 	

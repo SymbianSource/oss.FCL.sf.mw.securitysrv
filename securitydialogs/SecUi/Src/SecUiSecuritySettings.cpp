@@ -204,8 +204,8 @@ EXPORT_C void CSecuritySettings::ChangePinL()
     TBuf<0x80> iCaption;
     iCaption.Copy(_L("ChangePinL"));
     TInt iShowError = 1;
-    ChangePinParamsL(iOldPassword, iNewPassword, iFlags, iCaption, iShowError);
-    RDEBUG("0", 0);
+    TInt err = ChangePinParamsL(iOldPassword, iNewPassword, iFlags, iCaption, iShowError);
+    RDEBUG("err", err);
     }
 
 //
@@ -226,9 +226,9 @@ EXPORT_C void CSecuritySettings::ChangeUPinL()
     TBuf<0x80> iCaption;
     iCaption.Copy(_L("ChangeUPinL"));
     TInt iShowError = 1;
-    ChangeUPinParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
+    TInt err = ChangeUPinParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
             iShowError);
-    RDEBUG("0", 0);
+    RDEBUG("err", err);
 
     }
 
@@ -250,10 +250,9 @@ EXPORT_C void CSecuritySettings::ChangePin2L()
     TBuf<0x80> iCaption;
     iCaption.Copy(_L("ChangePin2L"));
     TInt iShowError = 1;
-    ChangePin2ParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
+    TInt err = ChangePin2ParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
             iShowError);
-    RDEBUG("0", 0);
-
+    RDEBUG("err", err);
     }
 //
 // ----------------------------------------------------------
@@ -273,9 +272,9 @@ EXPORT_C void CSecuritySettings::ChangeSecCodeL()
     TBuf<0x80> iCaption;
     iCaption.Copy(_L("ChangeSecCodeL"));
     TInt iShowError = 1;
-    ChangeSecCodeParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
+    TInt err = ChangeSecCodeParamsL(iOldPassword, iNewPassword, iFlags, iCaption,
             iShowError);
-    RDEBUG("0", 0);
+    RDEBUG("err", err);
     }
 //
 // ----------------------------------------------------------
@@ -357,7 +356,7 @@ EXPORT_C TInt CSecuritySettings::ChangeRemoteLockStatusL(
 // a) first the RemoteMsg is enable, and this function is used to change it
 // b) if lock was disabled, the "change RemoteMsg" menu is not available.
 // ----------------------------------------------------------
-// no qtdone
+// qtdone
 TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
     {
 
@@ -406,7 +405,7 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
                 RDEBUG( "WaitForRequestL res", res );
 #ifdef __WINS__
                 if (res == KErrNotSupported || res == KErrTimedOut)
-                res = 0xffffec50;	// TODO this means KErrGsm0707IncorrectPassword = incorrect code
+                res = KErrGsm0707IncorrectPassword;	// KErrGsm0707IncorrectPassword = incorrect code
 #endif
 								RDEBUG( "KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword );
                 if(res == KErrNone)
@@ -428,7 +427,7 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
 // Changes lock setting in domestic OS. Changing the domestic OS lock setting
 // requires user to enter the security code.
 // ----------------------------------------------------------
-// no qtdone
+// qtdone
 TInt CSecuritySettings::RemoteLockSetLockSettingL(TBool aLockSetting)
     {
     TInt retValue( KErrNone );
@@ -621,12 +620,14 @@ EXPORT_C TBool CSecuritySettings::ChangePinRequestL()
     TBuf<0x80> iCaption;
     iCaption.Copy(_L("ChangePinRequestL"));
     TInt iShowError = 1;
-    ChangePinRequestParamsL(
+    TInt err = ChangePinRequestParamsL(
             1/* it's imposible to know if we want to set or clear*/,
             iOldPassword, iFlags, iCaption, iShowError);
-    RDEBUG("0", 0);
-
-    return ETrue;
+    RDEBUG("err", err);
+		if(err==KErrNone)
+    	return ETrue;
+		else
+   		return EFalse;
     }
 
 //
@@ -1397,8 +1398,13 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID,
     RDEBUG("aResourceID", aResourceID);
     RDebug::Print(titleTr);
 
-    _LIT(KIconName, "qtg_small_smiley_wondering");
-    messageBox->SetIconNameL(KIconName);
+    _LIT(KIconNameWondering, "qtg_small_smiley_wondering");
+    _LIT(KIconNameSmile, "qtg_small_smiley_smile");
+    if(aResourceID==0 || aResourceID==R_CONFIRMATION_NOTE)
+    	messageBox->SetIconNameL(KIconNameSmile);
+    else
+    	messageBox->SetIconNameL(KIconNameWondering);
+
     if (aTone == CAknNoteDialog::EErrorTone) // another case is EConfirmationTone
         {
         messageBox->SetTimeout(messageBox->Timeout() * 2); // errors are displayed double time
@@ -1645,7 +1651,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(
         if (res != KErrNone)
             {
             ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
-            return res; // TODO not sure if it's wise to exit now.
+            return res; // not sure if it's wise to exit now.
             }
 
         newPassword = _L("");
@@ -2037,7 +2043,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(
 
     RDEBUG("codeInfo.iRemainingEntryAttempts",
             codeInfo.iRemainingEntryAttempts);
-    if (codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts) // TODO this might be 10
+    if (codeInfo.iRemainingEntryAttempts == KMaxNumberOfPINAttempts)
         codeInfo.iRemainingEntryAttempts = -1;
 
     /* request PIN using QT */
@@ -2519,7 +2525,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
     if (simRemoved)
         {
         ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
-        return EFalse;
+        return KErrAccessDenied;
         }
 
     RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
@@ -2598,7 +2604,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
             // not allowed with this sim
             ShowResultNoteL(R_OPERATION_NOT_ALLOWED,
                     CAknNoteDialog::EErrorTone);
-            return EFalse;
+            return KErrGsm0707OperationNotAllowed;
             }
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
@@ -2610,11 +2616,11 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
             {
-            return ETrue;
+            return KErrLocked;
             }
         case KErrAbort:
             {
-            return EFalse;
+            return KErrAbort;
             }
         default:
             {
@@ -2622,7 +2628,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable,
                     aCaption, aShowError);
             }
         }
-    return ETrue;
+    return KErrNone;
     }
 
 //

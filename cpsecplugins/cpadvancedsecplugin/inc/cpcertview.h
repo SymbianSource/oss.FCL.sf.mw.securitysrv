@@ -70,7 +70,7 @@ class CpCertView : public CpBaseSettingView
 	private:
 		const CCTCertInfo* certAt(TInt index) const;
 		QString certLabel(TInt index) const;
-		void deleteCerts( RArray<TInt>& indexList );
+		void deleteCertsL( RArray<TInt>& indexList );
 		void setDetails(CpCertView::TCertificateViews currentView);
 		void moveCertList( RArray<TInt>& indexList );
 
@@ -90,6 +90,7 @@ class CpCertView : public CpBaseSettingView
 		HbListView* mSelectAllView;	
 		HbView* mOriginalView;
 		HbMessageBox* mNote;
+		HbMenu* mContextMenu;
 	};
 
 #endif /* CPCERTVIEW_H */

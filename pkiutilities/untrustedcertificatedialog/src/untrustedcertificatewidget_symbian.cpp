@@ -20,26 +20,7 @@
 #include "untrustedcertificatedefinitions.h"
 #include "untrustedcertificateinfobase.h"
 #include "untrustedcertificateinfo_symbian.h"
-#include <x509cert.h>                   // CX509Certificate
-
-
-// ======== LOCAL FUNCTIONS ========
-
-// ----------------------------------------------------------------------------
-// DoProcessEncodedCertificateL()
-// ----------------------------------------------------------------------------
-//
-UntrustedCertificateInfoBase* DoProcessEncodedCertificateL( const QByteArray &encodedCert )
-{
-    TPtrC8 ptr8( reinterpret_cast<const TText8*>(encodedCert.constData()), encodedCert.length());
-    CX509Certificate* cert = CX509Certificate::NewLC( ptr8 );
-
-    UntrustedCertificateInfoSymbian *info = 0;
-    info = new UntrustedCertificateInfoSymbian(*cert);
-    CleanupStack::PopAndDestroy( cert );
-
-    return info;
-}
+#include <securitydefs.h>                           // TValidationError
 
 
 // ======== MEMBER FUNCTIONS ========
@@ -59,8 +40,7 @@ bool UntrustedCertificateWidget::isCertificateValid()
 //
 void UntrustedCertificateWidget::processEncodedCertificate(const QByteArray &encodedCert)
 {
-    UntrustedCertificateInfoBase *info = 0;
-    QT_TRAP_THROWING(info = DoProcessEncodedCertificateL(encodedCert));
+    UntrustedCertificateInfoBase *info = new UntrustedCertificateInfoSymbian(encodedCert);
     if (mCertificateInfo) {
         delete mCertificateInfo;
         mCertificateInfo = 0;

@@ -25,6 +25,7 @@
 
 // User includes
 #include "cppincodepluginview.h"
+#include <../../inc/cpsecplugins.h>
 
 /*!
     \class CpPinCodePluginView
@@ -41,6 +42,7 @@
 CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
 	: CpBaseSettingView(0,parent), mSecCodeSettings(new SecCodeSettings())
 {
+		RDEBUG("0", 0);
     HbDataForm *form = qobject_cast<HbDataForm*>(widget());
     if (form) {
         QList<HbAbstractViewItem *> protoTypeList = form->itemPrototypes();
@@ -48,7 +50,7 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
         form->setItemPrototypes(protoTypeList);     
         form->setHeading(tr("PIN code"));
 
-        HbDataFormModel *formModel = new HbDataFormModel();
+        mFormModel = new HbDataFormModel(this);        
         mPinCodeRequestItem = new HbDataFormModelItem(
             HbDataFormModelItem::ToggleValueItem, tr("PIN code requests"));
 
@@ -60,10 +62,10 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
             mPinCodeRequestItem->setContentWidgetData("text",tr("Off"));
             mPinCodeRequestItem->setContentWidgetData("additionalText", tr("Off"));
         }
-
-        form->addConnection(mPinCodeRequestItem, SIGNAL(clicked()), this,
-        		SLOT(changePinCodeRequest()));
-        formModel->appendDataFormItem(mPinCodeRequestItem);
+				RDEBUG("form->addConnection", 1);
+        connect(mFormModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), 
+                  this, SLOT(toggleChange(QModelIndex, QModelIndex)));
+        mFormModel->appendDataFormItem(mPinCodeRequestItem);
 
         HbDataFormModelItem *pinCodeItem = new HbDataFormModelItem(
             static_cast<HbDataFormModelItem::DataItemType>
@@ -73,7 +75,7 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
         pinCodeItem->setContentWidgetData("readOnly", true);
         form->addConnection(pinCodeItem, SIGNAL(clicked()), this,
         		SLOT(changePinCode()));
-        formModel->appendDataFormItem(pinCodeItem);
+        mFormModel->appendDataFormItem(pinCodeItem);
 
         HbDataFormModelItem *pin2CodeItem = new HbDataFormModelItem(
             static_cast<HbDataFormModelItem::DataItemType>
@@ -83,9 +85,9 @@ CpPinCodePluginView::CpPinCodePluginView(QGraphicsItem *parent /*= 0*/)
         pin2CodeItem->setContentWidgetData("readOnly", true);
         form->addConnection(pin2CodeItem, SIGNAL(clicked()), this,
         		SLOT(changePin2Code()));
-        formModel->appendDataFormItem(pin2CodeItem);
-
-        form->setModel(formModel);
+        mFormModel->appendDataFormItem(pin2CodeItem);
+				RDEBUG("form->setModel", 1);
+        form->setModel(mFormModel);
     }
 }
 
@@ -98,10 +100,51 @@ CpPinCodePluginView::~CpPinCodePluginView()
 }
 
 /*!
+   response for click pin code request
+*/
+void CpPinCodePluginView::toggleChange(QModelIndex startIn, 
+        QModelIndex /*endIn*/)
+{
+		RDEBUG("0", 0);
+    HbDataFormModelItem *item = mFormModel->itemFromIndex(startIn);
+    if(item->type() == HbDataFormModelItem::ToggleValueItem) {
+        if (mSecCodeSettings->changePinCodeRequest()) {
+        		RDEBUG("got changePinCodeRequest", 1);
+						disconnect(mFormModel, 
+                    SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, 
+                    SLOT(toggleChange(QModelIndex, QModelIndex)));
+        		RDEBUG("disconnected", 1);
+            QString text = mPinCodeRequestItem->contentWidgetData(
+                    "text").toString();
+            if (0 == text.compare("On")) {
+                mPinCodeRequestItem->setContentWidgetData("text", 
+                    tr("Off"));
+                mPinCodeRequestItem->setContentWidgetData("additionalText", 
+                    tr("Off"));
+            } else {
+                mPinCodeRequestItem->setContentWidgetData("text", 
+                    tr("On"));
+                mPinCodeRequestItem->setContentWidgetData("additionalText", 
+                    tr("On"));
+            }
+         		RDEBUG("reconnect", 1);
+						connect(mFormModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), 
+                    this, SLOT(toggleChange(QModelIndex, QModelIndex)));
+        }
+      else
+      	{
+      	RDEBUG("value was not changed", 0);
+      	}
+    }
+   	RDEBUG("0", 0);
+}
+
+/*!
    response for click pin code
 */
 void CpPinCodePluginView::changePinCode()
 {
+		RDEBUG("0", 0);
     mSecCodeSettings->changePinCode();
 }
 
@@ -110,26 +153,6 @@ void CpPinCodePluginView::changePinCode()
 */
 void CpPinCodePluginView::changePin2Code()
 {
+		RDEBUG("0", 0);
     mSecCodeSettings->changePin2Code();
-}
-
-/*!
-   response for click pin code request
-*/
-void CpPinCodePluginView::changePinCodeRequest()
-{
-    if (mSecCodeSettings->changePinCodeRequest()) {
-        QString text = mPinCodeRequestItem->contentWidgetData("text").toString();
-        if (0 == text.compare("On")) {
-            mPinCodeRequestItem->setContentWidgetData("text", 
-                    tr("Off"));
-            mPinCodeRequestItem->setContentWidgetData("additionalText", 
-                    tr("Off"));
-        } else {
-            mPinCodeRequestItem->setContentWidgetData("text", 
-                    tr("On"));
-            mPinCodeRequestItem->setContentWidgetData("additionalText", 
-                    tr("On"));
-        }
-    }
 }

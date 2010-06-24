@@ -56,6 +56,7 @@ private:
 	HbView* mCurrentView;
 	TInt mPos;
 	HbMessageBox* mNote;
+	HbMenu* mContextMenu;
 
 };
 

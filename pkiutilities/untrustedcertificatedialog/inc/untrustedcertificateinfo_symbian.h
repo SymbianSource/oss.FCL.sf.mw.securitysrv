@@ -30,20 +30,21 @@ class CX509Certificate;
 class UntrustedCertificateInfoSymbian : public UntrustedCertificateInfoBase
 {
 public:     // constructor and destructor
-    UntrustedCertificateInfoSymbian(const CX509Certificate& aCert);
+    UntrustedCertificateInfoSymbian(const QByteArray &aEncodedCert);
     ~UntrustedCertificateInfoSymbian();
 
 public:     // from UntrustedCertificateInfoBase
     bool commonNameMatches(const QString &siteName) const;
-    bool isPermanentAcceptAllowed() const;
-    QString certificateDetails() const;
+    QString certificateDetails(const QString &siteName) const;
 
 private:    // new functions
-    void ConstructL(const CX509Certificate& aCert);
+    void ConstructL(const QByteArray &aEncodedCert);
     bool CommonNameMatchesL(const QString &siteName) const;
+    QByteArray Md5FingerprintL( const TDesC8& aEncodedCert ) const;
 
 private:    // data
-    CX509Certificate* iCert;
+    CX509Certificate* mCert;
+    QByteArray mMd5Fingerprint;
 };
 
 #endif // UNTRUSTEDCERTIFICATEINFOSYMBIAN_H

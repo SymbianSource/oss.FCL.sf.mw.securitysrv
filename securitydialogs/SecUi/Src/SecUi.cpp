@@ -39,6 +39,7 @@ EXPORT_C void TSecUi::InitializeLibL()
         TSecUi* instance=(TSecUi*) Dll::Tls();
         instance->IncreaseClientCount();
         instance->iDialogOpened++;
+        RDEBUG("instance->iDialogOpened", instance->iDialogOpened);
         return;
     }
     RDEBUG("First initialization", 0);
@@ -58,8 +59,12 @@ EXPORT_C void TSecUi::InitializeLibL()
 //
 EXPORT_C void TSecUi::UnInitializeLib()
 	{
+    RDEBUG("0", 0);
     if (Dll::Tls()==NULL)
+    		{
+    		RDEBUG("!!!!!!!!!! Dll::Tls not yet initialized: 0", 0);
         return;
+      	}
     RDEBUG("0", 0);
 	TSecUi* instance=(TSecUi*) Dll::Tls();
     instance->DecreaseClientCount();
@@ -98,6 +103,7 @@ TSecUi::~TSecUi()
 //
 void TSecUi::ConstructL()
 	{
+		RDEBUG("iClientCount", iClientCount);
     iClientCount = 0;
 	}
 

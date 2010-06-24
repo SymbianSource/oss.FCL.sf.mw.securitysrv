@@ -18,6 +18,7 @@
 // User includes
 #include "seccodesettings.h"
 #include "seccodemodel.h"
+#include <../../inc/cpsecplugins.h>
 
 // Class declaration
 class SecCodeSettingsPrivate
@@ -44,7 +45,7 @@ public:
 SecCodeSettings::SecCodeSettings(QObject * parent /*= 0*/)
     : QObject(parent), d_ptr(new SecCodeSettingsPrivate())
 {
-
+RDEBUG("0", 0);
 }
 
 /*!
@@ -60,6 +61,7 @@ SecCodeSettings::~SecCodeSettings()
 */
 bool SecCodeSettings::pinCodeRequest() const
 {
+		RDEBUG("0", 0);
     return d_ptr->mSecCodeModel->pinCodeRequest();
 }
 
@@ -68,6 +70,7 @@ bool SecCodeSettings::pinCodeRequest() const
 */
 bool SecCodeSettings::changePinCodeRequest()
 {
+		RDEBUG("0", 0);
     return d_ptr->mSecCodeModel->changePinCodeRequest();
 }
 
@@ -76,6 +79,7 @@ bool SecCodeSettings::changePinCodeRequest()
 */
 void SecCodeSettings::changePinCode()
 {
+		RDEBUG("0", 0);
     d_ptr->mSecCodeModel->changePinCode();
 }
 
@@ -84,5 +88,6 @@ void SecCodeSettings::changePinCode()
 */
 void SecCodeSettings::changePin2Code()
 {    
+		RDEBUG("0", 0);
     d_ptr->mSecCodeModel->changePin2Code();
 }

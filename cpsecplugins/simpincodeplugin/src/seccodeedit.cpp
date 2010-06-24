@@ -20,6 +20,7 @@
 
 // User includes
 #include "seccodeedit.h"
+#include <../../inc/cpsecplugins.h>
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -43,6 +44,7 @@ SecCodeEdit::~SecCodeEdit()
 */
 void SecCodeEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+		RDEBUG("0", 0);
     if (event->button() != Qt::LeftButton) {
         event->ignore();
         return;

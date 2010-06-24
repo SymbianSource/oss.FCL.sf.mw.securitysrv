@@ -45,3 +45,5 @@ symbian*: {
 	TARGET.EPOCALLOWDLLDATA = 1
 	MMP_RULES -= "OPTION_REPLACE ARMCC --export_all_vtbl -D__QT_NOEFFECTMACRO_DONOTUSE"
 	}
+
+BLD_INF_RULES.prj_exports += "../rom/lockclient.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(lockclient.iby)"

@@ -12,13 +12,15 @@
 <repository target="CRepository" uidValue="0x101f8798">
     <key int="0x7e000001"  ref="/KCRUidProfileEngine/KProEngActiveProfile"></key>
 </repository>
-
+<repository target="RProperty" uidValue="0x101F8767">
+    <key int="0x00000501"  ref="/KPSUidCoreApplicationUIs/KCoreAppUIsAutolockStatus"></key>
+</repository>
+<repository target="RProperty" uidValue="0x100059b5">
+    <key int="0x00000309"  ref="/KPSUidSecurityUIs/KSecurityUIsDismissDialog"></key>
+</repository>
 <repository target="RProperty" uidValue="0x20022F35">
     <key int="0x1"  ref="/KPSUidHWRM/KHWRMGripStatus"></key>
 </repository>
 <repository target="RProperty" uidValue="0x10207218">
     <key int="0x00000001"  ref="/KPSUidAvkonDomain/KAknKeyguardStatus"></key>
-</repository>
-<repository target="RProperty" uidValue="0x101F8767">
-    <key int="0x00000501"  ref="/KPSUidCoreApplicationUIs/KCoreAppUIsAutolockStatus"></key>
 </repository>

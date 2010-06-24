@@ -41,6 +41,8 @@ const QString KEmergency = "emergency";
 const QString KInvalidNewLockCode = "invalidNewLockCode";
 const QString KDefaultCode = "DefaultCode";
 
+const QString KChecboxType = "ChecboxDialog";
+const QString KMultiChecboxType = "MultiChecboxDialog";
 // Keys for the return values passed back to calling application
 const QString KResultAccepted = "accepted";         // int
 const QString KSelectedMemoryIndex = "memory";      // int

@@ -43,7 +43,7 @@
 #include "debug.h"
 #include <qapplication.h>
 #include <qtranslator.h>
-
+#include <../../inc/cpsecplugins.h>
 
    
         
@@ -112,6 +112,9 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
         TInt err = iALPeriodRep->Get(KSettingsAutoLockTime, autoLockVal);
         TInt index = GetAutoLockIndex(autoLockVal);
         Dprint((_L("Current AL period value %d"),autoLockVal));
+        RDEBUG("err", err);
+        RDEBUG("index", index);
+        RDEBUG("autoLockVal", autoLockVal);
         //TODO: need to set autoLockVal in editor
         QStringList autolockPeriodList;
         autolockPeriodList << hbTrId("txt_devicelocking_button_off")
@@ -141,6 +144,7 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
         TBool lockVal = mUiSecuSettings->IsLockEnabledL(
                 RMobilePhone::ELockPhoneToICC);
         Dprint((_L("LockWhenSimChange enabled %d"),lockVal));
+        RDEBUG("lockVal", lockVal);
         if (lockVal)
             {
             mLockWhenSimChangeItem->setContentWidgetData("text", hbTrId(
@@ -167,6 +171,7 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
         TBool enabled = true;
         TBool val = mRemoteLockSettings->GetEnabled(enabled);
         Dprint((_L("Remote Lock Setting enabled %d"),val));
+        RDEBUG("val", val);
         mDeviceRemoteLockItem = new HbDataFormModelItem(
                 HbDataFormModelItem::ToggleValueItem, hbTrId(
                         "txt_devicelocking_subhead_remote_locking"));
@@ -245,6 +250,7 @@ CpDeviceLockPluginView::~CpDeviceLockPluginView()
 void CpDeviceLockPluginView::onLockCodeClicked()
     {
     Dprint(_L("CpDeviceLockPluginView::onLockCodeClicked()..Enter"));
+    RDEBUG("0", 0);
     mUiSecuSettings->ChangeSecCodeL();
     Dprint(_L("CpDeviceLockPluginView::onLockCodeClicked()..Exit"));
 }
@@ -261,21 +267,27 @@ void CpDeviceLockPluginView::onLockCodeClicked()
 void CpDeviceLockPluginView::onAutoLockChanged(int index)
     {
     Dprint(_L("CpDeviceLockPluginView::onAutoLockChanged()..Enter"));
+    RDEBUG("index", index);
     if (index != mThemeComboPrevIndex)
         {
         //TODO: need to set user entered/selected value
         TInt lockValue = GetValueAtIndex(index);
         TInt newAutoLockVal = mUiSecuSettings->ChangeAutoLockPeriodL(
                 lockValue);
+        RDEBUG("newAutoLockVal", newAutoLockVal);
+        RDEBUG("lockValue", lockValue);
         if (newAutoLockVal == lockValue)
             {
             Dprint(_L("onAutoLockChanged().AL setting success !!"));
+            RDEBUG("success", 1);
             TInt err = iALPeriodRep->Set(KSettingsAutoLockTime, lockValue);
+            RDEBUG("err", err);
             mThemeComboPrevIndex = index;
             }
         else
             {
             Dprint(_L("onAutoLockChanged()..Setting to previous value"));
+            RDEBUG("previous", 0);
             QVariant data(mThemeComboPrevIndex);
             mAutolockPeriodItem->setContentWidgetData(
                     QString("currentIndex"), data);
@@ -283,6 +295,7 @@ void CpDeviceLockPluginView::onAutoLockChanged(int index)
 
         }
     Dprint(_L("CpDeviceLockPluginView::onAutoLockChanged()..Exit"));
+    RDEBUG("0", 0);
 }
 
 
@@ -298,21 +311,28 @@ void CpDeviceLockPluginView::onAutoLockChanged(int index)
 void CpDeviceLockPluginView::onLockMessageClicked()
     {
     Dprint(_L("CpDeviceLockPluginView::onLockMessageClicked()..Exit"));
+    RDEBUG("0", 0);
     TBuf<KRLockMaxLockCodeLength> remoteLockCode;
     TBool remoteLockStatus(EFalse);
     TInt retVal = KErrNone;
     TInt autoLockVal = -1;
     retVal = mUiSecuSettings->ChangeRemoteLockStatusL(remoteLockStatus,
             remoteLockCode, autoLockVal);
+    RDEBUG("retVal", retVal);
+    RDEBUG("autoLockVal", autoLockVal);
+    RDEBUG("remoteLockStatus", remoteLockStatus);
     if (retVal)
         {
         Dprint(_L("CpDeviceLockPluginView::onLockMessageClicked()..ChangeRemoteLockStatusL sucess"));
+        RDEBUG("sucess", 1);
         }
     else
         {
         Dprint(_L("CpDeviceLockPluginView::onLockMessageClicked()..ChangeRemoteLockStatusL failed"));
+        RDEBUG("failed", 0);
         }
     Dprint(_L("CpDeviceLockPluginView::onLockMessageClicked()..Exit"));
+    RDEBUG("0", 0);
 }
 
 
@@ -332,9 +352,10 @@ void CpDeviceLockPluginView::onLockMessageClicked()
 void CpDeviceLockPluginView::onAutoTextChanged(const QString& aText)
     {
     Dprint(_L("CpDeviceLockPluginView::onAutoTextChanged()..Enter"));
+    RDEBUG("0", 0);
     //TBool ret = DisplaySecurityDialog(); 
     Dprint(_L("CpDeviceLockPluginView::onAutoTextChanged()..Exit"));
-    
+    RDEBUG("0", 0);
     }
 #endif
 
@@ -350,13 +371,14 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
     {
     Q_UNUSED(aEndIn);
     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..Enter"));
+    RDEBUG("0", 0);
     HbDataFormModelItem *item = formModel->itemFromIndex(aStartIn);
 
     if ((item->type() == HbDataFormModelItem::ToggleValueItem)
             && (item->data(HbDataFormModelItem::LabelRole).toString()
                     == hbTrId("txt_devicelocking_subhead_remote_locking")))
         {
-
+				RDEBUG("mHack", mHack);
         //The following If-Else condition should be removed once orbit team fix the issue with datachanged() signal
         /****************************************************************************************************************/
         if ((mHack % 2) == 0) //need to capture second datachanged() signal , not first one.
@@ -375,6 +397,9 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
         TBool remoteLockStatus(EFalse);
         CRemoteLockSettings *remoteLockSetting = CRemoteLockSettings::NewL();
         TInt err = iALPeriodRep->Get(KSettingsAutoLockTime, autoLockVal);
+        RDEBUG("err", err);
+        RDEBUG("autoLockVal", autoLockVal);
+        RDEBUG("retVal", retVal);
         QVariant remLockData = mDeviceRemoteLockItem->contentWidgetData(
                 QString("text"));
         if (remLockData.toString() == hbTrId(
@@ -390,13 +415,16 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
             retVal = mUiSecuSettings->ChangeRemoteLockStatusL(
                     remoteLockStatus, remoteLockCode, autoLockVal);
             }
+        RDEBUG("retVal", retVal);
         if (retVal == KErrNone)
             {
+            RDEBUG("remoteLockStatus", remoteLockStatus);
             if (remoteLockStatus)
                 {
                 if (remoteLockSetting->SetEnabledL(remoteLockCode))
                     {
                     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL success"));
+                    RDEBUG("success", 1);
                     mPrevRemLockData
                             = mDeviceRemoteLockItem->contentWidgetData(
                                     QString("text"));
@@ -405,6 +433,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                     {
                     RollbackRemoteLockSettingState();
                     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL failed"));
+                    RDEBUG("failed", 0);
                     }
                 }
             else
@@ -412,6 +441,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                 if (mRemoteLockSettings->SetDisabled())
                     {
                     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled success"));
+                    RDEBUG("success", 1);
                     mPrevRemLockData
                             = mDeviceRemoteLockItem->contentWidgetData(
                                     QString("text"));
@@ -420,17 +450,20 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                     {
                     RollbackRemoteLockSettingState();
                     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled failed"));
+                    RDEBUG("failed", 0);
                     }
                 }
             }
         else
             {
             Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..RollbackRemoteLockSettingState"));
+            RDEBUG("Rollback", 0);
             RollbackRemoteLockSettingState();
             }
         delete remoteLockSetting;
         }
     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..Exit"));
+    RDEBUG("0", 0);
 }
 
 
@@ -453,6 +486,7 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
                     == hbTrId(
                             "txt_devicelocking_formlabel_lock_when_sim_changed")))
         {
+        RDEBUG("mHack", mHack);
         //The following If-Else condition should be removed once orbit team fix the issue with datachanged() signal
         /****************************************************************************************************************/
         if ((mHack % 2) == 0) //need to capture second datachanged() signal , not first one.
@@ -467,6 +501,7 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
         /****************************************************************************************************************/
 
         TBool ret = mUiSecuSettings->ChangeSimSecurityL();
+        RDEBUG("ret", ret);
         if (!ret)
             {
             /* 
@@ -507,6 +542,7 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
 TInt CpDeviceLockPluginView::GetAutoLockIndex(TInt aValue)
     {
     TInt index = 0;
+    RDEBUG("ret", aValue);
     switch (aValue)
         {
         case 0:
@@ -527,7 +563,7 @@ TInt CpDeviceLockPluginView::GetAutoLockIndex(TInt aValue)
         default:
             break;
         }
-
+		RDEBUG("index", index);
     return index;
     }
 
@@ -544,7 +580,7 @@ TInt CpDeviceLockPluginView::GetAutoLockIndex(TInt aValue)
 TInt CpDeviceLockPluginView::GetValueAtIndex(TInt aIndex)
     {
     TInt value = 0;
-
+		RDEBUG("aIndex", aIndex);
     switch (aIndex)
         {
         case 0:
@@ -565,7 +601,7 @@ TInt CpDeviceLockPluginView::GetValueAtIndex(TInt aIndex)
         default:
             break;
         }
-
+		RDEBUG("value", value);
     return value;
 }
 
@@ -581,6 +617,7 @@ TInt CpDeviceLockPluginView::GetValueAtIndex(TInt aIndex)
  */
 void CpDeviceLockPluginView::RollbackRemoteLockSettingState()
     {
+    RDEBUG("0", 0);
     /* 
      * disconnect to datachanged() signal as we are not interested in this signal
      * generated as a part of setContentWidgetData() API call below
@@ -606,5 +643,5 @@ void CpDeviceLockPluginView::RollbackRemoteLockSettingState()
         mRemoteLockMessageItem->setEnabled(true);
     else
         mRemoteLockMessageItem->setEnabled(false);
-
+		RDEBUG("0", 0);
     }

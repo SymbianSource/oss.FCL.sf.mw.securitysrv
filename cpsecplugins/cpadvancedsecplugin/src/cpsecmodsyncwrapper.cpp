@@ -26,7 +26,7 @@
 #include <mctauthobject.h>
 #include <unifiedkeystore.h>
 #include <mctkeystore.h>
-
+#include <../../inc/cpsecplugins.h>
 
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -62,6 +62,7 @@ CSecModUISyncWrapper* CSecModUISyncWrapper::NewLC()
 //
 CSecModUISyncWrapper* CSecModUISyncWrapper::NewL()
     {
+    RDEBUG("0", 0);
     CSecModUISyncWrapper* wrap = CSecModUISyncWrapper::NewLC();
     CleanupStack::Pop(wrap);
     return wrap;
@@ -102,6 +103,7 @@ TInt CSecModUISyncWrapper::Initialize(CUnifiedKeyStore& aKeyStore)
 TInt CSecModUISyncWrapper::GetAuthObjectInterface(
     MCTToken& aToken, MCTTokenInterface*& aTokenInterface)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationGetAOInterface;
@@ -148,6 +150,7 @@ TInt CSecModUISyncWrapper::ListKeys(
     RMPointerArray<CCTKeyInfo>& aKeysInfos,
     const TCTKeyAttributeFilter& aFilter)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationListKeys;
@@ -169,6 +172,7 @@ TInt CSecModUISyncWrapper::DeleteKey(
     CUnifiedKeyStore& aKeyStore,
     TCTTokenObjectHandle aHandle)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationDelKey;
@@ -189,6 +193,7 @@ TInt CSecModUISyncWrapper::DeleteKey(
 TInt CSecModUISyncWrapper::ChangeReferenceData(
     MCTAuthenticationObject& aAuthObject)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationChangeReferenceData;
@@ -209,6 +214,7 @@ TInt CSecModUISyncWrapper::ChangeReferenceData(
 TInt CSecModUISyncWrapper::UnblockAuthObject(
     MCTAuthenticationObject& aAuthObject)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationUnblockAO;
@@ -229,6 +235,7 @@ TInt CSecModUISyncWrapper::UnblockAuthObject(
 TInt CSecModUISyncWrapper::EnableAuthObject(
     MCTAuthenticationObject& aAuthObject)
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationEnableAO;
@@ -291,6 +298,7 @@ TInt CSecModUISyncWrapper::TimeRemaining(
     MCTAuthenticationObject& aAuthObject,
     TInt& aStime )
     {
+    RDEBUG("0", 0);
     if( !IsActive() && !iWait.IsStarted() )
         {
         iOperation = EOperationTimeRemAO;
@@ -311,6 +319,7 @@ TInt CSecModUISyncWrapper::TimeRemaining(
 //
 void CSecModUISyncWrapper::DoCancel()
     {
+    RDEBUG("iOperation", iOperation);
     switch ( iOperation )
         {
         case EOperationInit:

@@ -44,7 +44,9 @@ public:     // constructor and destructor
 
     void constructFromParameters(const QVariantMap &parameters);
     void updateFromParameters(const QVariantMap &parameters);
+    bool isPermanentAcceptAllowed() const;
     bool isPermanentAcceptChecked() const;
+    QString serverName() const;
 
 public:     // new platform specific functions
     bool isCertificateValid();

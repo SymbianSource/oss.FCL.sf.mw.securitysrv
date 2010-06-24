@@ -24,7 +24,6 @@
 #include <hbgroupbox.h>
 #include <hbtextedit.h>
 #include <QGraphicsLinearLayout>
-#include <QTextStream>
 
 const int KUnknownError = -5;           // KErrNotSupported
 
@@ -71,7 +70,7 @@ void UntrustedCertificateWidget::constructFromParameters(
     mProblemDescription->setTextWrapping(Hb::TextWordWrap);
     mMainLayout->addItem(mProblemDescription);
 
-    if (mIsSavingServerNamePossible && mCertificateInfo->isPermanentAcceptAllowed()) {
+    if (isPermanentAcceptAllowed()) {
         Q_ASSERT(mAcceptPermanently == 0);
         // TODO: localised UI string needed
         mAcceptPermanently = new HbCheckBox(tr("Accept permanently"));
@@ -85,16 +84,12 @@ void UntrustedCertificateWidget::constructFromParameters(
 
     Q_ASSERT(mCertificateDetailsText == 0);
     mCertificateDetailsText = new HbTextEdit;
-    QString certificateDetails;
-    QTextStream stream(&certificateDetails);
-    // TODO: localized UI string needed
-    stream << tr("Service:\n%1\n").arg(mServerName);
-    stream << endl;
-    stream << mCertificateInfo->certificateDetails();
+    QString certificateDetails = mCertificateInfo->certificateDetails(mServerName);
     mCertificateDetailsText->setPlainText(certificateDetails);
     mCertificateDetailsText->setReadOnly(true);
 
     mCertificateDetailsGroupBox->setContentWidget(mCertificateDetailsText);
+    mCertificateDetailsGroupBox->setCollapsed(true);
     mMainLayout->addItem(mCertificateDetailsGroupBox);
 
     setLayout(mMainLayout);
@@ -111,6 +106,16 @@ void UntrustedCertificateWidget::updateFromParameters(
 }
 
 // ----------------------------------------------------------------------------
+// UntrustedCertificateWidget::isPermanentAcceptAllowed()
+// ----------------------------------------------------------------------------
+//
+bool UntrustedCertificateWidget::isPermanentAcceptAllowed() const
+{
+    return (mCertificateInfo->isDateValid() && (mServerName.length() > 0) &&
+        mIsSavingServerNamePossible);
+}
+
+// ----------------------------------------------------------------------------
 // UntrustedCertificateWidget::isPermanentAcceptChecked()
 // ----------------------------------------------------------------------------
 //
@@ -120,6 +125,15 @@ bool UntrustedCertificateWidget::isPermanentAcceptChecked() const
         return (mAcceptPermanently->checkState() == Qt::Checked);
     }
     return false;
+}
+
+// ----------------------------------------------------------------------------
+// UntrustedCertificateWidget::serverName()
+// ----------------------------------------------------------------------------
+//
+QString UntrustedCertificateWidget::serverName() const
+{
+    return mServerName;
 }
 
 // ----------------------------------------------------------------------------

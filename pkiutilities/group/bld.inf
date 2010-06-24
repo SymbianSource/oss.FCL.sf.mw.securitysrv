@@ -27,14 +27,6 @@ PRJ_EXPORTS
 ../StubSIS/CenRepStub.sis   /epoc32/data/z/system/install/CenRepStub.sis
 
 
-//SWI and TLSProvider config files
-../StubSIS/swipolicy.ini    /epoc32/release/winscw/udeb/z/system/data/swipolicy.ini
-../StubSIS/swipolicy.ini    /epoc32/release/winscw/urel/z/system/data/swipolicy.ini
-../StubSIS/swipolicy.ini    /epoc32/data/z/system/data/swipolicy.ini
-                            
-../StubSIS/tlsproviderpolicy.ini  /epoc32/release/winscw/urel/z/resource/tlsproviderpolicy.ini
-../StubSIS/tlsproviderpolicy.ini  /epoc32/release/winscw/udeb/z/resource/tlsproviderpolicy.ini
-
 // export iby files
 ../rom/x509certnameparser.iby   CORE_MW_LAYER_IBY_EXPORT_PATH( x509certnameparser.iby )
 ../rom/pkcs12.iby               CORE_MW_LAYER_IBY_EXPORT_PATH( pkcs12.iby )

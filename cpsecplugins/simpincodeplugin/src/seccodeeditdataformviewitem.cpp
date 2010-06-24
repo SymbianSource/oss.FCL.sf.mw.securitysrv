@@ -18,6 +18,7 @@
 // User includes
 #include "seccodeeditdataformviewitem.h"
 #include "seccodeedit.h"
+#include <../../inc/cpsecplugins.h>
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -27,6 +28,7 @@
 SecCodeEditDataFormViewItem::SecCodeEditDataFormViewItem(
     QGraphicsItem *parent): HbDataFormViewItem(parent)
 {
+	RDEBUG("0", 0);
 }
 
 /*!
@@ -41,6 +43,7 @@ SecCodeEditDataFormViewItem::~SecCodeEditDataFormViewItem()
 */
 HbAbstractViewItem *SecCodeEditDataFormViewItem::createItem()
 {
+		RDEBUG("0", 0);
     return new SecCodeEditDataFormViewItem( *this);
 }
    
@@ -51,6 +54,7 @@ bool SecCodeEditDataFormViewItem::canSetModelIndex(
     const QModelIndex &index) const
 {
     int type = index.data(HbDataFormModelItem::ItemTypeRole).toInt();
+    RDEBUG("type", type);
     return type == SecCodeEditItem;
 }
 
@@ -60,13 +64,15 @@ bool SecCodeEditDataFormViewItem::canSetModelIndex(
 HbWidget *SecCodeEditDataFormViewItem::createCustomWidget()
 {
     int type = modelIndex().data(HbDataFormModelItem::ItemTypeRole).toInt();
+    RDEBUG("type", type);
 
     if (type == SecCodeEditItem) {
         SecCodeEdit *edit = new SecCodeEdit("1234");
         edit->setEchoMode(HbLineEdit::Password);
+        RDEBUG("edit->setReadOnly", 1);
         edit->setReadOnly(true);
         return edit;
     }
-
+		RDEBUG("0", 0);
     return 0;
 }

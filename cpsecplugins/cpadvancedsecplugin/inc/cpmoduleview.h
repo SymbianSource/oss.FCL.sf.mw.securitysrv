@@ -69,6 +69,7 @@ private:
     CpSecModView::TSecModViews mCurrentView;
     CSecModUIModel& mSecModUIModel;
     TInt mPos;
+    HbMenu* mContextMenu;
 };
 
 #endif /* CPMODULEVIEW_H */
