@@ -17,5 +17,6 @@
 symbian {
 	BLD_INF_RULES.prj_exports += \
 		"$${LITERAL_HASH}include<platform_paths.hrh>" \
-		"rom/devicelockplugin.iby CORE_APP_LAYER_IBY_EXPORT_PATH(devicelockplugin.iby)"
+		"rom/devicelockplugin.iby CORE_APP_LAYER_IBY_EXPORT_PATH(devicelockplugin.iby)" \
+		"rom/devicelockplugin_resources.iby LANGUAGE_APP_LAYER_IBY_EXPORT_PATH(devicelockplugin_resources.iby)"
 }

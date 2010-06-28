@@ -15,10 +15,14 @@
 *
 */
 
-#ifndef __DEVICELOCKPLUGIN_IBY__
-#define __DEVICELOCKPLUGIN_IBY__
+#ifndef __DEVICELOCKPLUGIN_RESOURCES_IBY__
+#define __DEVICELOCKPLUGIN_RESOURCES_IBY__
 
-file=ABI_DIR\BUILD_DIR\devicelockplugin.dll    SHARED_LIB_DIR\devicelockplugin.dll
-data=\epoc32\data\c\resource\qt\plugins\controlpanel\devicelockplugin.qtplugin resource\qt\plugins\controlpanel\devicelockplugin.qtplugin
+#include <bldvariant.hrh>
+#include <data_caging_paths_for_iby.hrh>
 
-#endif
+// devicelockplugin is old.
+// data=DATAZ_\QT_TRANSLATIONS_DIR\devicelockplugin.qm QT_TRANSLATIONS_DIR\devicelockplugin.qm 
+data=DATAZ_\QT_TRANSLATIONS_DIR\devicelocking.qm QT_TRANSLATIONS_DIR\devicelocking.qm 
+
+#endif	// __DEVICELOCKPLUGIN_RESOURCES_IBY__

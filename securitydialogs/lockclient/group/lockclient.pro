@@ -40,6 +40,8 @@ HEADERS = lockaccessextension.h
 
 LIBS += -lxqservice
 LIBS += -lxqserviceutil
+LIBS += -lapparc
+LIBS += -lapgrfx
 
 symbian*: { 
 	TARGET.EPOCALLOWDLLDATA = 1

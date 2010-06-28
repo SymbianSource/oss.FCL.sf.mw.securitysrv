@@ -31,7 +31,7 @@ LIBS +=  -lsecuinotificationdialogplugin \
 		 -lcentralrepository \
 		 -lRLockSettings \
 		 -lflogger
-// TRANSLATIONS += devicelocking.ts
+TRANSLATIONS += devicelocking.ts
 include ( ../cpplugincommon.pri )
 include ( devicelockplugin.pri )
 include ( rom/devicelockplugin_rom.pri )
