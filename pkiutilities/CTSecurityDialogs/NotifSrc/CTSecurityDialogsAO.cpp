@@ -567,6 +567,7 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
     if ( iRetry ) // Is this new try?
       {
         // Previous attempt was failed
+        // incorrect pin code
         DoHandleMessageL( EErrorPinCodeIncorrect, KNullDesC, KNullDesC, 0, 0 );
       }
     // Ask the PIN code or PUK code
@@ -574,11 +575,13 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
         {
         HBufC* header = StringLoader::LoadLC(
             R_QTN_CM_HEADING_PHONE_KEYSTORE, CEikonEnv::Static() );
-        iPIN.iMinLength = KMaxKeystorePwLength;
-        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,
-            iPIN.iMinLength, iPIN.iMaxLength );
-        iMultiLineDlgType = EEnterNewKeyStorePw;
-        CleanupStack::PopAndDestroy( header );
+		iPIN.iMinLength = KMaxKeystorePwLength;
+        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,    
+            iPIN.iMinLength, iPIN.iMaxLength );                    
+        iMultiLineDlgType = EEnterNewKeyStorePw;                   
+        CleanupStack::PopAndDestroy( header );                     
+        RunL();
+        
         }
     else if ( iPIN.iPINLabel == KKeyStoreImportKeyLabel )
         {
@@ -595,13 +598,7 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
     else if ( iPIN.iPINLabel == KKeyStoreCreatePwLabel )
         {
         iPIN.iMinLength = KMaxKeystorePwLength;
-		//   DoHandleMessageL( EInfoPwCreating, KNullDesC, KNullDesC, 0, 0 );
-//TODO: add timeout
-/*
-        HBufC* buffer = CEikonEnv::Static()->AllocReadResourceLC( R_QTN_CM_CREATING_KEYSTORE ); // EInfoPwCreating
-        CHbDeviceMessageBoxSymbian::InformationL(buffer->Des());                                                  
-        CleanupStack::PopAndDestroy( buffer );                                                                    
-*/
+        ShowInformationNoteL(R_QTN_CM_CREATING_KEYSTORE);
         DoHandleMultilinePinQueryL( EEnterNewKeyStorePw );
         iNextStep = EVerifyPINs;
         }
@@ -635,7 +632,6 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
     TDialogType dlgType = ( TDialogType )aDlgType;
     if ( EEnterNewKeyStorePw == dlgType )
         {
-
 /*
         dlgText1 = iNotifier->LoadResourceStringLC( dlgType, KNullDesC );          
         dlgText2 = iNotifier->LoadResourceStringLC( EVerifyKeyStorePw, KNullDesC );
@@ -644,8 +640,6 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
         dlg->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );                         
         CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2          
 */
-
-/* 
         dlgText1 =  StringLoader::LoadLC( R_QTN_SN_NEW_PHONE_KEYSTORE );                     
         dlgText2 = StringLoader::LoadLC( R_QTN_WIM_VERIFY_PIN );                             
         HBufC* message = HBufC::NewLC( KMaxLengthTextCertLabelVisible );                     
@@ -660,20 +654,14 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
                                                     ESecUiSecretSupported |             
                                                     ESecUiEmergencyNotSupported);
         iRetValue=(queryAccepted==KErrNone); 
-*/
-
-        iPINValueVerify.Copy(_L("123456"));
-        iRetValue=true;
         if(iRetValue)                                                                        
-            iPINValue2.Copy(iPINValueVerify); // dialog already does not allow different pins
-/*
-        delete SecQueryUi;                     
-        SecQueryUi=NULL;                       
-        CleanupStack::PopAndDestroy( message );
+            iPINValue2.Copy(iPINValueVerify); // dialog already does not OK with different pin codes
+        delete SecQueryUi;                                                                   
+        SecQueryUi=NULL;                                                                     
+        CleanupStack::PopAndDestroy( message );                                              
         CleanupStack::PopAndDestroy( dlgText2 );                                             
-        CleanupStack::PopAndDestroy( dlgText1 );                                             
- */
-        RunL(); // had to call it this way
+        CleanupStack::PopAndDestroy( dlgText1 );      
+        RunL(); // had to call it this way       
         }
     else if ( EExportKeyPw == dlgType )
         {
@@ -802,16 +790,35 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
                     }
                 }
                iPinQueryDialogDeleted = EFalse;
-                CCTPinQueryDialog::RunDlgLD( iStatus,
-                                        *dlgText,
-                                        *pinValue,
-                                        aMinLength,
-                                        aMaxLength,
-                                        iRetValue,
-                                        resource,
-                                        iPinQueryDialog,
-                                        iPinQueryDialogDeleted );
+               if(aDlgType!=EEnterKeyStorePw) {
+                    CCTPinQueryDialog::RunDlgLD( iStatus,
+                                            *dlgText,
+                                            *pinValue,
+                                            aMinLength,
+                                            aMaxLength,
+                                            iRetValue,
+                                            resource,
+                                            iPinQueryDialog,
+                                            iPinQueryDialogDeleted );
+			    break;											
+               }
+               else
+               {
+                iPIN.iMinLength = KMaxKeystorePwLength;                                   
+                CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                            
+                HBufC* header =StringLoader::LoadLC( R_QTN_SN_ENTER_PHONE_KEYSTORE);      
+                TInt queryAccepted = SecQueryUi->SecQueryDialog(header->Des(), *pinValue,
+                                                        aMinLength,aMaxLength,           
+                                                        ESecUiAlphaSupported |           
+                                                        ESecUiCancelSupported |          
+                                                        ESecUiSecretSupported |          
+                                                        ESecUiEmergencyNotSupported);    
+                delete SecQueryUi;                                                       
+                SecQueryUi=NULL;                                                          
+                iRetValue=(queryAccepted==KErrNone);                                      
+                CleanupStack::PopAndDestroy( header );        
                 break;
+               }
             }
     default:
             {
@@ -819,12 +826,12 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
             }
 
       }
-
-  if ( dlg )
-      {
-      dlg->ExecuteLD( *dlgText );
-      dlg = NULL;
-      }
+  if ( dlg && aDlgType!=EEnterKeyStorePw)                                                                    
+      {                                                                         
+                                                                                
+      dlg->ExecuteLD( *dlgText );                                               
+      dlg = NULL;                                                               
+      }                                                                         
 
     CleanupStack::PopAndDestroy( dlgText ); // dlgText
     }
@@ -2529,3 +2536,14 @@ void CCTSecurityDialogsAO::MapTlsProviderOperation( TUint aOperation )
         }
     }
 
+void CCTSecurityDialogsAO::ShowInformationNoteL( TInt aResourceID ) const
+    {
+    HBufC* buffer = CEikonEnv::Static()->AllocReadResourceLC( aResourceID );
+    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EInformation);
+    CleanupStack::PushL(iMessageBox);                                                                                    
+    iMessageBox->SetTextL(buffer->Des());                                                                                
+    iMessageBox->SetTimeout(6000);                                                                                      
+    iMessageBox->ExecL();                                                                                                
+    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
+    CleanupStack::PopAndDestroy( buffer );      
+    }
