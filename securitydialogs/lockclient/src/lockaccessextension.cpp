@@ -20,6 +20,9 @@
 #include <e32property.h> // P&S API
 #include <apgtask.h> // TApaTask, TApaTaskList
 #include <coemain.h> // CCoeEnv
+#include "../../Autolock/PubSub/securityuisprivatepskeys.h"
+#include <apgcli.h>
+#include <apacmdln.h>
 
 #include <xqservicerequest.h>
 #include <xqserviceutil.h>
@@ -75,8 +78,67 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 TInt RLockAccessExtension::EnsureConnected( )
 	{
 	TInt ret(KErrNone);
+
+	// Now we use QtHighway, but nevertheless need to be sure that only 1 process is running
+	// This is done because Autolock.exe should start at the beginning, but it might not be ready yet.
+	// As Qthighway will start it, it's better to give time for the first one to prepare itself.
+	TInt err = KErrNone;
+	TInt numAttempts = 0;
+	TInt numberOfInstances = 0;
+	do
+		{
+		numberOfInstances=0;
+		TFullName processName;
+		TFindThread find(_L("*utolock*"));	// first letter can can be uppercase or lowercase
+		while( find.Next( processName ) == KErrNone )
+		    {
+				// Autolock[100059b5]0002::Autolock		in device
+				// autolock.exe[100059b5]0002::Main		in emulator
+				RDEBUG("found process", 1);
+        numberOfInstances++;
+		    }	// end while
+		RDEBUG("numberOfInstances", numberOfInstances);
+		if(numberOfInstances<=0)
+			{
+			RDEBUG("Autolock.exe not running already. Starting.", 0 );
+	    RApaLsSession ls;
+	    User::LeaveIfError(ls.Connect());
+	    CleanupClosePushL(ls);
+	    RDEBUG("commandLine", 0); 
+	    CApaCommandLine* commandLine = CApaCommandLine::NewLC();
+	    commandLine->SetExecutableNameL(_L("autolock.exe"));
+	    commandLine->SetCommandL(EApaCommandRun);
+	    // Try to launch the application.
+	    RDEBUG("StartApp", 0); 
+	    TInt err = ls.StartApp(*commandLine); // this migh fail
+    	CleanupStack::PopAndDestroy(2); // commandLine, ls
+
+			RDEBUG("Autolock.exe launched. Waiting a bit. err", err );
+			User::After(1000*1000);
+			RDEBUG("re-verifying Autolock.exe process.", 1 );
+			}
+		} while (numAttempts++ <3 && numberOfInstances<=0);
+		
+
+
+	TInt value = -1;
+	err = KErrNone;
+	numAttempts = 0;
+	while( value<1 && numAttempts++ <10 )	// wait max 5 seconds
+		{
+		// process was started, but still not fully running. Give a bit more time
+		err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, value);
+		RDEBUG("err", err);
+		RDEBUG("value", value);
+		if(value<1)
+			{
+			RDEBUG("Autolock.exe has started but it's not fully running", value);
+			User::After(5*100*1000);	// half a second
+			}
+		}
+	RDEBUG("numAttempts", numAttempts);
 	/*
-	this is the old method. Now we use QtHighway
+	this is the old method. 
 	// we need CCoeEnv because of window group list
 	const TInt KTimesToConnectServer( 2);
 	const TInt KTimeoutBeforeRetrying( 50000);
@@ -108,7 +170,8 @@ TInt RLockAccessExtension::EnsureConnected( )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage )
 	{
-	TInt ret = EnsureConnected( );
+	RDEBUG("0", 0);
+	TInt ret = KErrNone;
 	if ( ret == KErrNone )
 		{
 		// ret = SendReceive( aMessage );
@@ -122,7 +185,8 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 	{
-	TInt ret = EnsureConnected( );
+	RDEBUG("0", 0);
+	TInt ret = KErrNone;
 	if ( ret == KErrNone )
 		{
 		// assign parameters to IPC argument
@@ -138,6 +202,7 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1, TInt aParam2 )
 	{
+	RDEBUG("0", 0);
 	TInt ret = EnsureConnected( );
 	RDEBUG("ret", ret);
 	if ( ret == KErrNone )

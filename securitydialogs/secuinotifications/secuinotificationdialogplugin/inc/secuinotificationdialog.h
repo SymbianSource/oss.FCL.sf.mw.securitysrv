@@ -18,12 +18,6 @@
 #ifndef SECUINOTIFICATIONDIALOG_H
 #define SECUINOTIFICATIONDIALOG_H
 
-#include <e32debug.h>
-#ifdef _DEBUG
-#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
-#else
-#define RDEBUG( x, y )
-#endif
 
 #include <hbdialog.h>                   // HbDialog
 #include <hbdevicedialoginterface.h>    // HbDeviceDialogInterface
@@ -87,6 +81,7 @@ public slots:
 private:
     Q_DISABLE_COPY(SecUiNotificationDialog)
 
+    int mMyId;
     int mLastError;
     bool mShowEventReceived;
     QVariantMap mResultMap;
@@ -96,7 +91,8 @@ private:
     HbListWidget *listWidget;
     HbAction *okAction;
     HbAction *cancelAction;
-    HbLabel *title;
+    HbAction *okVKBAction;
+    HbLabel *titleWidget;
     int queryType;
     int lMinLength;
     int lMaxLength;

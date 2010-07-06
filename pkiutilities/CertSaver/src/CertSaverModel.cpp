@@ -210,7 +210,7 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
         case KErrKeySize:
         case KErrArgument:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEY_TYPE_NOT_SUPPORTED );
+            ShowInformationNoteL( R_CERTSAVER_KEY_TYPE_NOT_SUPPORTED );
             User::Leave( KErrCancel );
             break;
             }
@@ -221,21 +221,21 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
             }
         case KErrKeyUsage:
             {
-            ShowErrorNoteL( R_CERTSAVER_PRIVATE_KEY_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_PRIVATE_KEY_CORRUPTED );
             User::Leave( KErrCancel );
             break;
             }
         case KErrCancel:
         case KErrPermissionDenied:
             {
-            ShowErrorNoteL( R_CERTSAVER_PKCS12_DISCARDED );
+            ShowInformationNoteL( R_CERTSAVER_PKCS12_DISCARDED );
             User::Leave( KErrCancel );
             break;
             }
         case KErrCorrupt:
         case KErrEof:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
             User::Leave( KErrCancel );
             break;
             }
@@ -287,7 +287,7 @@ TBool CCertSaverModel::KeyAlreadyExistsL(
         case KErrCorrupt:
         case KErrEof:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
             User::Leave( KErrCancel );
             }
         default:
@@ -507,9 +507,7 @@ void CCertSaverModel::CheckFSSpaceL( const TDesC8& aDataToSave )
 
     if (SysUtil::FFSSpaceBelowCriticalLevelL( &iFs, aDataToSave.Size() ))
         {
-        HBufC* p = StringLoader::LoadLC( R_CERTSAVER_MEMORY );
-        CHbDeviceMessageBoxSymbian::WarningL(p->Des()); 
-        CleanupStack::PopAndDestroy( p );
+        ShowInformationNoteL(R_CERTSAVER_MEMORY);
         User::Leave( KErrExitApp );
         }
     }
@@ -533,7 +531,7 @@ void CCertSaverModel::SaveCertL()
         CHbDeviceMessageBoxSymbian::QuestionL(msgPtr, KNullDesC, KNullDesC);
     TBool doSave= (selection == CHbDeviceMessageBoxSymbian::EAcceptButton);
     CleanupStack::PopAndDestroy(message);
-
+/*
     if ( doSave && iCertOwnerType == ECACertificate )
         {
         // warn user about security risk
@@ -543,7 +541,7 @@ void CCertSaverModel::SaveCertL()
         CleanupStack::PopAndDestroy(stringHolder);
 	    doSave=(selection == CHbDeviceMessageBoxSymbian::EAcceptButton);
         }
-
+*/
     if ( doSave )
         {
         //Check that there still is enough space to store the certificate.
@@ -552,7 +550,7 @@ void CCertSaverModel::SaveCertL()
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         User::Leave( KErrCancel );
         }
   }
@@ -571,7 +569,7 @@ void CCertSaverModel::InitCertStoreL()
         TRAPD( status, iUnifiedCertStore = CUnifiedCertStore::NewL( iFs, ETrue ) );
         if ( status != KErrNone )
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
             User::Leave( KErrExitApp );
             }
         // initialize unified cert store
@@ -707,7 +705,7 @@ void CCertSaverModel::DoSaveCertL()
         if ( certstoreIndex < 0 )
             {
             // Couldn't find certificate storage
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
             User::Leave( KErrExitApp );
             }
 
@@ -746,7 +744,7 @@ void CCertSaverModel::DoSaveCertL()
         {
         // If there is none WritableCertStore,
         // then at least cacerts.dat is corrupted.
-        ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+        ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
         User::Leave( KErrExitApp );
         }
 
@@ -825,7 +823,7 @@ TInt CCertSaverModel::QueryLabelL( TCertLabel& aLabel, CUnifiedCertStore& aStore
       if ( queryAccepted!=KErrNone )
             {
             // cancel
-            ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+            ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
             return KErrCancel;
             }
         // Create filter to confirm that label doesn't already exist.
@@ -873,27 +871,27 @@ void CCertSaverModel::HandleSaveErrorL( TInt aStatus ) const
         {
         case KErrNone:
             {
-            ShowConfirmationNoteL( R_CERTSAVER_ERROR_SAVEOK );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_SAVEOK);
             break;
             }
         case KErrNotSupported:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_UNSUPPORTED_CERT );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_UNSUPPORTED_CERT);
             break;
             }
         case KErrBadName:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_LABEL_ALREADY_EXISTS );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_LABEL_ALREADY_EXISTS);
             break;
             }
         case KErrAlreadyExists:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_ALREADY_EXISTS );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_ALREADY_EXISTS);
             break;
             }
         case KErrArgument:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED);
             break;
             }
         default:
@@ -1191,17 +1189,17 @@ TBool CCertSaverModel::CertificateOkL() const
 
     if ( !CertificateSupported() ) 
         {
-        ShowErrorNoteL( R_CERTSAVER_ERROR_UNSUPPORTED_CERT   ); 
+        ShowInformationNoteL(R_CERTSAVER_ERROR_UNSUPPORTED_CERT);
         return EFalse;
         }
     if ( CertNotValidAnymore() )
         {
-        ShowErrorNoteL(R_CERTSAVER_ERROR_CERT_NOT_VALID);
+        ShowInformationNoteL(R_CERTSAVER_ERROR_CERT_NOT_VALID);
         return ETrue;
         }
     else if ( CertNotValidYet() )
         {
-        ShowErrorNoteL( R_CERTSAVER_ERROR_CERT_NOT_VALID_YET );
+        ShowInformationNoteL(R_CERTSAVER_ERROR_CERT_NOT_VALID_YET);
         }
     return ETrue;
     }
@@ -1249,34 +1247,13 @@ void CCertSaverModel::ShowInformationNoteL( TInt aResourceID ) const
     {
 
     HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    CHbDeviceMessageBoxSymbian::InformationL(buffer->Des()); 
-    CleanupStack::PopAndDestroy( buffer );
-    }
-// ----------------------------------------------------------
-// CCertSaverModel::ShowConfirmationNoteL() const
-// Creates and shows a confirmation note.
-// ----------------------------------------------------------
-//
-void CCertSaverModel::ShowConfirmationNoteL( TInt aResourceID ) const
-    {
-
-    HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    CHbDeviceMessageBoxSymbian::WarningL(buffer->Des()); 
-    CleanupStack::PopAndDestroy( buffer );
-    }
-
-// ----------------------------------------------------------
-// CCertSaverModel::ShowErrorNoteL() const
-// Creates and shows an error note.
-// ----------------------------------------------------------
-//
-void CCertSaverModel::ShowErrorNoteL( TInt aResourceID ) const
-    {
-
-    HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    //TODO: can be changed when hb supports ErrorL
-    CHbDeviceMessageBoxSymbian::WarningL(buffer->Des()); 
-    CleanupStack::PopAndDestroy( buffer );
+    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EInformation);
+    CleanupStack::PushL(iMessageBox);                                                                                    
+    iMessageBox->SetTextL(buffer->Des());                                                                                
+    iMessageBox->SetTimeout(6000);                                                                                      
+    iMessageBox->ExecL();                                                                                                
+    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
+    CleanupStack::PopAndDestroy( buffer );      
     }
 
 // ----------------------------------------------------------
@@ -1407,7 +1384,7 @@ TInt CCertSaverModel::QueryTrusterUidsL( RArray<TUid>& aUids )
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         ret = KErrCancel;
         }
 
@@ -1448,7 +1425,7 @@ TInt CCertSaverModel::QueryTrustedSiteL()
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         ret = KErrCancel;
         }
     CleanupStack::PopAndDestroy( prompt );
@@ -1579,8 +1556,10 @@ void CCertSaverModel::SavePKCS12L()
         }
     TInt status = KErrNone;
     // save private keys
-    TRAP( status, SavePrivateKeyL() );
-
+   if(CheckeBoxData.Compare(_L("1"))==0)
+   {
+       TRAP( status, SavePrivateKeyL() );
+   }
     // save user certificates if private key was saved.
     if ( ( iSavedKeysCount > 0 || iKeyAlreadyExists ) && iParser.UserCertificates().Count() > 0 )
         {
@@ -1613,24 +1592,28 @@ void CCertSaverModel::SavePKCS12L()
                 }
             }
         }
+/*
     if ( iSavedCACertsCount != 0 || iSavedKeysCount != 0
         || iSavedUserCertsCount != 0 )
         {
-        HBufC* p = StringLoader::LoadLC( R_CERTSAVER_HEADER_SAVED );
-        message = HBufC::NewLC( KMaxLengthTextMeassageBody );
-        message->Des().Append(p->Des());   
-        TPtr msgPtr2 = message->Des();
-        ConstructPKCS12QueryMsgL(
+// show how many have been saved
+        HBufC* p = StringLoader::LoadLC( R_CERTSAVER_HEADER_SAVED );             
+        message = HBufC::NewLC( KMaxLengthTextMeassageBody );                    
+        message->Des().Append(p->Des());                                         
+        TPtr msgPtr2 = message->Des();                                           
+        ConstructPKCS12QueryMsgL(                                                
             msgPtr2, iSavedKeysCount, iSavedUserCertsCount, iSavedCACertsCount );
-        CHbDeviceMessageBoxSymbian::InformationL(message->Des()); 
-        CleanupStack::PopAndDestroy( message );
-        CleanupStack::PopAndDestroy( p );       
+        CHbDeviceMessageBoxSymbian::InformationL(message->Des());                
+        CleanupStack::PopAndDestroy( message );                                  
+        CleanupStack::PopAndDestroy( p );                                        
         }
     else
         {
+        // the contents could not be saved is dropped
         ShowInformationNoteL( R_QTN_CM_PKCS12_SAVING_FAILED );
         CleanupStack::PopAndDestroy( message );
         }
+*/
     }
 
 // ----------------------------------------------------------

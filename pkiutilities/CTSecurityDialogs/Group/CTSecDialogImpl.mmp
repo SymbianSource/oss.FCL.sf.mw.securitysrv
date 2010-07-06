@@ -47,10 +47,13 @@ SYSTEMINCLUDE ../../CertSaver/inc
 SYSTEMINCLUDE ../../DeviceToken/Inc
 SYSTEMINCLUDE ../../../inc              // securityservices/inc directory
 MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbcore 
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbwidgets
 
 
 USERINCLUDE ../NotifInc
 USERINCLUDE ../ClientInc
+USERINCLUDE ../../../securitydialogs/SecUi/Inc
 
 SOURCEPATH  ../NotifSrc
 
@@ -89,6 +92,8 @@ LIBRARY   aknlayout.lib
 LIBRARY   X500.lib
 LIBRARY   DevTokenClient.lib
 LIBRARY   HbCore.lib                // CHbDeviceDialog
+LIBRARY   HbWidgets.lib
+LIBRARY   secui.lib
 
 DEBUGLIBRARY     flogger.lib
 

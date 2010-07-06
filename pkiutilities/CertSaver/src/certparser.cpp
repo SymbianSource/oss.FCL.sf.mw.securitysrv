@@ -167,20 +167,12 @@ TBool CCertParser::CheckIfPKCS12L(
 
     TBool done = EFalse;
     TBuf<KPwMaxLength> password;
-    HBufC* buffer = NULL;
-
-    if ( !iEikEnv )
-        {
-        iEikEnv = CEikonEnv::Static();
-        }
 
     while ( !done )
         {
         if ( !GetPasswordL( password, aFileName ) )
             {
-            buffer = iEikEnv->AllocReadResourceLC( R_CERTSAVER_PKCS12_DISCARDED );
-            CHbDeviceMessageBoxSymbian::InformationL(buffer->Des()); 
-            CleanupStack::PopAndDestroy( buffer );
+            ShowErrorNoteL(R_CERTSAVER_PKCS12_DISCARDED);
             User::Leave( KErrExitApp );
             }
         TRAPD( err, iPKCS12->ParseL( aPKCS12, password ) );
@@ -385,8 +377,13 @@ void CCertParser::ShowErrorNoteL( TInt aResourceID )
         iEikEnv = CEikonEnv::Static();
         }
     HBufC* buffer = iEikEnv->AllocReadResourceLC( aResourceID );
-    CHbDeviceMessageBoxSymbian::WarningL(buffer->Des()); 
-    CleanupStack::PopAndDestroy( buffer );
+    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EWarning);
+    CleanupStack::PushL(iMessageBox);                                                                                    
+    iMessageBox->SetTextL(buffer->Des());                                                                                
+    iMessageBox->SetTimeout(6000);                                                                                      
+    iMessageBox->ExecL();                                                                                                
+    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
+    CleanupStack::PopAndDestroy( buffer );                                                                               
     }
 
 //  End of File

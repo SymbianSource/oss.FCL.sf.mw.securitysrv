@@ -24,6 +24,7 @@
 
 #include <QApplication>
 #include "Autolock.h"
+#include "../PubSub/securityuisprivatepskeys.h"
 
 #include <hbapplication.h>
 #include <hbmainwindow.h>
@@ -33,16 +34,33 @@ int main(int argc, char **argv)
     // qInstallMsgHandler(XQSERVICEMESSAGEHANDLER);
     // XQSERVICE_DEBUG_PRINT(" ================== xxxx Autolock::main");
     qDebug() << "================== xxxx QApplication Autolock::main";
+    
+    
+    // Need to check whether process is already running. This happens if it's started from Stater, and 
+    // before fully initialized, it's started by API through QtHighway
+    TSecurityPolicy readPolicy(ECapabilityReadDeviceData);
+    TSecurityPolicy writePolicy(ECapabilityWriteDeviceData);
+    int ret = RProperty::Define(KPSUidSecurityUIs,
+            KSecurityUIsLockInitiatorUID, RProperty::EInt, readPolicy,
+            writePolicy);
+		qDebug() << "KSecurityUIsLockInitiatorUID ret=" << ret;
+		int err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, 0);
+
+    // it takes about 3 seconds to start it, on device
     QApplication a( argc, argv );
     Autolock *cl = new Autolock();
-    // qDebug() << " ================== xxxx cl->show";
+    // qDebug() << " Autolock::main cl->show";
     // cl->show();
-    // qDebug() << " ================== xxxx cl->hide";
+    // qDebug() << " Autolock::main cl->hide";
     cl->hide();
-    // qDebug() << " ================== xxxx cl->lower";
+    // qDebug() << " Autolock::main cl->lower";
     cl->lower();
+    qDebug() << " Autolock::main cl->lower";
+    err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, 1);
     int rv = a.exec();
+    qDebug() << " Autolock::main cl->exec";
     delete cl;
+    qDebug() << " Autolock::main cl->delete";
     return rv;
 }
 

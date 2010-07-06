@@ -99,8 +99,16 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
     TInt err = RProperty::Get(KPSUidSecurityUIs,
             KSecurityUIsSecUIOriginatedQuery, secUiOriginatedQuery);
     RDEBUG("secUiOriginatedQuery", secUiOriginatedQuery);
-    if (secUiOriginatedQuery != ESecurityUIsSecUIOriginatedUninitialized)
+    if (secUiOriginatedQuery == ESecurityUIsSecUIOriginatedUninitialized )	// &&  )
         {
+        // set only if not set
+        err = RProperty::Set(KPSUidSecurityUIs,
+                KSecurityUIsSecUIOriginatedQuery,
+                ESecurityUIsETelAPIOriginated);
+        RDEBUG("setting secUiOriginatedQuery", ESecurityUIsETelAPIOriginated);
+      	}
+		else if ( secUiOriginatedQuery != ESecurityUIsSecUIOriginated )
+				{
         RDEBUG("!!!! warning: secUiOriginatedQuery", secUiOriginatedQuery);
         // The query is already shown. This is valid for ESecurityUIsSecUIOriginated, and maybe for ESecurityUIsETelAPIOriginated
         // For ESecurityUIsSystemLockOriginated it means that the "lock" dialog is already present.
@@ -109,17 +117,12 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
         err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog);
         // it might happen that the dialog is already dismissing. Well, it won't harm to try again.
         RDEBUG("aDismissDialog", aDismissDialog);
+        RDEBUG("err", err);
+        RDEBUG("set KSecurityUIsDismissDialog", ESecurityUIsDismissDialogOn);
         err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogOn);
+        RDEBUG("err", err);
         }
-    else
-        {
-        // set only if not set
-        err = RProperty::Set(KPSUidSecurityUIs,
-                KSecurityUIsSecUIOriginatedQuery,
-                ESecurityUIsETelAPIOriginated);
-        RDEBUG("setting secUiOriginatedQuery", ESecurityUIsETelAPIOriginated);
-        }
-		RDEBUG("calling ClearParamsAndSetNoteTypeL aMode=", aMode);
+		RDEBUG("calling ClearParamsAndSetNoteTypeL aMode", aMode);
     ClearParamsAndSetNoteTypeL(aMode);
     AddParamL(_L("KSecQueryUiApplicationName"), aCaption);
 
@@ -129,20 +132,18 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
     AddParamL(_L("MinLength"), aMinLength);
     AddParamL(_L("MaxLength"), aMaxLength);
 
-// ESecUiBasicTypeMultiCheck
-
     switch (aMode & ESecUiBasicTypeMask) {
-    case ESecUiBasicTypeCheck:
+    	case ESecUiBasicTypeCheck:
                              _LIT(KChecboxDialog, "ChecboxDialog");
                              _LIT(KChecbox, "ChecboxDialog");
                              AddParamL(KChecboxDialog,KChecbox);
                              break;
-    case ESecUiBasicTypeMultiCheck:
+    	case ESecUiBasicTypeMultiCheck:
                             _LIT(KMultiChecboxDialog, "MultiChecboxDialog");
                             _LIT(KMultiChecbox, "MultiChecboxDialog");
                             AddParamL(KMultiChecboxDialog,KMultiChecbox);
                             break;
-    default:
+    	default:
                             _LIT(KCodeTop, "codeTop");
                             _LIT(KCodeTopValue, "codeTop");
                             AddParamL(KCodeTop, KCodeTopValue);

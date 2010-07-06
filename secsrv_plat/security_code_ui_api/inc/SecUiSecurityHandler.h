@@ -112,7 +112,15 @@ class CSecurityHandler : public CBase
         */
         void RemoveSplashScreenL() const;
         
+        /**
+        *  ShowGenericErrorNoteL
+        */
         void ShowGenericErrorNoteL(TInt aStatus);
+        /**
+        *  CancelOpenQuery
+        */
+			TInt CancelOpenQuery(TInt aStatus);
+
 	private: // DATA
 		/*****************************************************
 		*	Series 60 Customer / ETel

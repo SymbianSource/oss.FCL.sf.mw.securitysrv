@@ -64,6 +64,17 @@ enum TDevicelockReason
 	EDevicelockTimer
 	};
 
+enum TDeviceDialogCreated
+	{
+	EDeviceDialogUninitialized = -1,
+	EDeviceDialogDestroyed = 0,
+	EDeviceDialogCreated = 1,
+	EDeviceDialogRaised = 2,
+	EDeviceDialogScreenSaver = 0x10,
+	EDeviceDialogLockIcon= 0x11,
+	EDeviceDialogLastValue
+	};
+
 class QTimer;
 
 class AutolockService;

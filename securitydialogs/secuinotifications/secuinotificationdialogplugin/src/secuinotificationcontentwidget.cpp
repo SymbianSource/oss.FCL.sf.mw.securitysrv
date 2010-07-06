@@ -16,6 +16,7 @@
 *
 */
 
+#include "secuinotificationdebug.h"
 #include "secuinotificationcontentwidget.h"
 #include "secuinotificationdialogpluginkeys.h"
 #include <QGraphicsLinearLayout>
@@ -64,7 +65,7 @@
 SecUiNotificationContentWidget::SecUiNotificationContentWidget(
         QGraphicsItem *parent, Qt::WindowFlags flags) : HbWidget(parent, flags)
 {
-		qDebug() << "SecUiNotificationContentWidget::SecUiNotificationContentWidget";
+		RDEBUG("0", 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -81,7 +82,7 @@ SecUiNotificationContentWidget::~SecUiNotificationContentWidget()
 //
 void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &parameters)
 {
-		qDebug() << "SecUiNotificationContentWidget::constructFromParameters 1";
+		RDEBUG("0", 0);
 		qDebug() << parameters;
     QGraphicsLinearLayout *mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
 
@@ -93,14 +94,13 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
     // KApplicationSize
     if (parameters.contains(KQueryType)) {
-				qDebug() << "SecUiNotificationContentWidget::KQueryType";
+				RDEBUG("0", 0);
         queryType = parameters.value(KQueryType).toUInt();
-				qDebug() << queryType;
+				RDEBUG("queryType", queryType);
 				if( (queryType & ESecUiTypeMaskLock) )
 					{
-					qDebug() << "SecUiNotificationContentWidget::KQueryType=ESecUiTypeLock";
+					RDEBUG("KQueryType=ESecUiTypeMaskLock", queryType);
 					// showing "Lock" icon. All other params are irrelevant. codeTop is not even created
-
 					
         	HbLabel *iconLabel = new HbLabel("Locked");
         	HbIcon *icon = new HbIcon("qtg_large_device_lock");
@@ -185,8 +185,6 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
         qDebug() << lMaxLength;
         if(lMaxLength>2)
 	        codeTop->setMaxLength(lMaxLength);
-        // HbLineEdit *codeTop2 = new HbLineEdit;
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop 2";
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop queryType=";
 				qDebug() << queryType;
 				codeTop->setInputMethodHints(Qt::ImhDigitsOnly);	// default
@@ -222,6 +220,28 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 					codeTop->setText(defaultCode);
 					}
 				qDebug() << "SecUiNotificationContentWidget::KCodeTop 4";
+
+		    if (parameters.contains(KDialogTitle)) {
+		        QString titleText = parameters.value(KDialogTitle).toString();
+		        QString titleAttempts = "";
+		   			if(titleText.indexOf('|')>0)
+		    				{	// if separator, take only first part
+		    				titleText = titleText.left(titleText.indexOf('|'));
+		    				}
+		   			if(titleText.indexOf('#')>0)
+		    				{	// if separator, take only first part
+		    				titleAttempts = titleText.right(titleText.length()-titleText.indexOf('#')-1);
+		    				qDebug() << "SecUiNotificationDialog::titleAttempts=" << titleAttempts;
+		    				int nAttempts = titleAttempts.toInt();
+		    				RDEBUG("nAttempts", nAttempts);
+		    				titleText = titleText.left(titleText.indexOf('#'));
+		    				if(nAttempts>0)
+		    					titleText = titleText + " attempts=" + QString::number(nAttempts);
+		    				}
+		        HbLabel *titleTop = new HbLabel(titleText);
+		        mainLayout->addItem(titleTop);
+		        // in the dialog, it was setHeadingWidget(title);
+		    }
 
     		mainLayout->addItem(codeTop);
     		// double-query

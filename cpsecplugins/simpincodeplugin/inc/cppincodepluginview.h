@@ -24,6 +24,7 @@
 // Forward declarations
 class SecCodeSettings;
 class HbDataFormModelItem;
+class HbDataFormModel;
 
 // Class declaration
 class CpPinCodePluginView : public CpBaseSettingView
@@ -37,10 +38,11 @@ public:
 private slots:
     void changePinCode();
     void changePin2Code();
-    void changePinCodeRequest();
+    void toggleChange(QModelIndex startIn, QModelIndex endIn);
     
 private:
     SecCodeSettings *mSecCodeSettings;
+    HbDataFormModel *mFormModel;
     HbDataFormModelItem *mPinCodeRequestItem;
 };
 

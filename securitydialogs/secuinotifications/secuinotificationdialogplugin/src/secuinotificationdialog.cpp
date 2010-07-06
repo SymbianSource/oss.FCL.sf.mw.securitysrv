@@ -15,6 +15,7 @@
 *
 */
 
+#include "secuinotificationdebug.h"
 #include "secuinotificationdialog.h"
 #include "secuinotificationdialogpluginkeys.h"
 #include "secuinotificationcontentwidget.h"
@@ -27,6 +28,7 @@
 #include <SCPServerInterface.h>	// for TARM error codes while validating new lock code
 #include <QString>
 #include <QDialogButtonBox>
+#include <HbEditorInterface>
 #include <e32property.h>
 
 QTM_USE_NAMESPACE
@@ -80,6 +82,9 @@ SecUiNotificationDialog::SecUiNotificationDialog(
         const QVariantMap &parameters) : HbDialog(), mLastError(KNoError)
 {
 		RDEBUG("0", 0);
+		TTime myTime;
+    myTime.HomeTime();
+		mMyId = I64LOW( myTime.Int64() );
     constructDialog(parameters);
 }
 
@@ -89,6 +94,7 @@ SecUiNotificationDialog::SecUiNotificationDialog(
 //
 SecUiNotificationDialog::~SecUiNotificationDialog()
 {
+	RDEBUG("0", 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -108,6 +114,7 @@ bool SecUiNotificationDialog::setDeviceDialogParameters(const QVariantMap &param
 int SecUiNotificationDialog::deviceDialogError() const
 {
 		RDEBUG("mLastError", mLastError);
+		RDEBUG("mMyId", mMyId);
     return mLastError;
 }
 
@@ -118,15 +125,31 @@ int SecUiNotificationDialog::deviceDialogError() const
 void SecUiNotificationDialog::closeDeviceDialog(bool byClient)
 {
     Q_UNUSED(byClient);
-		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
+		RDEBUG("calling close()", 0);
     close();
 		RDEBUG("mShowEventReceived", mShowEventReceived);
 
     // If show event has been received, close is signalled from hide event.
     // If not, hide event does not come and close is signalled from here.
     if (!mShowEventReceived) {
+    		RDEBUG("emitting deviceDialogClosed", 0);
         emit deviceDialogClosed();
+				if(1==0 && subscriberKSecurityUIsDismissDialog)
+					{
+						RDEBUG("disconnect subscriberKSecurityUIsDismissDialog", 0);
+						disconnect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+						RDEBUG("disconnected subscriberKSecurityUIsDismissDialog", 1);
+						if(1==1)
+							{
+							RDEBUG("deleting subscriberKSecurityUIsDismissDialog", 0);
+							delete subscriberKSecurityUIsDismissDialog;
+							subscriberKSecurityUIsDismissDialog = NULL;
+							RDEBUG("deleted subscriberKSecurityUIsDismissDialog", 1);
+							}
+				 }
     }
+    RDEBUG("0", 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -146,12 +169,27 @@ void SecUiNotificationDialog::hideEvent(QHideEvent *event)
 {
 		RDEBUG("0", 0);
     HbDialog::hideEvent(event);
-		RDEBUG("close", 0);
+		RDEBUG("mMyId", mMyId);
+		RDEBUG("calling close()", 0);
 		close();
-		RDEBUG("deviceDialogClosed", 0);
+		RDEBUG("emitting deviceDialogClosed", 0);
 		emit deviceDialogClosed();
 		RDEBUG("deviceDialogClosed", 1);
+		if(1==0 && subscriberKSecurityUIsDismissDialog)
+			{
+				RDEBUG("disconnect subscriberKSecurityUIsDismissDialog", 0);
+				disconnect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+				RDEBUG("disconnected subscriberKSecurityUIsDismissDialog", 1);
+				if(1==1)
+					{ 
+					RDEBUG("deleting subscriberKSecurityUIsDismissDialog", 0);
+					delete subscriberKSecurityUIsDismissDialog;
+					subscriberKSecurityUIsDismissDialog = NULL;
+					RDEBUG("deleted subscriberKSecurityUIsDismissDialog", 1);
+					}
+			}
     // old method was   emit deviceDialogClosed();
+   RDEBUG("0", 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -161,6 +199,7 @@ void SecUiNotificationDialog::hideEvent(QHideEvent *event)
 void SecUiNotificationDialog::showEvent(QShowEvent *event)
 {
 		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     HbDialog::showEvent(event);
 
 		if(!(queryType & ESecUiTypeMaskLock))
@@ -168,19 +207,23 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 			RDEBUG("check default.1", 0);
 			if(codeTop!=NULL)
             {
-                RDEBUG("check default.2", 0);
-                if(codeTop->text().length()>0)	// there's a default value. Verify it and (might) enable OK
+            RDEBUG("check default.2", 0);
+            if(codeTop->text().length()>0)	// there's a default value. Verify it and (might) enable OK
                 {
                 RDEBUG("check default.3", 0);
                 handleCodeTopChanged(codeTop->text());
                 }
+            RDEBUG("setFocus", 0);
+      			codeTop->setFocus();	// this should open the VKB . Doesn't seem to work when it's done on the widget, so it's done here.
+
+            }	// codeTop!=NULL
             
-            }
 			const TUint32 KSecurityUIsTestCode  = 0x00000307;
 			TInt value = 0;
 			TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsTestCode, value );
 			RDEBUG("KSecurityUIsTestCode err", err);
 			RDEBUG("faking value", value);
+			RDEBUG("mShowEventReceived", mShowEventReceived);
 			if(value>0 && mShowEventReceived==true)	// show happens 2 times. Dialog can be closed only the second.
 				{
 				QString myString = "";
@@ -194,6 +237,7 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 				}
 			}
     mShowEventReceived = true;
+    RDEBUG("1", 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -203,12 +247,30 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     {
 		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     setTimeout(HbPopup::NoTimeout);
     setDismissPolicy(HbPopup::NoDismiss);
     setModal(true);
     mShowEventReceived = false;
+    subscriberKSecurityUIsDismissDialog = NULL;
+    titleWidget = NULL;
+		RDEBUG("subscriberKSecurityUIsDismissDialog NULL", 0);
+
+    subscriberKSecurityUIsDismissDialog = new QValueSpaceSubscriber("/KPSUidSecurityUIs/KSecurityUIsDismissDialog", this);
+    if(subscriberKSecurityUIsDismissDialog)
+    	{
+    	RDEBUG("subscriberKSecurityUIsDismissDialog created", 1);
+    	}
+    else
+    	{
+    	RDEBUG("subscriberKSecurityUIsDismissDialog not created", 0);
+    	}
+    connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+		RDEBUG("subscriberKSecurityUIsDismissDialog", 1);
 
     // Title
+    // this is also done later in the widget
+    // For now, it only says "Security"
     if (parameters.contains(KDialogTitle)) {
         QString titleText = parameters.value(KDialogTitle).toString();
         QString titleAttempts = "";
@@ -226,8 +288,10 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     				if(nAttempts>0)
     					titleText = titleText + " attempts=" + QString::number(nAttempts);
     				}
-        title = new HbLabel(titleText);
-        setHeadingWidget(title);
+    		titleText = "Security Query";	// this is the header, for any potential later error which needs to be displayed
+        // This is created only if needed (i.e. errors for NewLockCode)
+        // titleWidget = new HbLabel(titleText);
+        // setHeadingWidget(titleWidget);
     }
 
 	    if (parameters.contains(KEmergency)) {
@@ -256,8 +320,8 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 					RDEBUG("KInvalidNewLockCode", 0);
 	        QString invalidText = parameters.value(KInvalidNewLockCode).toString();
 	        qDebug() << invalidText;
+	        QString newTitleText = "Lock Code";	// TODO take from the original one
 
-	        title->setPlainText("Lock Code");	// TODO take from the original one
 	        QString invalidStr = invalidText.right(invalidText.length()-invalidText.indexOf('#')-1);
 	        int invalidNumber = invalidStr.toInt();
 	        RDEBUG("invalidNumber", invalidNumber);
@@ -269,96 +333,105 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 				if(invalidNumber==EDeviceLockAutolockperiod)
 	        	{
 	        	RDEBUG("EDeviceLockAutolockperiod", invalidNumber );
-	        	title->setPlainText("EDeviceLockAutolockperiod");
+	        	newTitleText+="EDeviceLockAutolockperiod";
 	        	}
 	        if(invalidNumber==EDeviceLockMaxAutolockPeriod)
 	        	{
 	        	RDEBUG("EDeviceLockAutolockperiod", invalidNumber );
-	        	title->setPlainText("EDeviceLockMaxAutolockPeriod");
+	        	newTitleText+="EDeviceLockMaxAutolockPeriod";
 	        	}
 	        if(invalidNumber==EDeviceLockMinlength)
 	        	{
 	        	RDEBUG("EDeviceLockMinlength", invalidNumber );
-	        	title->setPlainText("EDeviceLockMinlength");
+	        	newTitleText+="EDeviceLockMinlength";
 	        	}
 	        if(invalidNumber==EDeviceLockMaxlength)
 	        	{
 	        	RDEBUG("EDeviceLockMaxlength", invalidNumber );
-	        	title->setPlainText("EDeviceLockMaxlength");
+	        	newTitleText+="EDeviceLockMaxlength";
 	        	}
 	        if(invalidNumber==EDeviceLockRequireUpperAndLower)
 	        	{
 	        	RDEBUG("EDeviceLockRequireUpperAndLower", invalidNumber );
-	        	title->setPlainText("EDeviceLockRequireUpperAndLower");
+	        	newTitleText+="EDeviceLockRequireUpperAndLower";
 	        	}
 	        if(invalidNumber==EDeviceLockRequireCharsAndNumbers)
 	        	{
 	        	RDEBUG("EDeviceLockMaxlength", invalidNumber );
-	        	title->setPlainText("EDeviceLockMaxlength");
+	        	newTitleText+="EDeviceLockMaxlength";
 	        	}
 	        if(invalidNumber==EDeviceLockAllowedMaxRepeatedChars)
 	        	{
 	        	RDEBUG("EDeviceLockAllowedMaxRepeatedChars", invalidNumber );
-	        	title->setPlainText("EDeviceLockAllowedMaxRepeatedChars");
+	        	newTitleText+="EDeviceLockAllowedMaxRepeatedChars";
 	        	}
 	        if(invalidNumber==EDeviceLockHistoryBuffer)
 	        	{
 	        	RDEBUG("EDeviceLockHistoryBuffer", invalidNumber );
-	        	title->setPlainText("EDeviceLockHistoryBuffer");
+	        	newTitleText+="EDeviceLockHistoryBuffer";
 	        	}
 	        if(invalidNumber==EDeviceLockPasscodeExpiration)
 	        	{
 	        	RDEBUG("EDeviceLockPasscodeExpiration", invalidNumber );
-	        	title->setPlainText("EDeviceLockPasscodeExpiration");
+	        	newTitleText+="EDeviceLockPasscodeExpiration";
 	        	}
 	        if(invalidNumber==EDeviceLockMinChangeTolerance)
 	        	{
 	        	RDEBUG("EDeviceLockMinChangeTolerance", invalidNumber );
-	        	title->setPlainText("EDeviceLockMinChangeTolerance");
+	        	newTitleText+="EDeviceLockMinChangeTolerance";
 	        	}
 	        if(invalidNumber==EDeviceLockMinChangeInterval)
 	        	{
 	        	RDEBUG("EDeviceLockMinChangeInterval", invalidNumber );
-	        	title->setPlainText("EDeviceLockMinChangeInterval");
+	        	newTitleText+="EDeviceLockMinChangeInterval";
 	        	}
 	        if(invalidNumber==EDeviceLockDisallowSpecificStrings)
 	        	{
 	        	RDEBUG("EDeviceLockDisallowSpecificStrings", invalidNumber );
-	        	title->setPlainText("EDeviceLockDisallowSpecificStrings");
+	        	newTitleText+="EDeviceLockDisallowSpecificStrings";
 	        	}
 	        if(invalidNumber==EDeviceLockAllowedMaxAtempts)
 	        	{
 	        	RDEBUG("EDeviceLockAllowedMaxAtempts", invalidNumber );
-	        	title->setPlainText("EDeviceLockAllowedMaxAtempts");
+	        	newTitleText+="EDeviceLockAllowedMaxAtempts";
 	        	}
 	        if(invalidNumber==EDeviceLockConsecutiveNumbers)
 	        	{
 	        	RDEBUG("EDeviceLockConsecutiveNumbers", invalidNumber );
-	        	title->setPlainText("EDeviceLockConsecutiveNumbers");
+	        	newTitleText+="EDeviceLockConsecutiveNumbers";
 	        	}
 	        if(invalidNumber==EDeviceLockMinSpecialCharacters)
 	        	{
 	        	RDEBUG("EDeviceLockMinSpecialCharacters", invalidNumber );
-	        	title->setPlainText("EDeviceLockMinSpecialCharacters");
+	        	newTitleText+="EDeviceLockMinSpecialCharacters";
 	        	}
 	        if(invalidNumber==EDeviceLockSingleCharRepeatNotAllowed)
 	        	{
 	        	RDEBUG("EDeviceLockSingleCharRepeatNotAllowed", invalidNumber );
-	        	title->setPlainText("EDeviceLockSingleCharRepeatNotAllowed");
+	        	newTitleText+="EDeviceLockSingleCharRepeatNotAllowed";
 	        	}
 	        if(invalidNumber==EDevicelockConsecutiveCharsNotAllowed)
 	        	{
 	        	RDEBUG("EDevicelockConsecutiveCharsNotAllowed", invalidNumber );
-	        	title->setPlainText("EDevicelockConsecutiveCharsNotAllowed");
+	        	newTitleText+="EDevicelockConsecutiveCharsNotAllowed";
 	        	}
 	        if(invalidNumber>=EDevicelockTotalPolicies)
 	        	{
 	        	RDEBUG("EDevicelockTotalPolicies", invalidNumber );
-	        	title->setPlainText("EDevicelockTotalPolicies");
+	        	newTitleText+="EDevicelockTotalPolicies";
 	        	}
+	        if( !titleWidget )
+	        	{
+	        	RDEBUG("creating titleWidget", 0 );
+	        	titleWidget = new HbLabel("New lock code");	// it will be changed later
+          	setHeadingWidget(titleWidget);
+          	}
+          RDEBUG("setPlainText", 0 );
+	        titleWidget->setPlainText(newTitleText);
+	        
 	        if(invalidNumber<0)	// everything is ok
 	        	{
-	        	okAction->setEnabled(true);	// TODO check this : invalid -> valid. This allows verif ?
+	        	okAction->setEnabled(true);	// this might fail in the scenario: check this : invalid -> valid. This allows verif ?
 	        	okAction->setText("Ok");
 	        	codeBottom->setEnabled(true);
 	        	}
@@ -441,11 +514,6 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     	{
     	RDebug::Printf( "potential error: %s %s (%u) aDismissDialog=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aDismissDialog );
     	}
-    subscriberKSecurityUIsDismissDialog = new QValueSpaceSubscriber(
-            "/KPSUidSecurityUIs/KSecurityUIsDismissDialog", this);
-    connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this,
-            SLOT(subscriberKSecurityUIsDismissDialogChanged()));
-		RDEBUG("subscriberKSecurityUIsDismissDialog", 1);
 	
 		RDEBUG("check cancel", 0);
     if ((queryType & ESecUiCancelSupported)==ESecUiCancelSupported)
@@ -456,6 +524,8 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
   		{
 				RDEBUG("disable Cancel", 1);
   			cancelAction->setEnabled(false);
+  			cancelAction->setText("");
+  			cancelAction->setVisible(false);
   		}
     
     return true;
@@ -468,13 +538,19 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 void SecUiNotificationDialog::sendResult(int accepted)
 {
 		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     QVariant acceptedValue(accepted);
 		RDEBUG("0", 0);
     mResultMap.insert(KResultAccepted, acceptedValue);
 		RDEBUG("0", 0);
 		qDebug() << mResultMap;
-    emit deviceDialogData(mResultMap);
-		RDEBUG("0", 0);
+		RDEBUG("queryType", queryType);
+		if(!(queryType & ESecUiTypeMaskLock))
+			{	// the lock-icon should not reply
+			RDEBUG("emit deviceDialogData", 0);
+    	emit deviceDialogData(mResultMap);
+    	}
+		RDEBUG("1", 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -485,6 +561,7 @@ void SecUiNotificationDialog::handleAccepted()
 {
 		RDEBUG("0", 0);
 		// okAction
+		RDEBUG("mMyId", mMyId);
 		QString codeTopText="";
 
 		if( (queryType & ESecUiTypeMaskLock))
@@ -511,11 +588,12 @@ void SecUiNotificationDialog::handleAccepted()
     	}
     else
         codeTopText = codeTop->text();
-    // TODO check last time for codeBottom
+    // no need to check last time for codeBottom
    	qDebug() << "codeTopText=" << codeTopText;
     sendResult(KErrNone);
+    RDEBUG("calling close()", 0);
     close();	// this is needed because Cancel doesn't automatically closes the dialog
-		RDEBUG("close", 0);
+		RDEBUG("emitting deviceDialogClosed", 0);
 		emit deviceDialogClosed();
 }
 
@@ -526,9 +604,11 @@ void SecUiNotificationDialog::handleAccepted()
 void SecUiNotificationDialog::handleCancelled()
 {
 		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     sendResult(KErrCancel);
+		RDEBUG("callingclose()", 0);
     close();	// this is needed because Cancel doesn't automatically closes the dialog
-		RDEBUG("close", 0);
+		RDEBUG("emitting deviceDialogClosed", 0);
 		emit deviceDialogClosed();
 }
 
@@ -539,16 +619,16 @@ void SecUiNotificationDialog::handleCancelled()
 void SecUiNotificationDialog::handleMemorySelectionChanged(const QString &text)
     {
 		RDEBUG("0", 0);
-    	qDebug() << text;
+		RDEBUG("mMyId", mMyId);
+    qDebug() << text;
     QVariant memorySelection(text);
     mResultMap.insert(KSelectedMemoryIndex, memorySelection);
-    //TODO: do we need emit here, or would it be better to send all data at the end?
-    //emit deviceDialogData(mResultMap);
     }
 
 void SecUiNotificationDialog::handleCodeTopContentChanged()
     {
 		RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     	qDebug() << codeTop->text();
     	handleCodeTopChanged(codeTop->text());
     }
@@ -585,7 +665,7 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     		}
     	else if (text.length() >= lMinLength)
     		{
-    		// TODO might use a flag to avoid re-setting
+    		// might use a flag to avoid re-setting. But this complicates things if there's another initial verification
     		qDebug() << "SecUiNotificationDialog::handleCodeTopChanged long enough:" << text ;
     		okAction->setText("Ok");
     		if(queryDual==0)	// only if Bottom is not used
@@ -603,7 +683,6 @@ void SecUiNotificationDialog::handleCodeBottomChanged(const QString &text)
 		RDEBUG("0", 0);
     	qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged" << text ;
     	qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged. codeTop=" << codeTop->text() ;
-    	// TODO compare 
     	if(text.length() < lMinLength )
     		{
     		qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged too short:" << text ;
@@ -611,10 +690,11 @@ void SecUiNotificationDialog::handleCodeBottomChanged(const QString &text)
     		}
     	else
     		{
-    		// TODO might use a flag to avoid re-setting
+    		// might use a flag to avoid re-setting. But it just complicates things.
     		qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged long enough:" << text ;
     		if(codeTop->text()==text)
     			{
+    			// unless both codes match, don't allow OK. Note that the first field doesn't allow exit until the validations (i.e. NewLockCode) as succesfull
     			qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged codes match:" << text ;
 	    		okAction->setEnabled(true);
 	    		}
@@ -633,7 +713,7 @@ void SecUiNotificationDialog::handleCodeBottomChanged(const QString &text)
 void SecUiNotificationDialog::handlebut1Changed()
     {
 		RDEBUG("0", 0);
-    	codeTop->setText("1234");
+    codeTop->setText("1234");
     }
 // ----------------------------------------------------------------------------
 // SecUiNotificationDialog::handlebut2Changed()
@@ -649,6 +729,40 @@ void SecUiNotificationDialog::handlebut2Changed()
     	qDebug() << "codeTopText+1";
     	qDebug() << codeTopText;
     	codeTop->setText(codeTopText);
+    	
+    	      RDEBUG("editorInterface", 0);
+      			HbEditorInterface editorInterface(codeTop);
+      			RDEBUG("actions", 0);
+      			QList<HbAction *> vkbList = editorInterface.actions();
+      			RDEBUG("count", 0);
+      			int count = vkbList.count();
+      			RDEBUG("got count", count);
+		        for (int i = 0; i < count; i++)
+		        		{
+		        		RDEBUG("i", i);
+		            HbAction *action = static_cast<HbAction *>(vkbList[i]);
+		            RDEBUG("action", 0);
+		          	}
+		          	
+		        RDEBUG("okVKBAction", 0);
+		        okVKBAction = new HbAction(tr("Ok"));
+		        RDEBUG("addAction", 0);
+		        editorInterface.addAction(okVKBAction);
+		        RDEBUG("addAction", 1);
+		        connect(okVKBAction, SIGNAL(triggered()), this, SLOT(handleAccepted()));
+		        RDEBUG("connect", 1);
+
+      			QList<HbAction *> vkbList2 = editorInterface.actions();
+      			RDEBUG("count", 0);
+      			int count2 = vkbList2.count();
+      			RDEBUG("got count2", count2);
+		        for (int i = 0; i < count2; i++)
+		        		{
+		        		RDEBUG("i", i);
+		            HbAction *action2 = static_cast<HbAction *>(vkbList2[i]);
+		            RDEBUG("action2", 0);
+		          	}
+    
     }
 // ----------------------------------------------------------------------------
 // SecUiNotificationDialog::handlebut3Changed()
@@ -679,31 +793,71 @@ void SecUiNotificationDialog::saveFocusWidget(QWidget*,QWidget*)
 // ----------------------------------------------------------------------------
 // SecUiNotificationDialog::subscriberKSecurityUIsDismissDialogChanged()
 // A way for Autolock to dismiss any possible PIN dialog
+// This doesn't dismiss the lockIcon because P&S is not connected
+// Note: if this changes itself, then it becomes recursive
 // ----------------------------------------------------------------------------
 //
 void SecUiNotificationDialog::subscriberKSecurityUIsDismissDialogChanged()
     {
 
     RDEBUG("0", 0);
+		RDEBUG("mMyId", mMyId);
     TInt aDismissDialog = ESecurityUIsDismissDialogUninitialized;
     TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog );
     RDEBUG("err", err);
-	RDEBUG("aDismissDialog", aDismissDialog);
+		RDEBUG("aDismissDialog", aDismissDialog);
     if( aDismissDialog == ESecurityUIsDismissDialogOn )
     	{
-		err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogProcessing );
-		RDEBUG("err", err);
-		// TODO perhaps do this only if Cancel is allowed?
-		RDEBUG("sendResult(KErrCancel)", KErrCancel);	// another option is KErrDied
-		sendResult(KErrCancel);	// similar to     emit handleCancelled();
-		RDEBUG("close", 0);
-		close();
-		RDEBUG("emit closeDeviceDialog", 0);
-		emit deviceDialogClosed();
-		// RDEBUG("emit closeDeviceDialog", 0);
-		// this is old method    emit closeDeviceDialog(false);	// false means "not by client", although it's not really used
-		RDEBUG("all emited", 0);
-		err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogDone );	// clear after using it
-		RDEBUG("err", err);
+    	if(subscriberKSecurityUIsDismissDialog)
+    		{
+    		RDEBUG("subscriberKSecurityUIsDismissDialog", 1);
+    		}
+    	else
+    		{
+    		RDEBUG("! subscriberKSecurityUIsDismissDialog", 0);
+    		}
+
+    	if(this)
+    		{
+    		RDEBUG("this", 1);
+    		}
+    	else
+    		{
+    		RDEBUG("! this", 0);
+    		}
+
+
+			RDEBUG("disconnect subscriberKSecurityUIsDismissDialog", 0);
+			disconnect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+			// this doesn't really disconnect, because somehow the events are still queued. This is a QtMobility error
+			RDEBUG("disconnected subscriberKSecurityUIsDismissDialog", 1);
+			
+			RDEBUG("not set KSecurityUIsDismissDialog", ESecurityUIsDismissDialogProcessing);
+			// can't set it because it does recursion
+			// err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogProcessing );
+			RDEBUG("err", err);
+			// only if Cancel is allowed
+			if ((queryType & ESecUiCancelSupported)==ESecUiCancelSupported)
+				{
+				RDEBUG("sendResult(KErrCancel)", KErrCancel);	// another option is KErrDied
+				sendResult(KErrCancel);	// similar to     emit handleCancelled();
+				RDEBUG("calling close()", 0);
+				err = close();
+				RDEBUG("err", err);
+				RDEBUG("emitting deviceDialogClosed", 0);
+				emit deviceDialogClosed();
+				// RDEBUG("emit closeDeviceDialog", 0);
+				// this is old method    emit closeDeviceDialog(false);	// false means "not by client", although it's not really used
+				RDEBUG("all emited", 0);
+				}
+			RDEBUG("not set KSecurityUIsDismissDialog", ESecurityUIsDismissDialogDone);
+			// can't set it because it does recursion
+			// err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogDone );	// clear after using it
+			RDEBUG("err", err);
+
+			RDEBUG("reconnect subscriberKSecurityUIsDismissDialog", 0);
+			connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+			RDEBUG("reconnected subscriberKSecurityUIsDismissDialog", 1);
     	}
+    RDEBUG("1", 1);
 	}

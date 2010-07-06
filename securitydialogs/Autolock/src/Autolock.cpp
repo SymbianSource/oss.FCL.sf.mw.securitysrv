@@ -66,7 +66,7 @@ QTM_USE_NAMESPACE
 #include <secuisecurityhandler.h>
 #include <etelmm.h>
 #include <rmmcustomapi.h>
-
+#include <keylockpolicyapi.h>
 #include <qvaluespacesubscriber.h>
 
 #include <hwrmlightdomaincrkeys.h>
@@ -119,7 +119,7 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
     
     // This is important: we set the status through a property
     TInt autolockState;
-    RProperty::Get(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, autolockState);
+    ret = RProperty::Get(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, autolockState);
     RDEBUG("Get KCoreAppUIsAutolockStatus", ret);
     RDEBUG("autolockState", autolockState);
     if(autolockState==EAutolockStatusUninitialized)
@@ -280,17 +280,16 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
 
     RWindowGroup& groupWin = CEikonEnv::Static()->RootWin();
     RDEBUG("got groupWin", 1);
-    // TODO if I want to release, I should do:   mKeyCaptureHandle = env->RootWin().CaptureKey(EKeyBackspace, 0, 0);
-    groupWin.CaptureKey(EKeyBackspace, 0, 0);
+    // if I want to release, I should do:   mKeyCaptureHandle = env->RootWin().CaptureKey(EKeyBackspace, 0, 0);
     groupWin.CaptureKey(EKeyDeviceF, 0, 0);
     groupWin.CaptureKey(EKeyBell, 0, 0);
-    groupWin.CaptureKey(EKeyTab, 0, 0);
-    groupWin.CaptureKey(EKeyInsert, 0, 0);
     RDEBUG("got mKeyCaptureHandle", 1);
 
     iSecQueryUiCreated = -1;
-    iDeviceDialogCreated = -1;
-    // TODO for now, always starts unlocked
+    iDeviceDialogCreated = EDeviceDialogUninitialized;
+    RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
+    iDeviceDialog = NULL;
+    // for now, always starts unlocked. This is correct because if locked, the unlock-query (from starter) is on top
     // TryChangeStatus(iLockStatus);
     TryChangeStatus( ELockNotActive);
     lower();
@@ -372,8 +371,7 @@ int Autolock::AskValidSecCode(int aReason)
     TInt thisTry(0);
     RTelServer iTelServer;
 
-    err = RProperty::Set(KPSUidSecurityUIs,
-            KSecurityUIsLights, ESecurityUIsLightsQueryOnRequest);
+    err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLights, ESecurityUIsLightsQueryOnRequest);
 		RDEBUG("KSecurityUIsLights err", err);
 
     RMmCustomAPI iCustomPhone;
@@ -501,7 +499,6 @@ int Autolock::AskValidSecCode(int aReason)
          RDEBUG( "result", result );
          */
         }
-    // TODO this doesn't wait on WINS , so how do I get the Acceptation?
     RDEBUG("validCode", validCode);
     if (validCode>0)
         return KErrNone;
@@ -598,7 +595,7 @@ void Autolock::DebugError(int aReason)
 int Autolock::CheckIfLegal(int aReason)
     {
     RDEBUG("aReason", aReason);
-    // check whether a dialog is already displayed. This is to prevent timeout-lock and timeout-keyguard for activated on top of a PIN query, in particular at boot-up (TODO Starter)
+    // check whether a dialog is already displayed. This is to prevent timeout-lock and timeout-keyguard for activated on top of a PIN query, in particular at boot-up (TODO check for Starter)
     TInt secUiOriginatedQuery(ESecurityUIsSecUIOriginatedUninitialized);
     TInt err = RProperty::Get(KPSUidSecurityUIs,
             KSecurityUIsSecUIOriginatedQuery, secUiOriginatedQuery);
@@ -615,7 +612,7 @@ int Autolock::CheckIfLegal(int aReason)
             switch (iLockStatus)
                 {
                 case ELockNotActive:
-                    if (1 == 0) // !CKeyLockPolicyApi::KeyguardAllowed() )
+                    if ( !CKeyLockPolicyApi::KeyguardAllowed() )
                         return KErrPermissionDenied;
                     else
                         return KErrNone;
@@ -771,7 +768,9 @@ int Autolock::publishStatus(int aReason)
             err = RProperty::Set(KPSUidCoreApplicationUIs,
                     KCoreAppUIsAutolockStatus, EAutolockOff);
             RDEBUG("err", err);
-            // lights are required ?
+            err = RProperty::Set(KPSUidSecurityUIs,
+                        KSecurityUIsLights, ESecurityUIsLightsLockOnRequest);	// lights are required
+         		RDEBUG("KSecurityUIsLights err", err);
 
             // cRresult = repositoryDevicelock->Set(KSettingsAutolockStatus, 0);	// the settings remains. Only ISA changes, as well as the P&S
             cRresult = repositoryKeyguard->Set(KSysApKeyguardActive, 0);
@@ -860,9 +859,9 @@ int Autolock::TryChangeStatus(int aReason)
 
 		// this will cancel any previous dialog, i.e. PIN query, or any previous code-request.
 		// not sure about the screensaver, but nevertheless will be cancelled when the status is changed.
-    TInt err = RProperty::Set(KPSUidSecurityUIs,
-            KSecurityUIsDismissDialog,
-            ESecurityUIsDismissDialogOn);
+		TInt err = KErrNone;
+		RDEBUG("Not setting KSecurityUIsDismissDialog ESecurityUIsDismissDialogOn", ESecurityUIsDismissDialogOn);
+    //// err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsDismissDialog, ESecurityUIsDismissDialogOn);
 		RDEBUG("err", err);
     switch (ret)
         {
@@ -876,6 +875,7 @@ int Autolock::TryChangeStatus(int aReason)
                 updateIndicator(EKeyguardActive);
                 publishStatus(EKeyguardActive);
                 showNoteIfRequested(EKeyguardActive);
+                setLockDialog(aReason, 1);
                 }
             }
             break;
@@ -889,6 +889,7 @@ int Autolock::TryChangeStatus(int aReason)
                 updateIndicator(ELockNotActive);
                 publishStatus(ELockNotActive);
                 showNoteIfRequested(ELockNotActive);
+                setLockDialog(aReason, 0);
                 }
             }
             break;
@@ -926,8 +927,13 @@ int Autolock::TryChangeStatus(int aReason)
             if (errorInProcess == KErrNone)
                 {
                	setLockDialog(aReason, 0); // hide temporarilly because HbDeviceMessageBox doesn't get in top of the Lock-icon. Thus, dismiss it.
+               	// do I need to enable touch? it seems to work without it
+               	// in any case, lights are needed
+               	err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLights, ESecurityUIsLightsQueryOnRequest);
                 RDEBUG("calling HbDeviceMessageBox::question", 0);
-                bool value = HbDeviceMessageBox::question("Disable Lock?");	// this doesn't block other events, so after return everything might be messed up.
+                bool value = true;
+                // not sure whether this question is really needed. The UI doesn't say anything, so I remove it for now.
+                // HbDeviceMessageBox::question("Disable Lock?");	// this doesn't block other events, so after return everything might be messed up.
                 RDEBUG("value", value);
                 if (!value)
                     errorInProcess = KErrCancel;
@@ -943,12 +949,13 @@ int Autolock::TryChangeStatus(int aReason)
                 {
                 setLabelIcon( ELockNotActive);
                 updateIndicator(ELockNotActive);
+                setLockDialog(aReason, 0);
                 publishStatus(ELockNotActive);
                 }
             if (errorInProcess != KErrNone)
                 { // re-lock. For example, if password is wrong
                	if( iLockStatus >=EDevicelockActive)	// this skips the case "unlocking although it wasn't locked"
-                	setLockDialog(aReason, 1);
+                	setLockDialog(ELockAppEnableDevicelock, 1);
                 }
             // this never shows a note
             }
@@ -960,9 +967,9 @@ int Autolock::TryChangeStatus(int aReason)
             if (errorInProcess == KErrNone)
                 {
                 // no need to dismiss screensaver, because it's not active
-                // TODO what about any PIN-query, i.e. from settings ? In this case, the query will show after the PIN query is finished. somehow this is good because PIN is more important
+                // what about any PIN-query, i.e. from settings ? In this case, the query will show after the PIN query is finished. somehow this is good because PIN is more important
                 bool value = HbDeviceMessageBox::question("Enable Keyguard?");	// this doesn't block other events, so after return everything might be messed up.
-                // TODO what about a nice icon?
+                // what about a nice icon?
                 RDEBUG("value", value);
                 if (!value)
                     errorInProcess = KErrCancel;
@@ -1026,22 +1033,41 @@ int Autolock::setLockDialog(int aReason, int status)
 		
     if (status == 0) // hide
         {
+        // aReason is not important here, but let's check nevertheless
+        if (aReason != ELockAppDisableKeyguard && aReason != ELockAppDisableDevicelock )
+        	{
+        	RDEBUG("!!!!****!!!!! error. status=0 but aReason", aReason);
+        	}
         // secUiOriginatedQuery should be ESecurityUIsSystemLockOriginated . If not, this is not correctly setting it
-        if (iDeviceDialogCreated > 0)
+        if (iDeviceDialogCreated >= EDeviceDialogCreated)
             {
-            iDeviceDialogCreated = 0;
-            iDeviceDialog->cancel();
+            iDeviceDialogCreated = EDeviceDialogDestroyed;
+            RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
+            disconnect( iDeviceDialog, SIGNAL(dataReceived(QVariantMap)), this, SLOT(handleMessageFromScreensaver(QVariantMap)) );
+            RDEBUG("signal disconnected", err);
+            err = iDeviceDialog->cancel();
+            RDEBUG("cancel (bool: 1= wellCancelled) err", err);
             err = iDeviceDialog->error();
             RDEBUG("err", err);
+            RDEBUG("calling iDeviceDialog->waitForClosed()", 0);
+            err = iDeviceDialog->waitForClosed();
+            RDEBUG("cancel (bool: 1= well waitForClosed) err", err);
+            err = iDeviceDialog->error();
+            RDEBUG("err", err);
+
             TInt err = RProperty::Set(KPSUidSecurityUIs,
                     KSecurityUIsSecUIOriginatedQuery,
                     ESecurityUIsSecUIOriginatedUninitialized);
-            RDEBUG("err", err);
+            RDEBUG("reset KSecurityUIsSecUIOriginatedQuery. err", err);
             // Cancel power key and application key capturing
             groupWin.CancelCaptureKey( mPowerKeyCaptureHandle );
             groupWin.CancelCaptureKey( mApplicationKeyCaptureHandle );
             groupWin.CancelCaptureLongKey( mApplicationLongKeyCaptureHandle );
             RDEBUG("done CancelCaptureKey", 1);
+            RDEBUG("deleting iDeviceDialog", 0);
+            delete iDeviceDialog;
+            RDEBUG("deleted iDeviceDialog", 1);
+            iDeviceDialog = NULL;
             }
         }
     else if (status == 1) // show
@@ -1052,9 +1078,9 @@ int Autolock::setLockDialog(int aReason, int status)
 #define ESecUiTypeDeviceLock		0x00100000
 #define ESecUiTypeKeyguard			0x00200000
 
-        if (aReason == EKeyguardActive)
+        if (aReason == ELockAppEnableKeyguard)
             params.insert("type", ESecUiTypeKeyguard);
-        else if (aReason >= EDevicelockActive)
+        else if (aReason == ELockAppEnableDevicelock)
             params.insert("type", ESecUiTypeDeviceLock);
         else
             {
@@ -1062,13 +1088,19 @@ int Autolock::setLockDialog(int aReason, int status)
             }
         // no need for title. Icon should be explicit enough
         // params.insert("title", "Locked");
-        if (iDeviceDialogCreated <= 0)
+        if (iDeviceDialogCreated < EDeviceDialogCreated)
             {
+            if(iDeviceDialog != NULL)
+            	{
+            	RDEBUG("!!!!!!*********!!!!!!!! error: iDeviceDialog != NULL", 0);
+            	}
             RDEBUG("creating iDeviceDialog", 0);
             iDeviceDialog = new HbDeviceDialog(HbDeviceDialog::NoFlags, this);
+            // in theory this is needed only for screensaver, not for LockIcon. But it doesn't harm
             connect( iDeviceDialog, SIGNAL(dataReceived(QVariantMap)), 
                      SLOT(handleMessageFromScreensaver(QVariantMap)) );
-            iDeviceDialogCreated = 1;
+            iDeviceDialogCreated = EDeviceDialogCreated;
+            RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
             }
         else
             {
@@ -1076,7 +1108,8 @@ int Autolock::setLockDialog(int aReason, int status)
             // confirm that dialog is present
             err = iDeviceDialog->error();
             RDEBUG("err", err);
-            iDeviceDialogCreated = 2;
+            iDeviceDialogCreated = EDeviceDialogRaised;
+            RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
             }
         const QString KScreensaverDeviceDialog("com.nokia.screensaver.snsrdevicedialogplugin/1.0");
         RDEBUG("pre show", aReason);
@@ -1086,15 +1119,18 @@ int Autolock::setLockDialog(int aReason, int status)
         RDEBUG("iDeviceDialog->error", err);
         if(!err)
         	{
-        	switchScreensaverToActiveMode();	// TODO not sure if this is needed
+        	iDeviceDialogCreated = EDeviceDialogScreenSaver;
+        	RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
+        	switchScreensaverToActiveMode();	// this is needed in case the dialog was existing.
         	}
-        else	// some err
+        else	// some err. Usually 3 (not existing)
         	{
         		// screensaver has failed. Probably because it's not installed. Then, try the standard lock-icon
-        	err = iDeviceDialog->error();
-        	RDEBUG("err", err);
+        	iDeviceDialogCreated = EDeviceDialogLockIcon;
+        	RDEBUG("new iDeviceDialogCreated", iDeviceDialogCreated);
         	const QString KSecQueryUiDeviceDialog("com.nokia.secuinotificationdialog/1.0");
         	err = iDeviceDialog->show(KSecQueryUiDeviceDialog, params); // and continue processing
+        	RDEBUG("post show. err", err);
         	}
       	err = iDeviceDialog->error();
       	RDEBUG("err", err);
@@ -1102,9 +1138,9 @@ int Autolock::setLockDialog(int aReason, int status)
         // Somehow this should be handled by Orbit, but unfortunatelly they don't allow the same dialog twice
         err = RProperty::Set(KPSUidSecurityUIs,
                 KSecurityUIsSecUIOriginatedQuery,
-                ESecurityUIsSecUIOriginatedUninitialized);	// TODO this should be ESecurityUIsSystemLockOriginated ?
+                ESecurityUIsSecUIOriginatedUninitialized);	// this could also be ESecurityUIsSystemLockOriginated
         RDEBUG("err", err);
-        // Capture power and application keys while screen saver is open
+        // Capture power and application keys while screen saver is open. Also works for LockIcon
         mPowerKeyCaptureHandle = groupWin.CaptureKey( EKeyDevice2, 0, 0 );
         mApplicationKeyCaptureHandle = groupWin.CaptureKey( EKeyApplication0, 0, 0 );
         mApplicationLongKeyCaptureHandle = groupWin.CaptureLongKey( 
@@ -1119,19 +1155,20 @@ int Autolock::setLockDialog(int aReason, int status)
         }
     return KErrNone;
     }
+
 void Autolock::setLabelIcon(int aReason)
     {
     RDEBUG("aReason", aReason);
 
     if (aReason == ELockNotActive)
         {
-        setLockDialog(aReason, 0); // TODO isn't this done already at TryChangeStatus ???
+        // setLockDialog(aReason, 0); // This is done already at TryChangeStatus
         lower();
         hide();
         }
     else if (aReason == EKeyguardActive)
         {
-        setLockDialog(aReason, 1);
+        // setLockDialog(aReason, 1); // This is done already at TryChangeStatus
         // this shows the Autolock Application. not needed
         }
     else if (aReason == EDevicelockActive)
@@ -1187,7 +1224,7 @@ void Autolock::notActiveKeyguard()
         }
     else
     		{
-        // switch-off the lights. The scenario is: keyguard->screensaver->CriticalNote->lightsOn . Therefore we need lightsOff
+        // restart screensaver. The scenario is: keyguard->screensaver->CriticalNote->lightsOn . Therefore we need lightsOff
         // this is done when keyguard can't be enabled because it's already enabled
         // Note that this happens only once, so it's fine to show the screensaver in full light.
         if(ret==KErrAlreadyExists)
@@ -1221,9 +1258,22 @@ void Autolock::switchScreensaverToActiveMode()
     RDEBUG("0", 0);
     if ( iDeviceDialog )
         {
-        RDEBUG("got iDeviceDialog", 1);
+        RDEBUG("got iDeviceDialog. iDeviceDialogCreated", iDeviceDialogCreated);
         QVariantMap params;
+        // this is for LockIcon. Doesn't harm screensaver
+        // need to send again so that the existing dialog still knows what is its type
+        if (iLockStatus == EKeyguardActive)
+        	params.insert("type", ESecUiTypeKeyguard);
+        else if (iLockStatus >= EDevicelockActive)
+            params.insert("type", ESecUiTypeDeviceLock);
+
+        // this is for screensaver. Doesn't harm LockIcon
         params.insert( KSnsrViewTypeKey, KSnsrViewTypeValueActive );
+        
+        // when screesanver triggers, set the lights. DeviceDialogs does it only on creation, not on update.
+		    TInt err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLights, ESecurityUIsLightsQueryOnRequest);
+				RDEBUG("KSecurityUIsLights err", err);
+
         iDeviceDialog->update(params);
         
         // (re)start timer to switch to the power save mode
@@ -1241,8 +1291,16 @@ void Autolock::switchScreensaverToPowerSaveMode()
     RDEBUG("0", 0);
     if ( iDeviceDialog )
         {
-        RDEBUG("got iDeviceDialog", 1);
+        RDEBUG("got iDeviceDialog. iDeviceDialogCreated", iDeviceDialogCreated);
         QVariantMap params;
+        // this is for LockIcon. Doesn't harm screensaver
+        // need to send again so that the existing dialog still knows what is its type
+        if (iLockStatus == EKeyguardActive)
+        	params.insert("type", ESecUiTypeKeyguard);
+        else if (iLockStatus >= EDevicelockActive)
+            params.insert("type", ESecUiTypeDeviceLock);
+
+        // this is for screensaver. Doesn't harm LockIcon
         params.insert( KSnsrViewTypeKey, KSnsrViewTypeValueStandby );
         iDeviceDialog->update(params);
         
@@ -1268,21 +1326,28 @@ void Autolock::handleMessageFromScreensaver( const QVariantMap &data )
     }
 
 // some key is pressed
+// TODO perhaps need a way to stop switch-key while asking unlock-code?
+// Not clear what to do here. dismiss query? 
 bool Autolock::event(QEvent *ev)
     {
     if (ev)
         {
         int isSwitchKey = 0;
-        // on device, this doesn't seem to get the EKeyDeviceF key: only 1ffffff
 				if (ev->type() == QEvent::KeyPress)
             {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *> (ev);
             RDEBUG("KeyPress", keyEvent->key());
             RDEBUG("KeyPress nativeScanCode", keyEvent->nativeScanCode());
             RDEBUG("EStdKeyDeviceF", EStdKeyDeviceF);
-            RDEBUG("EStdKeyDeviceF", EKeyInsert);
+            RDEBUG("EKeyDeviceF", EKeyDeviceF);
             RDEBUG("keyEvent->isAutoRepeat()", keyEvent->isAutoRepeat());
-            if( !keyEvent->isAutoRepeat() )
+            if ( keyEvent->nativeScanCode() == EStdKeyApplication0 || keyEvent->nativeScanCode() == EStdKeyDevice2 )
+              {
+              // switch to active screensaver if application key or power key pressed while screensaver active
+              // This key can be repeated, so that the screensaver remains as long as key is pushed
+              switchScreensaverToActiveMode();
+              }
+            else if( !keyEvent->isAutoRepeat() )
             	{
 	            if (keyEvent->key() == EKeyInsert )
 	                {
@@ -1301,11 +1366,11 @@ bool Autolock::event(QEvent *ev)
 	                RDEBUG("got EStdKeyDeviceF", EStdKeyDeviceF);
 	                isSwitchKey = 1;
 	                }
-              else if ( keyEvent->nativeScanCode() == EStdKeyApplication0 || keyEvent->nativeScanCode() == EStdKeyDevice2 )
-                {
-                // switch to active screensaver if application key or power key pressed while screensaver active
-                switchScreensaverToActiveMode();
-                }
+	            else if (keyEvent->nativeScanCode() == EKeyBell)	// this might be sent by others, i.e. PCFW
+	                {
+	                RDEBUG("got EKeyBell", EKeyBell);
+	                isSwitchKey = 1;
+	                }
               else if (keyEvent->key() == 0x1ffffff)
                 {
                 RDEBUG("0x1ffffff", 0x1ffffff);	// some unknown key is received. Nothing to do
@@ -1342,15 +1407,18 @@ void Autolock::handleLockSwitch()
     if (iLockStatus == ELockNotActive)
         {
         iShowKeyguardNote = 1; // note on enable keyguard
+        callerHasECapabilityWriteDeviceData = 1;
         ret = TryChangeStatus(ELockAppEnableKeyguard); // this should not ask confirmation
         }
     else if (iLockStatus == EKeyguardActive)
         {
         iShowKeyguardNote = 1; // note on disable keyguard
+        callerHasECapabilityWriteDeviceData = 1;
         ret = TryChangeStatus(ELockAppDisableKeyguard);
         }
     else if (iLockStatus == EDevicelockActive)
         {
+        callerHasECapabilityWriteDeviceData = 1;
         ret = TryChangeStatus(ELockAppDisableDevicelock);
         }
     else
@@ -1447,6 +1515,10 @@ void Autolock::subscriberKHWRMGripStatusChanged()
 void Autolock::subscriberKSecurityUIsDismissDialogChanged()
     {
     RDEBUG("0", 0);
+    TInt aDismissDialog = ESecurityUIsDismissDialogUninitialized;
+    TInt err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsDismissDialog, aDismissDialog );
+    RDEBUG("err", err);
+    RDEBUG("aDismissDialog", aDismissDialog);
 		}
 // ----------AutolockService---------------
 

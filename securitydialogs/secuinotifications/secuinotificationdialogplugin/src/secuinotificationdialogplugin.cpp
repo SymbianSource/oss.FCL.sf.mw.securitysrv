@@ -15,6 +15,7 @@
 *
 */
 
+#include "secuinotificationdebug.h"
 #include "secuinotificationdialogplugin.h"
 #include "secuinotificationdialog.h"
 #include "secuinotificationdialogpluginkeys.h"
@@ -58,7 +59,7 @@ bool SecUiNotificationDialogPlugin::accessAllowed(const QString &deviceDialogTyp
     Q_UNUSED(securityInfo)
 
     // All clients are allowed to use.
-    // TODO: should access be limited to certain clients?
+    // should access be limited to certain clients or capabilities ? Not for now.
     return true;
 }
 

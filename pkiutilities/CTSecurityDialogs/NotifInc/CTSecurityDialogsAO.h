@@ -170,6 +170,8 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
 
         void ShowCSRDialogL();
 
+        void ShowInformationNoteL( TInt aResourceID ) const;
+
         /**
         * Saves digital signature receipt
         */
