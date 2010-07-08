@@ -17,6 +17,7 @@
 TEMPLATE = lib
 TARGET = secuinotificationdialogplugin
 CONFIG += plugin
+TRANSLATIONS = secui.ts
 
 CONFIG += hb
 CONFIG += mobility
@@ -54,7 +55,8 @@ symbian: {
 BLD_INF_RULES.prj_exports += \
   "$${LITERAL_HASH}include <platform_paths.hrh>" \
   "qmakepluginstubs/secuinotificationdialogplugin.qtplugin   /epoc32/data/z/pluginstub/secuinotificationdialogplugin.qtplugin"\
-  "rom/secuinotificationdialogplugin.iby    CORE_APP_LAYER_IBY_EXPORT_PATH(secuinotificationdialogplugin.iby)"
+  "rom/secuinotificationdialogplugin.iby    CORE_APP_LAYER_IBY_EXPORT_PATH(secuinotificationdialogplugin.iby)"\
+	"rom/secuinotificationdialogplugin_resources.iby LANGUAGE_APP_LAYER_IBY_EXPORT_PATH(secuinotificationdialogplugin_resources.iby)"
   
 LIBS += -lxqservice
 LIBS += -lphoneclient

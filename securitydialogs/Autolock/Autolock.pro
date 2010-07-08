@@ -35,6 +35,7 @@ LIBS+=-lxqservice -lxqserviceutil -lflogger
 LIBS += -L../../../../../bin/release -lautolockuseractivityservice
 LIBS += -lsecui -letelmm -letel -lcustomapi -lcentralrepository
 LIBS += -lcone -lws32 -lkeylockpolicyapi
+LIBS += -lpower_save_display_mode
 
 SERVICE.FILE = service_conf.xml
 SERVICE.OPTIONS = embeddable

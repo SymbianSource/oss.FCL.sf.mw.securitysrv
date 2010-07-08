@@ -12,6 +12,9 @@
 <repository target="CRepository" uidValue="0x101f8798">
     <key int="0x7e000001"  ref="/KCRUidProfileEngine/KProEngActiveProfile"></key>
 </repository>
+<repository target="CRepository" uidValue="0x10200C8C">
+    <key int="0x00000006" ref="/KCRUidLightSettings/KDisplayLightsTimeout"></key>
+</repository>
 <repository target="RProperty" uidValue="0x101F8767">
     <key int="0x00000501"  ref="/KPSUidCoreApplicationUIs/KCoreAppUIsAutolockStatus"></key>
 </repository>
@@ -23,4 +26,7 @@
 </repository>
 <repository target="RProperty" uidValue="0x10207218">
     <key int="0x00000001"  ref="/KPSUidAvkonDomain/KAknKeyguardStatus"></key>
+</repository>
+<repository target="RProperty" uidValue="0x102029AC">
+    <key int="0x00000001"  ref="/KPSUidCtsyCallInformation/KCTsyCallState"></key>
 </repository>

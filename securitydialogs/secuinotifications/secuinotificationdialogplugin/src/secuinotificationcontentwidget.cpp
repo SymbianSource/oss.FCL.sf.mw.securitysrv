@@ -83,7 +83,7 @@ SecUiNotificationContentWidget::~SecUiNotificationContentWidget()
 void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &parameters)
 {
 		RDEBUG("0", 0);
-		qDebug() << parameters;
+		RDEBUGQT("parameters", parameters);
     QGraphicsLinearLayout *mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
 
     lMinLength = 4;	// might be replaced later
@@ -146,32 +146,32 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 					{
 					lEmergencySupported = ESecUiEmergencySupported;
 					}
-				qDebug() << "SecUiNotificationContentWidget::lEmergencySupported =" << lEmergencySupported;
+				RDEBUG("lEmergencySupported", lEmergencySupported);
     }
 
     if (parameters.contains(KQueryMinLength)) {
-				qDebug() << "SecUiNotificationContentWidget::KQueryMinLength";
+				RDEBUG("KQueryMinLength", 0);
         lMinLength = parameters.value(KQueryMinLength).toUInt();
-				qDebug() << lMinLength;
+				RDEBUG("lMinLength", lMinLength);
     }
     if (parameters.contains(KQueryMaxLength)) {
-				qDebug() << "SecUiNotificationContentWidget::KQueryMaxLength";
+				RDEBUG("KQueryMaxLength", 0);
         lMaxLength = parameters.value(KQueryMaxLength).toUInt();
-				qDebug() << lMaxLength;
+				RDEBUG("lMaxLength", lMaxLength);
     }
 
     if (parameters.contains(KEmergency)) {
-				qDebug() << "SecUiNotificationContentWidget::KEmergency";
+				RDEBUG("KEmergency", 0);
         QString emergencyText = parameters.value(KEmergency).toString();
-        qDebug() << emergencyText;
+        RDEBUGQT("emergencyText", emergencyText);
         if(!emergencyText.compare("emergencyYes"))
         	{
-        	qDebug() << "SecUiNotificationContentWidget::KEmergency emergencyYes";
+					RDEBUG("emergencyYes", 1);
         	isEmergency = 1;
         	}
         if(!emergencyText.compare("emergencyNo"))
         	{
-        	qDebug() << "SecUiNotificationContentWidget::KEmergency emergencyNo";
+					RDEBUG("emergencyNo", 0);
         	isEmergency = 0;
         	}
     }
@@ -179,47 +179,42 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
     // KCodeTop
     if (parameters.contains(KCodeTop)) {
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop 1";
+				RDEBUG("KCodeTop", 0);
         codeTop = new HbLineEdit("");	// no default value
-        qDebug() << "SecUiNotificationContentWidget::KCodeTop lMaxLength=";
-        qDebug() << lMaxLength;
-        if(lMaxLength>2)
-	        codeTop->setMaxLength(lMaxLength);
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop queryType=";
-				qDebug() << queryType;
+				RDEBUG("queryType", queryType);
 				codeTop->setInputMethodHints(Qt::ImhDigitsOnly);	// default
  		    if (queryType & ESecUiAlphaSupported)
 		    	{
-		    	qDebug() << "SecUiNotificationContentWidget::KCodeTop setUpAsLatinAlphabetOnlyEditor";
+					RDEBUG("ESecUiAlphaSupported", ESecUiAlphaSupported);
  	    		codeTop->setInputMethodHints(Qt::ImhNone);
 		  		}
  		    if (queryType & ESecUiSecretSupported)
 		    	{
-		    	qDebug() << "SecUiNotificationContentWidget::KCodeTop ESecUiSecretSupported";
+					RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
  	    		codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
- 	    		// note that codeButtom is never in secret mode. This nevertheless is restricted by the caller.
 		  		}
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop 3";
-				codeTop->setMaxLength(lMaxLength);
+				RDEBUG("lMaxLength", lMaxLength);
+        if(lMaxLength>2)
+	        codeTop->setMaxLength(lMaxLength);
 				
 				if (parameters.contains(KDefaultCode)) {
-					qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+					RDEBUG("KDefaultCode", 0);
   	      QString defaultCode = parameters.value(KDefaultCode).toString();
-    	    qDebug() << defaultCode;
+    	    RDEBUGQT("defaultCode", defaultCode);
 					codeTop->setText(defaultCode);
 					}
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop 4";
+				RDEBUG("1", 1);
 
         connect(codeTop, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeTopChanged(const QString &)));
         connect(codeTop, SIGNAL(contentsChanged()), this, SIGNAL(codeTopContentChanged()));
 
 				if (parameters.contains(KDefaultCode)) {	// this is done in this step so that the OK becomes valid (if rules are fulfilled)
-					qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+					RDEBUG("KDefaultCode", 0);
   	      QString defaultCode = parameters.value(KDefaultCode).toString();
-    	    qDebug() << defaultCode;
+    	    RDEBUGQT("defaultCode", defaultCode);
 					codeTop->setText(defaultCode);
 					}
-				qDebug() << "SecUiNotificationContentWidget::KCodeTop 4";
+				RDEBUG("2", 2);
 
 		    if (parameters.contains(KDialogTitle)) {
 		        QString titleText = parameters.value(KDialogTitle).toString();
@@ -228,21 +223,43 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 		    				{	// if separator, take only first part
 		    				titleText = titleText.left(titleText.indexOf('|'));
 		    				}
-		   			if(titleText.indexOf('#')>0)
+		   			if(titleText.indexOf('$')>0)
 		    				{	// if separator, take only first part
-		    				titleAttempts = titleText.right(titleText.length()-titleText.indexOf('#')-1);
-		    				qDebug() << "SecUiNotificationDialog::titleAttempts=" << titleAttempts;
+		    					// it comes translated alredy, from the client
+		    				titleAttempts = titleText.right(titleText.length()-titleText.indexOf('$')-1);
+		    				RDEBUGQT("titleAttempts", titleAttempts);
 		    				int nAttempts = titleAttempts.toInt();
 		    				RDEBUG("nAttempts", nAttempts);
-		    				titleText = titleText.left(titleText.indexOf('#'));
-		    				if(nAttempts>0)
-		    					titleText = titleText + " attempts=" + QString::number(nAttempts);
-		    				}
+		    				titleText = titleText.left(titleText.indexOf('$'));	// this comes translated already
+								if(nAttempts==1)	// last attempt
+		    					{
+		    					// This must be in a new line, to avoid problems with left-to-right writing
+		    					titleAttempts = hbTrId("txt_pin_code_dpophead_last_attempt");
+			    				}
+			    			else if(nAttempts>0)
+		    					{
+		    					titleAttempts = hbTrId("attempts") + "=" + QString::number(nAttempts);
+		    					// TODO this requires %L1 localization using txt_pin_code_dpopinfo_ln_attempts_remaining
+			    				}
+			    			else if(nAttempts==0)
+		    					{
+		    					titleAttempts = "";	// something special for the last attempt ?
+			    				}
+				    		else
+				    			{
+				    			titleAttempts = "";
+				    			}
+				    		}
 		        HbLabel *titleTop = new HbLabel(titleText);
 		        mainLayout->addItem(titleTop);
+		        if (titleAttempts.length()>0 )
+		        	{
+		        	HbLabel *titleTopAttemps = new HbLabel(titleAttempts);
+		        	mainLayout->addItem(titleTopAttemps);
+		        	}
 		        // in the dialog, it was setHeadingWidget(title);
 		    }
-
+				RDEBUG("3", 3);
     		mainLayout->addItem(codeTop);
     		// double-query
     		if (parameters.contains(KCodeBottom))
@@ -252,6 +269,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
     			if(titleText.indexOf('|')>0)
     				{	// if no separator, don't create label
     				QString titleBottomStr = titleText.right(titleText.length()-titleText.indexOf('|')-1);
+    				// no need to translate
     				HbLabel *titleBottom = new HbLabel(titleBottomStr);
     				mainLayout->addItem(titleBottom);
     				}
@@ -262,10 +280,15 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 	    		codeBottom->setInputMethodHints(Qt::ImhDigitsOnly);	// default
 	 		    if (queryType & ESecUiAlphaSupported)
 			    	{
-			    	qDebug() << "SecUiNotificationContentWidget::KCodeBottom setUpAsLatinAlphabetOnlyEditor";
+			    	RDEBUG("setInputMethodHints", 0);
 	 	    		codeBottom->setInputMethodHints(Qt::ImhNone);
 			  		}
-					qDebug() << "SecUiNotificationContentWidget::KCodeBottom 3";
+	 		    if (queryType & ESecUiSecretSupported)
+			    	{
+			    	RDEBUG("ESecUiSecretSupported", 0);
+	 	    		codeBottom->setEchoMode(HbLineEdit::PasswordEchoOnEdit);	// this will also remove predictive, which is what we want
+			  		}
+		    	RDEBUG("connecting", 0);
 	        connect(codeBottom, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));
         	connect(codeBottom, SIGNAL(contentsChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));
 	    		mainLayout->addItem(codeBottom);
@@ -291,7 +314,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
     }
 
     if (parameters.contains(KChecboxType)) {
-    		qDebug() << "SecUiNotificationContentWidget::KChecboxType";
+	    	RDEBUG("KChecboxType", 0);
         if (parameters.contains(KDialogTitle)) {
             //TODO position of the label is not centered
             QString tmpText=parameters.value(KDialogTitle).toString();
@@ -304,20 +327,20 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
         checkbox = new HbCheckBox("Caption");   
         if (parameters.contains(KDefaultCode)) {
-    				qDebug() << "SecUiNotificationContentWidget::KDefaultCode";
+	    			RDEBUG("KDefaultCode", 0);
             QStringList list1 = parameters.value(KDefaultCode).toString().split("|");
             if (!list1.isEmpty() && list1.count()==2) {
                 if (!list1[0].isNull() && !list1[0].isEmpty()) checkbox->setText(list1[0]);
                 if (!list1[1].isNull() && !list1[1].isEmpty()) checkbox->setChecked(list1[1].toInt());
             }
-
+            // TODO this needs localization
         }
         mainLayout->addItem(checkbox);
     }
 
     if (parameters.contains(KMultiChecboxType) && parameters.contains(KDefaultCode)) 
     	{
- 				qDebug() << "SecUiNotificationContentWidget::KMultiChecboxType";
+   			RDEBUG("KMultiChecboxType", 0);
         QStringList list1 = parameters.value(KDefaultCode).toString().split("1\t");
         if (!list1.isEmpty()) {
             listWidget = new HbListWidget();
@@ -325,6 +348,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
                 if (!list1[i].isEmpty() && !list1[i].isNull()) {
                     HbListWidgetItem* modelItem = new HbListWidgetItem();
                     modelItem->setData(QVariant(list1[i]), Qt::DisplayRole);
+            				// TODO this needs localization
                     listWidget->addItem(modelItem);  
                 }
             listWidget->setCurrentRow(0);

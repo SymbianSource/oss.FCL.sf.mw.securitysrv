@@ -33,6 +33,7 @@
 #include <pathinfo.h> 
 #endif //RD_MULTIPLE_DRIVE 
 #include <coreapplicationuisdomainpskeys.h>
+#include <CoreApplicationUIsSDKCRKeys.h>
 #include <charconv.h>
 #include <ProfileEngineSDKCRKeys.h>
 #include <Profile.hrh>
@@ -625,7 +626,7 @@ void CRemoteLock::CheckSettingsL()
        if ( !iProfileSession )
            {
            RL_TRACE_PRINT(" [ rl.exe ] CheckSettingsL() create session "); 
-           iProfileSession = CRepository::NewL( KCRUidProfileEngine ); 
+           iProfileSession = CRepository::NewL( KCRUidCoreApplicationUIs );	// previously it was	KCRUidProfileEngine
            }
        if ( !iObserver )
            {
@@ -655,7 +656,7 @@ void CRemoteLock::CheckSettingsL()
             if ( !iProfileSession )
                 {
                 RL_TRACE_PRINT(" [ rl.exe ] CheckSettingsL() create session "); 
-                iProfileSession = CRepository::NewL( KCRUidProfileEngine ); 
+                iProfileSession = CRepository::NewL( KCRUidCoreApplicationUIs );	// previously it was	KCRUidProfileEngine
                 }
             ProfileNotifyL( EFalse );
             delete iProfileSession;
@@ -1458,7 +1459,10 @@ TBool CRemoteLock::ProfileNotifyL(
     if ( aNotifyEnable )
         {
         
-        TInt err = iProfileSession->Get( KProEngActiveProfile, iCurrentProfile );
+        TInt err = iProfileSession->Get( KCoreAppUIsNetworkConnectionAllowed , iCurrentProfile );	// previously was KProEngActiveProfile
+        RL_TRACE_PRINT_NUM("[rl.exe] HandleNotifyGeneric() err = %d", err );
+    		RL_TRACE_PRINT_NUM("[rl.exe] HandleNotifyGeneric() iCurrentProfile = %d", iCurrentProfile );
+
         User::LeaveIfError( err );
         RL_TRACE_PRINT(" [ rl.exe ] ProfileNotifyL() startlisten");
         iProfileNotifyHandler->StartListeningL();  
@@ -1486,7 +1490,9 @@ TBool CRemoteLock::GetProfile( TInt& aProfile )
     {
     RL_TRACE_PRINT(" [ rl.exe ] GetProfile() ");
     TInt err;
-    err = iProfileSession->Get( KProEngActiveProfile, aProfile );
+    err = iProfileSession->Get( KCoreAppUIsNetworkConnectionAllowed , aProfile );	// previously was KProEngActiveProfile
+		RL_TRACE_PRINT_NUM("[rl.exe] HandleNotifyGeneric() err = %d", err );
+
     RL_TRACE_PRINT(" [ rl.exe ] exit GetProfile() ");
     return ( err == KErrNone );
     }    
@@ -1505,8 +1511,9 @@ void CRemoteLock::HandleNotifyGeneric(
     
     TInt profile = 0; 
     GetProfile( profile ); 
-    
-    if ( ( profile == EProfileOffLineId ) && ( iIsEnabled  ) && ( iCurrentProfile != EProfileOffLineId )) 
+    RL_TRACE_PRINT_NUM("[rl.exe] HandleNotifyGeneric() profile = %d", profile );
+    RL_TRACE_PRINT_NUM("[rl.exe] HandleNotifyGeneric() iCurrentProfile = %d", iCurrentProfile );
+    if ( ( profile == ECoreAppUIsNetworkConnectionNotAllowed ) && ( iIsEnabled  ) && ( iCurrentProfile != ECoreAppUIsNetworkConnectionNotAllowed )) 
         {
         ActivateDeviceLock();  
         }

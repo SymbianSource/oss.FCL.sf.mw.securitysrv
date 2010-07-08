@@ -110,6 +110,7 @@ void CpCertTrustView::viewTrustSettings()
 // TCertificateAppInfo's Name() function.
 // ---------------------------------------------------------------------------
 //
+
 void CpCertTrustView::updateListBoxL()
     {
     RDEBUG("0", 0);
@@ -152,21 +153,16 @@ void CpCertTrustView::updateListBoxL()
         {
         mClientUids.Append( KCertManUIViewTrustJavaInstallingId );
         }
-
-    clientCount = mClientUids.Count();
-    
-    QList<int> itemArray;
-    for(int i=0;i<mTrustedClients.size();i++)
-    	{
-		itemArray.insert(i,0);
-    	}
     
     if ( EX509Certificate != entry->CertificateFormat() )
         {
 		return;
         }
 	TInt resIndex = KErrNotFound;
-	if ( mClientUids.Count() > 0 )
+	QList <int> itemArray;
+	QList <int> trustValue;
+	clientCount = mClientUids.Count();
+	if ( clientCount > 0 )
 		{
 		for ( TInt k = 0; k < clientCount; k++ )
 			{
@@ -180,9 +176,16 @@ void CpCertTrustView::updateListBoxL()
 			TBool trustState = EFalse;
 			QString item = mTrustedClients[ resIndex ];
 			trustState = checkCertificateClientTrustL( mClientUids[k], *entry );
+			// insert the index which would be used to retrieve the value from mTrustedClients
+			itemArray.insert(k,resIndex);
+			
 			if ( trustState )
 				{
-				itemArray.replace(resIndex,1);
+				trustValue.insert(k,1);
+				}
+			else
+				{
+				trustValue.insert(k,0);
 				}
 			}
 		}
@@ -198,15 +201,17 @@ void CpCertTrustView::updateListBoxL()
 	certLabel->setText(QString( (QChar*)label.Ptr(),label.Length() ) );
 	mCertLabelList->addItem(certLabel.get());
 	certLabel.release();
+	
 	RDEBUG("0", 0);
-	int count = mTrustedClients.size();
+	
+	int count = itemArray.size();
 	for( int index = 0 ;index < count; ++index)
 		{
 		std::auto_ptr<HbDataFormModelItem> item (q_check_ptr(new HbDataFormModelItem( 
 										HbDataFormModelItem::ToggleValueItem,
-										mTrustedClients[index] ) ));
-	
-		if( itemArray[index] == 1)
+										mTrustedClients[itemArray[index]] ) ));
+		
+		if( trustValue[index] == 1)
 			{
 			item->setContentWidgetData("text",mTrustValues[0]);
 			item->setContentWidgetData("additionalText",mTrustValues[1]);
@@ -226,6 +231,7 @@ void CpCertTrustView::updateListBoxL()
 	form.release();
     }
 
+
 void CpCertTrustView::saveTrustSettings()
 	{
 	RDEBUG("0", 0);
@@ -234,19 +240,25 @@ void CpCertTrustView::saveTrustSettings()
 		{
 		TInt itemCount = mFormModel->rowCount();
 		RArray<TUid> newUids;
-		QT_TRAP_THROWING(	CleanupClosePushL( newUids ));
-		
-		for(int index = 0;index<itemCount;++index)
-			{
-			HbDataFormModelItem *item = mFormModel->item(index);
-			QString trustValue = item->contentWidgetData("text").toString();
-			if(trustValue == "On")
+		QT_TRAP_THROWING
+			(	
+			CleanupClosePushL( newUids );
+			
+			for(int index = 0;index<itemCount;++index)
 				{
-				newUids.Append(trusterId(mTrustedClients[index]));
+				HbDataFormModelItem *item = mFormModel->item(index);
+				QString trustValue = item->contentWidgetData("text").toString();
+				if(trustValue == "On")
+					{
+					newUids.Append(trusterId(mTrustedClients[index]));
+					}
 				}
-			}
-		QT_TRAP_THROWING(	mCertDataContainer.iWrapper->SetApplicabilityL( mCertDataContainer.CertManager(), entry, newUids ));
-		CleanupStack::PopAndDestroy(&newUids);
+			if(newUids.Count() > 0 )
+				{
+				mCertDataContainer.iWrapper->SetApplicabilityL( mCertDataContainer.CertManager(), entry, newUids );
+				}
+			CleanupStack::PopAndDestroy(&newUids);
+			)
 		}
 	}
 

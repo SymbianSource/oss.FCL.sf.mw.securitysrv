@@ -21,10 +21,12 @@
 #ifndef     __SECUI_H
 #define     __SECUI_H
 
-#if defined(__SECUI_H)
+#if defined(_DEBUG)
 #define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#define RDEBUGSTR( x ) RDebug::Print( x );
 #else
 #define RDEBUG( x, y )
+#define RDEBUGSTR( x )
 #endif
 
 class TSecUi

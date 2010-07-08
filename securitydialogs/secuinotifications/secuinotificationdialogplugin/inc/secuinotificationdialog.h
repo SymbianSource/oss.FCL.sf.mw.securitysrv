@@ -29,6 +29,8 @@
 
 #include <qmobilityglobal.h>
 
+class HbTranslator;
+
 QTM_BEGIN_NAMESPACE
     class QValueSpacePublisher;
     class QValueSpaceSubscriber;
@@ -81,6 +83,8 @@ public slots:
 private:
     Q_DISABLE_COPY(SecUiNotificationDialog)
 
+    HbTranslator *mCommonTranslator;
+    HbTranslator *mSecUiNotificationTranslator;
     int mMyId;
     int mLastError;
     bool mShowEventReceived;

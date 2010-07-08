@@ -24,6 +24,7 @@
 #include <hbaction.h>
 #include <QDebug>
 #include <e32debug.h>
+#include <hbtranslator.h>
 #include <cphcltemergencycall.h>
 #include <SCPServerInterface.h>	// for TARM error codes while validating new lock code
 #include <QString>
@@ -32,6 +33,10 @@
 #include <e32property.h>
 
 QTM_USE_NAMESPACE
+
+const QString KTranslationsPath = "/resource/qt/translations/";
+const QString KSecUiNotificationTranslationsFile = "secui";
+const QString KCommonTranslationsFile = "common";
 
 #include <qvaluespacesubscriber.h>
 #include <qvaluespacepublisher.h>
@@ -79,12 +84,14 @@ enum TSecurityUIsDismissDialogValues
 // ----------------------------------------------------------------------------
 //
 SecUiNotificationDialog::SecUiNotificationDialog(
-        const QVariantMap &parameters) : HbDialog(), mLastError(KNoError)
+        const QVariantMap &parameters) : HbDialog(), mCommonTranslator(0), mSecUiNotificationTranslator(0), mLastError(KNoError)
 {
 		RDEBUG("0", 0);
 		TTime myTime;
     myTime.HomeTime();
 		mMyId = I64LOW( myTime.Int64() );
+    mCommonTranslator = new HbTranslator(KTranslationsPath, KCommonTranslationsFile);
+    mSecUiNotificationTranslator = new HbTranslator(KTranslationsPath, KSecUiNotificationTranslationsFile);
     constructDialog(parameters);
 }
 
@@ -94,7 +101,13 @@ SecUiNotificationDialog::SecUiNotificationDialog(
 //
 SecUiNotificationDialog::~SecUiNotificationDialog()
 {
-	RDEBUG("0", 0);
+		RDEBUG("0", 0);
+    delete mSecUiNotificationTranslator;
+    delete mCommonTranslator;
+		RDEBUG("0", 0);
+    // TODO what about subscriberKSecurityUIsDismissDialog
+    // and codeTop
+		RDEBUG("1", 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -215,7 +228,6 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
                 }
             RDEBUG("setFocus", 0);
       			codeTop->setFocus();	// this should open the VKB . Doesn't seem to work when it's done on the widget, so it's done here.
-
             }	// codeTop!=NULL
             
 			const TUint32 KSecurityUIsTestCode  = 0x00000307;
@@ -224,14 +236,14 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 			RDEBUG("KSecurityUIsTestCode err", err);
 			RDEBUG("faking value", value);
 			RDEBUG("mShowEventReceived", mShowEventReceived);
-			if(value>0 && mShowEventReceived==true)	// show happens 2 times. Dialog can be closed only the second.
+			if(value>0 && value<1000000 && mShowEventReceived==true)	// show happens 2 times. Dialog can be closed only the second.
 				{
 				QString myString = "";
 				myString += QString("%1").arg(value);
-				qDebug() << "SecUiNotificationDialog::faking myString=" << myString;
+				RDEBUGQT("myString", myString);
 		    codeTop->setText( myString );
 		    TInt err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsTestCode, 0 );	// clear after using it
-				qDebug() << "SecUiNotificationDialog::calling handleAccepted=" << myString;
+		    RDEBUGQT("calling handleAccepted myString", myString);
 		    emit handleAccepted();
 				// handleAccepted already   emit closeDeviceDialog(false);	// false means "not by client", although it's not really used
 				}
@@ -278,17 +290,17 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     				{	// if separator, take only first part
     				titleText = titleText.left(titleText.indexOf('|'));
     				}
-   			if(titleText.indexOf('#')>0)
+   			if(titleText.indexOf('$')>0)
     				{	// if separator, take only first part
-    				titleAttempts = titleText.right(titleText.length()-titleText.indexOf('#')-1);
-    				qDebug() << "SecUiNotificationDialog::titleAttempts=" << titleAttempts;
+    				titleAttempts = titleText.right(titleText.length()-titleText.indexOf('$')-1);
+    				RDEBUGQT("titleAttempts", titleAttempts);
     				int nAttempts = titleAttempts.toInt();
     				RDEBUG("nAttempts", nAttempts);
-    				titleText = titleText.left(titleText.indexOf('#'));
+    				titleText = titleText.left(titleText.indexOf('$'));
     				if(nAttempts>0)
     					titleText = titleText + " attempts=" + QString::number(nAttempts);
     				}
-    		titleText = "Security Query";	// this is the header, for any potential later error which needs to be displayed
+    		titleText = hbTrId("Security Query");	// this is the header, for any potential later error which needs to be displayed
         // This is created only if needed (i.e. errors for NewLockCode)
         // titleWidget = new HbLabel(titleText);
         // setHeadingWidget(titleWidget);
@@ -297,13 +309,13 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	    if (parameters.contains(KEmergency)) {
 					RDEBUG("KEmergency", 1);
 	        QString emergencyText = parameters.value(KEmergency).toString();
-	        qDebug() << emergencyText;
+	        RDEBUGQT("emergencyText", emergencyText);
 	        if(!emergencyText.compare("emergencyYes"))
 	        	{
 	        	RDEBUG("emergencyYes", 1);
 	        	isEmergency = 1;
 	        	okAction->setEnabled(true);
-	        	okAction->setText("Call");
+	        	okAction->setText(hbTrId("Call"));
     				return true;
 	        	}
 	        if(!emergencyText.compare("emergencyNo"))
@@ -311,7 +323,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	RDEBUG("emergencyNo", 1);
 	        	isEmergency = 0;
 	        	okAction->setEnabled(false);	// 112 -> 1122 (=password) . This is handled by   < lMinLength 
-	        	okAction->setText("Ok");
+	        	okAction->setText(hbTrId("Ok"));
     				return true;
 	        	}
 	    }
@@ -319,13 +331,13 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	    if (parameters.contains(KInvalidNewLockCode)) {
 					RDEBUG("KInvalidNewLockCode", 0);
 	        QString invalidText = parameters.value(KInvalidNewLockCode).toString();
-	        qDebug() << invalidText;
+	        RDEBUGQT("invalidText", invalidText);
 	        QString newTitleText = "Lock Code";	// TODO take from the original one
 
-	        QString invalidStr = invalidText.right(invalidText.length()-invalidText.indexOf('#')-1);
+	        QString invalidStr = invalidText.right(invalidText.length()-invalidText.indexOf('$')-1);
 	        int invalidNumber = invalidStr.toInt();
 	        RDEBUG("invalidNumber", invalidNumber);
-	        if(invalidNumber<0)
+	        if(invalidNumber<0)	// that is, -1
 	        	{
 	        	RDEBUG("invalidNumber<0", invalidNumber );
 	        	// nothing to do
@@ -333,97 +345,97 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 				if(invalidNumber==EDeviceLockAutolockperiod)
 	        	{
 	        	RDEBUG("EDeviceLockAutolockperiod", invalidNumber );
-	        	newTitleText+="EDeviceLockAutolockperiod";
+	        	newTitleText+=hbTrId("EDeviceLockAutolockperiod");
 	        	}
 	        if(invalidNumber==EDeviceLockMaxAutolockPeriod)
 	        	{
 	        	RDEBUG("EDeviceLockAutolockperiod", invalidNumber );
-	        	newTitleText+="EDeviceLockMaxAutolockPeriod";
+	        	newTitleText+=hbTrId("EDeviceLockMaxAutolockPeriod");
 	        	}
 	        if(invalidNumber==EDeviceLockMinlength)
 	        	{
 	        	RDEBUG("EDeviceLockMinlength", invalidNumber );
-	        	newTitleText+="EDeviceLockMinlength";
+	        	newTitleText+=hbTrId("EDeviceLockMinlength");
 	        	}
 	        if(invalidNumber==EDeviceLockMaxlength)
 	        	{
 	        	RDEBUG("EDeviceLockMaxlength", invalidNumber );
-	        	newTitleText+="EDeviceLockMaxlength";
+	        	newTitleText+=hbTrId("EDeviceLockMaxlength");
 	        	}
 	        if(invalidNumber==EDeviceLockRequireUpperAndLower)
 	        	{
 	        	RDEBUG("EDeviceLockRequireUpperAndLower", invalidNumber );
-	        	newTitleText+="EDeviceLockRequireUpperAndLower";
+	        	newTitleText+=hbTrId("EDeviceLockRequireUpperAndLower");
 	        	}
 	        if(invalidNumber==EDeviceLockRequireCharsAndNumbers)
 	        	{
 	        	RDEBUG("EDeviceLockMaxlength", invalidNumber );
-	        	newTitleText+="EDeviceLockMaxlength";
+	        	newTitleText+=hbTrId("EDeviceLockMaxlength");
 	        	}
 	        if(invalidNumber==EDeviceLockAllowedMaxRepeatedChars)
 	        	{
 	        	RDEBUG("EDeviceLockAllowedMaxRepeatedChars", invalidNumber );
-	        	newTitleText+="EDeviceLockAllowedMaxRepeatedChars";
+	        	newTitleText+=hbTrId("EDeviceLockAllowedMaxRepeatedChars");
 	        	}
 	        if(invalidNumber==EDeviceLockHistoryBuffer)
 	        	{
 	        	RDEBUG("EDeviceLockHistoryBuffer", invalidNumber );
-	        	newTitleText+="EDeviceLockHistoryBuffer";
+	        	newTitleText+=hbTrId("EDeviceLockHistoryBuffer");
 	        	}
 	        if(invalidNumber==EDeviceLockPasscodeExpiration)
 	        	{
 	        	RDEBUG("EDeviceLockPasscodeExpiration", invalidNumber );
-	        	newTitleText+="EDeviceLockPasscodeExpiration";
+	        	newTitleText+=hbTrId("EDeviceLockPasscodeExpiration");
 	        	}
 	        if(invalidNumber==EDeviceLockMinChangeTolerance)
 	        	{
 	        	RDEBUG("EDeviceLockMinChangeTolerance", invalidNumber );
-	        	newTitleText+="EDeviceLockMinChangeTolerance";
+	        	newTitleText+=hbTrId("EDeviceLockMinChangeTolerance");
 	        	}
 	        if(invalidNumber==EDeviceLockMinChangeInterval)
 	        	{
 	        	RDEBUG("EDeviceLockMinChangeInterval", invalidNumber );
-	        	newTitleText+="EDeviceLockMinChangeInterval";
+	        	newTitleText+=hbTrId("EDeviceLockMinChangeInterval");
 	        	}
 	        if(invalidNumber==EDeviceLockDisallowSpecificStrings)
 	        	{
 	        	RDEBUG("EDeviceLockDisallowSpecificStrings", invalidNumber );
-	        	newTitleText+="EDeviceLockDisallowSpecificStrings";
+	        	newTitleText+=hbTrId("EDeviceLockDisallowSpecificStrings");
 	        	}
 	        if(invalidNumber==EDeviceLockAllowedMaxAtempts)
 	        	{
 	        	RDEBUG("EDeviceLockAllowedMaxAtempts", invalidNumber );
-	        	newTitleText+="EDeviceLockAllowedMaxAtempts";
+	        	newTitleText+=hbTrId("EDeviceLockAllowedMaxAtempts");
 	        	}
 	        if(invalidNumber==EDeviceLockConsecutiveNumbers)
 	        	{
 	        	RDEBUG("EDeviceLockConsecutiveNumbers", invalidNumber );
-	        	newTitleText+="EDeviceLockConsecutiveNumbers";
+	        	newTitleText+=hbTrId("EDeviceLockConsecutiveNumbers");
 	        	}
 	        if(invalidNumber==EDeviceLockMinSpecialCharacters)
 	        	{
 	        	RDEBUG("EDeviceLockMinSpecialCharacters", invalidNumber );
-	        	newTitleText+="EDeviceLockMinSpecialCharacters";
+	        	newTitleText+=hbTrId("EDeviceLockMinSpecialCharacters");
 	        	}
 	        if(invalidNumber==EDeviceLockSingleCharRepeatNotAllowed)
 	        	{
 	        	RDEBUG("EDeviceLockSingleCharRepeatNotAllowed", invalidNumber );
-	        	newTitleText+="EDeviceLockSingleCharRepeatNotAllowed";
+	        	newTitleText+=hbTrId("EDeviceLockSingleCharRepeatNotAllowed");
 	        	}
 	        if(invalidNumber==EDevicelockConsecutiveCharsNotAllowed)
 	        	{
 	        	RDEBUG("EDevicelockConsecutiveCharsNotAllowed", invalidNumber );
-	        	newTitleText+="EDevicelockConsecutiveCharsNotAllowed";
+	        	newTitleText+=hbTrId("EDevicelockConsecutiveCharsNotAllowed");
 	        	}
 	        if(invalidNumber>=EDevicelockTotalPolicies)
 	        	{
 	        	RDEBUG("EDevicelockTotalPolicies", invalidNumber );
-	        	newTitleText+="EDevicelockTotalPolicies";
+	        	newTitleText+=hbTrId("EDevicelockTotalPolicies");
 	        	}
 	        if( !titleWidget )
 	        	{
 	        	RDEBUG("creating titleWidget", 0 );
-	        	titleWidget = new HbLabel("New lock code");	// it will be changed later
+	        	titleWidget = new HbLabel(hbTrId("New lock code"));	// it will be changed later
           	setHeadingWidget(titleWidget);
           	}
           RDEBUG("setPlainText", 0 );
@@ -432,7 +444,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        if(invalidNumber<0)	// everything is ok
 	        	{
 	        	okAction->setEnabled(true);	// this might fail in the scenario: check this : invalid -> valid. This allows verif ?
-	        	okAction->setText("Ok");
+	        	okAction->setText(hbTrId("Ok"));
 	        	codeBottom->setEnabled(true);
 	        	}
 	        else
@@ -440,7 +452,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	okAction->setEnabled(false);
 	        	codeBottom->setEnabled(false);
 	        	codeBottom->setText("");
-	        	okAction->setText("Ok");
+	        	okAction->setText(hbTrId("Ok"));
 	        	}
 	        // need to return because all objects are already created
    				return true;
@@ -477,7 +489,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     	return true;
     	}
 
-    okAction = new HbAction(tr("Ok"));
+    okAction = new HbAction(hbTrId("Ok"));
     RDEBUG("created HbAction okAction", 1);
     okAction->setEnabled(false);	// initially the OK is disabled because codeTop is empty
     if((queryType & ESecUiBasicTypeMask) ==ESecUiBasicTypeCheck) {
@@ -494,7 +506,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     disconnect(okAction, SIGNAL(triggered()), this, SLOT(close()));	// the close will be done in handleAccepted
     connect(okAction, SIGNAL(triggered()), this, SLOT(handleAccepted()));
     
-    cancelAction = new HbAction(tr("Cancel"));    // qtTrId("txt_common_button_cancel")
+    cancelAction = new HbAction(hbTrId("Cancel"));    // qtTrId("txt_common_button_cancel")
     addAction(cancelAction);
     disconnect(cancelAction, SIGNAL(triggered()), this, SLOT(close()));	// the close will be done in handleCancelled
     connect(cancelAction, SIGNAL(triggered()), this, SLOT(handleCancelled()));
@@ -543,7 +555,7 @@ void SecUiNotificationDialog::sendResult(int accepted)
 		RDEBUG("0", 0);
     mResultMap.insert(KResultAccepted, acceptedValue);
 		RDEBUG("0", 0);
-		qDebug() << mResultMap;
+		RDEBUGQT("mResultMap", mResultMap);
 		RDEBUG("queryType", queryType);
 		if(!(queryType & ESecUiTypeMaskLock))
 			{	// the lock-icon should not reply
@@ -581,7 +593,7 @@ void SecUiNotificationDialog::handleAccepted()
         codeTopText="";
          foreach(index, selectedItems) { 
 		 		 codeTopText+=QString::number(index.row());
-                //could also use  if(index.row()!=selectedItems.count()-1) codeTopText+= "|";
+                // could also use  if(index.row()!=selectedItems.count()-1) codeTopText+= "|";
                 codeTopText+= "|";
                 }
          mResultMap.insert(KCodeTopIndex,  codeTopText);
@@ -589,7 +601,7 @@ void SecUiNotificationDialog::handleAccepted()
     else
         codeTopText = codeTop->text();
     // no need to check last time for codeBottom
-   	qDebug() << "codeTopText=" << codeTopText;
+   	RDEBUGQT("codeTopText", codeTopText);
     sendResult(KErrNone);
     RDEBUG("calling close()", 0);
     close();	// this is needed because Cancel doesn't automatically closes the dialog
@@ -620,7 +632,7 @@ void SecUiNotificationDialog::handleMemorySelectionChanged(const QString &text)
     {
 		RDEBUG("0", 0);
 		RDEBUG("mMyId", mMyId);
-    qDebug() << text;
+    RDEBUGQT("text", text);
     QVariant memorySelection(text);
     mResultMap.insert(KSelectedMemoryIndex, memorySelection);
     }
@@ -629,7 +641,7 @@ void SecUiNotificationDialog::handleCodeTopContentChanged()
     {
 		RDEBUG("0", 0);
 		RDEBUG("mMyId", mMyId);
-    	qDebug() << codeTop->text();
+    	RDEBUGQT("codeTop->text()", codeTop->text());
     	handleCodeTopChanged(codeTop->text());
     }
 
@@ -640,20 +652,20 @@ void SecUiNotificationDialog::handleCodeTopContentChanged()
 void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     {
 		RDEBUG("0", 0);
-    	qDebug() << "SecUiNotificationDialog::handleCodeTopChanged=" << text ;
+    	RDEBUGQT("text", text);
     	if(queryDual)
     		{
     		codeBottom->setText("");	// any change resets the verification.
+	    	if( (queryType & ESecUiMaskType) == 0x000004  )	// new codeLock
+	    		{	// ChangeSecCodeParamsL change RMobilePhone::ESecurityCodePhonePassword
+				    QVariant codeTopVar(text);
+				    mResultMap.insert(KCodeTopIndex, codeTopVar);
+						sendResult(KErrCompletion);	// send the current password back to the client for further TARM validation. This is done on any key-press, not in the OK
+	    		}
     		}
-    	if( queryType == 0x1000004 )	// new codeLock
-    		{	// ChangeSecCodeParamsL change RMobilePhone::ESecurityCodePhonePassword
-			    QVariant codeTopVar(text);
-			    mResultMap.insert(KCodeTopIndex, codeTopVar);
-					sendResult(KErrCompletion);	// send the current password back to the client for further TARM validation. This is done on any key-press, not in the OK
-    		}
-    	if(text.length() < lMinLength )
+    	else if(text.length() < lMinLength )
     		{
-    		qDebug() << "SecUiNotificationDialog::handleCodeTopChanged too short:" << text ;
+    		RDEBUGQT("too short text", text);
     		okAction->setEnabled(false);
 				RDEBUG("lEmergencySupported", lEmergencySupported);
 				if( lEmergencySupported && text.length() > 2 )	// emergency numbers need at least 3 digits
@@ -666,8 +678,8 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     	else if (text.length() >= lMinLength)
     		{
     		// might use a flag to avoid re-setting. But this complicates things if there's another initial verification
-    		qDebug() << "SecUiNotificationDialog::handleCodeTopChanged long enough:" << text ;
-    		okAction->setText("Ok");
+    		RDEBUGQT("long enough text", text);
+    		okAction->setText(hbTrId("Ok"));
     		if(queryDual==0)	// only if Bottom is not used
     			okAction->setEnabled(true);
     		}
@@ -681,26 +693,26 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
 void SecUiNotificationDialog::handleCodeBottomChanged(const QString &text)
     {
 		RDEBUG("0", 0);
-    	qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged" << text ;
-    	qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged. codeTop=" << codeTop->text() ;
+    	RDEBUGQT("text", text);
+    	RDEBUGQT("codeTop->text()", codeTop->text());
     	if(text.length() < lMinLength )
     		{
-    		qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged too short:" << text ;
+    		RDEBUGQT("too short text", text);
     		okAction->setEnabled(false);
     		}
     	else
     		{
     		// might use a flag to avoid re-setting. But it just complicates things.
-    		qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged long enough:" << text ;
+    		RDEBUGQT("long enough text", text);
     		if(codeTop->text()==text)
     			{
     			// unless both codes match, don't allow OK. Note that the first field doesn't allow exit until the validations (i.e. NewLockCode) as succesfull
-    			qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged codes match:" << text ;
+    			RDEBUGQT("codes match", text);
 	    		okAction->setEnabled(true);
 	    		}
 	    	else
 	    		{
-    			qDebug() << "SecUiNotificationDialog::handleCodeBottomChanged codes not match:" << text ;
+    			RDEBUGQT("codes don't match", text);
 					okAction->setEnabled(false);
 	    		}
     		}
@@ -723,11 +735,9 @@ void SecUiNotificationDialog::handlebut2Changed()
     {
 		RDEBUG("0", 0);
     	QString codeTopText = codeTop->text();
-    	qDebug() << "codeTopText";
-    	qDebug() << codeTopText;
+    	RDEBUGQT("codeTopText", codeTopText);
     	codeTopText = codeTopText + "1" ;
-    	qDebug() << "codeTopText+1";
-    	qDebug() << codeTopText;
+    	RDEBUGQT("codeTopText+1", codeTopText);
     	codeTop->setText(codeTopText);
     	
     	      RDEBUG("editorInterface", 0);
@@ -770,15 +780,18 @@ void SecUiNotificationDialog::handlebut2Changed()
 //
 void SecUiNotificationDialog::handlebut3Changed()
     {
-    	qDebug() << "SecUiNotificationDialog::handlebut3Changed";
+    	RDEBUG("0", 0);
     	QString codeTopText = codeTop->text();
-    	qDebug() << "codeTopText";
-    	qDebug() << codeTopText;
+    	RDEBUG("codeTopText", 0);
+    	RDEBUGQT("codeTopText", codeTopText);
     	codeTopText = codeTopText + "5" ;
-    	qDebug() << "codeTopText+5";
+    	RDEBUGQT("codeTopText+5", codeTopText);
     	codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
-    	qDebug() << codeTopText;
+    	RDEBUGQT("codeTopText", codeTopText);
     	codeTop->setText(codeTopText);
+    	RDEBUG("setFocus", 0);
+    	codeTop->setFocus();
+    	RDEBUG("1", 1);
     }
 
 // ----------------------------------------------------------------------------

@@ -93,7 +93,7 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
         TDes& aDataText, TInt aMinLength, TInt aMaxLength, TInt aMode)
     {
     RDEBUG("aCaption", 0);
-    RDebug::Print(aCaption);
+    RDEBUGSTR(aCaption);
     RDEBUG("aMode", aMode);
     TInt secUiOriginatedQuery(ESecurityUIsSecUIOriginatedUninitialized);
     TInt err = RProperty::Get(KPSUidSecurityUIs,
@@ -170,7 +170,7 @@ EXPORT_C TInt CSecQueryUi::SecQueryDialog(const TDesC& aCaption,
     RDEBUG("error", error);
     User::LeaveIfError(error);
     RDEBUG("iPassword", 0);
-		RDebug::Print(iPassword);
+		RDEBUGSTR(iPassword);
     aDataText.Copy(iPassword);
 
     err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsSecUIOriginatedQuery,
@@ -355,13 +355,13 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
         {
         TPtrC acceptedValueTop = *acceptedVariantTop->Value<TDesC> ();
         RDEBUG("acceptedValueTop", 0);
-        RDebug::Print(acceptedValueTop);
+        RDEBUGSTR(acceptedValueTop);
         iPassword.Copy(acceptedValueTop);
 
         if (iReturnValue == KErrCompletion) // the user didn't OK. It was send automatically because validating new lock code through TARM
             {
             _LIT(KInvalidNewLockCode, "invalidNewLockCode");
-            _LIT(KInvalidNewLockCode0, "invalidNewLockCode#0");
+            _LIT(KInvalidNewLockCode0, "invalidNewLockCode$-1");
             AddParamL(KInvalidNewLockCode, KInvalidNewLockCode0); // for starter
             RSCPClient scpClient;
             TSCPSecCode newCode;
@@ -372,18 +372,20 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
                  RArray<TDevicelockPolicies> aFailedPolicies;
                  TDevicelockPolicies failedPolicy;
                  TInt retLockcode = KErrNone;
+                 TInt nPoliciesFailed = 0;
                  RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
                  retLockcode = scpClient.VerifyNewLockcodeAgainstPolicies( newCode, aFailedPolicies );
                  RDEBUG( "retLockcode", retLockcode );
-                 RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
-                 for(TInt i=0; i<aFailedPolicies.Count(); i++)
-                 {
-                 failedPolicy = aFailedPolicies[i];
-                 RDEBUG( "failedPolicy", failedPolicy );
-                 TBuf<0x100> KInvalidNewLockCodeX;   KInvalidNewLockCodeX.Zero();    KInvalidNewLockCodeX.Append(_L("invalidNewLockCode"));  KInvalidNewLockCodeX.Append(_L("#"));
-                 KInvalidNewLockCodeX.AppendNum(failedPolicy);
-                 AddParamL( KInvalidNewLockCode, KInvalidNewLockCodeX );
-                 }
+                 nPoliciesFailed = aFailedPolicies.Count();
+                 RDEBUG( "nPoliciesFailed", nPoliciesFailed );
+                 for(TInt i=0; i<nPoliciesFailed; i++)
+	                 {
+	                 failedPolicy = aFailedPolicies[i];
+	                 RDEBUG( "failedPolicy", failedPolicy );
+	                 TBuf<0x100> KInvalidNewLockCodeX;   KInvalidNewLockCodeX.Zero();    KInvalidNewLockCodeX.Append(_L("invalidNewLockCode"));  KInvalidNewLockCodeX.Append(_L("$"));
+	                 KInvalidNewLockCodeX.AppendNum(failedPolicy);
+	                 AddParamL( KInvalidNewLockCode, KInvalidNewLockCodeX );	// it overwrites the previous one
+	                 }
                 // TODO this should be able to modify MinLenght, MaxLenght
                 scpClient.Close();
                 }

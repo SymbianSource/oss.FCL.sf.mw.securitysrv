@@ -81,6 +81,7 @@ HbDeviceDialogInterface *SecUiNotificationDialogPlugin::createDeviceDialog(
         deviceDialog = 0;
     }
 
+    RDEBUG("1", 1);
     return deviceDialog;
 }
 
@@ -124,6 +125,7 @@ bool SecUiNotificationDialogPlugin::deviceDialogInfo( const QString &deviceDialo
 				}
     // Return device dialog flags
 
+    RDEBUG("1", 1);
     return true;
 }
 

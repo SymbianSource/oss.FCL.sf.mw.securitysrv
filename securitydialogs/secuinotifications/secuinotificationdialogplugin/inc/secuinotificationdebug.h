@@ -21,8 +21,10 @@
 #include <e32debug.h>
 #ifdef _DEBUG
 #define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#define RDEBUGQT( x, y ) qDebug() << __FILE__ << " " << __PRETTY_FUNCTION__ << " (" << __LINE__ << ") " << x << "=" << y ;
 #else
 #define RDEBUG( x, y )
+#define RDEBUGQT( x, y ) 
 #endif
 
 #endif // SECUINOTIFICATIONDEBUG_H
