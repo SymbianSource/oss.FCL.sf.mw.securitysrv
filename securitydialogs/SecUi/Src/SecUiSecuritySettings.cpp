@@ -993,6 +993,38 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodL(TInt aPeriod)
     
     CleanupStack::PopAndDestroy();    // items
     
+    if ( FeatureManager::FeatureSupported( KFeatureIdSapTerminalControlFw ) )
+        {
+		// define a flag indicating whether disable autolock is allowed.
+        TBool allowDisableAL = ETrue;
+        
+        if ( ( aPeriod == 0 ) && ( maxPeriod > 0 ) )
+            {
+            #if defined( _DEBUG )
+                RDebug::Print(
+                    _L("(SECUI)CSecuritySettings::ChangeAutoLockPeriodL() \
+                    The period: %d is not allowed by TARM; max: %d" ),
+                    aPeriod, maxPeriod );
+            #endif                
+            allowDisableAL = EFalse;
+            HBufC* prompt = NULL;
+            prompt = StringLoader::LoadLC(
+                    R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE );
+            CAknNoteDialog* noteDlg = new ( ELeave ) CAknNoteDialog(
+                    REINTERPRET_CAST( CEikDialog**,&noteDlg ) );
+            noteDlg->PrepareLC( R_CODE_ERROR );
+            noteDlg->SetTextL( *prompt );
+            noteDlg->SetTimeout( CAknNoteDialog::ELongTimeout );
+            noteDlg->SetTone( CAknNoteDialog::EErrorTone );
+            noteDlg->RunLD();
+            CleanupStack::PopAndDestroy( prompt );
+            }
+        
+        if ( !allowDisableAL )
+            {
+            return ChangeAutoLockPeriodL( oldPeriod );
+            }
+        }
 
     if (aPeriod == 0)
         {

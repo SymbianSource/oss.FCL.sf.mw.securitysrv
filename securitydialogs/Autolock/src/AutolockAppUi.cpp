@@ -992,6 +992,10 @@ void CAutolockAppUi::LockKeysL()
 		RWindowGroup& groupWin=iCoeEnv->RootWin();
 		iAppKey = groupWin.CaptureKeyUpAndDowns(EStdKeyApplication0, 0, 0); // Capture app key
 		}
+	// Any orientation change is a waste of battery and triggers unnecesary window events and paining.
+	// Not only that: in landscape the BigRedButton is too small.
+	// Therefore we always stay in portrait. The icon looks much nicer.
+	SetOrientationL( EAppUiOrientationPortrait );
 	LockSideKeyL();
 	}
 // ----------------------------------------------------

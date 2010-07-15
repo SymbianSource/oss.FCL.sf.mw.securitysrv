@@ -24,7 +24,7 @@
 #include "../inc/simlockui.hrh"
 #include <data_caging_paths.hrh>
 #include <platform_paths.hrh>
-CAPABILITY ALL -TCB
+CAPABILITY CAP_APPLICATION
 
 TARGETPATH        /sys/bin
 TARGET            simlockui.exe
