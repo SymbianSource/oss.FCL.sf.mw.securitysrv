@@ -18,7 +18,7 @@
 
 
 #include <ecom/implementationproxy.h>
-
+#include <e32notif.h>
 #include <AknNotifierWrapper.h> // link against aknnotifierwrapper.lib
 
 #define KMyNotifierUid TUid::Uid(0x10005988) //  uid

@@ -29,7 +29,7 @@
 #include <hbpushbutton.h>
 #include <hbmenu.h>
 #include <hbaction.h>
-#include <hbmessageBox.h>
+#include <hbmessagebox.h>
 #include <hblistwidget.h>
 #include <hblistwidgetitem.h>
 #include <hbgroupbox.h>
@@ -42,7 +42,7 @@
 #include <HbMessageBox>
 
 #include <memory>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpsecmodview.h"
 #include "cpsecmodmodel.h"
 #include "cpmoduleview.h"
@@ -55,6 +55,7 @@ CpSecModView::CpSecModView(TInt currentPos, CSecModUIModel& secModUIModel, QGrap
   mAccessView(NULL),
   mPrevView(NULL)
 	{
+	RDEBUG("0", 0);
 	try
 	{
 	QT_TRAP_THROWING(mSecModUIModel.OpenTokenL(mPos));
@@ -72,7 +73,7 @@ CpSecModView::CpSecModView(TInt currentPos, CSecModUIModel& secModUIModel, QGrap
 	moduleWidget->setText("\tModule PIN");
 	listSecView->addItem(moduleWidget.get());
 	moduleWidget.release();
-	
+	RDEBUG("count", count);
 	if( count == 2 )
 		{
 		std::auto_ptr<HbListWidgetItem> signingWidget(q_check_ptr(new HbListWidgetItem()));
@@ -112,6 +113,7 @@ CpSecModView::~CpSecModView()
 
 void CpSecModView::showNextView( const QModelIndex& modelIndex )
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mAccessView = q_check_ptr(new CpModuleView((TSecModViews)modelIndex.row(),mSecModUIModel));
@@ -128,6 +130,7 @@ void CpSecModView::showNextView( const QModelIndex& modelIndex )
 
 void CpSecModView::displayPrevious()
 	{
+	RDEBUG("0", 0);
 	try
 		{
 		mainWindow()->removeView(mAccessView);

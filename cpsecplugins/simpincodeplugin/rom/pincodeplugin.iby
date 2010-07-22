@@ -21,9 +21,9 @@
 #include <bldvariant.hrh>
 #include <data_caging_paths_for_iby.hrh>
 
-file=ABI_DIR\BUILD_DIR\pincodeplugin.dll    SHARED_LIB_DIR\pincodeplugin.dll
+// pincodeplugin.iby should export cppincodeplugin.dll because controlpanelui.iby does NOT exports cppincodeplugin.dll
+file=ABI_DIR\BUILD_DIR\cppincodeplugin.dll    SHARED_LIB_DIR\cppincodeplugin.dll
 
-data=\epoc32\data\c\resource\qt\plugins\controlpanel\pincodeplugin.qtplugin 
-resource\qt\plugins\controlpanel\pincodeplugin.qtplugin
+data=/epoc32/data/c/resource/qt/plugins/controlpanel/cppincodeplugin.qtplugin resource/qt/plugins/controlpanel/cppincodeplugin.qtplugin
 
 #endif

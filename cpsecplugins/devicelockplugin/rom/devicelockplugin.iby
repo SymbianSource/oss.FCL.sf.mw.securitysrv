@@ -18,12 +18,7 @@
 #ifndef __DEVICELOCKPLUGIN_IBY__
 #define __DEVICELOCKPLUGIN_IBY__
 
-#include <bldvariant.hrh>
-#include <data_caging_paths_for_iby.hrh>
-
 file=ABI_DIR\BUILD_DIR\devicelockplugin.dll    SHARED_LIB_DIR\devicelockplugin.dll
-
-data=\epoc32\data\c\resource\qt\plugins\controlpanel\devicelockplugin.qtplugin 
-resource\qt\plugins\controlpanel\devicelockplugin.qtplugin
+data=\epoc32\data\c\resource\qt\plugins\controlpanel\devicelockplugin.qtplugin resource\qt\plugins\controlpanel\devicelockplugin.qtplugin
 
 #endif

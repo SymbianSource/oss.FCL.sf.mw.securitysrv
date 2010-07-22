@@ -24,7 +24,9 @@ class HbAbstractViewItem;
 class CpCertDataContainer;
 class CCTCertInfo;
 class HbListView;
-
+class HbAction;
+class HbDialog;
+class HbMessageBox;
 class CpCertView : public CpBaseSettingView
 	{
 	Q_OBJECT
@@ -61,11 +63,14 @@ class CpCertView : public CpBaseSettingView
 		void selectAll();
 		void moveCert();
 		void viewDone();
-		
+		void handleMultipleDelete(HbAction* action);
+		void handleMoveDialog(HbAction* action);
+		void handleDeleteDialog(HbAction* action);
+		void handleMoveCertDialog(HbAction* action);
 	private:
 		const CCTCertInfo* certAt(TInt index) const;
 		QString certLabel(TInt index) const;
-		void deleteCerts( RArray<TInt>& indexList );
+		void deleteCertsL( RArray<TInt>& indexList );
 		void setDetails(CpCertView::TCertificateViews currentView);
 		void moveCertList( RArray<TInt>& indexList );
 
@@ -74,12 +79,18 @@ class CpCertView : public CpBaseSettingView
 		TInt mPos;
 		CpCertDataContainer* mCertDataContainer;
 		TBool mSelectAll;
+		RArray<TInt> mSelectionIndex;
+		RArray<TInt> mIndexList;
 		
+		HbDialog* mPopup;
 		HbView* mPrevView;
 		HbView* mCurrentView;
 		CpBaseSettingView* mRefreshedView;
-		HbListView* mListView;		
+		HbListView* mListView;	
+		HbListView* mSelectAllView;	
 		HbView* mOriginalView;
+		HbMessageBox* mNote;
+		HbMenu* mContextMenu;
 	};
 
 #endif /* CPCERTVIEW_H */

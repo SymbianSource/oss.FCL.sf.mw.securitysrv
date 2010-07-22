@@ -40,6 +40,7 @@ symbian: {
 	LIBS += -lcryptography
 	LIBS += -lDevTokenClient
 	LIBS += -lcrypto
+	LIBS += -lefsrv
 
 	PLUGIN_STUB_PATH = /resource/qt/plugins/controlpanel
 		

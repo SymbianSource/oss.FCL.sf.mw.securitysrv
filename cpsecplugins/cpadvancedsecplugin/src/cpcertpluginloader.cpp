@@ -20,9 +20,11 @@
 #include "cpcertpluginloader.h"
 #include "cpsecurityview.h"
 #include <hbapplication.h>
+#include <../../inc/cpsecplugins.h>
 
 CpCertPluginLoader::CpCertPluginLoader()
 	{
+		RDEBUG("0", 0);
 		mTranslator =q_check_ptr( new QTranslator());
 		// to be uncommented after translation sumission.
 		//  QString lang = QLocale::system().name();
@@ -41,10 +43,11 @@ CpCertPluginLoader::~CpCertPluginLoader()
         }	
 	}
 
-CpSettingFormItemData *CpCertPluginLoader::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
+QList<CpSettingFormItemData*> CpCertPluginLoader::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
 		{
-		 return new CpSettingFormEntryItemDataImpl<CpSecurityView>(
-			itemDataHelper,tr("Advanced Security"), QString());    
+		RDEBUG("0", 0);
+  return QList<CpSettingFormItemData*>() 
+           << new CpSettingFormEntryItemDataImpl<CpSecurityView>(itemDataHelper,tr("Advanced Security"), QString());			
 		}
 
 Q_EXPORT_PLUGIN2(cpcertpluginloader, CpCertPluginLoader);

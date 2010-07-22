@@ -23,7 +23,7 @@
 #include <mctwritablecertstore.h>
 #include <x509cert.h>
 #include <pkixcertchain.h>
-
+#include <../../inc/cpsecplugins.h>
 #include "cpcertmanuisyncwrapper.h"
 
 // CONSTANTS
@@ -42,7 +42,7 @@ void CpCertManUISyncWrapper::ListL(
     const CCertAttributeFilter& aFilter,
     const TUid aTokenUid )
     {
-    
+    RDEBUG("0", 0);
     if ( IsActive() )
         {
         // Wrapper is active. Don't go further
@@ -78,7 +78,7 @@ void CpCertManUISyncWrapper::ListL(
     RMPointerArray<CCTKeyInfo>* aArray,
     const TCTKeyAttributeFilter& aFilter )
     {
-    
+    RDEBUG("0", 0);
     if ( IsActive() )
         {
         // Wrapper is active. Don't go further
@@ -104,7 +104,7 @@ void CpCertManUISyncWrapper::GetCertificateL( CUnifiedCertStore*& aStore,
     TUid aTokenUid )
     {
     aCert = NULL;
-    
+    RDEBUG("0", 0);
     HBufC8* buf = HBufC8::NewLC( KMaxCertificateLength );
     iCertPtr.Set( buf->Des() );
 
@@ -156,7 +156,7 @@ void CpCertManUISyncWrapper::GetCertificateL( CUnifiedCertStore*& aStore,
 void CpCertManUISyncWrapper::DeleteCertL( CUnifiedCertStore*& aStore,
     const CCTCertInfo& aCertInfo )
     {
-    
+    RDEBUG("0", 0);
     aStore->Remove( aCertInfo, iStatus );
     iOperation = EOperationDelete;
     iStore = aStore;
@@ -174,7 +174,7 @@ void CpCertManUISyncWrapper::DeleteCertL( CUnifiedCertStore*& aStore,
     const CCTCertInfo& aCertInfo,
     TUid aTokenUid )
     {
-        
+    RDEBUG("0", 0);
     TInt count = aStore->WritableCertStoreCount();
     for (TInt i = 0; i < count; i++)
         {
@@ -256,7 +256,7 @@ CpCertManUISyncWrapper::~CpCertManUISyncWrapper()
 
 void CpCertManUISyncWrapper::RunL()
     {
-    
+    RDEBUG("0", 0);
     if ( iWait.IsStarted() )
         {
         iWait.AsyncStop();
@@ -271,6 +271,7 @@ void CpCertManUISyncWrapper::RunL()
 //
 void CpCertManUISyncWrapper::DoCancel()
     {
+    RDEBUG("iOperation", iOperation);
     switch ( iOperation )
         {
         case EOperationInit:

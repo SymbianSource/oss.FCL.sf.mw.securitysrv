@@ -19,6 +19,8 @@ TARGET = secuinotificationdialogplugin
 CONFIG += plugin
 
 CONFIG += hb
+CONFIG += mobility
+MOBILITY = publishsubscribe
 
 # directories
 INCLUDEPATH += .
@@ -45,6 +47,9 @@ symbian: {
     pluginstub.sources = secuinotificationdialogplugin.dll
     pluginstub.path = /resource/plugins/devicedialogs
     DEPLOYMENT += pluginstub
+    crml.sources = secuinotificationdialogplugin.qcrml
+    crml.path = c:/resource/qt/crml
+    DEPLOYMENT += crml
 }
 BLD_INF_RULES.prj_exports += \
   "$${LITERAL_HASH}include <platform_paths.hrh>" \

@@ -68,4 +68,5 @@ EXPORTS
 	?ClosePermanentNote@CSecQueryUi@@QAEXXZ @ 67 NONAME ; void CSecQueryUi::ClosePermanentNote(void)
 	?ChangeAutoLockPeriodParamsL@CSecuritySettings@@QAEHHV?$TBuf@$09@@HAAVTDes16@@H@Z @ 68 NONAME ; int CSecuritySettings::ChangeAutoLockPeriodParamsL(int, class TBuf<10>, int, class TDes16 &, int)
 	?LaunchHelpL@CSecQueryUi@@QAEXABVTDesC16@@ABVTUid@@@Z @ 69 NONAME ; void CSecQueryUi::LaunchHelpL(class TDesC16 const &, class TUid const &)
+	?AskSecCodeParamsL@CSecuritySettings@@QAEHAAV?$TBuf@$09@@HAAVTDes16@@H@Z @ 70 NONAME ; int CSecuritySettings::AskSecCodeParamsL(class TBuf<10> &, int, class TDes16 &, int)
 

@@ -18,11 +18,22 @@
 #ifndef SECUINOTIFICATIONDIALOG_H
 #define SECUINOTIFICATIONDIALOG_H
 
+
 #include <hbdialog.h>                   // HbDialog
 #include <hbdevicedialoginterface.h>    // HbDeviceDialogInterface
 #include <hbwidget.h>       // HbWidget
 #include <hblineedit.h>       // HbWidget
 #include <hblabel.h>
+#include <HbCheckBox>
+#include <HbListWidget>
+
+#include <qmobilityglobal.h>
+
+QTM_BEGIN_NAMESPACE
+    class QValueSpacePublisher;
+    class QValueSpaceSubscriber;
+QTM_END_NAMESPACE
+QTM_USE_NAMESPACE
 
 /**
  * SW Install notification widget class.
@@ -65,23 +76,30 @@ private slots:
 		void handlebut2Changed();
 		void handlebut3Changed();
 
+public slots:    
+    void subscriberKSecurityUIsDismissDialogChanged();
 private:
     Q_DISABLE_COPY(SecUiNotificationDialog)
 
+    int mMyId;
     int mLastError;
     bool mShowEventReceived;
     QVariantMap mResultMap;
     HbLineEdit *codeTop;
     HbLineEdit *codeBottom;
+    HbCheckBox *checkBox;
+    HbListWidget *listWidget;
     HbAction *okAction;
     HbAction *cancelAction;
-    HbLabel *title;
+    HbAction *okVKBAction;
+    HbLabel *titleWidget;
     int queryType;
     int lMinLength;
     int lMaxLength;
     int queryDual;
     int lEmergencySupported;
     int isEmergency;
+    QValueSpaceSubscriber *subscriberKSecurityUIsDismissDialog;
 };
 
 #endif // SECUINOTIFICATIONDIALOG_H

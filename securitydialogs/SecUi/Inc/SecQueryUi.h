@@ -25,6 +25,7 @@
 #include <e32property.h>
 
 #define ESecUiTypeMask  0x0FFFFFF
+#define ESecUiBasicTypeMask    0x00F0000
 
 #define ESecUiCancelSupported  0x1000000
 #define ESecUiCancelNotSupported  0x0000000
@@ -38,12 +39,43 @@
 #define ESecUiSecretSupported  0x8000000
 #define ESecUiSecretNotSupported  0x0000000
 
+#define ESecUiBasicTypeCheck   0x0010000
+#define ESecUiBasicTypeMultiCheck   0x0020000
+
 class MSecQueryUiCertificateDetailsProvider;
 class MSecQueryUiDrmDetailsProvider;
 class CHbDeviceDialogSymbian;
 class CHbSymbianVariantMap;
 class CActiveSchedulerWait;
 class CApaMaskedBitmap;
+
+typedef TBuf<80> TSecUiPassword;
+
+enum R_SECUI_ERROR_CODES
+	{
+	R_CODE_ERROR=0x58ED0100,
+	R_SEC_BLOCKED,
+	R_CONFIRMATION_NOTE,
+	R_PIN_CODE_CHANGED_NOTE,
+	R_PIN2_CODE_CHANGED_NOTE,
+	R_PIN2_REJECTED,
+	R_UPIN_CODE_CHANGED_NOTE,
+	R_SIM_NOT_ALLOWED,
+	R_SIM_ALLREADY_OFF,
+	R_SIM_OFF,
+	R_SIM_ALLREADY_ON,
+	R_OPERATION_NOT_ALLOWED,
+	R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE,
+	R_PIN_NOT_ALLOWED,
+	R_REMOTELOCK_INVALID_CODE,
+	R_SIM_ON,
+	R_INSERT_SIM,
+	R_CODES_DONT_MATCH,
+	R_PIN_BLOCKED_NOTE,
+	R_UPIN_NOT_ALLOWED,
+	R_SECURITY_CODE_CHANGED_NOTE,
+	R_SECUI_ERROR_CODE_LAST
+	};
 
 /**
  * CSecQueryUi provides UI dialogs for SW installation. UI dialogs are
@@ -53,6 +85,8 @@ class CApaMaskedBitmap;
  * @lib SecQueryUi.lib
  * @since 10.1
  */
+typedef TBuf<80> TSecUiPassword;
+
 class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
     {
     public:  // constructor and destructor
@@ -206,7 +240,8 @@ class CSecQueryUi : public CActive, public MHbDeviceDialogObserver
         TInt iCompletionCode;
         TInt iReturnValue;
 public:
-	      RMobilePhone::TMobilePassword iPassword;
+	   // previoulsy it was RMobilePhone::TMobilePassword iPassword; but this was only 10 bytes
+        TSecUiPassword iPassword;
     };
 
 

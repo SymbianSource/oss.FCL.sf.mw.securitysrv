@@ -19,8 +19,10 @@ TARGET = devicelockplugin
 
 CONFIG += hb plugin		  
 
-LIBS +=  -lseccodeui \
-		 -lsecuinotificationdialogplugin \
+LIBS +=  -lsecuinotificationdialogplugin \
+		 -llockclient \
+		 -lautolockuseractivityservice \
+		 -lIndicatorAutolockPlugin \
 		 -lsecui \
 		 -letelmm \
 		 -letel \
@@ -29,11 +31,14 @@ LIBS +=  -lseccodeui \
 		 -lcentralrepository \
 		 -lRLockSettings \
 		 -lflogger
-// TRANSLATIONS += devicelocking.ts
+TRANSLATIONS += devicelocking.ts
 include ( ../cpplugincommon.pri )
 include ( devicelockplugin.pri )
 include ( rom/devicelockplugin_rom.pri )
 
 symbian { 
-    TARGET.UID3 = 0X2002E68
+    TARGET.UID3 = 0X2002E683
+    
+    INCLUDEPATH += $$MW_LAYER_SYSTEMINCLUDE
+    
 }

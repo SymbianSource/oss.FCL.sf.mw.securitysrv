@@ -23,8 +23,8 @@
 #include "WimServer.h"
 #include "WimSession.h"
 #include "WimTrace.h"
-#include <RSatRefresh.h>
-#include <RSatSession.h>
+#include <rsatrefresh.h>
+#include <rsatsession.h>
 #include <etelsat.h>
 #if defined SAT_REFRESH_TIMER_TRIGGER
 #include "SatRefreshTimerTrigger.h" // for simulated sat refresh

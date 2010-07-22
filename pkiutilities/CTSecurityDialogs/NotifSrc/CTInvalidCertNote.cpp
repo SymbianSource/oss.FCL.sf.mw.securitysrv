@@ -16,7 +16,7 @@
 */
 
 
-
+#include <platform/e32notif.h>
 #include "CTInvalidCertNote.h"
 #include "CTCertificateQuery.h"     // CCTCertificateQuery
 #include <uikon/eiksrvui.h>         // CEikServAppUi

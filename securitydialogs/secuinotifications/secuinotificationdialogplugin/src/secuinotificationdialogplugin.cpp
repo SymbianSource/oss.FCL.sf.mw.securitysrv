@@ -15,9 +15,12 @@
 *
 */
 
+#include "secuinotificationdebug.h"
 #include "secuinotificationdialogplugin.h"
 #include "secuinotificationdialog.h"
 #include "secuinotificationdialogpluginkeys.h"
+
+#include <etelmm.h>
 
 // This plugin implements one device dialog type
 static const struct {
@@ -50,12 +53,13 @@ SecUiNotificationDialogPlugin::~SecUiNotificationDialogPlugin()
 bool SecUiNotificationDialogPlugin::accessAllowed(const QString &deviceDialogType,
     const QVariantMap &parameters, const QVariantMap &securityInfo) const
 {
+		RDEBUG("0", 0);
     Q_UNUSED(deviceDialogType)
     Q_UNUSED(parameters)
     Q_UNUSED(securityInfo)
 
     // All clients are allowed to use.
-    // TODO: should access be limited to certain clients?
+    // should access be limited to certain clients or capabilities ? Not for now.
     return true;
 }
 
@@ -67,6 +71,7 @@ HbDeviceDialogInterface *SecUiNotificationDialogPlugin::createDeviceDialog(
     const QString &deviceDialogType, const QVariantMap &parameters)
 {
     //  Create device dialog widget
+    RDEBUG("0", 0);
     Q_UNUSED(deviceDialogType)
 
     SecUiNotificationDialog *deviceDialog = new SecUiNotificationDialog(parameters);
@@ -86,14 +91,38 @@ HbDeviceDialogInterface *SecUiNotificationDialogPlugin::createDeviceDialog(
 bool SecUiNotificationDialogPlugin::deviceDialogInfo( const QString &deviceDialogType,
         const QVariantMap &parameters, DeviceDialogInfo *info) const
 {
-    // Return device dialog flags
-    Q_UNUSED(deviceDialogType);
-    Q_UNUSED(parameters);
+		// For some unknown reason, this function doesn't print the signature 
+		RDEBUG("0", 0);
+		#ifdef _DEBUG
+		RDebug::Printf( "SecUiNotificationDialogPlugin::deviceDialogInfo=%x", 0 );
+		#endif
 
-    //info->group = DeviceNotificationDialogGroup;	// TODO this should be SecurityGroup , but it's still not available, Commented out by 10.1 Integration
-	info->group = SecurityGroup;	// Added by 10.1 Integration... It's working better with this layer.
+    Q_UNUSED(deviceDialogType);
+
+		info->group = SecurityGroup;
     info->flags = NoDeviceDialogFlags;
     info->priority = DefaultPriority;
+
+		// The unlock-query must have higher priority, to get over Telephony.
+		if (parameters.contains(KQueryType)) {
+				#ifdef _DEBUG
+				RDebug::Printf( "SecUiNotificationDialogPlugin::deviceDialogInfo KQueryType=%x", 1 );
+				#endif
+        int iqueryType = parameters.value(KQueryType).toUInt();
+        RDEBUG("iqueryType", iqueryType);
+				#ifdef _DEBUG
+				RDebug::Printf( "SecUiNotificationDialogPlugin::deviceDialogInfo iqueryType=%x", iqueryType );
+				#endif
+				if( (iqueryType & 0xFFFF) == RMobilePhone::ESecurityCodePhonePassword )
+					{
+					RDEBUG("CriticalGroup", CriticalGroup);
+					#ifdef _DEBUG
+					RDebug::Printf( "SecUiNotificationDialogPlugin::deviceDialogInfo CriticalGroup=%x", CriticalGroup );
+					#endif
+					info->group = CriticalGroup;
+					}
+				}
+    // Return device dialog flags
 
     return true;
 }
@@ -104,6 +133,7 @@ bool SecUiNotificationDialogPlugin::deviceDialogInfo( const QString &deviceDialo
 //
 QStringList SecUiNotificationDialogPlugin::deviceDialogTypes() const
 {
+		RDEBUG("0", 0);
     // Return device dialog types this plugin implements
 
     QStringList types;
@@ -121,6 +151,7 @@ QStringList SecUiNotificationDialogPlugin::deviceDialogTypes() const
 //
 HbDeviceDialogPlugin::PluginFlags SecUiNotificationDialogPlugin::pluginFlags() const
 {
+		RDEBUG("0", 0);
     // Return plugin flags
     return NoPluginFlags;
 }
@@ -131,6 +162,7 @@ HbDeviceDialogPlugin::PluginFlags SecUiNotificationDialogPlugin::pluginFlags() c
 //
 int SecUiNotificationDialogPlugin::error() const
 {
+		RDEBUG("mError", mError);
     // Return last error
     return mError;
 }

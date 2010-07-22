@@ -24,7 +24,7 @@
 #include "CTSelectCertificateDialog.h"
 #include "CTQueryDialog.h"
 #include "CTPinPinQueryDialog.h"
-#include "CTNoTrustQuery.h"
+#include "CTUntrustedCertQuery.h"
 #include "CTInvalidCertNote.h"
 #include <PKIDlg.h>
 #include <badesca.h>
@@ -46,6 +46,11 @@
 #include <TrustedSitesStore.h>
 #include <mctwritablecertstore.h>
 
+#include "SecQueryUi.h"                   // needed for password dialog
+
+#include <hbdevicemessageboxsymbian.h>    // needed for Note dialogs    
+#include <hbdevicenotificationdialogsymbian.h>
+
 // LOCAL CONSTANTS AND MACROS
 const TInt KCertArrayGranularity = 3;
 const TInt KMaxLengthTextDetailsBody = 5000;
@@ -53,8 +58,6 @@ const TInt KMaxLengthTextDetailsBody = 5000;
 const TInt KMaxLengthTextCertLabelVisible = 200;
 // "dd/mm/yyyy0"
 const TInt KMaxLengthTextDateString = 20;
-// HH0
-const TInt KMaxLengthTextSerialNumberFormatting = 3;
 // Maximum length of a certificate
 const TInt KMaxCertificateLength = 5000;
 
@@ -63,12 +66,8 @@ const TInt KMaxKeystorePwLength = 6;
 
 const TInt KMinImportKeyPwLen = 1;
 
-const TInt KMaxCNLength = 64;
+const TInt KMaxCommonNameLength = 64;
 
-_LIT(KCertManUIDetailsViewHexFormat, "%02X");
-
-const TInt KFileCertStoreUid( 0x101F501A );
-const TInt KWIMCertStoreUid ( 0x101F79D9 );
 const TUid KTrustedServerTokenUid = { 0x101FB66F };
 const TUid KDeviceCertStoreTokenUid = { 0x101FB668 };
 
@@ -80,6 +79,18 @@ _LIT( KKeyStoreCreatePwLabel, "New key store passphrase" );
 _LIT( KKeyStoreImportKeyLabel, "Passphrase of the imported key file" );
 _LIT( KKeyStoreExportKeyLabel, "Passphrase of the exported key file" );
 _LIT( KPKCS12TokenLabel, "PKCS12");
+
+
+// TODO: replace with OST tracing
+#ifdef _DEBUG
+#include <e32debug.h>
+#define TRACE(x)        RDebug::Printf(x)
+#define TRACE1(x,y)     RDebug::Printf(x,y)
+#else
+#define TRACE(x)
+#define TRACE1(x,y)
+#endif
+
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -106,9 +117,6 @@ CCTSecurityDialogsAO::CCTSecurityDialogsAO( CCTSecurityDialogNotifier* aNotifier
 void CCTSecurityDialogsAO::ConstructL()
     {
     iDeleted = EFalse;
-
-    iQueryDialog = NULL;
-    iQueryDialogDeleted = ETrue;
     }
 
 // -----------------------------------------------------------------------------
@@ -184,6 +192,7 @@ void CCTSecurityDialogsAO::StartLD(
     iMessagePtr = aMessage;
 
     WIMSECURITYDIALOGS_WRITE_FORMAT( "CCTSecurityDialogsAO::StartLD iOperation=%d", iOperation );
+    TRACE1( "CCTSecurityDialogsAO::StartLD iOperation=%d", iOperation );
 
     MapTlsProviderOperation( iOperation );
 
@@ -338,6 +347,8 @@ void CCTSecurityDialogsAO::StartLD(
 //
 void CCTSecurityDialogsAO::DoHandleServerAuthFailL( const TDesC8& aBuffer )
     {
+    TRACE( "CCTSecurityDialogsAO::DoHandleServerAuthFailL" );
+
     CServerAuthenticationFailureInput* srvAuthFail =
         CServerAuthenticationFailureInput::NewLC( aBuffer );
     TPtrC8 cert;
@@ -350,33 +361,31 @@ void CCTSecurityDialogsAO::DoHandleServerAuthFailL( const TDesC8& aBuffer )
 
     iServerName = HBufC::NewL( serverName.Length() );
     iServerName->Des().Copy( serverName );
-
-    HBufC* cn = NULL;
     iCertLabel = NULL;
+
     // Site will be checked later. For now it is not trusted
     iTrustedSite = EFalse;
 
-
     CX509Certificate* serverCert = CX509Certificate::NewLC( cert );
-    // Retrieve subject name
     const CX500DistinguishedName& dName = serverCert->SubjectName();
-    // Retrieve CN
-    cn = dName.ExtractFieldL( KX520CommonName );
-    if ( cn != NULL )
+
+    HBufC* commonName = dName.ExtractFieldL( KX520CommonName );
+    CleanupStack::PushL( commonName );
+    if( commonName != NULL )
         {
-        // commonName exist in the certificate.
         // Check the length of CN. RFC 3280 states
         // that max length of CN is 64.
-        if ( cn->Length() <= KMaxCNLength )
+        if( commonName->Length() <= KMaxCommonNameLength )
             {
-            iCertLabel = HBufC::NewL( cn->Length() );
-            iCertLabel->Des().Append( cn->Des() );
+            iCertLabel = HBufC::NewL( commonName->Length() );
+            iCertLabel->Des().Append( commonName->Des() );
             }
         }
+    CleanupStack::PopAndDestroy( commonName );
 
-    if ( iCertLabel == NULL )
+    if( iCertLabel == NULL )
         {
-        // No or invalid commonName. Use domain name as label
+        // No or invalid commonName. Use domain name as label.
         iCertLabel = HBufC::NewL( iServerName->Length() );
         iCertLabel->Des().Append( iServerName->Des() );
         }
@@ -558,6 +567,7 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
     if ( iRetry ) // Is this new try?
       {
         // Previous attempt was failed
+        // incorrect pin code
         DoHandleMessageL( EErrorPinCodeIncorrect, KNullDesC, KNullDesC, 0, 0 );
       }
     // Ask the PIN code or PUK code
@@ -565,11 +575,13 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
         {
         HBufC* header = StringLoader::LoadLC(
             R_QTN_CM_HEADING_PHONE_KEYSTORE, CEikonEnv::Static() );
-        iPIN.iMinLength = KMaxKeystorePwLength;
-        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,
-            iPIN.iMinLength, iPIN.iMaxLength );
-        iMultiLineDlgType = EEnterNewKeyStorePw;
-        CleanupStack::PopAndDestroy( header );
+		iPIN.iMinLength = KMaxKeystorePwLength;
+        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,    
+            iPIN.iMinLength, iPIN.iMaxLength );                    
+        iMultiLineDlgType = EEnterNewKeyStorePw;                   
+        CleanupStack::PopAndDestroy( header );                     
+        RunL();
+        
         }
     else if ( iPIN.iPINLabel == KKeyStoreImportKeyLabel )
         {
@@ -586,7 +598,7 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
     else if ( iPIN.iPINLabel == KKeyStoreCreatePwLabel )
         {
         iPIN.iMinLength = KMaxKeystorePwLength;
-        DoHandleMessageL( EInfoPwCreating, KNullDesC, KNullDesC, 0, 0 );
+        ShowInformationNoteL(R_QTN_CM_CREATING_KEYSTORE);
         DoHandleMultilinePinQueryL( EEnterNewKeyStorePw );
         iNextStep = EVerifyPINs;
         }
@@ -620,12 +632,36 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
     TDialogType dlgType = ( TDialogType )aDlgType;
     if ( EEnterNewKeyStorePw == dlgType )
         {
-        dlgText1 = iNotifier->LoadResourceStringLC( dlgType, KNullDesC );
+/*
+        dlgText1 = iNotifier->LoadResourceStringLC( dlgType, KNullDesC );          
         dlgText2 = iNotifier->LoadResourceStringLC( EVerifyKeyStorePw, KNullDesC );
-        dlg = CCTPinPinQueryDialog::NewL( *dlgText1, *dlgText2, iPINValue2,
-            iPINValueVerify, iPIN.iMinLength, iPIN.iMaxLength, iRetValue );
-        dlg->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );
-        CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2
+        dlg = CCTPinPinQueryDialog::NewL( *dlgText1, *dlgText2, iPINValue2,        
+            iPINValueVerify, iPIN.iMinLength, iPIN.iMaxLength, iRetValue );        
+        dlg->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );                         
+        CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2          
+*/
+        dlgText1 =  StringLoader::LoadLC( R_QTN_SN_NEW_PHONE_KEYSTORE );                     
+        dlgText2 = StringLoader::LoadLC( R_QTN_WIM_VERIFY_PIN );                             
+        HBufC* message = HBufC::NewLC( KMaxLengthTextCertLabelVisible );                     
+        message->Des().Append(dlgText1->Des());                                              
+        message->Des().Append(_L("|"));                                                      
+        message->Des().Append(dlgText2->Des());      
+        CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                                  
+        TInt queryAccepted = SecQueryUi->SecQueryDialog(message->Des(), iPINValueVerify,
+                                                    iPIN.iMinLength,iPIN.iMaxLength,    
+                                                    ESecUiAlphaSupported |              
+                                                    ESecUiCancelSupported |             
+                                                    ESecUiSecretSupported |             
+                                                    ESecUiEmergencyNotSupported);
+        iRetValue=(queryAccepted==KErrNone); 
+        if(iRetValue)                                                                        
+            iPINValue2.Copy(iPINValueVerify); // dialog already does not OK with different pin codes
+        delete SecQueryUi;                                                                   
+        SecQueryUi=NULL;                                                                     
+        CleanupStack::PopAndDestroy( message );                                              
+        CleanupStack::PopAndDestroy( dlgText2 );                                             
+        CleanupStack::PopAndDestroy( dlgText1 );      
+        RunL(); // had to call it this way       
         }
     else if ( EExportKeyPw == dlgType )
         {
@@ -754,16 +790,35 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
                     }
                 }
                iPinQueryDialogDeleted = EFalse;
-                CCTPinQueryDialog::RunDlgLD( iStatus,
-                                        *dlgText,
-                                        *pinValue,
-                                        aMinLength,
-                                        aMaxLength,
-                                        iRetValue,
-                                        resource,
-                                        iPinQueryDialog,
-                                        iPinQueryDialogDeleted );
+               if(aDlgType!=EEnterKeyStorePw) {
+                    CCTPinQueryDialog::RunDlgLD( iStatus,
+                                            *dlgText,
+                                            *pinValue,
+                                            aMinLength,
+                                            aMaxLength,
+                                            iRetValue,
+                                            resource,
+                                            iPinQueryDialog,
+                                            iPinQueryDialogDeleted );
+			    break;											
+               }
+               else
+               {
+                iPIN.iMinLength = KMaxKeystorePwLength;                                   
+                CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                            
+                HBufC* header =StringLoader::LoadLC( R_QTN_SN_ENTER_PHONE_KEYSTORE);      
+                TInt queryAccepted = SecQueryUi->SecQueryDialog(header->Des(), *pinValue,
+                                                        aMinLength,aMaxLength,           
+                                                        ESecUiAlphaSupported |           
+                                                        ESecUiCancelSupported |          
+                                                        ESecUiSecretSupported |          
+                                                        ESecUiEmergencyNotSupported);    
+                delete SecQueryUi;                                                       
+                SecQueryUi=NULL;                                                          
+                iRetValue=(queryAccepted==KErrNone);                                      
+                CleanupStack::PopAndDestroy( header );        
                 break;
+               }
             }
     default:
             {
@@ -771,12 +826,12 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
             }
 
       }
-
-  if ( dlg )
-      {
-      dlg->ExecuteLD( *dlgText );
-      dlg = NULL;
-      }
+  if ( dlg && aDlgType!=EEnterKeyStorePw)                                                                    
+      {                                                                         
+                                                                                
+      dlg->ExecuteLD( *dlgText );                                               
+      dlg = NULL;                                                               
+      }                                                                         
 
     CleanupStack::PopAndDestroy( dlgText ); // dlgText
     }
@@ -801,6 +856,8 @@ TInt CCTSecurityDialogsAO::RunError( TInt aError )
 //
 void CCTSecurityDialogsAO::InitCertStoreL()
     {
+    TRACE( "CCTSecurityDialogsAO::InitCertStoreL" );
+
     switch(iOperation)
         {
         case ESignText:
@@ -936,13 +993,15 @@ void CCTSecurityDialogsAO::RunL()
     {
     WIMSECURITYDIALOGS_WRITE_FORMAT( "CCTSecurityDialogsAO::RunL, iStatus %d", iStatus.Int() );
     WIMSECURITYDIALOGS_WRITE_FORMAT( "  iNextStep %d", iNextStep );
+    TRACE1( "CCTSecurityDialogsAO::RunL, iStatus.Int()=%d", iStatus.Int() );
 
-    if ( iStatus != KErrNone )
+    if( iStatus != KErrNone )
         {
         User::Leave( iStatus.Int() );
-        } // if
+        }
 
-    switch ( iNextStep )
+    TRACE1( "CCTSecurityDialogsAO::RunL, iNextStep=%d", iNextStep );
+    switch( iNextStep )
       {
       case EOperationCompleted:
         {
@@ -950,35 +1009,34 @@ void CCTSecurityDialogsAO::RunL()
         HandleResponseAndCompleteL();
         break;
         }
+
       case ECheckServerCerts:
         {
         WIMSECURITYDIALOGS_WRITE( "ECheckServerCerts" );
 
         TBool foundCert( EFalse );
 
-        if ( iServerCerts.Count() )
+        if( iServerCerts.Count() )
             {
             // Found certificates in the trusted site certificate storage.
             // Compare them with the one received from TlsProvider
             iCertPtr.Set( iCertBuf->Des() );
             CX509Certificate* serverCert = CX509Certificate::NewLC( iCertPtr );
 
-            for (TInt i=0; i<iServerCerts.Count(); i++ )
+            for( TInt i = 0; i < iServerCerts.Count(); i++ )
                 {
                 TPtr8 certPtr( iServerCerts[i]->Des() );
-
                 CX509Certificate* cert = CX509Certificate::NewLC( certPtr );
-
-                // Compare fingerprints
-                if ( cert->Fingerprint() == serverCert->Fingerprint() )
+                if( cert->Fingerprint() == serverCert->Fingerprint() )
                     {
-                    // Fingerprints match
                     foundCert = ETrue;
                     }
                 CleanupStack::PopAndDestroy( cert );
                 }
+
              CleanupStack::PopAndDestroy( serverCert );
-             if ( foundCert )
+
+             if( foundCert )
                 {
                 // Found matching certificate. Complete the operation
                 iRetValue = EServerCertAcceptedPermanently;
@@ -987,24 +1045,26 @@ void CCTSecurityDialogsAO::RunL()
                 }
             }
 
-            if ( !foundCert )
-                {
-                // Couldn't find matching certificate. Prompt user
-                ShowNoTrustDialogL();
-                }
-
+        if ( !foundCert )
+            {
+            // Couldn't find matching certificate. Prompt user
+            ShowNoTrustDialogL();
+            }
         break;
         }
+
       case EProcessTrustedSite:
         {
         WIMSECURITYDIALOGS_WRITE( "EProcessTrustedSite" );
+        TRACE( "CCTSecurityDialogsAO::RunL, EProcessTrustedSite" );
+
         TInt count = iCertStore->WritableCertStoreCount();
-        for ( TInt i = 0; i < count; i++ )
+        for( TInt i = 0; i < count; i++ )
             {
             MCTWritableCertStore *certstore = &iCertStore->WritableCertStore( i );
             MCTToken& token = certstore->Token();
             TUid tokenuid = token.Handle().iTokenTypeUid;
-            if ( tokenuid == KTrustedServerTokenUid )
+            if( tokenuid == KTrustedServerTokenUid )
                 {
                 iTrustedSiteCertStore = certstore;
                 }
@@ -1016,11 +1076,11 @@ void CCTSecurityDialogsAO::RunL()
         // Find out whether or not site associated with certificate is trusted
         iTrustedSite = trustedSitesStore->IsTrustedSiteL( *iCertBuf, *iServerName );
 
-        if ( iTrustedSite )
+        if( iTrustedSite )
             {
             TBool allowOutOfDate = trustedSitesStore->IsOutOfDateAllowedL(*iCertBuf, *iServerName);
 
-            if (!allowOutOfDate)
+            if( !allowOutOfDate )
                 {
                 CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
 
@@ -1041,7 +1101,7 @@ void CCTSecurityDialogsAO::RunL()
             }
         CleanupStack::PopAndDestroy( trustedSitesStore );
 
-        if ( iTrustedSite )
+        if( iTrustedSite )
             {
             // Site is trusted. Next step is to check that server
             // certificate is in the trusted site certificate storage
@@ -1108,9 +1168,11 @@ void CCTSecurityDialogsAO::RunL()
             }
         break;
         }
+
       case EAddTrustedSite:
           {
-          if ( iStatus.Int() == KErrNone )
+          TRACE( "CCTSecurityDialogsAO::RunL, EAddTrustedSite" );
+          if( iStatus.Int() == KErrNone )
               {
               //Added server certificate succesfully
               CTrustSitesStore* trustedSitesStore = CTrustSitesStore::NewL();
@@ -1119,7 +1181,7 @@ void CCTSecurityDialogsAO::RunL()
               TInt status = trustedSitesStore->AddL( *iCertBuf, *iServerName );
 
               CleanupStack::PopAndDestroy( trustedSitesStore );
-              if ( status  == KErrNone )
+              if( status  == KErrNone )
                   {
                   iRetValue = EServerCertAcceptedPermanently;
                   }
@@ -1134,23 +1196,27 @@ void CCTSecurityDialogsAO::RunL()
           else
               {
               //Adding server certificate failed
+              // TODO: unreached code?
               iNextStep = EOperationCompleted;
               iRetValue = EServerCertNotAccepted;
               HandleResponseAndCompleteL();
               }
-              break;
+          break;
           }
 
       case ESaveServerCert:
           {
           WIMSECURITYDIALOGS_WRITE( "ESaveServerCert" );
+          TRACE( "CCTSecurityDialogsAO::RunL, ESaveServerCert" );
           DoHandleSaveServerCertL();
           break;
           }
+
       case EServerCertCheckUserResp:
           {
           WIMSECURITYDIALOGS_WRITE( "EServerCertCheckUserResp" );
-          if ( iRetValue == EServerCertAcceptedPermanently )
+          TRACE( "CCTSecurityDialogsAO::RunL, EServerCertCheckUserResp" );
+          if( iRetValue == EServerCertAcceptedPermanently )
               {
               // User accepted to select certificate permanently.
               // First add server certificate
@@ -1167,6 +1233,7 @@ void CCTSecurityDialogsAO::RunL()
               }
           break;
           }
+
       case EOperationSignTextShown:
           {
           if ( iRetValue || iOperation == EUserAuthentication )
@@ -1183,6 +1250,7 @@ void CCTSecurityDialogsAO::RunL()
           User::RequestComplete( status, KErrNone );
           break;
           }
+
       case EOperationInitCertStore:
           {
           TInt err = KErrNone;
@@ -1200,6 +1268,7 @@ void CCTSecurityDialogsAO::RunL()
           iNextStep = EOperationRetrieveCertInfos;
           break;
           }
+
       case EOperationRetrieveCertInfos:
           {
           if ( iCertInfo )
@@ -1235,11 +1304,13 @@ void CCTSecurityDialogsAO::RunL()
               }
           break;
           }
+
       case EOperationSelectCert:
           {
           DoHandleSelectCertificateL();
           break;
           }
+
       case EGetCertInfo:
           {
           iStatus = KRequestPending;
@@ -1249,6 +1320,7 @@ void CCTSecurityDialogsAO::RunL()
           SetActive();
           break;
           }
+
       case EGetCertificate:
           {
           iStatus = KRequestPending;
@@ -1268,36 +1340,42 @@ void CCTSecurityDialogsAO::RunL()
           iNextStep = EInitKeyStore;
           break;
           }
+
       case EInitKeyStore:
           {
           InitKeyStoreL();
           iNextStep = EGetKeyInfos;
           break;
           }
+
       case EGetKeyInfos:
           {
           GetKeyInfosL();
           iNextStep = EShowCertDialog;
           break;
           }
+
       case EGetKeyInfoByHandle:
           {
           GetKeyInfoByHandleL();
           iNextStep = EShowCSRDialog;
           break;
           }
+
       case EShowCSRDialog:
           {
           ShowCSRDialogL();
           iNextStep = EOperationCompleted;
           break;
           }
+
       case EShowCertDialog:
           {
           ShowCertDialogL();
           iNextStep = EOperationCompleted;
           break;
           }
+
       /////////////
       // PIN steps
       /////////////
@@ -1340,11 +1418,13 @@ void CCTSecurityDialogsAO::RunL()
               }
           break;
           }
+
       case EVerifyPINs:
           {
           VerifyPinsL();
           break;
           }
+
       default:
           {
           User::Panic( _L("CTestSecDlgNotifier"), 0 );
@@ -1434,84 +1514,40 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
 //
 void CCTSecurityDialogsAO::ShowNoTrustDialogL()
     {
-    CX509Certificate* cert = CX509Certificate::NewLC( iCertBuf->Des() );
-    TInt resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-    TBool showPermAccept = ETrue;
+    TRACE( "CCTSecurityDialogsAO::ShowNoTrustDialogL, begin" );
 
-    if( iAuthFailReason == ESignatureInvalid || iAuthFailReason == ECertificateRevoked )
+    // If trusted site certstore open has failed, then it is not possible to save
+    // the host name for permanent use. Hence, choice for permanent accept is not
+    // displayed if trusted site certstore open has failed. Other restrictions for
+    // permanent accept are defined in device dialog (UntrustedCertificateWidget).
+    TBool isTrustedSiteCertStoreOpened = ( iTrustedSiteCertStore != NULL );
+    CCTUntrustedCertQuery *untrustedCertDlg = CCTUntrustedCertQuery::NewLC(
+            iAuthFailReason, *iCertBuf, *iServerName, isTrustedSiteCertStoreOpened );
+
+    CCTUntrustedCertQuery::TResponse response = CCTUntrustedCertQuery::EQueryRejected;
+    untrustedCertDlg->ShowQueryAndWaitForResponseL( response );
+    switch( response )
         {
-        // Invalid or revoked certificate
-        CCTInvalidCertificateNote* note =
-            new( ELeave ) CCTInvalidCertificateNote( *this, iStatus );
-        note->ExecuteLD( R_WIM_INVALID_CERTIFICATE_INFORMATION_NOTE );
-        iRetValue = EServerCertNotAccepted;
+        case CCTUntrustedCertQuery::EQueryAccepted:
+            iRetValue = EServerCertAcceptedTemporarily;
+            break;
+        case CCTUntrustedCertQuery::EQueryAcceptedPermanently:
+            // TODO: show confirmation note, qtn_httpsec_query_perm_accept_text
+            // "Connection to site %U will be made in future without any warnings. Continue?""
+            iRetValue = EServerCertAcceptedPermanently;
+            break;
+        case CCTUntrustedCertQuery::EQueryRejected:
+        default:
+            iRetValue = EServerCertNotAccepted;
+            break;
         }
-    else
-        {
-        if( iAuthFailReason == EValidatedOK || iAuthFailReason == EDateOutOfRange )
-            {
-            // Trusted certificate, but problems with CN or date
-
-            // Retrieve subject name
-            const CX500DistinguishedName& dName = cert->SubjectName();
-
-            // Retrieve common name
-            HBufC* cn = dName.ExtractFieldL( KX520CommonName );
-
-            // Check common name first and then date
-            if( !cn )
-                {
-                // Couldn't retrieve CN from certificate
-                resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-                }
-            else if( iServerName->Des() != cn->Des() )
-                {
-                // Domain name doesn't match with CN
-                resourceid = R_WIM_NO_TRUST_QUERY_SITE;
-                }
-            else if( iAuthFailReason == EDateOutOfRange )
-                {
-                // Certificate is out of date
-                resourceid = R_WIM_NO_TRUST_QUERY_OOD;
-                showPermAccept = EFalse;
-                }
-            else
-                {
-                // Otherwise show general untrusted note
-                resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-                }
-            }
-        else
-            {
-            // Untrusted certificate
-            resourceid = R_WIM_NO_TRUST_QUERY_UNTRUSTED;
-            }
-
-        // No "Accept Permanently" option if certificate is out of date, or
-        // if domain name is not defined, or if trusted site store failed to
-        // open (and it's not possible to save the server certificate).
-        const CValidityPeriod& validityPeriod = cert->ValidityPeriod();
-        const TTime& startValue = validityPeriod.Start();
-        const TTime& finishValue = validityPeriod.Finish();
-        TTime current;
-        current.UniversalTime();
-
-        if( (( startValue > current ) || ( finishValue < current )) ||
-                ( iServerName->Des().Length() == 0 ) ||
-                ( !iTrustedSiteCertStore ) )
-            {
-            showPermAccept = EFalse;
-            }
-
-        iQueryDialog = new( ELeave ) CCTNoTrustQuery( *this, iRetValue, iStatus, iServerName,
-                    showPermAccept, iQueryDialogDeleted );
-        iQueryDialog->ExecuteLD( resourceid );
-        }
-
-    CleanupStack::PopAndDestroy( cert );
+    CleanupStack::PopAndDestroy( untrustedCertDlg );
+    TRACE1( "CCTSecurityDialogsAO::ShowNoTrustDialogL, iRetValue=%d", iRetValue );
 
     iNextStep = EServerCertCheckUserResp;
     iStatus = KRequestPending;
+    TRequestStatus* status = &iStatus;
+    User::RequestComplete( status, KErrNone );
     SetActive();
     }
 
@@ -2028,9 +2064,9 @@ void CCTSecurityDialogsAO::AddValidityPeriodL(
 // CCTSecurityDialogsAO::AddCertFormatL(...)
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::AddCertFormatL( TDes& aMessage, TCertificateFormat aCertFormat)
+void CCTSecurityDialogsAO::AddCertFormatL( TDes& /*aMessage*/, TCertificateFormat aCertFormat)
     {
-    TInt fieldType = 0;
+    //TInt fieldType = 0;
     switch ( aCertFormat )
         {
         case EX509CertificateUrl:
@@ -2312,6 +2348,7 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
             iMessagePtr.WriteL( iReplySlot, pinValueBufPtr );
             break;
             }
+
         case EChangePIN:
         case EUnblockPIN:
             {
@@ -2322,6 +2359,7 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
             iMessagePtr.WriteL( iReplySlot, twoPINOutputBuf );
             break;
             }
+
         case ESignText: // flow thru
         case EUserAuthenticationText: // flow thru
         case EUserAuthentication:
@@ -2330,13 +2368,14 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
             iMessagePtr.WriteL( iReplySlot, tokenObjectHandleBuf );
             break;
             }
+
         case EServerAuthenticationFailure:
             {
             TServerAuthenticationFailureDialogResult result = EStop;
 
-            if ( iRetValue != EServerCertAcceptedPermanently )
+            if( iRetValue != EServerCertAcceptedPermanently )
                 {
-                if ( iRetValue == EServerCertAcceptedTemporarily )
+                if( iRetValue == EServerCertAcceptedTemporarily )
                     {
                     result = EContinue;
                     }
@@ -2357,12 +2396,14 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
 
             break;
             }
+
         case EPINBlocked:
         case EUnblockPINInClear:
             {
             User::Leave( KErrNotSupported );
             break;
             }
+
         case ECreateCSR:
         case ECertDetails:
         case ESaveCert:
@@ -2378,6 +2419,7 @@ void CCTSecurityDialogsAO::HandleResponseAndCompleteL()
             {
             break; // Complete is enough
             }
+
         default:
             User::Panic( _L("CTestSecDlgNotifier"), 0 );
         }
@@ -2425,18 +2467,7 @@ void CCTSecurityDialogsAO::SaveReceiptL( const TDesC8& aBuffer )
 void CCTSecurityDialogsAO::DoCancel()
     {
     WIMSECURITYDIALOGS_WRITE( "CCTSecurityDialogsAO::DoCancel" );
-
-    // Note that iQueryDialog may point to already deleted memory.
-    // Dialogs need to set and reset iQueryDialogDeleted flag to
-    // allow deleting the dialog from CCTSecurityDialogsAO.
-    if( !iQueryDialogDeleted )
-        {
-        delete iQueryDialog;
-        iQueryDialogDeleted = ETrue;
-        }
-    iQueryDialog = NULL;
-
-    if ( !iPinQueryDialogDeleted )
+    if( !iPinQueryDialogDeleted )
         {
         delete iPinQueryDialog;
         iPinQueryDialogDeleted = ETrue;
@@ -2469,10 +2500,12 @@ HBufC* CCTSecurityDialogsAO::CreateMessageL()
 //
 void CCTSecurityDialogsAO::DoHandleSaveServerCertL()
     {
+    TRACE( "CCTSecurityDialogsAO::DoHandleSaveServerCertL" );
+
     if ( iTrustedSiteCertStore )
         {
         iTrustedSiteCertStore->Add( *iCertLabel, EX509Certificate,
-                                EPeerCertificate, NULL, NULL, *iCertBuf, iStatus );
+            EPeerCertificate, NULL, NULL, *iCertBuf, iStatus );
 
         // Next step is to update trust site db
         iNextStep = EAddTrustedSite;
@@ -2503,3 +2536,14 @@ void CCTSecurityDialogsAO::MapTlsProviderOperation( TUint aOperation )
         }
     }
 
+void CCTSecurityDialogsAO::ShowInformationNoteL( TInt aResourceID ) const
+    {
+    HBufC* buffer = CEikonEnv::Static()->AllocReadResourceLC( aResourceID );
+    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EInformation);
+    CleanupStack::PushL(iMessageBox);                                                                                    
+    iMessageBox->SetTextL(buffer->Des());                                                                                
+    iMessageBox->SetTimeout(6000);                                                                                      
+    iMessageBox->ExecL();                                                                                                
+    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
+    CleanupStack::PopAndDestroy( buffer );      
+    }

@@ -18,7 +18,9 @@
 
 // INCLUDE FILES
 #include <aknnotewrappers.h>        // Note dialogs
-#include <aknmessagequerydialog.h>  // For CAknMessageQueryDialog
+
+
+
 #include <StringLoader.h>           // For loading resource strings
 #include <unifiedcertstore.h>       // For saving the certificates
 #include <mctwritablecertstore.h>   // For saving the certificates
@@ -44,7 +46,14 @@
 #include "certsaver.hrh"
 #include "securityuisvariant.hrh"
 
+#include <hbdevicemessageboxsymbian.h>
+#include <hbdevicenotificationdialogsymbian.h>
+#include <hbsymbianvariant.h>
+
+#include "SecQueryUi.h"                   // needed for label dialog
+
 // CONSTANTS
+
 const TInt32 KWTLSTrusterUID( 268479059 );
 const TInt32 KInternetTrusterUID( 268441661 );
 const TInt32 KApplicationControllerTrusterUID( 268452523 );
@@ -56,12 +65,14 @@ const TInt KTrusterArrayInitSize( 2 );
 
 const TInt KMaxLengthTextMeassageBody( 5000 );
 const TInt KMaxLengthTextDateString( 11 );    // "dd/mm/yyyy0"
+const TInt KMaxLengthTextCheckBoxData( 255 );    // "dd/mm/yyyy0"
 
 //Issuer and Owner max visible length
 const TInt KMaxLengthTextCertIdentifierVisible( 1000 );
 const TInt KAttempts( 3 );
 
 const TInt KFingerprintLength( 50 );
+const TInt KTokenLength( 32 );
 
 _LIT( KCertSaverListBoxItemPrefix, "1\t" );
 const TInt KItemBufLen = 2 + KMaxName;
@@ -116,6 +127,7 @@ void CCertSaverModel::SaveCertificateL(
             const TCertificateOwnerType& aOwnerType,
             const TCertificateFormat& aCertFormat )
     {
+
     iCertOwnerType = aOwnerType;
     iCertFormat = aCertFormat;
     iNewCert = &aCertificate;
@@ -139,6 +151,7 @@ void CCertSaverModel::SaveCertificateL(
 //
 void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
     {
+
     CheckFSSpaceL( aKey );
 
     TKeyIdentifier keyIdentifier;
@@ -158,7 +171,8 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
     CleanupStack::PopAndDestroy( pkcs8Data );
     if (KeyAlreadyExistsL( startDate, endDate, keyIdentifier, keyUsage) )
         {
-        User::Leave( KErrNone );
+        // used to leave with error none
+        return;
         }
 
     TInt accessType( 0 );
@@ -196,7 +210,7 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
         case KErrKeySize:
         case KErrArgument:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEY_TYPE_NOT_SUPPORTED );
+            ShowInformationNoteL( R_CERTSAVER_KEY_TYPE_NOT_SUPPORTED );
             User::Leave( KErrCancel );
             break;
             }
@@ -207,21 +221,21 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
             }
         case KErrKeyUsage:
             {
-            ShowErrorNoteL( R_CERTSAVER_PRIVATE_KEY_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_PRIVATE_KEY_CORRUPTED );
             User::Leave( KErrCancel );
             break;
             }
         case KErrCancel:
         case KErrPermissionDenied:
             {
-            ShowErrorNoteL( R_CERTSAVER_PKCS12_DISCARDED );
+            ShowInformationNoteL( R_CERTSAVER_PKCS12_DISCARDED );
             User::Leave( KErrCancel );
             break;
             }
         case KErrCorrupt:
         case KErrEof:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
             User::Leave( KErrCancel );
             break;
             }
@@ -254,6 +268,7 @@ TBool CCertSaverModel::KeyAlreadyExistsL(
     const TKeyIdentifier& aKeyIdentifier,
     TKeyUsagePKCS15& aKeyUsage )
     {
+
     TBool ret = EFalse;
     TCTKeyAttributeFilter keyFilter;
     keyFilter.iKeyAlgorithm = CKeyInfoBase::EInvalidAlgorithm;
@@ -272,7 +287,7 @@ TBool CCertSaverModel::KeyAlreadyExistsL(
         case KErrCorrupt:
         case KErrEof:
             {
-            ShowErrorNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_KEYSTORE_CORRUPTED );
             User::Leave( KErrCancel );
             }
         default:
@@ -304,6 +319,7 @@ void CCertSaverModel::GetKeyValidityPeriodL(
     const TKeyIdentifier& aKeyIdentifier )
     {
 
+
     for ( TInt i = 0; i < iParser.UserCertificates().Count(); i++ )
         {
         const CX509Certificate* cert = iParser.UserCertificates().At( i );
@@ -330,6 +346,7 @@ void CCertSaverModel::GetKeyValidityPeriodL(
 //
 void CCertSaverModel::CreateKeyLabelL( TDes& aLabel )
     {
+
     TTime time;
     time.UniversalTime();
     TBuf<KPrivaKeyLabelLength> dateBuf;
@@ -349,6 +366,7 @@ void CCertSaverModel::CreateKeyLabelL( TDes& aLabel )
 //
 void CCertSaverModel::SavePrivateKeyL()
     {
+
     if ( iParser.Keys().Count() <= 0 )
         {
         return;
@@ -396,6 +414,7 @@ TKeyUsagePKCS15 CCertSaverModel::KeyUsageL(
     const TKeyIdentifier& aKeyIdentifier,
     TAlgorithmId aAlgorithm )
     {
+
 
     TKeyUsagePKCS15 pkcs15KeyUsage = EPKCS15UsageNone;
     TKeyUsageX509 x509Usage = EX509UsageNone;
@@ -485,16 +504,13 @@ TKeyUsagePKCS15 CCertSaverModel::KeyUsageL(
 //
 void CCertSaverModel::CheckFSSpaceL( const TDesC8& aDataToSave )
     {
+
     if (SysUtil::FFSSpaceBelowCriticalLevelL( &iFs, aDataToSave.Size() ))
         {
-        HBufC* p = StringLoader::LoadLC( R_CERTSAVER_MEMORY );
-        CAknErrorNote* note = new (ELeave) CAknErrorNote( ETrue );
-        note->ExecuteLD( p->Des() );
-        CleanupStack::PopAndDestroy( p );
+        ShowInformationNoteL(R_CERTSAVER_MEMORY);
         User::Leave( KErrExitApp );
         }
     }
-
 // ----------------------------------------------------------
 // CCertSaverModel::SaveCertL()
 // Saves certificate
@@ -502,47 +518,43 @@ void CCertSaverModel::CheckFSSpaceL( const TDesC8& aDataToSave )
 //
 void CCertSaverModel::SaveCertL()
   {
+
     if ( !CertificateOkL() )
         {
         User::Leave( KErrCancel );
         }
-
+ 
     HBufC* message = HBufC::NewLC( KMaxLengthTextMeassageBody );
     TPtr msgPtr = message->Des();
     ConstructMessageL( msgPtr );
-    CAknMessageQueryDialog* dlg = CAknMessageQueryDialog::NewL( *message );
-    CleanupStack::PopAndDestroy( message );
-    CleanupStack::PushL( dlg );
-
-
-    dlg->PrepareLC( R_MESSAGE_QUERY_DOSAVE );
-
-    HBufC* header = StringLoader::LoadLC( R_CERTSAVER_DETAILS_HEADING );
-    dlg->QueryHeading()->SetTextL( header->Des() );
-    CleanupStack::PopAndDestroy( header );
-    CleanupStack::Pop( dlg );
-    TBool doSave = dlg->RunLD();
-
+    CHbDeviceMessageBoxSymbian::TButtonId selection = 
+        CHbDeviceMessageBoxSymbian::QuestionL(msgPtr, KNullDesC, KNullDesC);
+    TBool doSave= (selection == CHbDeviceMessageBoxSymbian::EAcceptButton);
+    CleanupStack::PopAndDestroy(message);
+/*
     if ( doSave && iCertOwnerType == ECACertificate )
         {
         // warn user about security risk
-        CAknQueryDialog* warningDialog = CAknQueryDialog::NewL();
-        doSave = warningDialog->ExecuteLD( R_CERTSAVER_WARNING_NOTE );
+        HBufC* stringHolder = StringLoader::LoadLC( R_CERTSAVER_WARNING_NOTE );
+        CHbDeviceMessageBoxSymbian::TButtonId selection = 
+            CHbDeviceMessageBoxSymbian::QuestionL(stringHolder->Des(),KNullDesC, KNullDesC);
+        CleanupStack::PopAndDestroy(stringHolder);
+	    doSave=(selection == CHbDeviceMessageBoxSymbian::EAcceptButton);
         }
-
+*/
     if ( doSave )
         {
-        //Check that there still is enough space to store the
-        //certificate.
+        //Check that there still is enough space to store the certificate.
         CheckFSSpaceL( iNewCert->Encoding() );
         DoSaveCertL();
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         User::Leave( KErrCancel );
         }
   }
+
 
 // ----------------------------------------------------------
 // CCertSaverModel::InitCertStoreL()
@@ -551,12 +563,13 @@ void CCertSaverModel::SaveCertL()
 //
 void CCertSaverModel::InitCertStoreL()
     {
+
     if ( !iUnifiedCertStore )
         {
         TRAPD( status, iUnifiedCertStore = CUnifiedCertStore::NewL( iFs, ETrue ) );
         if ( status != KErrNone )
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
             User::Leave( KErrExitApp );
             }
         // initialize unified cert store
@@ -576,6 +589,7 @@ void CCertSaverModel::InitCertStoreL()
 //
 void CCertSaverModel::DoSaveCertL()
     {
+
     TInt status = KErrNone;
     CCertAttributeFilter* filter = NULL;
     TCertificateFormat certFormat = EX509Certificate;
@@ -678,7 +692,8 @@ void CCertSaverModel::DoSaveCertL()
 
             MCTToken& token = writableCertStore.Token();
             TUid tokenuid = token.Handle().iTokenTypeUid;
-            if ( ( tokenuid == KTrustedServerTokenUid ) && ( iCertOwnerType == EPeerCertificate ) ||
+            if ( ( tokenuid == KTrustedServerTokenUid ) && 
+                 ( iCertOwnerType == EPeerCertificate ) ||
                  ( tokenuid == KFileTokensUid ) && ( iCertOwnerType == ECACertificate ) ||
                  ( tokenuid == KFileTokensUid ) && ( iCertOwnerType == EUserCertificate ) )
                 {
@@ -690,7 +705,7 @@ void CCertSaverModel::DoSaveCertL()
         if ( certstoreIndex < 0 )
             {
             // Couldn't find certificate storage
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
             User::Leave( KErrExitApp );
             }
 
@@ -729,7 +744,7 @@ void CCertSaverModel::DoSaveCertL()
         {
         // If there is none WritableCertStore,
         // then at least cacerts.dat is corrupted.
-        ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+        ShowInformationNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
         User::Leave( KErrExitApp );
         }
 
@@ -786,6 +801,7 @@ void CCertSaverModel::DoSaveCertL()
 //
 TInt CCertSaverModel::QueryLabelL( TCertLabel& aLabel, CUnifiedCertStore& aStore )
     {
+
     CCertAttributeFilter* filter = NULL;
     TInt status = KErrNone;
     RMPointerArray<CCTCertInfo> entries;
@@ -793,11 +809,21 @@ TInt CCertSaverModel::QueryLabelL( TCertLabel& aLabel, CUnifiedCertStore& aStore
 
     while ( loop )
         {
-        CAknTextQueryDialog* dialog = CAknTextQueryDialog::NewL( aLabel );
-      if ( !dialog->ExecuteLD( R_CERTSAVER_LABEL_QUERY ) )
+    HBufC* labelprompt =  CEikonEnv::Static()->AllocReadResourceLC( R_CERTSAVER_ENTER_LABEL );
+    CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                                       
+    TInt queryAccepted = SecQueryUi->SecQueryDialog(labelprompt->Des(), aLabel,
+                                                1,KMaxCertLabelLength,          
+                                                ESecUiAlphaSupported |          
+                                                ESecUiCancelSupported |         
+                                                ESecUiEmergencyNotSupported);   
+    CleanupStack::PopAndDestroy( labelprompt );
+    delete SecQueryUi;  
+    SecQueryUi=NULL;
+
+      if ( queryAccepted!=KErrNone )
             {
             // cancel
-            ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+            ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
             return KErrCancel;
             }
         // Create filter to confirm that label doesn't already exist.
@@ -840,31 +866,32 @@ TInt CCertSaverModel::QueryLabelL( TCertLabel& aLabel, CUnifiedCertStore& aStore
 //
 void CCertSaverModel::HandleSaveErrorL( TInt aStatus ) const
     {
+
     switch ( aStatus )
         {
         case KErrNone:
             {
-            ShowConfirmationNoteL( R_CERTSAVER_ERROR_SAVEOK );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_SAVEOK);
             break;
             }
         case KErrNotSupported:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_UNSUPPORTED_CERT );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_UNSUPPORTED_CERT);
             break;
             }
         case KErrBadName:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_LABEL_ALREADY_EXISTS );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_LABEL_ALREADY_EXISTS);
             break;
             }
         case KErrAlreadyExists:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_ALREADY_EXISTS );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_ALREADY_EXISTS);
             break;
             }
         case KErrArgument:
             {
-            ShowErrorNoteL( R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED );
+            ShowInformationNoteL(R_CERTSAVER_ERROR_CACERTS_DB_CORRUPTED);
             break;
             }
         default:
@@ -884,6 +911,7 @@ void CCertSaverModel::HandleSaveErrorL( TInt aStatus ) const
 void CCertSaverModel::AddToMessageWithStringL(
     TDes& aMessage, TInt aStringResID, const TDesC& aString ) const
     {
+
     HBufC* promptPtr = NULL;
     promptPtr = StringLoader::LoadL( aStringResID, aString );
     CleanupStack::PushL( promptPtr );
@@ -904,6 +932,7 @@ void CCertSaverModel::AddToMessageWithIntL(
     TInt aStringResID,
     TInt aInt ) const
     {
+
     HBufC* promptPtr = NULL;
     promptPtr = StringLoader::LoadL( aStringResID, aInt );
     CleanupStack::PushL( promptPtr );
@@ -922,6 +951,7 @@ void CCertSaverModel::AddToMessageWithIntL(
 //
 void CCertSaverModel::AddToMessageL( TDes& aMessage, TInt aStringResID ) const
     {
+
     HBufC* promptPtr = NULL;
     promptPtr = StringLoader::LoadL( aStringResID );
     CleanupStack::PushL( promptPtr );
@@ -940,6 +970,7 @@ void CCertSaverModel::AddToMessageL( TDes& aMessage, TInt aStringResID ) const
 //
 void CCertSaverModel::ConstructMessageL( TDes& aMessage ) const
     {
+
     HBufC16* issuerName = NULL;
     HBufC16* subjectName = NULL;
 
@@ -996,6 +1027,7 @@ void CCertSaverModel::ConstructMessageL( TDes& aMessage ) const
 //
 void CCertSaverModel::AddKeyUsageL( TDes& aMessage, const CX509Certificate& aCert ) const
     {
+
     TKeyUsageX509 x509Usage = EX509UsageNone;
     TKeyUsagePKCS15 pkcs15KeyUsage = EPKCS15UsageNone;
     const CX509CertExtension* ext = aCert.Extension( KKeyUsage );
@@ -1079,6 +1111,7 @@ void CCertSaverModel::AddKeyUsageL( TDes& aMessage, const CX509Certificate& aCer
 void CCertSaverModel::AddValidityPeriodL(
     TDes& aMessage, const CX509Certificate& aCert ) const
     {
+
     // Hometime's offset to UTC
     TLocale locale;
     TTimeIntervalSeconds offSet = locale.UniversalTimeOffset();
@@ -1108,7 +1141,7 @@ void CCertSaverModel::AddValidityPeriodL(
     // format the date to user readable format. The format is locale dependent
     finishValue.FormatL( finishString, *dateFormatString );
     AknTextUtils::DisplayTextLanguageSpecificNumberConversion( finishString );
-    CleanupStack::PopAndDestroy(); // dateFormatString
+    CleanupStack::PopAndDestroy(dateFormatString); // dateFormatString
     aMessage.Append( finishString );
     AddNewlinesToMessage( aMessage );
     }
@@ -1120,6 +1153,7 @@ void CCertSaverModel::AddValidityPeriodL(
 //
 void CCertSaverModel::AddNewlinesToMessage( TDes& aMessage ) const
     {
+
     aMessage.Append( KDoubleEnter );
     }
 
@@ -1130,6 +1164,7 @@ void CCertSaverModel::AddNewlinesToMessage( TDes& aMessage ) const
 //
 TBool CCertSaverModel::CertificateSupported() const
     {
+
     if ( iCertFormat == EX509Certificate &&
        ( iCertOwnerType == ECACertificate ||
          iCertOwnerType == EPeerCertificate ||
@@ -1151,19 +1186,20 @@ TBool CCertSaverModel::CertificateSupported() const
 //
 TBool CCertSaverModel::CertificateOkL() const
     {
-    if ( !CertificateSupported() )
+
+    if ( !CertificateSupported() ) 
         {
-        ShowErrorNoteL( R_CERTSAVER_ERROR_UNSUPPORTED_CERT );
+        ShowInformationNoteL(R_CERTSAVER_ERROR_UNSUPPORTED_CERT);
         return EFalse;
         }
     if ( CertNotValidAnymore() )
         {
-        ShowErrorNoteL( R_CERTSAVER_ERROR_CERT_NOT_VALID );
+        ShowInformationNoteL(R_CERTSAVER_ERROR_CERT_NOT_VALID);
         return ETrue;
         }
     else if ( CertNotValidYet() )
         {
-        ShowErrorNoteL( R_CERTSAVER_ERROR_CERT_NOT_VALID_YET );
+        ShowInformationNoteL(R_CERTSAVER_ERROR_CERT_NOT_VALID_YET);
         }
     return ETrue;
     }
@@ -1175,6 +1211,7 @@ TBool CCertSaverModel::CertificateOkL() const
 //
 TBool CCertSaverModel::CertNotValidAnymore() const
     {
+
     TTime homeTime;
     homeTime.HomeTime();
     if ( iNewCert->ValidityPeriod().Finish() < homeTime )
@@ -1191,6 +1228,7 @@ TBool CCertSaverModel::CertNotValidAnymore() const
 //
 TBool CCertSaverModel::CertNotValidYet() const
     {
+
     TTime homeTime;
     homeTime.HomeTime();
     if ( iNewCert->ValidityPeriod().Start() > homeTime )
@@ -1207,35 +1245,15 @@ TBool CCertSaverModel::CertNotValidYet() const
 //
 void CCertSaverModel::ShowInformationNoteL( TInt aResourceID ) const
     {
-    HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    CAknInformationNote* note = new (ELeave) CAknInformationNote( ETrue );
-    note->ExecuteLD( buffer->Des() );
-    CleanupStack::PopAndDestroy( buffer );
-    }
-// ----------------------------------------------------------
-// CCertSaverModel::ShowConfirmationNoteL() const
-// Creates and shows a confirmation note.
-// ----------------------------------------------------------
-//
-void CCertSaverModel::ShowConfirmationNoteL( TInt aResourceID ) const
-    {
-    HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    CAknConfirmationNote* note = new (ELeave) CAknConfirmationNote( ETrue );
-    note->ExecuteLD( buffer->Des() );
-    CleanupStack::PopAndDestroy( buffer );
-    }
 
-// ----------------------------------------------------------
-// CCertSaverModel::ShowErrorNoteL() const
-// Creates and shows an error note.
-// ----------------------------------------------------------
-//
-void CCertSaverModel::ShowErrorNoteL( TInt aResourceID ) const
-    {
     HBufC* buffer = iAppUi->CoeEnv()->AllocReadResourceLC( aResourceID );
-    CAknErrorNote* note = new (ELeave) CAknErrorNote( ETrue );
-    note->ExecuteLD(buffer->Des());
-    CleanupStack::PopAndDestroy( buffer );
+    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EInformation);
+    CleanupStack::PushL(iMessageBox);                                                                                    
+    iMessageBox->SetTextL(buffer->Des());                                                                                
+    iMessageBox->SetTimeout(6000);                                                                                      
+    iMessageBox->ExecL();                                                                                                
+    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
+    CleanupStack::PopAndDestroy( buffer );      
     }
 
 // ----------------------------------------------------------
@@ -1247,6 +1265,7 @@ void CCertSaverModel::ShowErrorNoteL( TInt aResourceID ) const
 //
 TPtrC CCertSaverModel::TrimCertificateFields( TPtrC aField ) const
     {
+
     TPtrC cutField = CutCertificateField( aField );
     // Find one semicolon at a time and crop the
     // helpField from the left to search for the next semicolon
@@ -1298,6 +1317,7 @@ TPtrC CCertSaverModel::TrimCertificateFields( TPtrC aField ) const
 //
 TPtrC CCertSaverModel::CutCertificateField( TPtrC aField ) const
     {
+
     TInt fieldLength = aField.Length();
     if ( fieldLength >= KMaxLengthTextCertIdentifierVisible )
         {
@@ -1314,10 +1334,8 @@ TPtrC CCertSaverModel::CutCertificateField( TPtrC aField ) const
 //
 TInt CCertSaverModel::QueryTrusterUidsL( RArray<TUid>& aUids )
     {
+
     TInt ret = KErrCancel;
-    CArrayFixFlat<TInt>* selectionArray =
-        new (ELeave)  CArrayFixFlat<TInt>( KTrusterArrayInitSize );
-    CleanupStack::PushL( selectionArray );
     CDesCArray* itemsArray = new (ELeave) CDesCArrayFlat( KTrusterArrayInitSize );
     CleanupStack::PushL( itemsArray );
 
@@ -1330,27 +1348,52 @@ TInt CCertSaverModel::QueryTrusterUidsL( RArray<TUid>& aUids )
     CleanupClosePushL( appsInItemArray );
     UpdateTrustListboxItemL( apps, appsInItemArray, *itemsArray );
 
-    CAknListQueryDialog* dlg = new (ELeave) CAknListQueryDialog( selectionArray );
-    CleanupStack::PushL( dlg );
-    dlg->PrepareLC( R_CERTSAVER_TRUST_SETTINGS_QUERY );
-    dlg->SetItemTextArray( itemsArray );
-    dlg->SetOwnershipType( ELbmDoesNotOwnItemArray );
-    if ( dlg->RunLD() )
+    HBufC* title = CEikonEnv::Static()->AllocReadResourceLC( R_CERTSAVER_SELECT_TRUSTED_APPS);
+
+    RBuf rBuf;     // buffer for items with big enough space
+    rBuf.CreateL(KMaxLengthTextMeassageBody);
+    CleanupClosePushL(rBuf);
+    for(TInt i = 0; i<itemsArray->Count(); i++) 
+        rBuf.Append( (*itemsArray)[i] ); 
+
+    CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();     
+    TInt saved = SecQueryUi->SecQueryDialog(*title, rBuf,1,KTokenLength,              
+                                             ESecUiAlphaSupported | ESecUiCancelSupported |
+                                             ESecUiBasicTypeMultiCheck |
+                                             ESecUiEmergencyNotSupported);   
+    delete SecQueryUi;
+    SecQueryUi=NULL;
+
+    if (saved==KErrNone)
         {
-        for ( TInt i = 0; i < selectionArray->Count(); ++i )
-            {
-            TInt ii = (*selectionArray)[ i ];
-            aUids.Append( appsInItemArray[ ii ].Id() );
-            }
+        TLex16 lex(rBuf);
+        TChar ch;                                        
+        TBuf16<KTokenLength> token;          
+        TInt  val;
+        while((ch = lex.Get()) != 0 ){                   
+           while ((ch = lex.Peek()) != '|' && ch!=0) lex.Inc();
+           token.Copy(lex.MarkedToken());                
+           TLex lexc(token);
+           if(lexc.Val(val)!=KErrNone) val=0;
+           if(val<=appsInItemArray.Count()-1)
+               aUids.Append( appsInItemArray[ val ].Id() );
+           lex.Inc();                                    
+           lex.Mark();                                   
+         }  
         ret = KErrNone;
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         ret = KErrCancel;
         }
-    CleanupStack::Pop( dlg );
-    CleanupStack::PopAndDestroy( 4, selectionArray );
+
+    rBuf.Close();
+    CleanupStack::PopAndDestroy(&rBuf);
+    CleanupStack::PopAndDestroy(title);
+    CleanupStack::PopAndDestroy(&appsInItemArray);
+    CleanupStack::PopAndDestroy(appInfoManager);
+    CleanupStack::PopAndDestroy(itemsArray);
     return ret;
     }
 
@@ -1361,6 +1404,7 @@ TInt CCertSaverModel::QueryTrusterUidsL( RArray<TUid>& aUids )
 //
 TInt CCertSaverModel::QueryTrustedSiteL()
     {
+
     TInt ret = KErrCancel;
     HBufC* label = NULL;
     HBufC* secondaryName = NULL;
@@ -1372,27 +1416,19 @@ TInt CCertSaverModel::QueryTrustedSiteL()
     delete secondaryName;
     secondaryName = NULL;
     labelBuf = label->Des().Left( CERTSAVER_MAX_LABEL_LEN );
-
-
     HBufC* prompt = StringLoader::LoadLC( R_CERTSAVER_TRUSTEDSITE_WARNING, labelBuf );
-
-    CAknMessageQueryDialog* note = CAknMessageQueryDialog::NewL( *prompt );
-
-    note->PrepareLC( R_CERTSAVER_TRUSTED_SITE_QUERY );
-    note->SetPromptL( *prompt );
-
-    if ( note->RunLD() )
+    CHbDeviceMessageBoxSymbian::TButtonId selection =
+        CHbDeviceMessageBoxSymbian::QuestionL(prompt->Des(), KNullDesC, KNullDesC);
+    if ( selection == CHbDeviceMessageBoxSymbian::EAcceptButton)
         {
         ret = KErrNone;
         }
     else
         {
-        ShowConfirmationNoteL( R_CERTSAVER_CERT_DISCARDED );
+        ShowInformationNoteL(R_CERTSAVER_CERT_DISCARDED);
         ret = KErrCancel;
         }
-
     CleanupStack::PopAndDestroy( prompt );
-
     CleanupStack::PopAndDestroy( label );
     return ret;
     }
@@ -1407,6 +1443,7 @@ void CCertSaverModel::UpdateTrustListboxItemL(
     RArray<TCertificateAppInfo>& aAppsInItemArray,
     CDesCArray& aItemsArray ) const
   {
+
     for ( TInt i = 0; i < aApps.Count(); i++ )
         {
         TCertificateAppInfo appInfo = aApps[ i ];
@@ -1469,6 +1506,7 @@ void CCertSaverModel::UpdateTrustListboxItemL(
 //
 void CCertSaverModel::DivideToBlocks( const TDesC8& aInput, TDes& aOutput ) const
     {
+
     _LIT( KBlockSeparator, " " );
     const TInt KBlockLength = 2;
     TInt blockIndex = 0;
@@ -1491,25 +1529,37 @@ void CCertSaverModel::DivideToBlocks( const TDesC8& aInput, TDes& aOutput ) cons
 //
 void CCertSaverModel::SavePKCS12L()
     {
+
     HBufC* message = HBufC::NewLC( KMaxLengthTextMeassageBody );
     TPtr msgPtr = message->Des();
     ConstructPKCS12QueryMsgL(msgPtr, iParser.Keys().Count(),
                             iParser.UserCertificates().Count(),
                             iParser.CACertificates().Count() );
-    TBool save = DoMessageQueryL(
-        R_MESSAGE_QUERY_DOSAVE, R_CERTSAVER_HEADER_PKCS12_FILE_CONTAINS,
-        *message );
-    CleanupStack::PopAndDestroy( message );
+
+    //TODO: Should be in loc file but hardcoded now
+    _LIT(KCheckBoxCaption,"Protect with Password|1");
+    TBuf<KMaxLengthTextCheckBoxData> CheckeBoxData(KCheckBoxCaption);
+
+    CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();    
+    TInt save = SecQueryUi->SecQueryDialog(*message, CheckeBoxData,1,1,
+                                            ESecUiAlphaSupported | ESecUiCancelSupported |
+                                            ESecUiBasicTypeCheck | ESecUiEmergencyNotSupported);
+    CleanupStack::Pop(message);
     message = NULL;
-    if ( !save )
+    delete SecQueryUi;
+    SecQueryUi=NULL;
+
+    if ( save!=KErrNone )
         {
         ShowInformationNoteL( R_CERTSAVER_PKCS12_DISCARDED );
         User::Leave( KErrExitApp );
         }
     TInt status = KErrNone;
     // save private keys
-    TRAP( status, SavePrivateKeyL() );
-
+   if(CheckeBoxData.Compare(_L("1"))==0)
+   {
+       TRAP( status, SavePrivateKeyL() );
+   }
     // save user certificates if private key was saved.
     if ( ( iSavedKeysCount > 0 || iKeyAlreadyExists ) && iParser.UserCertificates().Count() > 0 )
         {
@@ -1542,42 +1592,28 @@ void CCertSaverModel::SavePKCS12L()
                 }
             }
         }
+/*
     if ( iSavedCACertsCount != 0 || iSavedKeysCount != 0
         || iSavedUserCertsCount != 0 )
         {
-        message = HBufC::NewLC( KMaxLengthTextMeassageBody );
-        TPtr msgPtr2 = message->Des();
-        ConstructPKCS12QueryMsgL(
+// show how many have been saved
+        HBufC* p = StringLoader::LoadLC( R_CERTSAVER_HEADER_SAVED );             
+        message = HBufC::NewLC( KMaxLengthTextMeassageBody );                    
+        message->Des().Append(p->Des());                                         
+        TPtr msgPtr2 = message->Des();                                           
+        ConstructPKCS12QueryMsgL(                                                
             msgPtr2, iSavedKeysCount, iSavedUserCertsCount, iSavedCACertsCount );
-        DoMessageQueryL(
-            R_MESSAGE_QUERY_SAVED, R_CERTSAVER_HEADER_SAVED, *message );
-        CleanupStack::PopAndDestroy( message );
+        CHbDeviceMessageBoxSymbian::InformationL(message->Des());                
+        CleanupStack::PopAndDestroy( message );                                  
+        CleanupStack::PopAndDestroy( p );                                        
         }
     else
         {
+        // the contents could not be saved is dropped
         ShowInformationNoteL( R_QTN_CM_PKCS12_SAVING_FAILED );
+        CleanupStack::PopAndDestroy( message );
         }
-    }
-
-// ----------------------------------------------------------
-// CCertSaverModel::DoMessageQuery()
-// Displays message query dialog for user.
-// ----------------------------------------------------------
-//
-TBool CCertSaverModel::DoMessageQueryL(
-    TInt aDialogResId,
-    TInt aHeadingResId,
-    TDesC& aMessage )
-    {
-    CAknMessageQueryDialog* dlg = CAknMessageQueryDialog::NewL( aMessage );
-    CleanupStack::PushL( dlg );
-    dlg->PrepareLC( aDialogResId );
-
-    HBufC* header = StringLoader::LoadLC( aHeadingResId );
-    dlg->QueryHeading()->SetTextL( header->Des() );
-    CleanupStack::PopAndDestroy( header );
-    CleanupStack::Pop( dlg );
-    return dlg->RunLD();
+*/
     }
 
 // ----------------------------------------------------------
@@ -1591,6 +1627,7 @@ void CCertSaverModel::ConstructPKCS12QueryMsgL(
     TInt aUserCerts,
     TInt aCACerts ) const
     {
+
     if ( aPrivateKeys > 0 )
         {
         if ( aPrivateKeys == 1 )

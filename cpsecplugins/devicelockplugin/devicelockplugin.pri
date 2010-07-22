@@ -20,6 +20,5 @@ SOURCES += src/*.cpp
 
 INCLUDEPATH += ../../seccodeui/src \
 			   ../../seccodeui/inc \
-			   /sf/mw/securitysrv/securitydialogs
-		   
-		
+			  
+	   

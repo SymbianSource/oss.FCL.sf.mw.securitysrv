@@ -99,4 +99,5 @@ EXPORTS
 	_ZN17CSecuritySettings27ChangeAutoLockPeriodParamsLEi4TBufILi10EEiR6TDes16i @ 98 NONAME
 	_ZTI11CSecQueryUi @ 99 NONAME
 	_ZTV11CSecQueryUi @ 100 NONAME
+	_ZN17CSecuritySettings17AskSecCodeParamsLER4TBufILi10EEiR6TDes16i @ 101 NONAME
 

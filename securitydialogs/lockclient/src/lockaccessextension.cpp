@@ -15,23 +15,20 @@
  *
 */
 
-
 #include "lockaccessextension.h"
 #include <lockappclientserver.h>
 #include <e32property.h> // P&S API
 #include <apgtask.h> // TApaTask, TApaTaskList
 #include <coemain.h> // CCoeEnv
+#include "../../Autolock/PubSub/securityuisprivatepskeys.h"
+#include <apgcli.h>
+#include <apacmdln.h>
 
 #include <xqservicerequest.h>
 #include <xqserviceutil.h>
 #include <xqrequestinfo.h>
-#include <QDebug>
 #include <xqaiwrequest.h>
 #include <xqappmgr.h>
-
-// Constants
-const TInt KTimesToConnectServer( 2);
-const TInt KTimeoutBeforeRetrying( 50000);
 
 // ---------------------------------------------------------------------------
 // Gets server version, needed for connection
@@ -71,8 +68,7 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 		ret = KErrNotReady;
 		}
 	*/
-	qDebug() << "============= RLockAccessExtension::TryConnect";
-	qDebug() << ret;
+	RDEBUG("ret", ret);
 	return ret;
 	}
 
@@ -82,9 +78,70 @@ TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 TInt RLockAccessExtension::EnsureConnected( )
 	{
 	TInt ret(KErrNone);
+
+	// Now we use QtHighway, but nevertheless need to be sure that only 1 process is running
+	// This is done because Autolock.exe should start at the beginning, but it might not be ready yet.
+	// As Qthighway will start it, it's better to give time for the first one to prepare itself.
+	TInt err = KErrNone;
+	TInt numAttempts = 0;
+	TInt numberOfInstances = 0;
+	do
+		{
+		numberOfInstances=0;
+		TFullName processName;
+		TFindThread find(_L("*utolock*"));	// first letter can can be uppercase or lowercase
+		while( find.Next( processName ) == KErrNone )
+		    {
+				// Autolock[100059b5]0002::Autolock		in device
+				// autolock.exe[100059b5]0002::Main		in emulator
+				RDEBUG("found process", 1);
+        numberOfInstances++;
+		    }	// end while
+		RDEBUG("numberOfInstances", numberOfInstances);
+		if(numberOfInstances<=0)
+			{
+			RDEBUG("Autolock.exe not running already. Starting.", 0 );
+	    RApaLsSession ls;
+	    User::LeaveIfError(ls.Connect());
+	    CleanupClosePushL(ls);
+	    RDEBUG("commandLine", 0); 
+	    CApaCommandLine* commandLine = CApaCommandLine::NewLC();
+	    commandLine->SetExecutableNameL(_L("autolock.exe"));
+	    commandLine->SetCommandL(EApaCommandRun);
+	    // Try to launch the application.
+	    RDEBUG("StartApp", 0); 
+	    TInt err = ls.StartApp(*commandLine); // this migh fail
+    	CleanupStack::PopAndDestroy(2); // commandLine, ls
+
+			RDEBUG("Autolock.exe launched. Waiting a bit. err", err );
+			User::After(1000*1000);
+			RDEBUG("re-verifying Autolock.exe process.", 1 );
+			}
+		} while (numAttempts++ <3 && numberOfInstances<=0);
+		
+
+
+	TInt value = -1;
+	err = KErrNone;
+	numAttempts = 0;
+	while( value<1 && numAttempts++ <10 )	// wait max 5 seconds
+		{
+		// process was started, but still not fully running. Give a bit more time
+		err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, value);
+		RDEBUG("err", err);
+		RDEBUG("value", value);
+		if(value<1)
+			{
+			RDEBUG("Autolock.exe has started but it's not fully running", value);
+			User::After(5*100*1000);	// half a second
+			}
+		}
+	RDEBUG("numAttempts", numAttempts);
 	/*
-	this is the old methd. Now we use QtHighway
+	this is the old method. 
 	// we need CCoeEnv because of window group list
+	const TInt KTimesToConnectServer( 2);
+	const TInt KTimeoutBeforeRetrying( 50000);
 	CCoeEnv* coeEnv = CCoeEnv::Static( );
 	if ( coeEnv )
 		{
@@ -104,8 +161,7 @@ TInt RLockAccessExtension::EnsureConnected( )
 		ret = KErrNotSupported;
 		}
 	*/
-	qDebug() << "============= RLockAccessExtension::EnsureConnected";
-	qDebug() << ret;
+	RDEBUG("ret", ret);
 	return ret;
 	}
 
@@ -114,7 +170,8 @@ TInt RLockAccessExtension::EnsureConnected( )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage )
 	{
-	TInt ret = EnsureConnected( );
+	RDEBUG("0", 0);
+	TInt ret = KErrNone;
 	if ( ret == KErrNone )
 		{
 		// ret = SendReceive( aMessage );
@@ -128,7 +185,8 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 	{
-	TInt ret = EnsureConnected( );
+	RDEBUG("0", 0);
+	TInt ret = KErrNone;
 	if ( ret == KErrNone )
 		{
 		// assign parameters to IPC argument
@@ -144,75 +202,82 @@ TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1 )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::SendMessage( TInt aMessage, TInt aParam1, TInt aParam2 )
 	{
+	RDEBUG("0", 0);
 	TInt ret = EnsureConnected( );
+	RDEBUG("ret", ret);
 	if ( ret == KErrNone )
 		{
 		// assign parameters to IPC argument
 		// TIpcArgs args( aParam1, aParam2);
 		// this is the old methd. Now we use QtHighway
 		// ret = SendReceive( aMessage, args );
-    qDebug() << "============= RLockAccessExtension::SendMessage 123.2";
-    qDebug() << aMessage;
-    qDebug() << aParam1;
-    qDebug() << aParam2;
+    RDEBUG("aMessage", aMessage);
+    RDEBUG("aParam1", aParam1);
+    RDEBUG("aParam2", aParam2);
 
-		if(1==0)
-			{	// old method. Not used any more
+		
+			{	// old method. Not used any more. Kept as reference
+			/*
 	    XQServiceRequest* mServiceRequest;
-	    qDebug() << "============= RLockAccessExtension::SendMessage 2";
-	    mServiceRequest = new XQServiceRequest("com.nokia.services.AutolockSrv.AutolockSrv","service(QString,QString,QString)");// use   , false    to make async
-	    qDebug() << "============= RLockAccessExtension::SendMessage 2.1";
-	    qDebug() << mServiceRequest;
+      RDEBUG("XQServiceRequest", 0);
+	    mServiceRequest = new XQServiceRequest("com.nokia.services.Autolock.Autolock","service(QString,QString,QString)");// use   , false    to make async
+      RDEBUG("aMessage", 0);
 	    QString label;
 	    label = "" + QString("%1").arg(aMessage);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage aParam1";
+      RDEBUG("aParam1", 0);
 	    label = "" + QString("%1").arg(aParam1);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage aParam2";
+      RDEBUG("aParam2", 0);
 	    label = "" + QString("%1").arg(aParam2);
 	    *mServiceRequest << QString(label);
-	    qDebug() << "============= RLockAccessExtension::SendMessage 3";
 	    int returnvalue;
+      RDEBUG("send", 0);
 	    bool ret = mServiceRequest->send(returnvalue);
-	    qDebug() << "============= RLockAccessExtension::SendMessage ret=" << ret;
-	    qDebug() << "============= RLockAccessExtension::SendMessage returnvalue=" << returnvalue;
+      RDEBUG("ret", ret);
+      RDEBUG("returnvalue", returnvalue);
+      */
 			}
-		else
-			{
-	 		// TODO this always seems to fail because request is NULL
+
+			RDEBUG("args", 0);
+			QList<QVariant> args;
+	    args << QVariant(QString(QString::number(aMessage)));
+	    args << QVariant(QString(QString::number(aParam1)));
+	    args << QVariant(QString(QString::number(aParam2)));
+
 	    XQApplicationManager mAppManager;
 	    XQAiwRequest *request;
-			request = mAppManager.create("com.nokia.services.AutolockSrv", "AutolockSrv", "service(QString,QString,QString)", false);
-			// also works with		create("AutolockSrv", "service(QString,QString,QString)", false);
+	    RDEBUG("create", 0);
+			request = mAppManager.create("com.nokia.services.Autolock", "Autolock", "service(QString,QString,QString)", false);
+			// also works with		create("Autolock", "service(QString,QString,QString)", false);
 			if(request)
-	    	qDebug() << "============= RLockAccessExtension::SendMessage got request";
+				{
+	    	RDEBUG("got request", 0);
+	    	}
 	    else
 	    	{
-	 	    qDebug() << "============= RLockAccessExtension::SendMessage not got request";
+	 	    RDEBUG("not got request", 0);
+	 	    RDebug::Printf( "%s %s (%u) not got request=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+	 	    return KErrAbort;
 	 	  	}
 				
-	    qDebug() << "============= RLockAccessExtension::SendMessage 121.3";
-			QList<QVariant> args;
-			QString label ;
-			label = "" + QString("%1").arg(aMessage);
-	    args << QVariant(QString(label));
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.4";
-			label = "" + QString("%1").arg(aParam1);
-	    args << QVariant(QString(label));
-			label = "" + QString("%1").arg(aParam2);
-	    args << QVariant(QString(label));
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.4";
+			RDEBUG("setArguments", 0);
 			request->setArguments(args);
-	    qDebug() << "============= RLockAccessExtension::SendMessage 123.5";
-			bool ret = request->send();
-	    qDebug() << "============= RLockAccessExtension::SendMessage ret=" << ret;
+			RDEBUG("args", 0);
+	    int returnvalue=0;
+	    QVariant var = QVariant(returnvalue);
+			RDEBUG("send", 0);
+			bool retSend = request->send(var);
+			returnvalue = var.toInt();
+			RDEBUG("retSend", retSend);
+			RDEBUG("returnvalue", returnvalue);
 	    int error = request->lastError();
-	    qDebug() << "============= RLockAccessExtension::SendMessage error=" << error;
+			RDEBUG("error", error);
+	    ret = returnvalue;
 	
 	    delete request;
-			}
 		}
+  RDEBUG("ret", ret);
 	return ret;
 	}
 

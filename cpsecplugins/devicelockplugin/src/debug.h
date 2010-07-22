@@ -15,44 +15,26 @@
  *
  */
 
-#if 0
-#ifndef DEBUG_H_
-#define DEBUG_H_
+#if defined (_DEBUG)
 
-#define DL_TRACE( x ) RDebug::Printf( "%s %s (%u) %s", __FILE__, __PRETTY_FUNCTION__, __LINE__, x );
-#define DL_TRACE_NUM( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
-
-
-#endif /* DEBUG_H_ */
-#endif
-
-
-
-
-
-#ifndef SCPDEBUG_H
-#define SCPDEBUG_H
-
-   _LIT( KLogFile, "SCP.log" );
-   _LIT( KLogDir, "tarm" );
-   
-
+_LIT( KLogFile, "Devicelockplugin.log" );
+_LIT( KLogDir, "Devicelockplugin" );
 
 #include <e32std.h>
 #include <f32file.h>
 #include <flogger.h>
 #include <e32svr.h>
 
-        inline void FWrite (TRefByValue<const TDesC> aFmt,...)
-            {
-            VA_LIST list;
-            VA_START( list, aFmt );
-            RFileLogger::WriteFormat( KLogDir,KLogFile,EFileLoggingModeAppend ,TPtrC(aFmt) ,list );
-            }
+inline void FWrite (TRefByValue<const TDesC> aFmt,...)
+    {
+    VA_LIST list;
+    VA_START( list, aFmt );
+    RFileLogger::WriteFormat( KLogDir,KLogFile,EFileLoggingModeAppend ,TPtrC(aFmt) ,list );
+    }
 
-                #define Dprint(arg...)    FWrite arg;
+    #define Dprint(arg...)    FWrite arg;
 #else
-                #define Dprint(arg...)
+    #define Dprint(arg...)
 #endif  // _DEBUG
-       
+
 

@@ -27,6 +27,7 @@ class CpCertView;
 class CSecModUIModel;
 class QModelIndex;
 class CpSecmoduleInfoView;
+class HbMessageBox;
 class CpSecurityView : public CpBaseSettingView
 {
     Q_OBJECT
@@ -45,7 +46,7 @@ public slots:
     void deleteModule();
     void moduleDetails();
     void displayPreviousFromModInfo();
-    
+    void dialogClosed(HbAction* action);
 private:
     CSecModUIModel* mSecModUIModel;  
     CpSecModView* mSecModView;
@@ -54,6 +55,8 @@ private:
 	CpSecmoduleInfoView* mModuleinfoView;
 	HbView* mCurrentView;
 	TInt mPos;
+	HbMessageBox* mNote;
+	HbMenu* mContextMenu;
 
 };
 
