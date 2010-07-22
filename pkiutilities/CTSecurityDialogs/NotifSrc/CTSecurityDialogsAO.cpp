@@ -19,17 +19,17 @@
 // INCLUDE FILES
 #include "CTSecurityDialogsAO.h"
 #include "CTSecurityDialogNotifier.h"
-#include "CTPinQueryDialog.h"
-#include "CTSignTextDialog.h"
-#include "CTSelectCertificateDialog.h"
-#include "CTQueryDialog.h"
-#include "CTPinPinQueryDialog.h"
+//#include "CTPinQueryDialog.h"
+//#include "CTSignTextDialog.h"
+//#include "CTSelectCertificateDialog.h"
+//#include "CTQueryDialog.h"
+//#include "CTPinPinQueryDialog.h"
 #include "CTUntrustedCertQuery.h"
-#include "CTInvalidCertNote.h"
+//#include "CTInvalidCertNote.h"
 #include <PKIDlg.h>
 #include <badesca.h>
 #include <StringLoader.h>
-#include <aknnotewrappers.h>
+//#include <aknnotewrappers.h>
 #include <unifiedcertstore.h>
 #include <unifiedkeystore.h>
 #include <mctkeystore.h>
@@ -45,6 +45,8 @@
 #include <x509certext.h>
 #include <TrustedSitesStore.h>
 #include <mctwritablecertstore.h>
+#include <eikenv.h>                         // CEikonEnv
+#include <AknUtils.h>                       // AknTextUtils
 
 #include "SecQueryUi.h"                   // needed for password dialog
 
@@ -273,7 +275,10 @@ void CCTSecurityDialogsAO::StartLD(
             pinLabel.Copy( pinLabelPtr );
             HBufC* text = iNotifier->LoadResourceStringLC( iOperation, pinLabel );
 
-            CCTSignTextDialog::RunDlgLD( R_WIM_UNBLOCK_INFO_DIALOG, *text, iStatus, iRetValue );
+            // TODO
+            //CCTSignTextDialog::RunDlgLD( R_WIM_UNBLOCK_INFO_DIALOG, *text, iStatus, iRetValue );
+            User::Leave( KErrGeneral );
+
             CleanupStack::PopAndDestroy( text );
             iStatus = KRequestPending;
             SetActive();
@@ -504,8 +509,10 @@ void CCTSecurityDialogsAO::DoHandleSignTextL( const TDesC8& aBuffer )
         {
         case EUserAuthenticationText:
             {
-            CCTSignTextDialog::RunDlgLD( R_WIM_USERAUTHTEXT_DIALOG,
-                *textToSign, iStatus, iRetValue );
+            // TODO
+            //CCTSignTextDialog::RunDlgLD( R_WIM_USERAUTHTEXT_DIALOG,
+            //    *textToSign, iStatus, iRetValue );
+            User::Leave( KErrGeneral );
             break;
             }
         case EUserAuthentication:
@@ -515,7 +522,9 @@ void CCTSecurityDialogsAO::DoHandleSignTextL( const TDesC8& aBuffer )
             }
         case ESignText:
             {
-            CCTSignTextDialog::RunDlgLD( R_WIM_SIGNTEXT_DIALOG,*textToSign, iStatus, iRetValue );
+            // TODO
+            //CCTSignTextDialog::RunDlgLD( R_WIM_SIGNTEXT_DIALOG,*textToSign, iStatus, iRetValue );
+            User::Leave( KErrGeneral );
             break;
             }
         default:
@@ -576,12 +585,12 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
         HBufC* header = StringLoader::LoadLC(
             R_QTN_CM_HEADING_PHONE_KEYSTORE, CEikonEnv::Static() );
 		iPIN.iMinLength = KMaxKeystorePwLength;
-        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,    
-            iPIN.iMinLength, iPIN.iMaxLength );                    
-        iMultiLineDlgType = EEnterNewKeyStorePw;                   
-        CleanupStack::PopAndDestroy( header );                     
+        DoHandleMessageL( EEnterKeyStorePw, KNullDesC, *header,
+            iPIN.iMinLength, iPIN.iMaxLength );
+        iMultiLineDlgType = EEnterNewKeyStorePw;
+        CleanupStack::PopAndDestroy( header );
         RunL();
-        
+
         }
     else if ( iPIN.iPINLabel == KKeyStoreImportKeyLabel )
         {
@@ -623,8 +632,10 @@ void CCTSecurityDialogsAO::DoHandlePinOperationL()
 // CCTSecurityDialogsAO::DoHandleMultilinePinQueryL()
 // -----------------------------------------------------------------------------
 //
-void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
+void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& /*aDlgType*/ )
     {
+    // TODO
+#if 0
     iMultiLineDlgType = aDlgType;
     HBufC* dlgText1 = NULL;
     HBufC* dlgText2 = NULL;
@@ -633,35 +644,36 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
     if ( EEnterNewKeyStorePw == dlgType )
         {
 /*
-        dlgText1 = iNotifier->LoadResourceStringLC( dlgType, KNullDesC );          
+        dlgText1 = iNotifier->LoadResourceStringLC( dlgType, KNullDesC );
         dlgText2 = iNotifier->LoadResourceStringLC( EVerifyKeyStorePw, KNullDesC );
-        dlg = CCTPinPinQueryDialog::NewL( *dlgText1, *dlgText2, iPINValue2,        
-            iPINValueVerify, iPIN.iMinLength, iPIN.iMaxLength, iRetValue );        
-        dlg->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );                         
-        CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2          
+        dlg = CCTPinPinQueryDialog::NewL( *dlgText1, *dlgText2, iPINValue2,
+            iPINValueVerify, iPIN.iMinLength, iPIN.iMaxLength, iRetValue );16:19:13.812 xti1:MCU_ASCII_PRINTF; channel:0xE0; msg:*PlatSec* ERROR - Capability check failed - Process #tlstest[e8dc94b1]0001 was checked by Thread c32exe.exe[101f7989]0001::ESock_IP and was found to be missing the capabilities: NetworkControl .
+
+        dlg->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );
+        CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2
 */
-        dlgText1 =  StringLoader::LoadLC( R_QTN_SN_NEW_PHONE_KEYSTORE );                     
-        dlgText2 = StringLoader::LoadLC( R_QTN_WIM_VERIFY_PIN );                             
-        HBufC* message = HBufC::NewLC( KMaxLengthTextCertLabelVisible );                     
-        message->Des().Append(dlgText1->Des());                                              
-        message->Des().Append(_L("|"));                                                      
-        message->Des().Append(dlgText2->Des());      
-        CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                                  
+        dlgText1 =  StringLoader::LoadLC( R_QTN_SN_NEW_PHONE_KEYSTORE );
+        dlgText2 = StringLoader::LoadLC( R_QTN_WIM_VERIFY_PIN );
+        HBufC* message = HBufC::NewLC( KMaxLengthTextCertLabelVisible );
+        message->Des().Append(dlgText1->Des());
+        message->Des().Append(_L("|"));
+        message->Des().Append(dlgText2->Des());
+        CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();
         TInt queryAccepted = SecQueryUi->SecQueryDialog(message->Des(), iPINValueVerify,
-                                                    iPIN.iMinLength,iPIN.iMaxLength,    
-                                                    ESecUiAlphaSupported |              
-                                                    ESecUiCancelSupported |             
-                                                    ESecUiSecretSupported |             
+                                                    iPIN.iMinLength,iPIN.iMaxLength,
+                                                    ESecUiAlphaSupported |
+                                                    ESecUiCancelSupported |
+                                                    ESecUiSecretSupported |
                                                     ESecUiEmergencyNotSupported);
-        iRetValue=(queryAccepted==KErrNone); 
-        if(iRetValue)                                                                        
+        iRetValue=(queryAccepted==KErrNone);
+        if(iRetValue)
             iPINValue2.Copy(iPINValueVerify); // dialog already does not OK with different pin codes
-        delete SecQueryUi;                                                                   
-        SecQueryUi=NULL;                                                                     
-        CleanupStack::PopAndDestroy( message );                                              
-        CleanupStack::PopAndDestroy( dlgText2 );                                             
-        CleanupStack::PopAndDestroy( dlgText1 );      
-        RunL(); // had to call it this way       
+        delete SecQueryUi;
+        SecQueryUi=NULL;
+        CleanupStack::PopAndDestroy( message );
+        CleanupStack::PopAndDestroy( dlgText2 );
+        CleanupStack::PopAndDestroy( dlgText1 );
+        RunL(); // had to call it this way
         }
     else if ( EExportKeyPw == dlgType )
         {
@@ -681,6 +693,8 @@ void CCTSecurityDialogsAO::DoHandleMultilinePinQueryL( const TInt& aDlgType )
         dlg->RunDlgLD( iStatus, R_WIM_PINPIN_QUERY_DIALOG );
         CleanupStack::PopAndDestroy( 2, dlgText1 ); // dlgText1, dlgText2
         }
+#endif
+    User::Leave( KErrGeneral );
     }
 
 // -----------------------------------------------------------------------------
@@ -700,7 +714,7 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
 
   TDialogTypeItem item = iNotifier->GetDialogTypeItem( dlgType );
 
-  CAknResourceNoteDialog* dlg = NULL;
+  //CAknResourceNoteDialog* dlg = NULL;
 
   TInt resource = 0;
 
@@ -708,44 +722,62 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
         {
         case EInfoNote:
             {
-            dlg = new ( ELeave ) CAknInformationNote( ETrue );
+            // TODO
+            //dlg = new ( ELeave ) CAknInformationNote( ETrue );
+            User::Leave( KErrGeneral );
             break;
             }
 
         case EErrorNote:
             {
-            dlg = new ( ELeave ) CAknErrorNote( ETrue );
+            // TODO
+            //dlg = new ( ELeave ) CAknErrorNote( ETrue );
+            User::Leave( KErrGeneral );
             break;
             }
         case EConfirmationNote:
             {
-            dlg = new ( ELeave ) CAknConfirmationNote( ETrue );
+            // TODO
+            //dlg = new ( ELeave ) CAknConfirmationNote( ETrue );
+            User::Leave( KErrGeneral );
             break;
             }
         case EInfoDialog:
             {
+            // TODO
+            /*
             CCTQueryDialog::RunDlgLD( iStatus,
                                         iRetValue,
                                         *dlgText, item.iSoftKeyResource,
                                         ECTInfoDialog );
             iStatus = KRequestPending;
             SetActive();
+            */
+            User::Leave( KErrGeneral );
             break;
             }
         case EEnterPwPwDialog:
             {
+            // TODO
+            /*
             CCTPinPinQueryDialog* dialog =
                 CCTPinPinQueryDialog::NewL( *dlgText, *dlgText,
                 iPINValue2, iPINValueVerify, aMinLength, aMaxLength, iRetValue );
             dialog->RunDlgLD( iStatus, R_WIM_PWPW_QUERY_DIALOG );
+            */
+            User::Leave( KErrGeneral );
             break;
             }
         case EEnterPinPinCodeDialog:
             {
+            // TODO
+            /*
             CCTPinPinQueryDialog* dialog =
                 CCTPinPinQueryDialog::NewL( *dlgText, *dlgText,
                 iPINValue2, iPINValueVerify, aMinLength, aMaxLength, iRetValue );
             dialog->RunDlgLD( iStatus, R_WIM_PINPIN_QUERY_DIALOG );
+            */
+            User::Leave( KErrGeneral );
             break;
             }
         case EEnterPwDialog:
@@ -789,9 +821,11 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
                     User::Panic(_L("CSecDlgNotifier"), 0);
                     }
                 }
-               iPinQueryDialogDeleted = EFalse;
+               //iPinQueryDialogDeleted = EFalse;
                if(aDlgType!=EEnterKeyStorePw) {
-                    CCTPinQueryDialog::RunDlgLD( iStatus,
+                   // TODO
+                   /*
+                   CCTPinQueryDialog::RunDlgLD( iStatus,
                                             *dlgText,
                                             *pinValue,
                                             aMinLength,
@@ -800,23 +834,26 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
                                             resource,
                                             iPinQueryDialog,
                                             iPinQueryDialogDeleted );
-			    break;											
+                    */
+                   User::Leave( KErrGeneral );
+                   resource = resource;     // avoids compiler warning
+                   break;
                }
                else
                {
-                iPIN.iMinLength = KMaxKeystorePwLength;                                   
-                CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                            
-                HBufC* header =StringLoader::LoadLC( R_QTN_SN_ENTER_PHONE_KEYSTORE);      
+                iPIN.iMinLength = KMaxKeystorePwLength;
+                CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();
+                HBufC* header =StringLoader::LoadLC( R_QTN_SN_ENTER_PHONE_KEYSTORE);
                 TInt queryAccepted = SecQueryUi->SecQueryDialog(header->Des(), *pinValue,
-                                                        aMinLength,aMaxLength,           
-                                                        ESecUiAlphaSupported |           
-                                                        ESecUiCancelSupported |          
-                                                        ESecUiSecretSupported |          
-                                                        ESecUiEmergencyNotSupported);    
-                delete SecQueryUi;                                                       
-                SecQueryUi=NULL;                                                          
-                iRetValue=(queryAccepted==KErrNone);                                      
-                CleanupStack::PopAndDestroy( header );        
+                                                        aMinLength,aMaxLength,
+                                                        ESecUiAlphaSupported |
+                                                        ESecUiCancelSupported |
+                                                        ESecUiSecretSupported |
+                                                        ESecUiEmergencyNotSupported);
+                delete SecQueryUi;
+                SecQueryUi=NULL;
+                iRetValue=(queryAccepted==KErrNone);
+                CleanupStack::PopAndDestroy( header );
                 break;
                }
             }
@@ -826,12 +863,16 @@ void CCTSecurityDialogsAO::DoHandleMessageL(
             }
 
       }
-  if ( dlg && aDlgType!=EEnterKeyStorePw)                                                                    
-      {                                                                         
-                                                                                
-      dlg->ExecuteLD( *dlgText );                                               
-      dlg = NULL;                                                               
-      }                                                                         
+  // TODO
+  /*
+  if ( dlg && aDlgType!=EEnterKeyStorePw)
+      {
+
+      dlg->ExecuteLD( *dlgText );
+      dlg = NULL;
+      }
+      */
+  User::Leave( KErrGeneral );
 
     CleanupStack::PopAndDestroy( dlgText ); // dlgText
     }
@@ -1498,6 +1539,7 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
         {
         // No certificate from Device Certificate Store. Prompt user
         // for certificate selection
+    /*
         CCTSelectCertificateDialog::RunDlgLD(
             iCertArray, iCertHandleList, iTokenHandle,
             iStatus, iRetValue ); // Takes ownerhip of array
@@ -1505,6 +1547,8 @@ void CCTSecurityDialogsAO::DoHandleSelectCertificateL()
         iNextStep = EOperationCompleted;
         iStatus = KRequestPending;
         SetActive();
+    */
+        User::Leave( KErrGeneral );     // TODO: to be implemented
         }
     }
 
@@ -1573,7 +1617,9 @@ void CCTSecurityDialogsAO::ShowCSRDialogL()
     AddKeySizeL( messagePtr, iKeyInfo );
     AddKeyLocationL( messagePtr, iKeyInfo );
 
-    CCTSignTextDialog::RunDlgLD( R_WIM_CSR_DIALOG, *message, iStatus, iRetValue );
+    // TODO
+    //CCTSignTextDialog::RunDlgLD( R_WIM_CSR_DIALOG, *message, iStatus, iRetValue );
+    User::Leave( KErrGeneral );
     CleanupStack::PopAndDestroy( message );
 
     iStatus = KRequestPending;
@@ -1634,7 +1680,10 @@ void CCTSecurityDialogsAO::ShowCertDialogL()
             User::Panic(_L("CTestSecDlgNotifier"), 0);
             }
         }
-    CCTSignTextDialog::RunDlgLD( resource, *message, iStatus, iRetValue );
+    // TODO
+    //CCTSignTextDialog::RunDlgLD( resource, *message, iStatus, iRetValue );
+    User::Leave( KErrGeneral );
+    resource = resource;     // avoids compiler warning
     CleanupStack::PopAndDestroy( message );
 
     iStatus = KRequestPending;
@@ -2467,12 +2516,14 @@ void CCTSecurityDialogsAO::SaveReceiptL( const TDesC8& aBuffer )
 void CCTSecurityDialogsAO::DoCancel()
     {
     WIMSECURITYDIALOGS_WRITE( "CCTSecurityDialogsAO::DoCancel" );
+    /*
     if( !iPinQueryDialogDeleted )
         {
         delete iPinQueryDialog;
         iPinQueryDialogDeleted = ETrue;
         }
     iPinQueryDialog = NULL;
+    */
 
     // Complete message if it has not been completed earlier.
     if( !iMessagePtr.IsNull() )
@@ -2540,10 +2591,10 @@ void CCTSecurityDialogsAO::ShowInformationNoteL( TInt aResourceID ) const
     {
     HBufC* buffer = CEikonEnv::Static()->AllocReadResourceLC( aResourceID );
     CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EInformation);
-    CleanupStack::PushL(iMessageBox);                                                                                    
-    iMessageBox->SetTextL(buffer->Des());                                                                                
-    iMessageBox->SetTimeout(6000);                                                                                      
-    iMessageBox->ExecL();                                                                                                
-    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
-    CleanupStack::PopAndDestroy( buffer );      
+    CleanupStack::PushL(iMessageBox);
+    iMessageBox->SetTextL(buffer->Des());
+    iMessageBox->SetTimeout(6000);
+    iMessageBox->ExecL();
+    CleanupStack::PopAndDestroy(iMessageBox);
+    CleanupStack::PopAndDestroy( buffer );
     }

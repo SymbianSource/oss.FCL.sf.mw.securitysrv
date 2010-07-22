@@ -31,10 +31,10 @@
 #include <PSVariables.h>   // Property values
 #include <coreapplicationuisdomainpskeys.h>
 #include <startupdomainpskeys.h>
-#include <uikon/eiksrvui.h>
+// #include <uikon/eiksrvui.h>
 #include <settingsinternalcrkeys.h>
 #include <securityuisprivatepskeys.h>
-#include <AknNotiferAppServerApplication.h>
+// #include <AknNotiferAppServerApplication.h>
 
 #include <SCPClient.h>
 #include <securitynotification.h>

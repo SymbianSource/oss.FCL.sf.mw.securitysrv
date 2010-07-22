@@ -28,8 +28,8 @@
 #include <CertSaver.rsg>
 #include <StringLoader.h>
 #include <securityerr.h>
-#include <aknnotewrappers.h>              // Note dialogs text, TODO: could be removed after localization is ready
 #include <apmrec.h>
+#include <eikenv.h>                       // CEikonEnv
 #include "certparser.h"
 
 #include "SecQueryUi.h"                   // needed for password dialog

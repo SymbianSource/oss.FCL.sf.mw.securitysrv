@@ -59,15 +59,15 @@ SOURCEPATH  ../NotifSrc
 
 SOURCE    DllMain.cpp
 SOURCE    CTSecuritydialognotifier.cpp
-SOURCE    CTpinquerydialog.cpp
-SOURCE    CTQueryDialog.cpp
-SOURCE    CTSigntextdialog.cpp
-SOURCE    CTSelectcertificatedialog.cpp
-SOURCE    CTPinPinQueryDialog.cpp
+//SOURCE    CTpinquerydialog.cpp
+//SOURCE    CTQueryDialog.cpp
+//SOURCE    CTSigntextdialog.cpp
+//SOURCE    CTSelectcertificatedialog.cpp
+//SOURCE    CTPinPinQueryDialog.cpp
 SOURCE    CTCertificateQuery.cpp
 SOURCE    CTSecurityDialogsAO.cpp
 SOURCE    CTUntrustedCertQuery.cpp
-SOURCE    CTInvalidCertNote.cpp
+//SOURCE    CTInvalidCertNote.cpp
 
 LIBRARY   EUSER.LIB
 LIBRARY   EIKSRV.LIB

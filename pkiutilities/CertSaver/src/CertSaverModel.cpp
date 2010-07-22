@@ -16,11 +16,6 @@
 */
 
 
-// INCLUDE FILES
-#include <aknnotewrappers.h>        // Note dialogs
-
-
-
 #include <StringLoader.h>           // For loading resource strings
 #include <unifiedcertstore.h>       // For saving the certificates
 #include <mctwritablecertstore.h>   // For saving the certificates
@@ -37,6 +32,8 @@
 #include <x509certext.h>
 #include <mctkeystore.h>
 #include <TrustedSitesStore.h>
+#include <eikenv.h>                 // CEikonEnv
+#include <AknUtils.h>               // AknTextUtils
 
 #include <CertSaver.rsg>
 #include "CertSaverModel.h"

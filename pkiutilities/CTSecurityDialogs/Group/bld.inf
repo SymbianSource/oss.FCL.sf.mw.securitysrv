@@ -27,7 +27,8 @@ PRJ_EXPORTS
 
 PRJ_MMPFILES
 CTSecDialogImpl.mmp
-CTSecDlgNotifier.mmp
+//TODO: remove completely, commented out to remove AVKON Notifier API dependency
+//CTSecDlgNotifier.mmp
 #ifdef __JAVA_JSR_177_SECURITY_AND_TRUST_SERVICES
 CTSecDlgs.mmp
 #endif

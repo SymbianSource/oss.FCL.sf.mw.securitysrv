@@ -376,8 +376,8 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
     TInt length = aLockCode.Length();
 
     RDEBUG("length", length);
-		// from now on, it accepts all lenghts, because some locks are 20, others are 13
-    // if(aLockCode.Length() <= KSimLockMaxPasswordSize)
+		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+    if(aLockCode.Length() <= KSimLockMaxPasswordSize)
     {
     if (aType.CompareF(Operator) == 0)
         {
@@ -473,8 +473,8 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
     TInt length = aUnlockCode.Length();
 
     RDEBUG("length", length);
-		// from now on, it accepts all lenghts, because some locks are 20, others are 13
-    // if(aUnlockCode.Length() <= KSimLockMaxPasswordSize)
+		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+    if(aUnlockCode.Length() <= KSimLockMaxPasswordSize)
     {
     if (aType.CompareF(Operator) == 0)
         {

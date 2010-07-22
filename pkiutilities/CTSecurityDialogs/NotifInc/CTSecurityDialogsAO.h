@@ -36,7 +36,7 @@ class CX509Certificate;
 class CX500DistinguishedName;
 class MCTWritableCertStore;
 class CAknQueryDialog;
-class CCTPinQueryDialog;
+//class CCTPinQueryDialog;
 
 
 // CLASS DECLARATION
@@ -325,8 +325,8 @@ NONSHARABLE_CLASS( CCTSecurityDialogsAO ): public CActive
 
         TBool& iDeleted;
 
-        CCTPinQueryDialog* iPinQueryDialog;
-        TBool iPinQueryDialogDeleted;
+        //CCTPinQueryDialog* iPinQueryDialog;
+        //TBool iPinQueryDialogDeleted;
         };
 
 #endif      // CTSECURITYDIALOGSAO_H

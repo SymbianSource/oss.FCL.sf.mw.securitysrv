@@ -57,6 +57,7 @@ symbian*: {
 
 BLD_INF_RULES.prj_exports += "./rom/Autolock.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(Autolock.iby)"
 BLD_INF_RULES.prj_exports += "./conf/Autolock.confml        MW_LAYER_CONFML(Autolock.confml)"
-BLD_INF_RULES.prj_exports += "./conf/CI_Autolock.confml     MW_LAYER_CONFML(CI_Autolock.confml)"
+# remove CI_autolock.confml because CI already exports it
+# BLD_INF_RULES.prj_exports += "./conf/CI_Autolock.confml     MW_LAYER_CONFML(CI_Autolock.confml)"
 BLD_INF_RULES.prj_exports += "./rom/AutolockSrv.iby         CORE_APP_LAYER_IBY_EXPORT_PATH(AutolockSrv.iby)"
 BLD_INF_RULES.prj_exports += "./PubSub/SecurityUIsPrivatePSKeys.h |../../inc/securityuisprivatepskeys.h"
