@@ -1043,6 +1043,7 @@ TInt CSecurityHandler::Pin1RequiredL()
 
     RMobilePhone::TMobilePassword iSecUi_password;
     TInt lCancelSupported = ESecUiCancelNotSupported;
+    TInt lEmergencySupported = ESecUiEmergencyNotSupported;
     TInt queryAccepted = KErrCancel;
     TInt lAlphaSupported = 0;
     RMobilePhone::TMobilePassword required_fourth;
@@ -1076,10 +1077,12 @@ TInt CSecurityHandler::Pin1RequiredL()
         {
         RDEBUG("0", 0);
         lCancelSupported = ESecUiCancelNotSupported;
+        lEmergencySupported = ESecUiEmergencySupported;
         }
     else
         {
         lCancelSupported = ESecUiCancelSupported;
+        lEmergencySupported = ESecUiEmergencyNotSupported;
         // it will be RMobilePhone::ESecurityCodePin1 , equivalent to ESecUiNone
         }
     wait->SetRequestType(EMobilePhoneGetSecurityCodeInfo);
@@ -1115,7 +1118,7 @@ TInt CSecurityHandler::Pin1RequiredL()
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("$"));
     title.AppendNum(codeInfo.iRemainingEntryAttempts);
-    TInt amode = ESecUiSecretSupported | lAlphaSupported | lCancelSupported | ESecUiEmergencySupported | secCodeType;
+    TInt amode = ESecUiSecretSupported | lAlphaSupported | lCancelSupported | lEmergencySupported | secCodeType;
     RDEBUG("amode", amode);
     queryAccepted = iSecQueryUi->SecQueryDialog(title, iSecUi_password, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, amode);
     RDEBUG("iSecUi_password", 0);

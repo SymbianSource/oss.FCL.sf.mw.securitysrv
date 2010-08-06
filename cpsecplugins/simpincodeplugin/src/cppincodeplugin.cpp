@@ -54,9 +54,10 @@ QList<CpSettingFormItemData *> CpPinCodePlugin::createSettingFormItemData(
     CpItemDataHelper &itemDataHelper) const
 {
 		RDEBUG("0", 0);
+		RDEBUG("using icon", 1);
     return  QList<CpSettingFormItemData *>()
         << new CpSettingFormEntryItemDataImpl<CpPinCodePluginView>
-        (itemDataHelper, tr("PIN code"), QString());
+        (itemDataHelper, tr("PIN code"), QString(), HbIcon(QString("qtg_large_pin_code")) );
 }
 
 /*!

@@ -486,7 +486,6 @@ CWimServer::CustomSecurityCheckL( const RMessage2& aMsg,
 
         case ESetApplicability:         //lint -fallthrough
         case ESetTrust:                 //lint -fallthrough
-        case ESetDefaultTrustSettings:  //lint -fallthrough
         case ERemoveTrustSettings:
             {
             if ( ResolveTrustModficationReqL( aMsg, usage ))
@@ -496,6 +495,16 @@ CWimServer::CustomSecurityCheckL( const RMessage2& aMsg,
             break;
             }
 
+        case ESetDefaultTrustSettings:
+            {
+            _WIMTRACE( _L("CWimServer::CustomSecurityCheckL, ESetDefaultTrustSettings exception") );
+            if ( ResolveTrustModficationReqL( aMsg, usage ))
+                {
+                test = CheckReadCapsForUsage( aMsg, usage );
+                }
+            }
+            break;
+            
         case EExportPublicKey:
             {
             ResolveExportPublicReqL( aMsg, usage );

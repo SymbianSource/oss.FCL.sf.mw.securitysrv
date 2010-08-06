@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -97,13 +97,11 @@ class CScardConnector : public CScardSession
         /**
         * Two-phased constructor.
         * @param aConnRegistry Pointer to connection registry
-        * @param aClient Client thread
         * @param aMessage Client message
-        */ 
+        */
         static CScardConnector* NewL( CScardConnectionRegistry* aConnRegistry,
-                                      RThread& aClient, 
-                                      const RMessage2& aMessage );
-        
+            const RMessage2& aMessage );
+
         /**
         * Destructor.
         */
@@ -165,10 +163,8 @@ class CScardConnector : public CScardSession
         /**
         * C++ default constructor.
         * @param aConnRegistry Pointer to connection registry
-        * @param aClient Client thread
         */
-        CScardConnector( CScardConnectionRegistry* aConnRegistry, 
-                         RThread& aClient );
+        CScardConnector( CScardConnectionRegistry* aConnRegistry );
 
         /**
         * By default Symbian 2nd phase constructor is private.

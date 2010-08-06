@@ -58,8 +58,14 @@ CpDeviceLockPlugin::~CpDeviceLockPlugin()
 QList<CpSettingFormItemData*> CpDeviceLockPlugin::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
 {
 		RDEBUG("0", 0);
+		RDEBUG("using icon", 1);
     return QList<CpSettingFormItemData*>() 
-           << new CpSettingFormEntryItemDataImpl<CpDeviceLockPluginView>(itemDataHelper,tr("Device lock"), QString());
+           << new CpSettingFormEntryItemDataImpl<CpDeviceLockPluginView>(
+           itemDataHelper,
+           tr("Device lock"),	// text
+           QString(),					// description
+           HbIcon(QString("qtg_large_device_lock"))	// icon
+           );
 }
 
 Q_EXPORT_PLUGIN2(cpdevicelockplugin, CpDeviceLockPlugin);

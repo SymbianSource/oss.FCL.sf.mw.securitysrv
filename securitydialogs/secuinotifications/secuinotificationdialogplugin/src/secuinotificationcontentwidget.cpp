@@ -309,7 +309,8 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 
         mainLayout->addItem(mainLayoutButtons);
         
-        codeTop->setFocus();	// this should open the VKB
+        // remove setFocus from PIN query because Orbit can't handle it
+        // codeTop->setFocus();	// this should open the VKB
 
     }
 

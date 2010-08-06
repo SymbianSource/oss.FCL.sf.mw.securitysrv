@@ -227,7 +227,8 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
                 handleCodeTopChanged(codeTop->text());
                 }
             RDEBUG("setFocus", 0);
-      			codeTop->setFocus();	// this should open the VKB . Doesn't seem to work when it's done on the widget, so it's done here.
+        		// remove setFocus from PIN query because Orbit can't handle it
+      			// codeTop->setFocus();	// this should open the VKB . Doesn't seem to work when it's done on the widget, so it's done here.
             }	// codeTop!=NULL
             
 			const TUint32 KSecurityUIsTestCode  = 0x00000307;
