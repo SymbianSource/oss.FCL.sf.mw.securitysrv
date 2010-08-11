@@ -25,11 +25,11 @@
 CpCertPluginLoader::CpCertPluginLoader()
 	{
 		RDEBUG("0", 0);
-		mTranslator =q_check_ptr( new QTranslator());
-		// to be uncommented after translation sumission.
-		//  QString lang = QLocale::system().name();
+		mTranslator = q_check_ptr( new QTranslator());
 		QString path = "z:/resource/qt/translations/";
-		mTranslator->load(path + "certificate_management_en" );
+		QString appName = "certificate_manager_";
+		QString lang = QLocale::system().name();
+		mTranslator->load(path + appName + lang);
 		qApp->installTranslator(mTranslator);		
 	}
 
