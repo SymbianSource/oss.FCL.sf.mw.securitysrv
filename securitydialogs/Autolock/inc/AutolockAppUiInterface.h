@@ -24,6 +24,7 @@ class MAutolockAppUiInterface
         virtual TInt DeviceLockQueryStatus() = 0;
         virtual TInt DeviceLockStatus() = 0;
         virtual void CancelDeviceLockQuery() = 0;
+        virtual void ForceOrientation(TInt value) = 0;
     };
 
 #endif // AUTOLOCKAPPUIINTERFACE_H

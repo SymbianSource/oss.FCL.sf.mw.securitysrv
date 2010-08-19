@@ -384,6 +384,7 @@ void CWimTrustSettingsStore::DoSetDefaultTrustSettingsL(
             CleanupStack::PopAndDestroy( &applications );
             }
     );
+    _WIMTRACE2 ( _L( "CWimTrustSettingsStore::DoSetDefaultTrustSettingsL(), err=%d" ), err );
 
     if ( err != KErrNone ) // Some error occured
         {
@@ -418,7 +419,8 @@ void CWimTrustSettingsStore::DoRemoveTrustSettingsL( const CWimCertInfo& aCert )
         RemoveApplicationsL( certID );  // Remove applications
         RemoveCertificateL( certID );   // Remove certificate
     );
-
+    _WIMTRACE2 ( _L( "CWimTrustSettingsStore::DoRemoveTrustSettingsL(), err=%d" ), err );
+    
     if ( err ) // Some error occurred
         {
         iDatabase.Rollback(); // Rollback changes

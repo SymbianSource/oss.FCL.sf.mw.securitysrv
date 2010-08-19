@@ -30,6 +30,8 @@
 #include <aknmessagequerydialog.h> // CAknMessageQueryDialog
 #include <e32base.h>
 #include <e32property.h> //Rproperty
+#include <rmmcustomapi.h>       // TSimLockPassword
+
 // Local Includes
 #include "simlockisaserverdefinitions.h"
 #include "simlockui.pan"
@@ -128,7 +130,8 @@ TBool CSimLockUIAppUi::ProcessSimUnlockDialogsL()
     {
     TBool keepLooping = ETrue;
 
-    TBuf<SEC_ATT_PASSWORD_MAX_BUFFER> password;
+    RMmCustomAPI::TSimLockPassword password;
+
 
     // Loop until flag is set
     do
@@ -165,15 +168,7 @@ TBool CSimLockUIAppUi::ProcessSimUnlockDialogsL()
 // ---------------------------------------------------------------------------
 void CSimLockUIAppUi::CreateBackgroundControlL()
     {
-    CEikStatusPane* statusPane = StatusPane();
-
-    // Remove status pane
-    // Crop background pane to reveal idle status pane
-    TRect background = ClientRect();
-    statusPane->ReduceRect(background);
-    statusPane->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_EMPTY);
-
-    iBackgroundControl = CSimLockUIBackgroundControl::NewL(background);
+    iBackgroundControl = CSimLockUIBackgroundControl::NewL();
     AddToStackL(iBackgroundControl);
     }
 
@@ -201,7 +196,7 @@ TBool CSimLockUIAppUi::DisplayIntroductionDialogL()
 // ---------------------------------------------------------------------------
 TBool CSimLockUIAppUi::PromptForPasswordL(TDes& aPassword)
     {
-    TBuf<SEC_ATT_PASSWORD_MAX_BUFFER> newPassword;
+    RMmCustomAPI::TSimLockPassword newPassword;
 
     // Prompt for password twice.  Loop until passwords match.
     do
@@ -210,8 +205,6 @@ TBool CSimLockUIAppUi::PromptForPasswordL(TDes& aPassword)
 
         // Ask for password
         CAknTextQueryDialog* dialog = CAknTextQueryDialog::NewL(aPassword);
-       // dialog->SetMaxLength(SEC_ATT_PASSWORD_MAX_LENGTH);
-
         if (!dialog->ExecuteLD(R_SIM_INFO_ENTER_PASSWORD))
             {
             return EFalse;
@@ -329,7 +322,8 @@ const TDesC& password =  aPassword;
 // ---------------------------------------------------------------------------
 TBool CSimLockUIAppUi::HandleUnlockFailedL()
     {
-    TBuf<SEC_ATT_PASSWORD_MAX_BUFFER> password;
+    RMmCustomAPI::TSimLockPassword password;
+
     // Otherwise, prompt user to try again
     SetBackgroundTextL(EBackgroundTextEmpty);
 

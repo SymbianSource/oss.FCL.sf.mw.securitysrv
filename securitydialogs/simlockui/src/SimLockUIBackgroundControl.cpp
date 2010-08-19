@@ -41,9 +41,9 @@ static const TInt KSkinLayoutOption = 2;
 // ---------------------------------------------------------------------------
 // CSimLockUIBackgroundControl::NewL
 // ---------------------------------------------------------------------------
-CSimLockUIBackgroundControl* CSimLockUIBackgroundControl::NewL( const TRect& aRect )
+CSimLockUIBackgroundControl* CSimLockUIBackgroundControl::NewL()
     {
-    CSimLockUIBackgroundControl* self = CSimLockUIBackgroundControl::NewLC( aRect );
+    CSimLockUIBackgroundControl* self = CSimLockUIBackgroundControl::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
@@ -51,11 +51,11 @@ CSimLockUIBackgroundControl* CSimLockUIBackgroundControl::NewL( const TRect& aRe
 // ---------------------------------------------------------------------------
 // CSimLockUIBackgroundControl::NewLC
 // ---------------------------------------------------------------------------
-CSimLockUIBackgroundControl* CSimLockUIBackgroundControl::NewLC( const TRect& aRect )
+CSimLockUIBackgroundControl* CSimLockUIBackgroundControl::NewLC()
     {
     CSimLockUIBackgroundControl* self = new ( ELeave ) CSimLockUIBackgroundControl;
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -83,16 +83,14 @@ void CSimLockUIBackgroundControl::SetBackgroundText( HBufC* aText )
 // ---------------------------------------------------------------------------
 // CSimLockUIBackgroundControl::ConstructL
 // ---------------------------------------------------------------------------
-void CSimLockUIBackgroundControl::ConstructL( const TRect& aRect )
+void CSimLockUIBackgroundControl::ConstructL()
     {
     // Create a window for this application view
     CreateWindowL();
+    SetExtentToWholeScreen();
 
     iBackgroundSkinContext = CAknsBasicBackgroundControlContext::NewL(
-            KAknsIIDQsnBgAreaMain, aRect, EFalse );
-
-    // Set the windows size
-    SetRect( aRect );
+            KAknsIIDQsnBgAreaMain, Rect(), EFalse );
 
     // Activate the window, which makes it ready to be drawn
     ActivateL();
@@ -104,7 +102,22 @@ void CSimLockUIBackgroundControl::ConstructL( const TRect& aRect )
 void CSimLockUIBackgroundControl::SizeChanged()
     {
     // Background skin.
-    iBackgroundSkinContext->SetRect( Rect() );
+    if ( iBackgroundSkinContext )
+        iBackgroundSkinContext->SetRect( Rect() );
+    }
+
+// ---------------------------------------------------------------------------
+// CSimLockUIBackgroundControl::HandleResourceChange()
+// ---------------------------------------------------------------------------
+//
+void CSimLockUIBackgroundControl::HandleResourceChange( TInt aType )
+    {
+    CCoeControl::HandleResourceChange( aType );
+
+    if ( aType == KEikDynamicLayoutVariantSwitch )
+        {
+        SetExtentToWholeScreen();
+        }
     }
 
 

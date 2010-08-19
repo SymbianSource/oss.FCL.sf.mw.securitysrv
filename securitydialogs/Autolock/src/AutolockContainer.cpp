@@ -276,6 +276,13 @@ void CAutolockContainer::Draw(const TRect& aRect) const
     TInt y = Rect().Height()/2 - iBitmap->SizeInPixels().iHeight/2;
 		TInt width =iBitmap->SizeInPixels().iWidth;
 		TInt height =iBitmap->SizeInPixels().iHeight;
+		
+		TInt gripStatus = EPSHWRMGripClosed;
+		RProperty::Get( KPSUidHWRM, KHWRMGripStatus, gripStatus );
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) gripStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, gripStatus );
+		#endif
+		
       TInt callState = 0;
   	  RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
     if ( callState == EPSCTsyCallStateNone || callState == EPSCTsyCallStateUninitialized )
@@ -283,7 +290,8 @@ void CAutolockContainer::Draw(const TRect& aRect) const
     	}
     else
     	{
-    	y-=100;
+			if (gripStatus != EPSHWRMGripOpen)
+    		y-=100;
     	}
     
     if (iBitmap && iMask)
@@ -295,8 +303,16 @@ void CAutolockContainer::Draw(const TRect& aRect) const
     	  }
     	  else
     	  	{
-   	    	aCallRect_x=Rect().Width()/2 - iBitmapCall->SizeInPixels().iWidth/2;
-		    	aCallRect_y=Rect().Height() * 0.75;
+		    	if (gripStatus != EPSHWRMGripOpen)
+		    		{
+	   	    	aCallRect_x=Rect().Width()/2 - iBitmapCall->SizeInPixels().iWidth/2;
+		    		aCallRect_y=Rect().Height() * 0.75;
+		    		}
+		    	else
+		    		{
+		    		aCallRect_x=Rect().Width()* 0.75 - iBitmapCall->SizeInPixels().iWidth/2;
+		    		aCallRect_y = Rect().Height()/2-3*10;
+		    		}
 		    	aCallRect_width=iBitmapCall->SizeInPixels().iWidth;
 		    	aCallRect_height=iBitmapCall->SizeInPixels().iHeight;
     	  	TSize cornerSize(20,20); 
@@ -308,7 +324,8 @@ void CAutolockContainer::Draw(const TRect& aRect) const
 					gc.SetPenStyle(CGraphicsContext::EDottedPen);
 					gc.DrawRoundRect(box,cornerSize);
         	gc.BitBltMasked(TPoint(aCallRect_x,aCallRect_y),iBitmapCall,TRect(TPoint(0,0),TPoint(aCallRect_width,aCallRect_height)), iMaskCall, ETrue);
-    	  	aCallRect_y+=100;	// coordinates are relative to TRect, not to Screen
+    	  	if (gripStatus != EPSHWRMGripOpen)
+    	  		aCallRect_y+=100;	// coordinates are relative to TRect, not to Screen
     	  	
     	  	// if active call, dismiss all pending notes. This avoids them on top of the BigRedButton
     	  	CAknSoftNotifier *softNotifier = NULL;

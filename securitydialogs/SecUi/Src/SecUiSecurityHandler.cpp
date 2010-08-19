@@ -777,6 +777,24 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 		    if (StartUp)
 		    isConditionSatisfied = ETrue;  
 		}
+
+	// call TARM so that it verifies that configuration is in sync. This might internally accept the (default) lock code, but doesn't dismiss the query.
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) pre isConditionSatisfied=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, isConditionSatisfied );
+  #endif
+	RSCPClient scpClientConfiguration;
+	User::LeaveIfError( scpClientConfiguration.Connect() );
+  CleanupClosePushL( scpClientConfiguration );
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) calling CheckConfiguration KSCPComplete=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, KSCPComplete );
+  #endif
+	TInt finalConfStatus = scpClientConfiguration.CheckConfiguration( KSCPComplete );
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) finalConfStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, finalConfStatus );
+	RDebug::Printf( "%s %s (%u) isConditionSatisfied=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, isConditionSatisfied );
+  #endif
+	CleanupStack::PopAndDestroy();	// scpClientConfiguration
+
 		if (isConditionSatisfied)
         {
         #if defined(_DEBUG)

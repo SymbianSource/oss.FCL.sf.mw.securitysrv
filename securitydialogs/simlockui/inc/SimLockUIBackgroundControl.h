@@ -50,19 +50,17 @@ public: // Public Constructors
      * NewL
      * Create a CSimLockUIBackgroundControl object, which will draw itself to aRect
      *
-     * @param aRect the rectangle this view will be drawn to
      * @return a pointer to the created instance of CSimLockUIBackgroundControl
      */
-    static CSimLockUIBackgroundControl* NewL( const TRect& aRect );
+    static CSimLockUIBackgroundControl* NewL();
 
     /**
      * NewLC
      * Create a CSimLockUIBackgroundControl object, which will draw itself to aRect
      *
-     * @param aRect the rectangle this view will be drawn to
      * @return a pointer to the created instance of CSimLockUIBackgroundControl
      */
-    static CSimLockUIBackgroundControl* NewLC( const TRect& aRect );
+    static CSimLockUIBackgroundControl* NewLC();
 
 
     /**
@@ -86,10 +84,8 @@ private: // Private Consructors
     /**
      * ConstructL
      * Perform the second phase construction of a CSimLockUIBackgroundControl object
-     *
-     * @param aRect the rectangle this view will be drawn to
      */
-    void ConstructL( const TRect& aRect );
+    void ConstructL();
 
 private: // From CCoeControl
 
@@ -98,6 +94,11 @@ private: // From CCoeControl
      * Indicate that the control has been resized
      */
     virtual void SizeChanged();
+
+    /**
+     * HandleResourceChange
+     */
+    void HandleResourceChange( TInt aType );
 
     /**
      * Draw

@@ -90,6 +90,7 @@ LIBRARY scpclient.lib
 LIBRARY gdi.lib
 LIBRARY aknnotify.lib
 LIBRARY     customapi.lib
+LIBRARY		   keylockpolicyapi.lib
 
 
 SMPSAFE

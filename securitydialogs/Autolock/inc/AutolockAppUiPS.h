@@ -119,7 +119,7 @@ class CAutolockAppUi : public CAknViewAppUi, public MAknEcsObserver,
         TBool DeviceLockStatus();
 
         void CancelDeviceLockQuery();
-        
+        void ForceOrientation(TInt value);
         /**
          * From MAutolockFpsStatusObserver
          */

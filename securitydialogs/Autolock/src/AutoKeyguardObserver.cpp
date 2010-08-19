@@ -368,6 +368,20 @@ void CAutoKeyguardObserver::LockKeysL()
     RProperty::Get(KPSUidScreenSaver, KScreenSaverActivatedFromIdle, value);
     screenSaverStertedFromIdle = (value == KSsStartedFromIdle);
     
+    // See if SIM is accepted
+    if(idle)
+    	{
+	    value = 0;
+	    RProperty::Get(KPSUidStartup, KPSSimStatus, value);
+	    // automatic lock can't get enabled if SIM-locked.
+	    if(value == ESimNotReady)
+	    	idle = EFalse;
+	    #if defined(_DEBUG)
+	    RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() KPSSimStatus state: %d"), value);
+	    RDebug::Print(_L("(AUTOLOCK)CAutoKeyguardObserver::LockKeysL() ESimUsable: %d"), ESimUsable);
+	    #endif
+	  	}
+
     //See if all the startup related queries and graphics has been displayed
     value = 0;
     RProperty::Get(KPSUidStartup, KPSStartupUiPhase, value);

@@ -1575,6 +1575,8 @@ void CWimCertStore::DoInitializeLoadTrustSettingsWaitL()
             // and assigned into mapping
             SetTrustSettingsOnMappingL( iTrusted,
                                         iCertificateApps );
+            _WIMTRACE3 ( _L( "CWimCertStore::DoInitializeLoadTrustSettingsWaitL(), index=%d, count=%d" ),
+                    iCertIndex, iCerts->Count() );
             if ( iCertIndex < iCerts->Count() - 1 )
                 {
                 iCertIndex++;

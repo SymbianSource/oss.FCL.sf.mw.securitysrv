@@ -99,6 +99,7 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
         #if defined(_DEBUG)
     	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => Grip opened"));
     	#endif 
+   		iObserver->ForceOrientation(0);
     	if( !iObserver->DeviceLockQueryStatus() && iObserver->DeviceLockStatus() )
     		{
             #if defined(_DEBUG)
@@ -139,6 +140,8 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
         #if defined(_DEBUG)
     	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => Grip closed"));
     	#endif 
+   		iObserver->ForceOrientation(1);
+
         //Grip closed
         if( iObserver->DeviceLockQueryStatus() )
         	{

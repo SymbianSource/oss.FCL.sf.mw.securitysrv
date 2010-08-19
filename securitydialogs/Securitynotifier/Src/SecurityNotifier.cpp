@@ -225,13 +225,33 @@ void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMes
 //
 void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const RMessagePtr2& aMessage)
     {
+	/*****************************************************
+	*	Series 60 Customer / ETel
+	*	Series 60  ETel API
+	*****************************************************/
+    iMessage = aMessage;
+    iReturnVal = aReturnVal;
+    TBool skipQuery = EFalse; // In some cases the query is handled by some other entity and SecurityNotifier should skip it.
+
+	#if defined(_DEBUG)
+    RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::GetParamsL() Start BEGIN"));
+    #endif
+    
+
+    TSecurityNotificationPckg pckg;
+    pckg.Copy( aBuffer );
+    iStartup = pckg().iStartup;
+    iEvent = static_cast<RMobilePhone::TMobilePhoneSecurityEvent>(pckg().iEvent);
+    
 	#if defined(_DEBUG)
 	RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
+	RDebug::Printf( "%s %s (%u) iEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iEvent );
+	RDebug::Printf( "%s %s (%u) 2 RMobilePhone::EPin1Required=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, RMobilePhone::EPin1Required );
 	#endif
 	TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
 	const TUid KAutolockUid = { 0x100059B5 };
 	TApaTask task( taskList.FindApp( KAutolockUid ) );
-	if ( !task.Exists() )
+	if ( !task.Exists() && iEvent != RMobilePhone::EPin1Required )	// PIN-request should not start autolock, to prevent that lock-code is secretly accepted by TARM. Rely on Startup.
 		{
 		#if defined(_DEBUG)
 		RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
@@ -252,24 +272,6 @@ void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const
 		
 		CleanupStack::PopAndDestroy(2); // commandLine, ls
 		}
-	/*****************************************************
-	*	Series 60 Customer / ETel
-	*	Series 60  ETel API
-	*****************************************************/
-    iMessage = aMessage;
-    iReturnVal = aReturnVal;
-    TBool skipQuery = EFalse; // In some cases the query is handled by some other entity and SecurityNotifier should skip it.
-
-	#if defined(_DEBUG)
-    RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::GetParamsL() Start BEGIN"));
-    #endif
-    
-
-    TSecurityNotificationPckg pckg;
-    pckg.Copy( aBuffer );
-    iStartup = pckg().iStartup;
-    iEvent = static_cast<RMobilePhone::TMobilePhoneSecurityEvent>(pckg().iEvent);
-    
 
 if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 		{

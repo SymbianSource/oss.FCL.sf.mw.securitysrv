@@ -1478,7 +1478,7 @@ void CCTSecurityDialogsAO::ShowNoTrustDialogL()
     // certificate dialog would be displayed on top of possible lock code query.
     TInt value = 0;
     TInt err = RProperty::Get( KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, value );
-    if( !err && value > EAutolockOff )
+    if( !err && value != EAutolockOff )
         {
         iRetValue = EServerCertNotAccepted;
         iStatus = KRequestPending;
