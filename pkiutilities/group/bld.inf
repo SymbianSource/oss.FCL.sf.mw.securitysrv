@@ -18,9 +18,10 @@
 
 #include "../x509certnameparser/group/bld.inf"
 #include "../PKCS12/group/bld.inf"
-#include "../CTSecurityDialogs/Group/bld.inf"
 #include "../CertSaver/group/bld.inf"
 #include "../DeviceToken/Group/bld.inf"
+#include "../securitydialognotifier/group/bld.inf"
+#include "../securitydialognotifiersrv/group/bld.inf"
 
 //Stub SIS
 PRJ_EXPORTS
@@ -30,8 +31,6 @@ PRJ_EXPORTS
 // export iby files
 ../rom/x509certnameparser.iby   CORE_MW_LAYER_IBY_EXPORT_PATH( x509certnameparser.iby )
 ../rom/pkcs12.iby               CORE_MW_LAYER_IBY_EXPORT_PATH( pkcs12.iby )
-../rom/CTSecurityDialogs.iby    CORE_MW_LAYER_IBY_EXPORT_PATH( CTSecurityDialogs.iby )
-../rom/CTSecurityDialogs_resources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( CTSecurityDialogs_resources.iby )
 ../rom/certmanui_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( certmanui_resources.iby )    // needed by CTSecurityDialogs
 ../rom/CertSaver.iby            CORE_MW_LAYER_IBY_EXPORT_PATH( CertSaver.iby )
 ../rom/CertSaver_resources.iby  LANGUAGE_MW_LAYER_IBY_EXPORT_PATH( CertSaver_resources.iby )

@@ -24,7 +24,6 @@
 #include <hbgroupbox.h>
 #include <hbtextedit.h>
 #include <QGraphicsLinearLayout>
-#include <QDebug>
 
 const int KUnknownError = -5;           // KErrNotSupported
 
@@ -85,8 +84,7 @@ void UntrustedCertificateWidget::constructFromParameters(
 
     Q_ASSERT(mCertificateDetailsText == 0);
     mCertificateDetailsText = new HbTextEdit;
-    qDebug() << "fixing Certificatedialog.length() to 63";
-    QString certificateDetails = mCertificateInfo->certificateDetails(mServerName).left(63);
+    QString certificateDetails = mCertificateInfo->certificateDetails(mServerName);
     mCertificateDetailsText->setPlainText(certificateDetails);
     mCertificateDetailsText->setReadOnly(true);
 

@@ -26,7 +26,7 @@
 #include <http.h>
 #include <es_sock.h> 
 #include <commdbconnpref.h>
-#include <cmmanagerext.h>
+#include <cmmanager.h>
 #include <hash.h>
 #include "M3GPPAuthenticationCallback.h"
 
@@ -147,7 +147,7 @@ class CDataRetriever : public CBase, public MHttpRequestEvents
           RSocketServ               iSockServ;
           C3GPPBootstrapHttpHandler* iHttpHandler;          // we own this    
           MBootstrapCallBack*       iBootstrapCallBack;     // don't own this
-          RCmManagerExt             iCmManagerExt;
+          RCmManager             	iCmManager;
     };
 
 

@@ -380,7 +380,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
         {
 				RDEBUG("mHack", mHack);
         //The following If-Else condition should be removed once orbit team fix the issue with datachanged() signal
-        /****************************************************************************************************************/
+        /****************************************************************************************************************
         if ((mHack % 2) == 0) //need to capture second datachanged() signal , not first one.
             {
             mHack++;

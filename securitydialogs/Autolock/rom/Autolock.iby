@@ -21,7 +21,7 @@
 
 S60_APP_EXE(Autolock)
 S60_APP_BITMAP(Autolock)
-S60_APP_AIF_RSC(Autolock)
+//S60_APP_AIF_RSC(Autolock)
 S60_APP_RESOURCE(Autolock)
 
 file=ABI_DIR\BUILD_DIR\autolockuseractivityservice.dll             SHARED_LIB_DIR\autolockuseractivityservice.dll
@@ -31,8 +31,8 @@ data=\epoc32\data\z\resource\qt\crml\autolock.qcrml \resource\qt\crml\autolock.q
 // file=ABI_DIR\BUILD_DIR\IndicatorAutolockPlugin.dll             SHARED_LIB_DIR\IndicatorAutolockPlugin.dll
 
 // Autolock_reg.rsc needs to be also in  import\apps  because this is where QtHighway searches for it.
-data=ZPRIVATE\10003a3f\import\apps\Autolock_reg.rsc          private\10003a3f\import\apps\Autolock_reg.rsc
-
+data=ZSYSTEM\..\PRIVATE\10003a3f\import\apps\Autolock_reg.rsc               private\10003a3f\import\apps\Autolock_reg.rsc  
+      
 // this is already done in IndicatorAutolockPlugin.iby
 // data=\epoc32\data\z\resource\plugins\indicators\indicatorautolockplugin.qtplugin \resource\plugins\indicators\indicatorautolockplugin.qtplugin
 

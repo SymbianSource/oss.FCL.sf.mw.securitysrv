@@ -122,6 +122,14 @@ bool SecUiNotificationDialogPlugin::deviceDialogInfo( const QString &deviceDialo
 					#endif
 					info->group = CriticalGroup;
 					}
+				// The unlock-query must have lower priority, to get over change PIN code request.					
+				else if( iqueryType == 0xB000000 )
+					{
+					#ifdef _DEBUG
+					RDebug::Printf( "SecUiNotificationDialogPlugin::deviceDialogInfo GenericDeviceDialogGroup=%x", GenericDeviceDialogGroup );
+					#endif						
+				  info->group = GenericDeviceDialogGroup;
+					}					
 				}
     // Return device dialog flags
 

@@ -1726,7 +1726,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
             // this queries both, and verifies itself
             TBuf<0x100> title;
             title.Zero();
-            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin_code|PIN1-Ver"));
+            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin_code"));
             title.Append(stringHolder->Des());
             CleanupStack::PopAndDestroy(stringHolder);
             title.Append(_L("|"));
@@ -2122,7 +2122,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
         // this queries both, and verifies itself
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin2_code PIN2-Ver"));
+        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin2_code"));
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         title.Append(_L("|"));

@@ -27,8 +27,10 @@ CONFIG += Hb
 CONFIG += mobility
 MOBILITY = publishsubscribe
 
+#TRANSLATIONS = autolock.ts
+
 XQSERVICE_ROOT=../..
-include(../../xqservicebase.pri)
+#include(../../xqservicebase.pri)
 include(src/Autolock.pri)
 
 LIBS+=-lxqservice -lxqserviceutil -lflogger
@@ -36,13 +38,15 @@ LIBS += -L../../../../../bin/release -lautolockuseractivityservice
 LIBS += -lsecui -letelmm -letel -lcustomapi -lcentralrepository
 LIBS += -lcone -lws32 -lkeylockpolicyapi
 LIBS += -lpower_save_display_mode
+LIBS += -ltstaskmonitorclient		# for TsTaskSettings
+LIBS += -lavkon									# for KeySounds
 
 SERVICE.FILE = service_conf.xml
 SERVICE.OPTIONS = embeddable
 SERVICE.OPTIONS += hidden
 
 libFiles.sources = Autolock.exe 
-libFiles.path = "!:\sys\bin"
+#libFiles.path = "!:\sys\bin"
 DEPLOYMENT += libFiles
 
 RESOURCES += Autolock.qrc
@@ -57,7 +61,10 @@ symbian*: {
 
 BLD_INF_RULES.prj_exports += "./rom/Autolock.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(Autolock.iby)"
 BLD_INF_RULES.prj_exports += "./conf/Autolock.confml        MW_LAYER_CONFML(Autolock.confml)"
+BLD_INF_RULES.prj_exports += "./conf/lock.confml        MW_LAYER_CONFML(lock.confml)"
 # remove CI_autolock.confml because CI already exports it
 # BLD_INF_RULES.prj_exports += "./conf/CI_Autolock.confml     MW_LAYER_CONFML(CI_Autolock.confml)"
 BLD_INF_RULES.prj_exports += "./rom/AutolockSrv.iby         CORE_APP_LAYER_IBY_EXPORT_PATH(AutolockSrv.iby)"
 BLD_INF_RULES.prj_exports += "./PubSub/SecurityUIsPrivatePSKeys.h |../../inc/securityuisprivatepskeys.h"
+
+BLD_INF_RULES.prj_exports += "./conf/lock_10283322.crml 	     MW_LAYER_CRML(lock_10283322.crml)"

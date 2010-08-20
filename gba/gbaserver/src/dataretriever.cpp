@@ -21,10 +21,9 @@
 #include <commdb.h>
 #include <es_enum.h>
 #include <centralrepository.h>
-#include <cmconnectionmethodext.h>
 #include <cmconnectionmethoddef.h>
 #include <cmpluginpacketdatadef.h>
-#include <cmdestinationext.h>
+#include <cmdestination.h>
 #include <http/thttpevent.h>
 #include "dataretriever.h"
 #include "GbaCommon.h"
@@ -103,7 +102,7 @@ void CDataRetriever::ConstructL()
     {
     iHttpHandler = C3GPPBootstrapHttpHandler::NewL( this, iBootstrapCallBack );
     iInternalState = EReadyForRequest;
-    iCmManagerExt.OpenL();
+    iCmManager.OpenL();
     }
 
 
@@ -120,7 +119,7 @@ CDataRetriever::~CDataRetriever()
     iHTTPSession.Close();
     iConnection.Close();
     iSockServ.Close();
-    iCmManagerExt.Close();
+    iCmManager.Close();
     
     if ( iInternalState == EMakeRequestCalled )
         {
@@ -356,11 +355,11 @@ TBool CDataRetriever::ValidateGivenIAPIDL( const TInt& aIAPID )
         RArray<TUint32> destIdArray;
         CleanupClosePushL( destIdArray );
         CleanupCounter++;
-        iCmManagerExt.AllDestinationsL( destIdArray );
+        iCmManager.AllDestinationsL( destIdArray );
 
         for ( TInt i = 0; i< destIdArray.Count(); i++ )
            {
-           RCmDestinationExt dest = iCmManagerExt.DestinationL( destIdArray[i] );
+           RCmDestination dest = iCmManager.DestinationL( destIdArray[i] );
            CleanupClosePushL( dest );
            CleanupCounter++;
          
@@ -409,11 +408,11 @@ TUint32 CDataRetriever::GetInternetDestIDL()
     RArray<TUint32> destIdArray;
     CleanupClosePushL( destIdArray );
     CleanupCounter++;
-    iCmManagerExt.AllDestinationsL( destIdArray );
+    iCmManager.AllDestinationsL( destIdArray );
 
     for ( TInt i = 0; i< destIdArray.Count(); i++ )
          {
-         RCmDestinationExt dest = iCmManagerExt.DestinationL( destIdArray[i] );
+         RCmDestination dest = iCmManager.DestinationL( destIdArray[i] );
          CleanupClosePushL( dest );
          CleanupCounter++;
          

@@ -261,7 +261,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
         lCancelSupported = ESecUiCancelSupported;
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("AskSecCodeL"));
+        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_sec_code"));
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         title.Append(_L("$"));
@@ -706,7 +706,7 @@ TInt CSecurityHandler::PassPhraseRequiredL()
     RDEBUG("lType", lType);
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("PassPhraseRequiredL"));
+    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_sec_code"));
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     queryAccepted = iSecQueryUi->SecQueryDialog(title, iSecUi_password, SEC_C_SECURITY_CODE_MIN_LENGTH, SEC_C_SECURITY_CODE_MAX_LENGTH, lType);
@@ -1541,7 +1541,7 @@ void CSecurityHandler::Puk2RequiredL()
 
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("Puk2RequiredL"));
+    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_puk2_code"));
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("$"));
@@ -1606,9 +1606,13 @@ void CSecurityHandler::Puk2RequiredL()
         iQueryCanceled = EFalse;
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("PIN2-New|PIN2-Verif"));
+        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin2_code"));
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
+        title.Append(_L("|"));
+        HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("Verify"));
+        title.Append(stringHolder2->Des());
+        CleanupStack::PopAndDestroy(stringHolder2);
         // ESecUiCodeEtelReqest/ESecUiNone might be useful
         queryAccepted = iSecQueryUi->SecQueryDialog(title, aNewPassword, SEC_C_PIN2_CODE_MIN_LENGTH, SEC_C_PIN2_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported
                 | secCodeType);
@@ -1842,7 +1846,7 @@ TInt CSecurityHandler::UPukRequiredL()
 
             TBuf<0x100> title;
             title.Zero();
-            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("UPuk1RequiredL"));
+            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_puk_code"));
             title.Append(stringHolder->Des());
             CleanupStack::PopAndDestroy(stringHolder);
             title.Append(_L("$"));
