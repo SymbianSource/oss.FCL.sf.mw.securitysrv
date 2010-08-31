@@ -17,7 +17,7 @@
 &EN
 
 ; Header
-#{"GBA"},(0x20029F08), 1, 0, 0, TYPE=SA,RU
+#{"GBA"},(0x20029F08), 1, 1, 0, TYPE=SA,RU
 
 ; Localised Vendor name
 %{"Nokia"}
@@ -27,8 +27,8 @@
 
 "..\data\gba_license.txt"-"", FT, TA
 
-; Product dependency for Series 60 v5.1
-  [0x10283160], 0, 0, 0, {"Series60ProductID"}   
+; Product dependency for Symbian^4
+  [0x20032DE7], 0, 0, 0, {"Series60ProductID"}   
 
 ; Files to install
 

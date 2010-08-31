@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -195,15 +195,10 @@ NONSHARABLE_CLASS( CCertManUIKeeper ): public CCoeControl, public MCoeControlObs
         */
         TBool   iStartup;
 
-        /**
+         /**
         * Certificate helper class
         */
         CCertManUICertificateHelper*    iCertificateHelper;
-
-        /**
-        * Index for the current CA cert for changing trust settings
-        */
-        TInt iCurrentCACertForTrustSettings;
 
     private: // functions
 

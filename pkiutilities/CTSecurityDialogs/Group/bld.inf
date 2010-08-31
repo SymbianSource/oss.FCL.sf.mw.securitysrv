@@ -23,10 +23,12 @@ DEFAULT
 
 PRJ_EXPORTS
 ../loc/wmlbrowser_wim.loc  MW_LAYER_LOC_EXPORT_PATH(wmlbrowser_wim.loc)
+../../CertmanUi/loc/certmanui.loc  MW_LAYER_LOC_EXPORT_PATH(certmanui.loc)
 
 PRJ_MMPFILES
 CTSecDialogImpl.mmp
-CTSecDlgNotifier.mmp
+//TODO: remove completely, commented out to remove AVKON Notifier API dependency
+//CTSecDlgNotifier.mmp
 #ifdef __JAVA_JSR_177_SECURITY_AND_TRUST_SERVICES
 CTSecDlgs.mmp
 #endif

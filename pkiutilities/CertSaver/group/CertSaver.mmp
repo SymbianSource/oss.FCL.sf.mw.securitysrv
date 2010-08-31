@@ -54,10 +54,15 @@ SOURCE  CertSaverModel.cpp
 
 USERINCLUDE ../inc
 USERINCLUDE ../../Include
+USERINCLUDE ../../../securitydialogs/SecUi/Inc
 
 MW_LAYER_SYSTEMINCLUDE
 SYSTEMINCLUDE   ../../PKCS12/CrPkcs12/Inc
 SYSTEMINCLUDE   ../../DeviceToken/Inc
+
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbcore 
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbwidgets
+
 
 LIBRARY euser.lib
 LIBRARY apparc.lib
@@ -80,6 +85,10 @@ LIBRARY FeatMgr.lib
 LIBRARY asnpkcs.lib
 LIBRARY aknskins.lib
 LIBRARY DevTokenClient.lib
+
+LIBRARY HbCore.lib
+LIBRARY HbWidgets.lib
+LIBRARY	secui.lib
 
 SMPSAFE
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -79,7 +79,12 @@ void CCertManUIContainerPersonal::ConstructL(
     CreateWindowL();
     CreateListBoxL();
     UpdateListBoxL( aCurrentPosition, aTopItem );
-    iListBox->ItemDrawer()->ColumnData()->SetIconArray( iIconHandler->CreateIconArrayL() );
+    if ( iListBox )
+        {
+        // Creates graphic.
+        iListBox->ItemDrawer()->ColumnData()->
+            SetIconArray( iIconHandler->CreateIconArrayL() );
+        }
     SetRect( aRect );
 
     CERTMANUILOGGER_LEAVEFN( " CCertManUIContainerPersonal::ConstructL" );

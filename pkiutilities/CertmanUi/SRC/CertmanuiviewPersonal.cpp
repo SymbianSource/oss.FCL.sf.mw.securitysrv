@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -496,17 +496,11 @@ void CCertManUIViewPersonal::DoDeactivate()
     {
     CERTMANUILOGGER_ENTERFN( "CCertManUIViewPersonal::DoDeactivate" );
 
-    if( iContainerPersonal )
+    iCurrentPosition = iContainerPersonal->iListBox->CurrentItemIndex();
+    iTopItem = iContainerPersonal->iListBox->TopItemIndex();
+    if ( iContainerPersonal )
         {
-        CEikColumnListBox* listBox = iContainerPersonal->iListBox;
-        if( listBox )
-            {
-            iCurrentPosition = listBox->CurrentItemIndex();
-            iTopItem = listBox->TopItemIndex();
-            }
-
-        iAvkonAppUi->RemoveFromViewStack( *this, iContainerPersonal );
-
+        ((CAknViewAppUi*)iAvkonAppUi)->RemoveFromViewStack(*this, iContainerPersonal);
         delete iContainerPersonal;
         iContainerPersonal = NULL;
         }

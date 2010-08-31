@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Dummy exe to prevent installing too liberal TrkApp
-*  Version     : %version: tr1sido#9 %
+*  Version     : %version: tr1sido#10 %
 *
 */
 
@@ -26,9 +26,9 @@
 // This component is built-in'.
 
 
-#if(!defined __SERIES60_30__ && !defined __SERIES60_31__)
-  #include <platform_paths.hrh>
-#endif
+
+#include <platform_paths.hrh>
+
 
 CAPABILITY      None
 
@@ -45,13 +45,9 @@ SOURCEPATH      ../src
 SOURCE          TrkDummy.cpp
 SOURCE          TrkDummyApplication.cpp
 
-USERINCLUDE     ../inc 
-#if defined (__SERIES60_30__) || defined(__SERIES60_31__)
-	SYSTEMINCLUDE	/epoc32/include  
-#else
-    MW_LAYER_SYSTEMINCLUDE    
-#endif
+USERINCLUDE     ../inc
 
+MW_LAYER_SYSTEMINCLUDE    
 
 LIBRARY         euser.lib
 LIBRARY         apparc.lib

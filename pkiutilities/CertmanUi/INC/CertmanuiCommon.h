@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -73,8 +73,8 @@ LOCAL_D const TInt KGranularity = 4;
 const TInt KMaxLengthTextDateString = 11;
 // HH0
 const TInt KMaxLengthTextSerialNumberFormatting = 3;
-// CertLabel, Issuer, Owner max length 1024 bytes
-const TInt KMaxLengthTextCertLabel = 1024;
+// CertLabel, Issuer, Owner max length 510 bytes
+const TInt KMaxLengthTextCertLabel = 510;
 // CertLabel, Issuer, Owner max visible length
 const TInt KMaxLengthTextCertLabelVisible = 200;
 // CertWimLabel, KeyLabel, KeyWimLabel max length 255 bytes

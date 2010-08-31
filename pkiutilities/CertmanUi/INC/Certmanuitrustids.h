@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -28,7 +28,6 @@ const TUid KCertManUIViewTrustMailAndImageConnId = {268441661};
 const TUid KCertManUIViewTrustJavaInstallingId = {270506792};
 const TUid KCertManUIViewOCSPCheckInstallingId = {268478646};
 const TUid KCertManUIViewTrustVPNId = {270498195};
-const TUid KCertManUIViewTrustWidgetInstallingId = {537028562};
 
 #endif // __CERTMANUITRUSTIDS_H
 

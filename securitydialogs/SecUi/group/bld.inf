@@ -26,18 +26,13 @@ PRJ_EXPORTS
 //SecUi iby files
 ../rom/SecUi.iby CORE_MW_LAYER_IBY_EXPORT_PATH(secui.iby)
 ../rom/SecUiResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(secuiresources.iby)
-//Sim Sec Plugin iby files
-../rom/GSSimSecPlugin.iby CORE_MW_LAYER_IBY_EXPORT_PATH(gssimsecplugin.iby)
-../rom/GSSimSecPluginResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(gssimsecpluginresources.iby)
+
 //localisation files
 ../loc/SecUi.loc MW_LAYER_LOC_EXPORT_PATH(secui.loc)
-../GSSimSecPlugin/loc/gssecurity.loc MW_LAYER_LOC_EXPORT_PATH(gssecurity.loc)
+
 //ADO internal APIs
 ../Inc/SecUiSystemLock.h MW_LAYER_PLATFORM_EXPORT_PATH(secuisystemlock.h)
 
 PRJ_MMPFILES
 
 ../group/SecUi.mmp
-//SIM security plugin for General Settings
-../GSSimSecPlugin/GSSimSecPlugin.mmp
-

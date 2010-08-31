@@ -22,14 +22,9 @@ NAME    CESA // 4 letter ID
 
 //  INCLUDES
 #include <eikon.rh>
-#include <eikon.rsg>
 #include <avkon.rsg>
-#include <avkon.hrh>
 #include <avkon.rh>
-#include <avkon.mbg>
-#include <avkon.loc>
 #include <appinfo.rh>
-#include <certmanui.loc>  //qtn_cm_not_valid_yet
 #include <certsaver.loc>
 #include "certsaver.hrh"
 
@@ -158,6 +153,7 @@ RESOURCE TBUF r_qtn_cm_not_defined
     buf = qtn_cm_not_defined;
     }
 
+
 //----------------------------------------------------
 //
 //    r_certsaver_softkeys_save_discard
@@ -208,8 +204,6 @@ RESOURCE DIALOG r_message_query_dosave
             }
         };
     }
-
-
 
 //----------------------------------------------------
 //
@@ -282,24 +276,28 @@ RESOURCE DIALOG r_certsaver_label_query
 //
 //----------------------------------------------------
 //
-RESOURCE DIALOG r_certsaver_warning_note
-    {
-    flags = EGeneralQueryFlags;
-    buttons = r_certsaver_softkeys_save_discard;
-    items=
-        {
-        DLG_LINE
-            {
-            type=EAknCtQuery;
-            id=EGeneralQuery;
-            control= AVKON_CONFIRMATION_QUERY
-                {
-                layout = EConfirmationLayout;
+RESOURCE TBUF r_certsaver_warning_note { buf = qtn_httpsec_save_rootcertificate; }
+
+/*
+RESOURCE DIALOG r_certsaver_warning_note                 
+    {                                                    
+    flags = EGeneralQueryFlags;                          
+    buttons = r_certsaver_softkeys_save_discard;         
+    items=                                               
+        {                                                
+        DLG_LINE                                         
+            {                                            
+            type=EAknCtQuery;                            
+            id=EGeneralQuery;                            
+            control= AVKON_CONFIRMATION_QUERY            
+                {                                        
+                layout = EConfirmationLayout;            
                 label = qtn_httpsec_save_rootcertificate;
-                };
-            }
-        };
-    }
+                };                                       
+            }                                            
+        };                                               
+    }                                                    
+*/
 
 //-----------------------------------------------------------------------------
 //
@@ -472,6 +470,7 @@ RESOURCE DIALOG r_certsaver_trusted_site_query
 RESOURCE TBUF r_certsaver_one_private_key{ buf = qtn_cm_one_private_key; }
 RESOURCE TBUF r_certsaver_one_personal_certificate { buf = qtn_cm_one_personal_certificate; }
 RESOURCE TBUF r_certsaver_one_authority_certificate { buf = qtn_cm_one_authority_certificate; }
-RESOURCE TBUF r_certsaver_trustedsite_warning { buf = qtn_cm_save_trustedsite_certificate_warning_text; }
+RESOURCE TBUF r_certsaver_trustedsite_warning 
+                { buf = qtn_cm_save_trustedsite_certificate_warning_text; }
 
 // End of File

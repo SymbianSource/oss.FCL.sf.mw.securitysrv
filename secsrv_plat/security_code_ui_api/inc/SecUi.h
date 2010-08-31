@@ -21,6 +21,14 @@
 #ifndef     __SECUI_H
 #define     __SECUI_H
 
+#if defined(_DEBUG)
+#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
+#define RDEBUGSTR( x ) RDebug::Print( x );
+#else
+#define RDEBUG( x, y )
+#define RDEBUGSTR( x )
+#endif
+
 class TSecUi
 	{
 	public:
@@ -36,12 +44,6 @@ class TSecUi
 		* Should be called after finished using SecUi methods 
 		*/
 		IMPORT_C static void UnInitializeLib();
-		/**
-		* Returns the resource file name of SecurityUI dll.
-		*
-		* @return TFileName (resource file name) 
-		*/
-		static TFileName ResourceFileName();
         	/**
         * Check if SecUi can be uninitialized, i.e. if client count is zero (or less).
         *
@@ -75,6 +77,7 @@ class TSecUi
 	private:
 		TInt iResourceFileOffset;
         TInt iClientCount;
+        TInt iDialogOpened;
 
 	};
 #endif

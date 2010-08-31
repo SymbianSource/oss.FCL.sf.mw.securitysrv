@@ -34,29 +34,40 @@ TARGETPATH      RESOURCE_FILES_DIR
 LANGUAGE_IDS
 END
 
+// CTSecuritydialognotifier uses CertManUi resources that are not compiled in builds any more
+SOURCEPATH ../../CertmanUi/data
+START RESOURCE  certmanui.rss
+HEADER
+TARGETPATH      RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
 SYSTEMINCLUDE ../../CertmanUi/INC
 SYSTEMINCLUDE ../../CertSaver/inc
 SYSTEMINCLUDE ../../DeviceToken/Inc
 SYSTEMINCLUDE ../../../inc              // securityservices/inc directory
 MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbcore 
+SYSTEMINCLUDE   /epoc32/include/mw/hb/hbwidgets
 
 
 USERINCLUDE ../NotifInc
 USERINCLUDE ../ClientInc
+USERINCLUDE ../../../securitydialogs/SecUi/Inc
 
 SOURCEPATH  ../NotifSrc
 
 SOURCE    DllMain.cpp
 SOURCE    CTSecuritydialognotifier.cpp
-SOURCE    CTpinquerydialog.cpp
-SOURCE    CTQueryDialog.cpp
-SOURCE    CTSigntextdialog.cpp
-SOURCE    CTSelectcertificatedialog.cpp
-SOURCE    CTPinPinQueryDialog.cpp
+//SOURCE    CTpinquerydialog.cpp
+//SOURCE    CTQueryDialog.cpp
+//SOURCE    CTSigntextdialog.cpp
+//SOURCE    CTSelectcertificatedialog.cpp
+//SOURCE    CTPinPinQueryDialog.cpp
 SOURCE    CTCertificateQuery.cpp
 SOURCE    CTSecurityDialogsAO.cpp
-SOURCE    CTNoTrustQuery.cpp
-SOURCE    CTInvalidCertNote.cpp
+SOURCE    CTUntrustedCertQuery.cpp
+//SOURCE    CTInvalidCertNote.cpp
 
 LIBRARY   EUSER.LIB
 LIBRARY   EIKSRV.LIB
@@ -80,10 +91,13 @@ LIBRARY   crypto.lib
 LIBRARY   aknlayout.lib
 LIBRARY   X500.lib
 LIBRARY   DevTokenClient.lib
+LIBRARY   HbCore.lib                // CHbDeviceDialog
+LIBRARY   HbWidgets.lib
+LIBRARY   secui.lib
 
 DEBUGLIBRARY     flogger.lib
 
-#if defined(ARMCC)
+#if defined( EABI )
     DEFFILE ../eabi/CTSecDilogImpl.DEF
 #elif defined( WINSCW )
     DEFFILE ../BWINSCW/CTSecDilogImpl.DEF

@@ -42,7 +42,7 @@ LIBRARY	    CTFramework.lib
 CAPABILITY  CAP_GENERAL_DLL
 VENDORID    VID_DEFAULT
 
-#if defined(ARMCC)
+#if defined( EABI )
 deffile ../eabi/ 
 #else
 deffile ../bwinscw/ 

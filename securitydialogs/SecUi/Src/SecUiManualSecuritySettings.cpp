@@ -18,9 +18,11 @@
 
 
 #include <rmmcustomapi.h>
-#include <SecUi.rsg>
+#include "SecQueryUi.h"
 #include "secuimanualsecuritysettings.h"
+#include "secuisecuritysettings.h"
 #include <exterror.h>
+#include "SecUi.h"
 #include "SecUiWait.h"
 #include <mmtsy_names.h>
     /*****************************************************
@@ -107,6 +109,7 @@ void CManualSecuritySettings::ConstructL()
         // May also return KErrAlreadyExists if something else
         // has already loaded the TSY module. And that is
         // not an error.
+        RDEBUG("err", err);
         User::LeaveIfError( err );
         }
 
@@ -132,15 +135,11 @@ EXPORT_C CManualSecuritySettings::~CManualSecuritySettings()
     *    Series 60 Customer / TSY
     *    Needs customer TSY implementation
     *****************************************************/
-	#if defined(_DEBUG)
-	RDebug::Print(_L("(SECUI)CManualSecuritySettings::~CManualSecuritySettings()"));
-	#endif
+		RDEBUG("0", 0);
     // Cancel active requests
     if(iWait->IsActive())
     {
-        #if defined(_DEBUG)
-	    RDebug::Print(_L("(SECUI)CManualSecuritySettings::~CManualSecuritySettings() CANCEL REQ"));
-	    #endif
+      RDEBUG("CancelAsyncRequest", 0);
         iPhone.CancelAsyncRequest(iWait->GetRequestType());
     }
     // close phone
@@ -157,9 +156,7 @@ EXPORT_C CManualSecuritySettings::~CManualSecuritySettings()
         }
     delete iNote;
     delete iWait;
-	#if defined(_DEBUG)
-	RDebug::Print(_L("(SECUI)CManualSecuritySettings::~CManualSecuritySettings() END"));
-	#endif  
+	RDEBUG("0", 0);
     }
 
 //
@@ -174,14 +171,10 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL()"));
-    #endif        
+    RDEBUG("aPin", aPin);
     if (aPin == EPin1)
         {
-		#if defined(_DEBUG)
-		RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL() PIN1"));
-		#endif        
+				RDEBUG("EPin1", EPin1);
         RMobilePhone::TMobilePhoneLock lockType;
         RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
         RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
@@ -192,13 +185,12 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
         // The following is required, since the new multimode Etel is asynchronous
         // rather than synchronous.
     
-		#if defined(_DEBUG)
-		RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL() GetLockInfo"));
-		#endif
-
+				RDEBUG("SetRequestType", EMobilePhoneGetLockInfo);
         iWait->SetRequestType(EMobilePhoneGetLockInfo);
         iPhone.GetLockInfo(iWait->iStatus, lockType, lockInfoPkg);
+        RDEBUG("WaitForRequestL", 0);
         TInt res = iWait->WaitForRequestL();
+        RDEBUG("WaitForRequestL res", res);
          
         if (res != KErrNone)
             return EFalse;
@@ -210,9 +202,7 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
             }
         }
     
-	#if defined(_DEBUG)
-	RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL() CompareF"));
-	#endif
+		RDEBUG("CompareF", 0);
     if (aNew.CompareF(aVerifyNew) != 0)     
         {
         // codes do not match note 
@@ -235,17 +225,13 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
     aChange.iOldPassword = aOld;
     aChange.iNewPassword = aNew;
 
-	#if defined(_DEBUG)
-	RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL() ChangeSecurityCode"));
-	#endif
+		RDEBUG("EMobilePhoneChangeSecurityCode", EMobilePhoneChangeSecurityCode);
     iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
     iPhone.ChangeSecurityCode(iWait->iStatus,secCodeType,aChange);
+    RDEBUG("WaitForRequestL", 0);
     TInt res = iWait->WaitForRequestL();
+    RDEBUG("WaitForRequestL res", res);
     
-	#if defined(_DEBUG)
-	RDebug::Print(_L("(SECUI)CManualSecuritySettings::ChangePinL() ChangeSecurityCode RES: %d"), res);
-	#endif
-
     switch(res)
         {        
         case KErrNone:
@@ -267,7 +253,9 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
             else
                 {
                 iCustomPhone.CheckSecurityCode(iWait->iStatus,RMmCustomAPI::ESecurityCodePuk2);
+               	RDEBUG("WaitForRequestL", 0);
                 TInt res = iWait->WaitForRequestL();
+                RDEBUG("WaitForRequestL res", res);
                 }
             break;
         case KErrGsm0707OperationNotAllowed:
@@ -288,9 +276,7 @@ EXPORT_C TBool CManualSecuritySettings::ChangePinL(TPin aPin,const TDesC& aOld,c
 //
 EXPORT_C void CManualSecuritySettings::CancelChangePin()
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelChangePin()"));
-    #endif    
+    RDEBUG("0", 0);
     delete iNote;
     iNote = NULL;
     }
@@ -306,9 +292,7 @@ EXPORT_C TBool CManualSecuritySettings::UnblockPinL(TPin aPin,const TDesC& aPuk,
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnblockPinL()"));
-    #endif        
+    RDEBUG("0", 0);  
     if (aNew.CompareF(aVerifyNew) != 0)     
         {
         // codes do not match note 
@@ -326,10 +310,12 @@ EXPORT_C TBool CManualSecuritySettings::UnblockPinL(TPin aPin,const TDesC& aPuk,
         {
         blockCodeType = RMobilePhone::ESecurityCodePuk2;
         }
-
+		RDEBUG("blockCodeType", blockCodeType);
     iWait->SetRequestType(EMobilePhoneVerifySecurityCode);
     iPhone.VerifySecurityCode(iWait->iStatus, blockCodeType, aNew, aPuk);
+    RDEBUG("WaitForRequestL", 0);
     TInt res = iWait->WaitForRequestL();
+    RDEBUG("WaitForRequestL res", res);
 
     switch(res)
         {        
@@ -368,9 +354,7 @@ EXPORT_C TBool CManualSecuritySettings::UnblockPinL(TPin aPin,const TDesC& aPuk,
 //    
 EXPORT_C void CManualSecuritySettings::CancelUnblockPin()
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelUnblockPinL()"));
-    #endif        
+    RDEBUG("0", 0);      
     delete iNote;
     iNote = NULL;        
     }
@@ -386,19 +370,15 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::LockSimL()"));
-    #endif
-
-    
+    RDEBUG("0", 0);
     RMmCustomAPI::TLockNumber aLockType;
     TInt ret = KErrGsm0707IncorrectPassword;
     TInt length = aLockCode.Length();
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::LockSimL(): Param length: %d"), length);
-    #endif
-
+    RDEBUG("length", length);
+		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+    if(aLockCode.Length() <= KSimLockMaxPasswordSize)
+    {
     if (aType.CompareF(Operator) == 0)
         {
         aLockType = RMmCustomAPI::EOperator;
@@ -434,10 +414,9 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
         aLockType = RMmCustomAPI::EOperator_Gid2;
         ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
+    }
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::LockSimL() RESULT: %d"), ret);
-    #endif
+    RDEBUG("ret", ret);
     switch (ret)
         {
         case KErrNone:
@@ -472,9 +451,7 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
 //        
 EXPORT_C void CManualSecuritySettings::CancelLockSim()
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelLockSimL()"));
-    #endif
+    RDEBUG("0", 0);
     delete iNote;
     iNote = NULL;    
     }    
@@ -490,17 +467,15 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
     *    Series 60 Customer / ETel
     *    Series 60  ETel API
     *****************************************************/
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnLockSimL()"));
-    #endif
+    RDEBUG("0", 0);
     RMmCustomAPI::TLockNumber aLockType;
     TInt ret = KErrGsm0707IncorrectPassword;
     TInt length = aUnlockCode.Length();
 
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnLockSimL(): Param length: %d"), length);
-    #endif
-    
+    RDEBUG("length", length);
+		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+    if(aUnlockCode.Length() <= KSimLockMaxPasswordSize)
+    {
     if (aType.CompareF(Operator) == 0)
         {
         aLockType = RMmCustomAPI::EOperator;
@@ -542,9 +517,8 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
         ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }    
         
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnLockSimL() RESULT: %d"), ret);
-    #endif
+    }
+    RDEBUG("ret", ret);
     switch (ret)
         {
         case KErrNone:
@@ -577,9 +551,7 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
 //                
 EXPORT_C void CManualSecuritySettings::CancelUnlockSim()
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelUnLockSimL()"));
-    #endif
+    RDEBUG("0", 0);
     delete iNote;
     iNote = NULL;
     }
@@ -592,13 +564,8 @@ EXPORT_C void CManualSecuritySettings::CancelUnlockSim()
 //
 void CManualSecuritySettings::ShowResultNoteL(CAknNoteDialog::TTone aTone, TInt aResourceID)
     {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("(SECUI)CManualSecuritySettings::CancelUnLockSimL()"));
-    #endif
-    iNote = new (ELeave) CAknNoteDialog(REINTERPRET_CAST(CEikDialog**,&iNote));
-    iNote->SetTimeout(CAknNoteDialog::ELongTimeout);
-    iNote->SetTone(aTone);
-    iNote->ExecuteLD(aResourceID);
+    RDEBUG("aResourceID", aResourceID);
+    CSecuritySettings::ShowResultNoteL(aResourceID, aTone);
     }
 
 // End of file

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -527,6 +527,7 @@ CArrayFixFlat<TValidationError>* CCertManUICertificateHelper::
 // HBufC& aMessage, TPtrC aValue, TInt aResourceOne)
 // Reads dynamic text from CertManAPI, if the string is empty
 // put a not defined text from the resource in its place
+// KMaxLengthTextCertLabel = 510, used by CertLabel(), Issuer(), Owner()
 // ---------------------------------------------------------
 //
 void CCertManUICertificateHelper::DetailsDynamicL(
@@ -535,29 +536,26 @@ void CCertManUICertificateHelper::DetailsDynamicL(
     CERTMANUILOGGER_ENTERFN(
         "CCertManUICertificateHelper::DetailsDynamicL" );
 
-    HBufC* buf = aValue.AllocLC();
-    TPtr trimmedValue( buf->Des() );
-    trimmedValue.TrimLeft();
-
-    if( trimmedValue.Length() > KMaxLengthTextCertLabelVisible )
-        {
-        trimmedValue.SetLength( KMaxLengthTextCertLabelVisible - 1 );
-        trimmedValue.Append( KTextUtilClipEndChar );
-        }
-
-    if ( trimmedValue.Length() == 0 )
+    HBufC* buf = HBufC::NewLC( KMaxLengthTextCertLabel );
+    buf->Des() = aValue;
+    buf->Des().TrimLeft();
+    // Cut CertLabel after fourth semi colon
+    TPtrC trimmedCertLabel = CutCertificateField( buf->Des() );
+    buf->Des().Copy( trimmedCertLabel );
+    TInt length = buf->Des().Length();
+    if ( length == 0 )
         {
         DetailsResourceL( aMessage, aResourceOne );
         }
     else
         {
-        //LRM (Left-to-Right mark 0x200E)
+        //LRM (Left-to-Right mark 200E)
         const TInt KLRMark = 0x200E;
-        aMessage.Des().Append( trimmedValue );
-        aMessage.Des().Append( KLRMark );
+        aMessage.Des().Append( buf->Des() );
+        aMessage.Des().Append(KLRMark);
         aMessage.Des().Append( KCertManUIDetailsViewEnter );
         }
-    CleanupStack::PopAndDestroy( buf );
+    CleanupStack::PopAndDestroy();  // buf
 
     CERTMANUILOGGER_LEAVEFN(
         "CCertManUICertificateHelper::DetailsDynamicL" );

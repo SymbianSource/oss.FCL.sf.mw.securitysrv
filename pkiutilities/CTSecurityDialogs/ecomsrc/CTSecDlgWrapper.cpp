@@ -18,6 +18,7 @@
 
 // INCLUDE FILES
 #include <ecom/implementationproxy.h>
+#include <platform/e32notif.h>
 #include <AknNotifierWrapper.h> // link against aknnotifierwrapper.lib
 #include <secdlgimpldefs.h>
 #include "CTSecurityDialogDefs.h"

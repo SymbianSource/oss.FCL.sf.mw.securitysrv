@@ -18,7 +18,9 @@
 
 
 #include <ecom/implementationproxy.h>
-
+#include <e32notif.h>
+#include <e32base.h>
+#include <eiknotapi.h>
 #include <AknNotifierWrapper.h> // link against aknnotifierwrapper.lib
 
 #define KMyNotifierUid TUid::Uid(0x10005988) //  uid
@@ -48,6 +50,9 @@ CArrayPtr<MEikSrvNotifierBase2>* DoCreateNotifierArrayL()
     // Create Wrappers
 
     // Session owning notifier(if default implementation is enough)
+    RDebug::Printf( "%s %s (%u) !!!!**  creating SecurityNotifier.dll . This means that PIN/unlock queries will work **!!!! 0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+
+    
     CAknCommonNotifierWrapper* master = 
         CAknCommonNotifierWrapper::NewL( KMyNotifierUid,
                                    KMyNotifierUid,
@@ -58,6 +63,7 @@ CArrayPtr<MEikSrvNotifierBase2>* DoCreateNotifierArrayL()
 	  	
 	   
     subjects->AppendL( master );
+    
     CleanupStack::Pop();	// array cleanup
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)WRAPPER DoCreateNotifierArrayL END"));
