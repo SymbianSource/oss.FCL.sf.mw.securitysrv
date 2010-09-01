@@ -25,4 +25,6 @@
 
 data=ZSYSTEM\install\CenRepStub.sis    System\Install\CenRepStub.sis
 
+//data = EPOCROOT##epoc32\release\winscw\urel\z\system\data\swipolicy.ini  System\data\swipolicy.ini
+
 #endif

@@ -112,7 +112,7 @@ CFileStore* CCertSaverDocument::OpenFileL(TBool /*aDoOpen*/,
 
     OpenFileL( docStore, file );
 
-    CleanupStack::PopAndDestroy(&file); // Close file
+    CleanupStack::PopAndDestroy(); // Close file
 
     return docStore;
     }
@@ -137,7 +137,7 @@ void CCertSaverDocument::OpenFileL(CFileStore*& /*aFileStore*/, RFile& aFile)
     iAO = new (ELeave) CShutterAO;
     iAO->Exit();
     #ifdef _DEBUG
-        
+        RDebug::Print( _L("Exiting OpenFileL") );
     #endif
     }
 

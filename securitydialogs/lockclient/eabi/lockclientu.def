@@ -21,4 +21,8 @@ EXPORTS
 	_ZN20CDevicelockAccessApiD0Ev @ 20 NONAME
 	_ZN20CDevicelockAccessApiD1Ev @ 21 NONAME
 	_ZN20CDevicelockAccessApiD2Ev @ 22 NONAME
+	_ZTI18CKeyguardAccessApi @ 23 NONAME ; #<TI>#
+	_ZTI20CDevicelockAccessApi @ 24 NONAME ; #<TI>#
+	_ZTV18CKeyguardAccessApi @ 25 NONAME ; #<VT>#
+	_ZTV20CDevicelockAccessApi @ 26 NONAME ; #<VT>#
 

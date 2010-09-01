@@ -39,7 +39,7 @@ LANG			SC
 CAPABILITY		CAP_GENERAL_DLL
 VENDORID        VID_DEFAULT
 
-#if defined( EABI )
+#if defined(ARMCC)
 deffile ../EABI/ 
 #elif defined( WINSCW )
 deffile ../BWINSCW/ 

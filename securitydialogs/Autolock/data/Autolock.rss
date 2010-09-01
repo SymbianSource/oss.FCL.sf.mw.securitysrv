@@ -1,0 +1,106 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     This file contains all the resources for the Autolock.
+*     
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME    ALCK // 4 letter ID
+
+//  INCLUDES
+
+#include <eikon.rh>
+#include "autolock.hrh"
+#include <autolock.loc>
+#include "eikon.rsg"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.loc>
+#include <avkon.mbg>
+#include <autolock.mbg>
+
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+RESOURCE EIK_APP_INFO
+	{
+	status_pane = r_autolock_status_pane;
+	}
+
+RESOURCE STATUS_PANE_APP_MODEL r_autolock_status_pane
+    {
+    layout = R_AVKON_STATUS_PANE_LAYOUT_IDLE;
+    panes =
+        {
+        SPANE_PANE
+            {
+            id = EEikStatusPaneUidTitle;
+            type = EAknCtTitlePane;
+            resource = r_title_pane_locked;
+            }
+        };
+    }
+
+
+RESOURCE AVKON_VIEW r_locked_view
+	{
+	}
+
+
+
+RESOURCE CBA r_autolock_softkeys_unlock_empty
+    {
+    buttons = 
+        {
+        CBA_BUTTON{id=ESecUiCmdUnlock; txt= qtn_set_sec_unlock_system; },
+        CBA_BUTTON{id=EAknSoftkeyEmpty; txt=text_softkey_empty; },
+        CBA_BUTTON{id=EAknSoftkeyEmpty; txt=text_softkey_empty; }
+        };    
+    }
+
+
+RESOURCE TITLE_PANE r_title_pane_locked
+	{
+	txt = qtn_set_sec_title_locked;
+	}
+
+
+
+RESOURCE DIALOG r_emergency
+	{
+	flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons;
+	buttons=R_AVKON_SOFTKEYS_CANCEL;
+    items=
+		{
+		DLG_LINE
+			{
+	    	type=EAknCtNote;
+			id=EGeneralNote;
+			control= AVKON_NOTE 
+				{ 
+	                layout = EGeneralLayout;
+				};
+			}
+		};
+	}
+
+// end of file

@@ -1,0 +1,277 @@
+/*
+* ============================================================================
+*  Name        : SimLockUI.rss
+*  Part of     : SimLock UI Application / Resource Definitions
+*  Description : Resource definitions for SimLock UI
+*  Version     : 
+*  
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Build info file for Ado domain appinstall 
+* ============================================================================
+*/
+
+// Resource Name Identifier
+NAME SLUI
+
+// Include Files
+#include <eikon.rh>
+#include <eikon.rsg>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <appinfo.rh>
+
+#include "simlockui.hrh"
+#include <simlockui.loc>
+
+// Resource Identifiers
+RESOURCE RSS_SIGNATURE { }
+RESOURCE TBUF r_default_document_name { buf = "Document"; }
+
+// Constants
+#define ESimLockUiQueryFlags (EGeneralQueryFlags)
+
+// ========================== RESOURCE DEFINITIONS ===========================
+
+// ---------------------------------------------------------------------------
+// EIK_APP_INFO
+// Define default menu and CBA key.
+// ---------------------------------------------------------------------------
+//
+RESOURCE EIK_APP_INFO
+    {
+    cba = R_AVKON_SOFTKEYS_EMPTY;
+    menubar= R_AVKON_MENUPANE_EMPTY;
+    }
+
+// ---------------------------------------------------------------------------
+// Text resources
+//
+// ---------------------------------------------------------------------------
+//
+
+// Background text captions
+RESOURCE TBUF r_simlock_ui_background_text_main {buf = qtn_sim_title_sim_unlock;}
+RESOURCE TBUF r_simlock_ui_background_text_unlock_complete {buf = qtn_sim_title_unlock_complete;}
+RESOURCE TBUF r_simlock_ui_codes_not_match {buf = qtn_sim_title_code_no_match;}
+RESOURCE TBUF r_simlock_ui_background_text_unlock_incorrect {buf = qtn_sim_title_code_wrong;}
+RESOURCE TBUF r_simlock_ui_background_text_unlock_failed {buf = qtn_sim_title_unlock_fail;}
+
+// Information notes
+RESOURCE TBUF r_sim_unlock_message_sim_unlocked {buf = qtn_sim_info_prev_unlock;}
+RESOURCE TBUF r_sim_unlock_message_cannot_unlock {buf = qtn_sim_info_perm_lock;}
+RESOURCE TBUF r_sim_unlock_message_end_call {buf = qtn_sim_info_end_call;}
+RESOURCE TBUF r_sim_phone_unlocked {buf = qtn_sim_info_phone_unlocked;}
+
+// Text for SIM popup text
+RESOURCE TBUF r_sim_info_welcome_note_text{buf=qtn_sim_popup_intro_info;}
+
+
+// ---------------------------------------------------------------------------
+// r_sim_info_welcome_note
+// Intro note displayed when Sim Lock UI Application starts
+// ---------------------------------------------------------------------------
+//
+ RESOURCE DIALOG r_sim_info_welcome_note
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                headinglayout = R_AVKON_LIST_HEADING_PANE_POPUPS;
+                label = qtn_sim_title_sim_unlock;
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+
+            control = AVKON_MESSAGE_QUERY
+                {               
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_sim_unlock_final
+// Indicates the final unlock attempt has been performed
+// ---------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_sim_unlock_final
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_EMPTY;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                headinglayout = R_AVKON_LIST_HEADING_PANE_POPUPS;
+                label = qtn_sim_title_unlock_fail;
+                };
+            },
+        DLG_LINE
+            {
+            type=EAknCtMessageQuery;
+            id=EAknMessageQueryContentId;
+            control= AVKON_MESSAGE_QUERY
+                {
+                message = qtn_sim_info_code_wrong_final;
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_sim_info_codes_not_match
+// Dialog that indicates two Sim lock codes do not match
+// ---------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_sim_info_codes_not_match
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                headinglayout = R_AVKON_LIST_HEADING_PANE_POPUPS;
+                label = qtn_sim_title_code_no_match;
+                };
+            },
+
+        DLG_LINE
+            {
+            type=EAknCtMessageQuery;
+            id=EAknMessageQueryContentId;
+            control= AVKON_MESSAGE_QUERY
+                {
+                message = qtn_sim_info_code_no_match;
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_sim_info_code_incorrect
+// Dialog that indicates an incorrect code was entered
+// ---------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_sim_info_code_incorrect
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                headinglayout = R_AVKON_LIST_HEADING_PANE_POPUPS;
+                label = qtn_sim_title_code_wrong;
+                };
+            },
+
+        DLG_LINE
+            {
+            type=EAknCtMessageQuery;
+            id=EAknMessageQueryContentId;
+            control= AVKON_MESSAGE_QUERY
+                {
+                message = qtn_sim_urn_code_wrong;
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_sim_info_enter_password
+// Password entry dialog
+// ---------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_sim_info_enter_password
+
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY
+                {
+                layout = EPhoneLayout;
+                label = qtn_sim_query_enter_code;
+                control = EDWIN
+                    {
+                    lines = 1;
+                    width = SEC_ATT_PASSWORD_MAX_BUFFER;
+                    default_input_mode = EAknEditorNumericInputMode;
+                    allowed_input_modes = EAknEditorNumericInputMode;
+                    };
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_sim_info_test_password_reenter
+// Password re-entry dialog
+// ---------------------------------------------------------------------------
+//
+RESOURCE DIALOG r_sim_info_reenter_password
+
+    {
+    flags=ESimLockUiQueryFlags;
+    buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+        {
+
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_DATA_QUERY
+                {
+                layout = EPhoneLayout;
+                label = qtn_sim_query_reenter_code;
+                control = EDWIN
+                    {
+                    lines = 1;
+                    width = SEC_ATT_PASSWORD_MAX_BUFFER;
+                    default_input_mode = EAknEditorNumericInputMode;
+                    allowed_input_modes = EAknEditorNumericInputMode;
+                    };
+                };
+            }
+        };
+    }

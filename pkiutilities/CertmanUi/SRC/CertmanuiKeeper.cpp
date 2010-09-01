@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -170,7 +170,8 @@ void CCertManUICertData::Release()
 // Constructor with parent
 // ---------------------------------------------------------
 //
-CCertManUIKeeper::CCertManUIKeeper(): iResourceLoader( *iCoeEnv )
+CCertManUIKeeper::CCertManUIKeeper() : iCurrentCACertForTrustSettings( KErrNotFound ),
+        iResourceLoader( *iCoeEnv )
     {
     CERTMANUILOGGER_CREATE; //lint !e960
     CERTMANUILOGGER_WRITE_TIMESTAMP( "CCertManUIKeeper::CCertManUIKeeper" );

@@ -24,6 +24,8 @@ UID               0x1000008d 0x20029F0A
 VENDORID    VID_DEFAULT
 CAPABILITY  CAP_SERVER NetworkControl
 
+SMPSAFE
+
 USERINCLUDE       ../inc
 USERINCLUDE      ../../inc
 

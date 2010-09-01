@@ -29,7 +29,6 @@
 // ---------------------------------------------------------------------------
 EXPORT_C CDevicelockAccessApi* CDevicelockAccessApi::NewL( )
     {
-    RDEBUG("0", 0);
     CDevicelockAccessApi* self = new (ELeave) CDevicelockAccessApi( );
     CleanupStack::PushL( self );
     self->ConstructL( );
@@ -42,7 +41,6 @@ EXPORT_C CDevicelockAccessApi* CDevicelockAccessApi::NewL( )
 // ---------------------------------------------------------------------------
 CDevicelockAccessApi::CDevicelockAccessApi()
     {
-    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -71,7 +69,6 @@ void CDevicelockAccessApi::ConstructL( )
 // ---------------------------------------------------------------------------
 EXPORT_C TBool CDevicelockAccessApi::IsKeylockEnabled()
     {
-    RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     if ( err == KErrNone )
@@ -97,7 +94,6 @@ EXPORT_C TBool CDevicelockAccessApi::IsKeylockEnabled()
 // ---------------------------------------------------------------------------
 EXPORT_C TBool CDevicelockAccessApi::IsDevicelockEnabled()
     {
-    RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     if ( err == KErrNone )
@@ -123,7 +119,6 @@ EXPORT_C TBool CDevicelockAccessApi::IsDevicelockEnabled()
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CDevicelockAccessApi::EnableDevicelock( TDevicelockReason aReason )
     {
-    RDEBUG("aReason", aReason);
     if ( iLockAccessExtension )
         {
         switch (aReason)
@@ -146,7 +141,6 @@ EXPORT_C TInt CDevicelockAccessApi::EnableDevicelock( TDevicelockReason aReason 
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CDevicelockAccessApi::OfferDevicelock()
     {
-    RDEBUG("0", 0);
     if ( iLockAccessExtension )
         {
         return iLockAccessExtension->SendMessage( ELockAppOfferDevicelock );
@@ -163,7 +157,6 @@ EXPORT_C TInt CDevicelockAccessApi::OfferDevicelock()
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CDevicelockAccessApi::DisableDevicelock()
     {
-    RDEBUG("0", 0);
     if ( iLockAccessExtension )
         {
         return iLockAccessExtension->SendMessage( ELockAppDisableDevicelock );

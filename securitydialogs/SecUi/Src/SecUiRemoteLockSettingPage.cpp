@@ -54,8 +54,6 @@ void CRemoteLockSettingPage::ConstructL()
 
     CAknRadioButtonSettingPage::ConstructL();
     const TSize screenSize = iCoeEnv->ScreenDevice()->SizeInPixels();
-    iPopoutCba = CEikButtonGroupContainer::NewL( CEikButtonGroupContainer::ECba, CEikButtonGroupContainer::EHorizontal, this, R_AVKON_SOFTKEYS_OK_CANCEL__OK );
-    iPopoutCba->SetBoundingRect( TRect( screenSize ) );
 
     #ifdef _DEBUG
     RDebug::Print( _L( "(SecUi)CRemoteLockSettingPage::ConstructL() - Exit" ) );
@@ -75,9 +73,6 @@ CRemoteLockSettingPage::~CRemoteLockSettingPage()
     #ifdef _DEBUG
     RDebug::Print( _L( "(SecUi)CRemoteLockSettingPage::~CRemoteLockSettingPage() - Enter" ) );
     #endif // DEBUG
-
-    delete iPopoutCba;
-    iPopoutCba = NULL;
 
     #ifdef _DEBUG
     RDebug::Print( _L( "(SecUi)CRemoteLockSettingPage::~CRemoteLockSettingPage() - Exit" ) );

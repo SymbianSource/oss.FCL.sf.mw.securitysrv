@@ -25,16 +25,13 @@
 #include <X509CertNameParser.h>
 #include <featmgr.h>
 #include <data_caging_path_literals.hrh>
+#include <AknQueryDialog.h>
 #include <CertSaver.rsg>
 #include <StringLoader.h>
 #include <securityerr.h>
+#include <aknnotewrappers.h>              // Note dialogs
 #include <apmrec.h>
-#include <eikenv.h>                       // CEikonEnv
 #include "certparser.h"
-
-#include "SecQueryUi.h"                   // needed for password dialog
-
-#include <hbdevicemessageboxsymbian.h>    // needed for Note dialogs    
 
 // CONSTANTS
 _LIT( KPKCS12DllName, "crpkcs12.dll" );   // PKCS12 DLL name
@@ -97,7 +94,6 @@ CCertParser::~CCertParser()
 //
 void CCertParser::SetContentL( RFile& aFile )
     {
-
     delete iCert;
     iCert = NULL;
     TInt fileSize = 0;
@@ -130,8 +126,7 @@ void CCertParser::SetContentL( RFile& aFile )
 //
 void CCertParser::CreatePKCS12L()
     {
-
-        // Load PKCS#12 dll
+    // Load PKCS#12 dll
 #ifdef __WINS__
     User::LeaveIfError ( iLibrary.Load( KPKCS12DllName ) );
 #else
@@ -156,7 +151,6 @@ TBool CCertParser::CheckIfPKCS12L(
     const TDesC8& aPKCS12,
     const TDesC& aFileName )
     {
-
     CreatePKCS12L();
 
     if ( !iPKCS12->IsPKCS12Data( aPKCS12 ) )
@@ -167,12 +161,21 @@ TBool CCertParser::CheckIfPKCS12L(
 
     TBool done = EFalse;
     TBuf<KPwMaxLength> password;
+    HBufC* buffer = NULL;
+
+    if ( !iEikEnv )
+        {
+        iEikEnv = CEikonEnv::Static();
+        }
 
     while ( !done )
         {
         if ( !GetPasswordL( password, aFileName ) )
             {
-            ShowErrorNoteL(R_CERTSAVER_PKCS12_DISCARDED);
+            buffer = iEikEnv->AllocReadResourceLC( R_CERTSAVER_PKCS12_DISCARDED );
+            CAknInformationNote* note = new (ELeave) CAknInformationNote( ETrue );
+            note->ExecuteLD(buffer->Des());
+            CleanupStack::PopAndDestroy( buffer );
             User::Leave( KErrExitApp );
             }
         TRAPD( err, iPKCS12->ParseL( aPKCS12, password ) );
@@ -223,19 +226,15 @@ TBool CCertParser::CheckIfPKCS12L(
 //
 TInt CCertParser::GetPasswordL( TDes& aPassword, const TDesC& aFileName )
     {
-    CSecQueryUi* SecQueryUi = CSecQueryUi::NewL();                                       
-    HBufC* prompt =StringLoader::LoadLC( R_QTN_CM_TITLE_P12_PASSWORD, aFileName );        
-    TInt queryAccepted = SecQueryUi->SecQueryDialog(prompt->Des(), aPassword,                
-                                                1,KPwMaxLength,                               
-                                                ESecUiAlphaSupported |                        
-                                                ESecUiCancelSupported |                       
-                                                ESecUiSecretSupported |                
-                                                ESecUiEmergencyNotSupported); 
-    CleanupStack::PopAndDestroy( prompt );                                                
-    delete SecQueryUi;                                                                   
-    SecQueryUi=NULL;
-    return (queryAccepted==KErrNone);
-  }
+    CAknTextQueryDialog* query = CAknTextQueryDialog::NewL( aPassword );
+    CleanupStack::PushL( query );
+    HBufC* prompt =
+        StringLoader::LoadLC( R_QTN_CM_TITLE_P12_PASSWORD, aFileName );
+    query->SetPromptL( *prompt );
+    CleanupStack::PopAndDestroy( prompt );
+    CleanupStack::Pop( query );
+    return query->ExecuteLD( R_PKCS12_PW_QUERY_DIALOG );
+    }
 
 // ----------------------------------------------------------
 // CCertParser::CheckIfX509CertificateL()
@@ -244,7 +243,6 @@ TInt CCertParser::GetPasswordL( TDes& aPassword, const TDesC& aFileName )
 //
 TBool CCertParser::CheckIfX509CertificateL(const TDesC8& aCert)
     {
-
     TRAPD( err,
            iCert = CX509Certificate::NewL(aCert);
          );
@@ -304,7 +302,6 @@ TBool CCertParser::CheckIfX509CertificateL(const TDesC8& aCert)
 //
 const CArrayPtr<CX509Certificate>&  CCertParser::CACertificates() const
     {
-
     __ASSERT_ALWAYS( iPKCS12, User::Panic( KCertSaverPanic, KPanicNullPointer ) );
     return iPKCS12->CACertificates();
     }
@@ -315,7 +312,6 @@ const CArrayPtr<CX509Certificate>&  CCertParser::CACertificates() const
 //
 const CArrayPtr<CX509Certificate>&  CCertParser::UserCertificates() const
     {
-
     __ASSERT_ALWAYS( iPKCS12, User::Panic( KCertSaverPanic, KPanicNullPointer ) );
     return iPKCS12->UserCertificates();
     }
@@ -326,7 +322,6 @@ const CArrayPtr<CX509Certificate>&  CCertParser::UserCertificates() const
 //
 const CArrayPtr<HBufC8>& CCertParser::Keys() const
     {
-
     __ASSERT_ALWAYS( iPKCS12, User::Panic( KCertSaverPanic, KPanicNullPointer ) );
     return iPKCS12->PrivateKeys();
     }
@@ -337,7 +332,6 @@ const CArrayPtr<HBufC8>& CCertParser::Keys() const
 //
  CCertParser::TCertType CCertParser::CertType() const
     {
-
     return iCertType;
     }
 
@@ -348,7 +342,6 @@ const CArrayPtr<HBufC8>& CCertParser::Keys() const
 //
 const TPtrC8 CCertParser::CertificateBuf() const
     {
-
     __ASSERT_ALWAYS( iCert, User::Panic( KCertSaverPanic, KPanicNullPointer ) );
     return iCert->Encoding();
     }
@@ -360,7 +353,6 @@ const TPtrC8 CCertParser::CertificateBuf() const
 //
 const CX509Certificate& CCertParser::Certificate() const
     {
-
     __ASSERT_ALWAYS( iCert, User::Panic( KCertSaverPanic, KPanicNullPointer ) );
     return *((CX509Certificate*)iCert);
     }
@@ -377,13 +369,9 @@ void CCertParser::ShowErrorNoteL( TInt aResourceID )
         iEikEnv = CEikonEnv::Static();
         }
     HBufC* buffer = iEikEnv->AllocReadResourceLC( aResourceID );
-    CHbDeviceMessageBoxSymbian* iMessageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EWarning);
-    CleanupStack::PushL(iMessageBox);                                                                                    
-    iMessageBox->SetTextL(buffer->Des());                                                                                
-    iMessageBox->SetTimeout(6000);                                                                                      
-    iMessageBox->ExecL();                                                                                                
-    CleanupStack::PopAndDestroy(iMessageBox);                                                                            
-    CleanupStack::PopAndDestroy( buffer );                                                                               
+    CAknErrorNote* note = new (ELeave) CAknErrorNote( ETrue );
+    note->ExecuteLD(buffer->Des());
+    CleanupStack::PopAndDestroy( buffer );
     }
 
 //  End of File

@@ -12,8 +12,8 @@
 * Contributors:
 *
 * Description:  Private Publish&Subscribe definitions of the
- *                Security UIs subsystem
- *
+*               Security UIs subsystem
+*
 */
 
 
@@ -32,25 +32,24 @@ const TUid KPSUidSecurityUIs = { 0x100059b5 };
 // Use TUid KPSUidSecurityUIs = { 0x100059b5 } 
 
 /**
- * Used by SecUI to differentiate between ETel API originated and SecUI originated
- * security queries.
- * Old Shared Data constant name: KSecUIOriginatedQuery
- */
+* Used by SecUI to differentiate between ETel API originated and SecUI originated
+* security queries.
+* Old Shared Data constant name: KSecUIOriginatedQuery
+*/
 const TUint32 KSecurityUIsSecUIOriginatedQuery = 0x00000301;
 enum TSecurityUIsSecUIOriginatedQuery
     {
     ESecurityUIsSecUIOriginatedUninitialized = 0,
     ESecurityUIsETelAPIOriginated,
     ESecurityUIsSecUIOriginated,
-    ESecurityUIsSystemLockOriginated,
-    ESecurityUIsFpsOriginated
+    ESecurityUIsSystemLockOriginated
     };
 
 /**
- * Used by SecUI to tell if a query request set by some ETELMM API lock setting function (i.e. SetXXXXSetting)
- * has been canceled since canceling the setting request does not prompt a query cancel event from ETEL.
- * Old Shared Data constant name: KSecUIOriginatedQuery
- */    
+* Used by SecUI to tell if a query request set by some ETELMM API lock setting function (i.e. SetXXXXSetting)
+* has been canceled sinnce canceling the setting request does not prompt a query cancel event from ETEL.
+* Old Shared Data constant name: KSecUIOriginatedQuery
+*/    
 const TUint32 KSecurityUIsQueryRequestCancel = 0x00000302;
 enum TSecurityUIsQueryRequestCancel
     {
@@ -59,58 +58,7 @@ enum TSecurityUIsQueryRequestCancel
     ESecurityUIsQueryRequestCanceled
     };
 
-/**
- * Used by Autolock to tell which application has enabled/disabled the keyguard/devicelock , and at which moment.
- */    
-const TUint32 KSecurityUIsLockInitiatorUID  = 0x00000303;
-const TUint32 KSecurityUIsLockInitiatorTimeHigh = 0x00000304;
-const TUint32 KSecurityUIsLockInitiatorTimeLow  = 0x00000305;
-
-/**
- * Used by Autolock to tell the status of screensaver 
- */    
-const TUint32 KSecurityUIsScreenSaverStatus  = 0x00000306;
-enum TSecurityUIsScreenSaverValues
-    {
-    ESecurityUIsScreenSaverUninitialized = 0,
-    ESecurityUIsScreenSaverOn,
-    ESecurityUIsScreenSaverOff,
-    ESecurityUIsScreenSaverOffWhileUnguardQuery,
-    ESecurityUIsScreenSaverOffWhileUnlockQuery,
-    ESecurityUIsScreenSaverLastValue
-    };
-
-/**
- * Used by any applicattion, to send a Code for Secui
- */    
-const TUint32 KSecurityUIsTestCode  = 0x00000307;
-
-/**
- * Used to tell SysAp to switch-on the lights.
- */    
-const TUint32 KSecurityUIsLights  = 0x00000308;
-enum TSecurityUIsLights
-    {
-    ESecurityUIsLightsUninitialized = 0,
-    ESecurityUIsLightsLockOnRequest,
-    ESecurityUIsLightsQueryOnRequest,
-    ESecurityUIsLightsLockOffRequest,
-    ESecurityUIsLightsLastValue
-    };
-
-/**
- * Used by Autolock to tell the dialog to dismiss. In fact, any app can do this.
- */    
-const TUint32 KSecurityUIsDismissDialog  = 0x00000309;
-enum TSecurityUIsDismissDialogValues
-    {
-    ESecurityUIsDismissDialogUninitialized = 0,
-    ESecurityUIsDismissDialogOn,
-    ESecurityUIsDismissDialogProcessing,
-    ESecurityUIsDismissDialogDone,
-    ESecurityUIsDismissDialogLastValue
-    };
-
-#endif // SECURITYUISPRIVATEPSKEYS_H
+#endif      // SECURITYUISPRIVATEPSKEYS_H
 
 // End of File
+

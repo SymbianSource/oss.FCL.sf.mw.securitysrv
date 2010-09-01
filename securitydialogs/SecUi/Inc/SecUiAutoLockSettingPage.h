@@ -23,7 +23,7 @@
 #include    <aknradiobuttonsettingpage.h>
 #include    <eikmobs.h>
 
-class CAutoLockSettingPage : public CBase
+class CAutoLockSettingPage : public CAknRadioButtonSettingPage
 	{
 	public:
 		/**
@@ -59,7 +59,6 @@ class CAutoLockSettingPage : public CBase
     	void HandlePointerEventL(const TPointerEvent& aPointerEvent);
     	
 	private: // data
-		// CEikButtonGroupContainer* iPopoutCba;
 		TInt& iAutoLockValue;
 		TInt iMaximum;
 		TInt iOriginalIndex;

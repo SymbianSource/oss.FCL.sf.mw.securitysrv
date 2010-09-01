@@ -24,15 +24,11 @@
 #include <e32property.h> // P&S API
 #include <e32debug.h>
 
-#include <QDebug>
-
 // ---------------------------------------------------------------------------
 // Standard Symbian OS construction sequence
 // ---------------------------------------------------------------------------
 EXPORT_C CKeyguardAccessApi* CKeyguardAccessApi::NewL( )
     {
-    RDEBUG("0", 0);
-
     CKeyguardAccessApi* self = new (ELeave) CKeyguardAccessApi( );
     CleanupStack::PushL( self );
     self->ConstructL( );
@@ -45,7 +41,6 @@ EXPORT_C CKeyguardAccessApi* CKeyguardAccessApi::NewL( )
 // ---------------------------------------------------------------------------
 CKeyguardAccessApi::CKeyguardAccessApi()
     {
-    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -66,7 +61,6 @@ EXPORT_C CKeyguardAccessApi::~CKeyguardAccessApi( )
 // ---------------------------------------------------------------------------
 void CKeyguardAccessApi::ConstructL( )
     {
-    RDEBUG("0", 0);
     iLockAccessExtension = new (ELeave) RLockAccessExtension;
     }
 
@@ -75,8 +69,6 @@ void CKeyguardAccessApi::ConstructL( )
 // ---------------------------------------------------------------------------
 EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
     {
-
-		RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     if ( err == KErrNone )
@@ -102,7 +94,6 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
 // ---------------------------------------------------------------------------
 EXPORT_C TBool CKeyguardAccessApi::IsKeyguardEnabled()
     {
-    RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     if ( err == KErrNone )
@@ -143,15 +134,12 @@ EXPORT_C TInt CKeyguardAccessApi::EnableKeyguard( TBool aWithNote )
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CKeyguardAccessApi::DisableKeyguard( TBool aWithNote )
     {
-		RDEBUG("aWithNote", aWithNote);
     if ( iLockAccessExtension )
         {
-        RDEBUG("0", 1);
         return iLockAccessExtension->SendMessage( ELockAppDisableKeyguard, aWithNote );
         }
     else
         {
-        RDEBUG("0", 0);
         return KErrNotFound;
         }
     }
@@ -161,7 +149,6 @@ EXPORT_C TInt CKeyguardAccessApi::DisableKeyguard( TBool aWithNote )
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CKeyguardAccessApi::OfferKeyguard()
     {
-   	RDEBUG("0", 0);
     if ( iLockAccessExtension )
         {
         return iLockAccessExtension->SendMessage( ELockAppOfferKeyguard );
@@ -177,7 +164,6 @@ EXPORT_C TInt CKeyguardAccessApi::OfferKeyguard()
 // ---------------------------------------------------------------------------
 EXPORT_C TInt CKeyguardAccessApi::ShowKeysLockedNote()
     {
-    RDEBUG("0", 0);
     if ( iLockAccessExtension )
         {
         return iLockAccessExtension->SendMessage( ELockAppShowKeysLockedNote );

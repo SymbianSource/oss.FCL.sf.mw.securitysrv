@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -33,6 +33,7 @@ const TInt KTrustSettingsResourceIndexAppCtrl = 2;
 const TInt KTrustSettingsResourceIndexJavaInstall = 3;
 const TInt KTrustSettingsResourceIndexOCSPCheck = 4;
 const TInt KTrustSettingsResourceIndexVPN = 5;
+const TInt KTrustSettingsResourceIndexWidget = 6;
 const TInt KTrustSettingsResourceIndexValueYes = 0;
 const TInt KTrustSettingsResourceIndexValueNo = 1;
 
@@ -238,6 +239,8 @@ NONSHARABLE_CLASS( CCertManUIContainerTrust ):
         */
         void ShowTrustChangeSettingPageL( const TUid aClientUid,
             TDesC& aClientName, CCTCertInfo& aEntry );
+
+        void ChangeTrustChangeSettingSingleClickL();
 
         void InsertItemToTrustListL( const TInt index, const TUid id,
                                    CCTCertInfo& entry, CDesCArray* itemArray,

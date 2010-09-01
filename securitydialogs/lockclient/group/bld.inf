@@ -20,12 +20,8 @@
 
 PRJ_EXPORTS
 
-/* this is also done in  .pro , but doesn't harm to do it here, too */
 ../rom/lockclient.iby CORE_MW_LAYER_IBY_EXPORT_PATH(lockclient.iby)
 
 PRJ_MMPFILES
 
-/*
-Not any more. This is done in the QT way, using  lockclient.pro
 lockclient.mmp
-*/

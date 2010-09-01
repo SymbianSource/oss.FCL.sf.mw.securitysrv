@@ -26,9 +26,6 @@
 #include <rmmcustomapi.h>
 #include <aknnotedialog.h>
 
-#define KSecUiAskNever 1
-#define KSecUiAskOnlyIfInvalid 2
-#define KSecUiAskAlways 3
 
 class CWait;
 class CSecurityHandler;
@@ -178,27 +175,6 @@ class CSecuritySettings : public CBase
         
         TInt RemoteLockCodeQueryL( TDes& aRemoteLockCode );
         
-		/** 
-		* Same functions, taking parameters. This is used in QT because the Settings handles it.
-		*
-		* @param aOldPassword RMobilePhone::TMobilePassword  : current password, probably asked to the user by other means
-		* @param aNewPassword RMobilePhone::TMobilePassword  : current password, probably asked to the user by other means
-		* @param aFlags	 			TInt  : when to ask for the password
-		* @param aCaption			TDes& : caption to show in the dialog. If NULL, then the function will calculate it. If empty, it will be empty
-		* @param aShowError		TInt  : in case of error, it will show it. If this is not set, then no errors will be displayed.
-		* @return TInt: KErrNone (succesful) , KErrGsm0707IncorrectPassword, KErrAccessDenied, KErrGsmSSPasswordAttemptsViolation, KErrLocked, KErrGsm0707OperationNotAllowed, KErrAbort, KErrNotSupported, ...
-		*/
-		IMPORT_C TInt  ChangePinParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		IMPORT_C TInt  ChangeUPinParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		IMPORT_C TInt  ChangePin2ParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		IMPORT_C TInt  ChangeSecCodeParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		IMPORT_C TInt  ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		/* if aOldPassword is used, then try to verify.
-		KSecUiAskNever, KSecUiAskOnlyIfInvalid, KSecUiAskAlways
-		*/
-		IMPORT_C TInt  AskSecCodeParamsL(RMobilePhone::TMobilePassword &aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-		IMPORT_C TInt  ChangePinRequestParamsL(TInt aEnable, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
-
     private:
     
         TInt RemoteLockSetLockSettingL( TBool aLockSetting );    

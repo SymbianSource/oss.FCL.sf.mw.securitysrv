@@ -1,0 +1,91 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file.
+*
+*/
+
+#include <platform_paths.hrh>
+
+#include  <data_caging_paths.hrh>    // For RESOURCE_FILES_DIR
+
+CAPABILITY          CAP_ECOM_PLUGIN
+TARGET              gssimsecplugin.dll
+TARGETTYPE          PLUGIN
+UID                 0x10009D8D 0x10207438
+VENDORID            VID_DEFAULT
+
+
+SOURCEPATH  Src
+SOURCE   GSSimSecPluginImplementationTable.cpp
+SOURCE   GSSimSecPlugin.cpp
+SOURCE   GSSimSecPluginContainer.cpp
+SOURCE   GSSimSecPluginModel.cpp
+SOURCE   GSPubSubsListener.cpp
+
+
+//User include paths
+USERINCLUDE     Inc
+USERINCLUDE     Data // For *.rh
+
+//System include paths
+APP_LAYER_SYSTEMINCLUDE
+
+
+SOURCEPATH      Data
+
+START RESOURCE  10207438.rss
+TARGET          gssimsecplugin.rsc
+END
+
+START RESOURCE  GSSimSecPluginRsc.rss
+HEADER
+TARGETPATH      RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END
+
+
+
+LIBRARY   euser.lib
+LIBRARY   ecom.lib
+LIBRARY   efsrv.lib
+LIBRARY   avkon.lib
+LIBRARY   bafl.lib 
+LIBRARY   cone.lib 
+LIBRARY   eikcoctl.lib 
+LIBRARY   eikcore.lib 
+LIBRARY   egul.lib
+LIBRARY   eikdlg.lib            // eikon dialogs
+LIBRARY   flogger.lib           // File logging
+LIBRARY   commonengine.lib      // For RConeResourceLoader
+LIBRARY   featmgr.lib           // Feature manager 
+LIBRARY   centralrepository.lib
+LIBRARY   aknskinsrv.lib        // for enhanced skinning
+LIBRARY   aknskins.lib          // for enhanced skinning
+LIBRARY   secui.lib             // security
+LIBRARY   etelmm.lib            // security
+LIBRARY   sssettings.lib        // ss settings
+LIBRARY   hlplch.lib            // for "Help" options menu
+LIBRARY   gsecomplugin.lib
+LIBRARY   gsframework.lib       // For base classes
+LIBRARY   gslistbox.lib         // For CGSListBoxItemTextArray
+
+LIBRARY   scpclient.lib
+
+#ifdef RD_REMOTELOCK
+LIBRARY  rlocksettings.lib
+#endif
+
+SMPSAFE
+
+// End of File

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -170,10 +170,7 @@ void CCertManUIContainerTrust::HandleListBoxEventL(
     switch( aEventType )
         {
         case EEventItemSingleClicked:
-            if ( !iKeeper.iWrapper->IsActive() )
-                {
-                iParent.ChangeTrustL();
-                }
+            ChangeTrustChangeSettingSingleClickL();
             break;
         default:
             {
@@ -435,6 +432,10 @@ TInt CCertManUIContainerTrust::GetTrusterResId( TUid aTrusterUid )
         {
         resIndex = KTrustSettingsResourceIndexVPN;
         }
+    else if ( aTrusterUid == KCertManUIViewTrustWidgetInstallingId )
+        {
+        resIndex = KTrustSettingsResourceIndexWidget;
+        }
     else
         {
         resIndex = KErrNotFound;
@@ -595,23 +596,23 @@ void CCertManUIContainerTrust::UpdateTrustListboxItemL(CCTCertInfo& aEntry,
             }
         else if ( id == KCertManUIViewTrustMailAndImageConnId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexMailAndImageConn ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexMailAndImageConn ];
             }
         else if ( id == KCertManUIViewTrustJavaInstallingId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexJavaInstall ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexJavaInstall ];
             }
         else if ( id == KCertManUIViewOCSPCheckInstallingId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexOCSPCheck ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexOCSPCheck ];
             }
         else if ( id == KCertManUIViewTrustVPNId )
             {
-            item =
-             (*iTrustedClients)[ KTrustSettingsResourceIndexVPN ];
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexVPN ];
+            }
+        else if ( id == KCertManUIViewTrustWidgetInstallingId )
+            {
+            item = (*iTrustedClients)[ KTrustSettingsResourceIndexWidget ];
             }
         else
             {
@@ -697,6 +698,33 @@ void CCertManUIContainerTrust::ShowTrustChangeSettingPageL(
     }
 
 // ---------------------------------------------------------------------------
+// CCertManUIContainerTrust::ChangeTrustChangeSettingSingleClickL()
+// ---------------------------------------------------------------------------
+//
+void CCertManUIContainerTrust::ChangeTrustChangeSettingSingleClickL()
+    {
+    if( !iKeeper.iWrapper->IsActive() )
+        {
+        TInt certIndex = iKeeper.iCurrentCACertForTrustSettings;
+
+        if( certIndex >= 0 && certIndex < iKeeper.iCALabelEntries.Count() )
+            {
+            CCTCertInfo* entry = iKeeper.iCALabelEntries[ certIndex ]->iCAEntry;
+            if( entry && entry->IsDeletable() )
+                {
+                TInt currentTrustSetting = iListBox->CurrentItemIndex();
+                if( currentTrustSetting >= 0 && currentTrustSetting < iClientUids.Count() )
+                    {
+                    TUid uid = iClientUids[ currentTrustSetting ];
+                    ChangeTrustValueL( *entry, uid );
+                    UpdateTrustListboxItemL( *entry, currentTrustSetting );
+                    }
+                }
+            }
+        }
+    }
+
+// ---------------------------------------------------------------------------
 // CCertManUIContainerTrust::PopupTrustChangeSettingPageL(
 //      TInt aCertificateIndex)
 // Finds out which client was focused in Trust Settings view and calls
@@ -720,7 +748,7 @@ void CCertManUIContainerTrust::PopupTrustChangeSettingPageL(
         CERTMANUILOGGER_LEAVEFN( "- PopupTrustChangeSettingPageL - read-only" );
     	return;
     	}
-    
+
     TUid id = KCertManUINullId;
     TInt poppableItems = 0;
 

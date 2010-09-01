@@ -24,6 +24,9 @@
 #include "secui.h"
 #include 	<data_caging_path_literals.hrh>
 
+_LIT(KDirAndFile,"z:SecUi.rsc");
+
+
 // ================= MEMBER FUNCTIONS =======================
 //
 // ----------------------------------------------------------
@@ -35,19 +38,20 @@ EXPORT_C void TSecUi::InitializeLibL()
 	{
 	if (Dll::Tls()!=NULL)
     {//Secui has been initialized already; increase client count.
-        RDEBUG("Secui has been initialized already", 0);
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(SECUI): InitializeLibL: Secui has been initialized already"));
+        #endif
         TSecUi* instance=(TSecUi*) Dll::Tls();
         instance->IncreaseClientCount();
-        instance->iDialogOpened++;
-        RDEBUG("instance->iDialogOpened", instance->iDialogOpened);
         return;
     }
-    RDEBUG("First initialization", 0);
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI): InitializeLibL: First initialization"));
+    #endif
 	TSecUi* self = new (ELeave) TSecUi();
 	CleanupStack::PushL(self);
 	self->ConstructL();
     self->IncreaseClientCount();
-    self->iDialogOpened=0;
 	Dll::SetTls(self);
 	CleanupStack::Pop();
 	}
@@ -59,19 +63,19 @@ EXPORT_C void TSecUi::InitializeLibL()
 //
 EXPORT_C void TSecUi::UnInitializeLib()
 	{
-    RDEBUG("0", 0);
     if (Dll::Tls()==NULL)
-    		{
-    		RDEBUG("!!!!!!!!!! Dll::Tls not yet initialized: 0", 0);
         return;
-      	}
-    RDEBUG("0", 0);
+    #if defined(_DEBUG)
+    RDebug::Print(_L("(SECUI): UnInitializeLibL"));
+    #endif
 	TSecUi* instance=(TSecUi*) Dll::Tls();
     instance->DecreaseClientCount();
     //only delete the lib is there are no clients using it
     if(instance->CanBeFreed())
         {
-        RDEBUG("Last uninitialize", 0);
+        #if defined(_DEBUG)
+        RDebug::Print(_L("(SECUI): UnInitializeLibL: Last uninitialize"));
+        #endif
 	    delete instance;
 	    Dll::SetTls(NULL);
         }
@@ -85,6 +89,7 @@ EXPORT_C void TSecUi::UnInitializeLib()
 //
 TSecUi::TSecUi()
 	{
+	
 	}
 //
 // ----------------------------------------------------------
@@ -94,6 +99,10 @@ TSecUi::TSecUi()
 //
 TSecUi::~TSecUi()
 	{
+	if (iResourceFileOffset >= 0)
+		{
+		CEikonEnv::Static()->DeleteResourceFile(iResourceFileOffset);
+		}
 	}
 //
 // ----------------------------------------------------------
@@ -103,8 +112,24 @@ TSecUi::~TSecUi()
 //
 void TSecUi::ConstructL()
 	{
-		RDEBUG("iClientCount", iClientCount);
+	iResourceFileOffset = CCoeEnv::Static()->AddResourceFileL(ResourceFileName());
     iClientCount = 0;
+	}
+//
+// ----------------------------------------------------------
+// TSecUi::ResourceFileName
+// Returns the resource file name of SecurityUI dll.
+// ----------------------------------------------------------
+//
+TFileName TSecUi::ResourceFileName()
+	{
+	
+	TParse parse;
+    parse.Set(KDirAndFile, &KDC_RESOURCE_FILES_DIR, NULL); 
+	TFileName resourceFileName(parse.FullName());
+	BaflUtils::NearestLanguageFile(CCoeEnv::Static()->FsSession(), resourceFileName);
+	return resourceFileName;
+	
 	}
 
 // -----------------------------------------------------------------------------
@@ -113,13 +138,18 @@ void TSecUi::ConstructL()
 //
 TBool TSecUi::CanBeFreed()
     {
-    	RDEBUG("iClientCount", iClientCount);
 	if (iClientCount <= 0)
 	{
+        #if defined(_DEBUG)
+		RDebug::Print(_L("(SECUI): No clients; Can be freed: clients(%d) "), iClientCount);
+        #endif
 		return ETrue;
 	}
 	else
 	{
+        #if defined(_DEBUG)
+		RDebug::Print(_L("(SECUI): Can NOT be freed: clients(%d) "), iClientCount);
+		#endif
         return EFalse;
 	}
     }
@@ -131,7 +161,9 @@ TBool TSecUi::CanBeFreed()
 void TSecUi::IncreaseClientCount()
     {
 	++iClientCount;
-	RDEBUG("iClientCount", iClientCount);
+    #if defined(_DEBUG)
+	RDebug::Print(_L("(SECUI): IncreaseClientCount, clients now(%d) "), iClientCount);
+    #endif
     }
 
 // -----------------------------------------------------------------------------
@@ -142,7 +174,9 @@ void TSecUi::IncreaseClientCount()
 void TSecUi::DecreaseClientCount()
     {
 	--iClientCount;
-	RDEBUG("iClientCount", iClientCount);
+    #if defined(_DEBUG)
+	RDebug::Print(_L("(SECUI): DecreaseClientCount, clients now(%d) "), iClientCount);
+    #endif
     }
 
 	

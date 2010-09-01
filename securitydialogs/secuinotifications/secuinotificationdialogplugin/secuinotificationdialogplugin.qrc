@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/" >
-        <file alias="cert.svg" >resources/cert.svg</file>
-        <file alias="drm.svg" >resources/drm.svg</file>
-    </qresource>
-</RCC>

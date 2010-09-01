@@ -1,0 +1,36 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is a localisation file for Autolock
+*
+*/
+
+
+
+// LOCALISATION STRINGS
+
+//d:Title pane text in System Lock View.(Phone is in locked mode)
+//l:title_pane_t2/opt9 
+//
+#define qtn_set_sec_title_locked "Locked"
+
+//d:Left Softkey text in System Lock View.
+//l:control_pane_t1/opt7
+//
+#define qtn_set_sec_unlock_system "Unlock"
+
+
+// End of File
+
+
+

@@ -18,14 +18,12 @@
 
 
 // INCLUDE FILES
-#include <platform/e32notif.h>
 #include "CTSignTextDialog.h"
 #include "CTSecurityDialogsLogger.h"
 #include <barsread.h>
 #include <CTSecDlgs.rsg>
 #include <uikon/eiksrvui.h>
 #include <StringLoader.h>
-
 
 // ============================ MEMBER FUNCTIONS ===============================
 

@@ -16,7 +16,7 @@
 *
 *
 */
-#include <e32notif.h>
+
 #include <aknQueryControl.h>
 #include <aknsoundsystem.h>
 #include <aknappui.h>

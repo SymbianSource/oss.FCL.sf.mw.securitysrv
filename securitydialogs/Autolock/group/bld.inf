@@ -1,0 +1,47 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file provides the information required for building
+*               the whole autolock.
+*
+*/
+
+
+#include <platform_paths.hrh>
+PRJ_PLATFORMS
+
+DEFAULT
+
+PRJ_EXPORTS
+//Configuration tool migration
+../conf/autolock.confml          MW_LAYER_CONFML(autolock.confml)
+../conf/autolock_102824AE.crml 	 MW_LAYER_CRML(autolock_102824ae.crml)
+../conf/lock.confml              MW_LAYER_CONFML(lock.confml)
+../conf/lock_10283322.crml 	     MW_LAYER_CRML(lock_10283322.crml)
+
+../rom/Autolock.iby CORE_MW_LAYER_IBY_EXPORT_PATH(autolock.iby)
+../rom/AutolockResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(autolockresources.iby)
+../loc/autolock.loc MW_LAYER_LOC_EXPORT_PATH(autolock.loc)
+// taken from lockapp
+// ../PubSub/SecurityUIsPrivatePSKeys.h |../../../inc/SecurityUIsPrivatePSKeys.h
+
+PRJ_MMPFILES
+../group/Autolock.mmp
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE autolock.mif
+OPTION HEADERFILE autolock.mbg
+OPTION SOURCES -c8,8 qgn_graf_phone_locked -c8,8 qgn_indi_button_end_call
+END
+

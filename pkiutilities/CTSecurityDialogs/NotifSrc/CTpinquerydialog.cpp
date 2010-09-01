@@ -18,7 +18,6 @@
 
 
 // INCLUDE FILES
-#include <platform/e32notif.h>
 #include "CTPinQueryDialog.h"
 #include "CTSecurityDialogsLogger.h"
 #include <CTSecDlgs.rsg>

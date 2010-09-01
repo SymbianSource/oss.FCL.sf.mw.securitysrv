@@ -34,10 +34,10 @@
 #include <apgcli.h>
 
 //  LOCAL CONSTANTS AND MACROS
-  /*****************************************************
-  * Series 60 Customer / TSY
-  * Needs customer TSY implementation
-  *****************************************************/
+	/*****************************************************
+	*	Series 60 Customer / TSY
+	*	Needs customer TSY implementation
+	*****************************************************/
 
 const TInt KTriesToConnectServer( 2 );
 const TInt KTimeBeforeRetryingServerConnection( 50000 );
@@ -92,10 +92,10 @@ TBool IsAdminCall()
         if ( scpClient.QueryAdminCmd( ESCPCommandLockPhone ) )
             {
             #if defined(_DEBUG)
-          RDebug::Print(_L("CSecObsNotify::SCP admin command, no action required"));
-          #endif
+        	RDebug::Print(_L("CSecObsNotify::SCP admin command, no action required"));
+	        #endif
 
-          isAdminCall = ETrue;
+	        isAdminCall = ETrue;
             }
 
         scpClient.Close();
@@ -137,7 +137,7 @@ CSecurityNotifier::CSecurityNotifier(): CActive(EPriorityStandard)
 //
 CSecurityNotifier::~CSecurityNotifier()
     {
-      FeatureManager::UnInitializeLib();
+    	FeatureManager::UnInitializeLib();
     }
 //
 // ----------------------------------------------------------
@@ -158,9 +158,9 @@ void CSecurityNotifier::Release()
 //
 MEikSrvNotifierBase2::TNotifierInfo CSecurityNotifier::RegisterL()
     {
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::RegisterL()"));
-  #endif
+	#endif
     iInfo.iUid = KSecurityNotifierUid;
     iInfo.iChannel = KSecurityNotifierChannel;
     iInfo.iPriority = ENotifierPriorityHigh;
@@ -174,9 +174,9 @@ MEikSrvNotifierBase2::TNotifierInfo CSecurityNotifier::RegisterL()
 //
 MEikSrvNotifierBase2::TNotifierInfo CSecurityNotifier::Info() const
     {
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::Info()"));
-  #endif
+	#endif
     return iInfo;
     }
 
@@ -190,9 +190,9 @@ MEikSrvNotifierBase2::TNotifierInfo CSecurityNotifier::Info() const
 //
 TPtrC8 CSecurityNotifier::StartL(const TDesC8& /*aBuffer*/)
     {
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::StartL()"));
-  #endif
+	#endif
     TPtrC8 ret(KNullDesC8);
     return (ret);
     }
@@ -204,9 +204,9 @@ TPtrC8 CSecurityNotifier::StartL(const TDesC8& /*aBuffer*/)
 //
 void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMessagePtr2& aMessage)
     {
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::StartL2()"));
-  #endif
+	#endif
     TRAPD(err, GetParamsL(aBuffer, aReturnVal, aMessage));
     if (err)
         {
@@ -225,44 +225,15 @@ void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMes
 //
 void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const RMessagePtr2& aMessage)
     {
-  #if defined(_DEBUG)
-  RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
-  #endif
-    
-  TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
-  const TUid KAutolockUid = { 0x100059B5 };
-  TApaTask task( taskList.FindApp( KAutolockUid ) );
-  if ( !task.Exists() )
-    {
-    #if defined(_DEBUG)
-    RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
-    #endif
-    RApaLsSession ls;                   
-    User::LeaveIfError(ls.Connect());   
-    CleanupClosePushL(ls);         
-    
-    CApaCommandLine* commandLine = CApaCommandLine::NewLC();
-    commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
-    commandLine->SetCommandL( EApaCommandRun );
-    
-    // Try to launch the application.        
-    TInt err = ls.StartApp(*commandLine);
-    #if defined(_DEBUG)
-    RDebug::Printf( "%s %s (%u) autolock.exe err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
-    #endif
-    
-    CleanupStack::PopAndDestroy(2); // commandLine, ls
-    }
-
-  /*****************************************************
-  * Series 60 Customer / ETel
-  * Series 60  ETel API
-  *****************************************************/
+	/*****************************************************
+	*	Series 60 Customer / ETel
+	*	Series 60  ETel API
+	*****************************************************/
     iMessage = aMessage;
     iReturnVal = aReturnVal;
     TBool skipQuery = EFalse; // In some cases the query is handled by some other entity and SecurityNotifier should skip it.
 
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("(SECURITYNOTIFIER)CSecurityNotifier::GetParamsL() Start BEGIN"));
     #endif
     
@@ -272,9 +243,38 @@ void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const
     iStartup = pckg().iStartup;
     iEvent = static_cast<RMobilePhone::TMobilePhoneSecurityEvent>(pckg().iEvent);
     
+	#if defined(_DEBUG)
+	RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
+	RDebug::Printf( "%s %s (%u) iEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iEvent );
+	RDebug::Printf( "%s %s (%u) 2 RMobilePhone::EPin1Required=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, RMobilePhone::EPin1Required );
+	#endif
+	TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
+	const TUid KAutolockUid = { 0x100059B5 };
+	TApaTask task( taskList.FindApp( KAutolockUid ) );
+	if ( !task.Exists() && iEvent != RMobilePhone::EPin1Required )	// PIN-request should not start autolock, to prevent that lock-code is secretly accepted by TARM. Rely on Startup.
+		{
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
+		#endif
+		RApaLsSession ls;                   
+		User::LeaveIfError(ls.Connect());   
+		CleanupClosePushL(ls);         
+		
+		CApaCommandLine* commandLine = CApaCommandLine::NewLC();
+		commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
+		commandLine->SetCommandL( EApaCommandRun );
+		
+		// Try to launch the application.        
+		User::LeaveIfError(ls.StartApp(*commandLine));
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) autolock.exe created=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x2 );
+		#endif
+		
+		CleanupStack::PopAndDestroy(2); // commandLine, ls
+		}
 
 if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
-    {
+		{
     if(iEvent == RMobilePhone::EPhonePasswordRequired)
         {
             skipQuery = IsAdminCall(); // SCP handles the call.
@@ -292,7 +292,7 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
         SetActive();
         iStatus = KRequestPending;
         TRequestStatus* stat = &iStatus;
-      #if defined(_DEBUG)
+	    #if defined(_DEBUG)
         RDebug::Print(_L("CSecurityNotifier::GetParamsL() End"));
         #endif
         User::RequestComplete(stat, KErrNone); // jump to RunL
@@ -305,26 +305,26 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 // ----------------------------------------------------------
 void CSecurityNotifier::RunL()
     {
-  /*****************************************************
-  * Series 60 Customer / ETel
-  * Series 60  ETel API
-  *****************************************************/
-  /*****************************************************
-  * Series 60 Customer / TSY
-  * Needs customer TSY implementation
-  *****************************************************/
+	/*****************************************************
+	*	Series 60 Customer / ETel
+	*	Series 60  ETel API
+	*****************************************************/
+	/*****************************************************
+	*	Series 60 Customer / TSY
+	*	Needs customer TSY implementation
+	*****************************************************/
 
     TInt err( KErrGeneral );
     TInt thisTry( 0 );
-  RTelServer::TPhoneInfo PhoneInfo;
-  #if defined(_DEBUG)
+	RTelServer::TPhoneInfo PhoneInfo;
+	#if defined(_DEBUG)
     RDebug::Print(_L("CSecurityNotifier::RunL() Start"));
     #endif
     /*All server connections are tried to be made KTriesToConnectServer times because occasional
     fails on connections are possible, at least on some servers*/
 
     // connect to ETel server
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("CSecurityNotifier::RunL() connect to ETel server"));
     #endif
     while ( ( err = iServer.Connect() ) != KErrNone && ( thisTry++ ) <= KTriesToConnectServer )
@@ -336,14 +336,11 @@ void CSecurityNotifier::RunL()
     thisTry = 0;
 
     // load TSY
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("CSecurityNotifier::RunL() load TSY"));
     #endif
-    
-    if ( !iPhone.SubSessionHandle() )    
-    {
-      err = iServer.LoadPhoneModule( KMmTsyModuleName );
-      if ( err != KErrAlreadyExists )
+    err = iServer.LoadPhoneModule( KMmTsyModuleName );
+    if ( err != KErrAlreadyExists )
         {
         // may also return KErrAlreadyExists if something
         // else has already loaded the TSY module. And that is
@@ -351,22 +348,20 @@ void CSecurityNotifier::RunL()
         User::LeaveIfError( err );
         }
 
-       // open phones
-      #if defined(_DEBUG)
-      RDebug::Print(_L("CSecurityNotifier::RunL() open phones"));
-      #endif
-      User::LeaveIfError(iServer.SetExtendedErrorGranularity(RTelServer::EErrorExtended));
-      User::LeaveIfError(iServer.GetPhoneInfo(PhoneIndex, PhoneInfo));
-      User::LeaveIfError(iPhone.Open(iServer,PhoneInfo.iName));
-    }   
-        
+    // open phones
+	#if defined(_DEBUG)
+    RDebug::Print(_L("CSecurityNotifier::RunL() open phones"));
+    #endif
+    User::LeaveIfError(iServer.SetExtendedErrorGranularity(RTelServer::EErrorExtended));
+	User::LeaveIfError(iServer.GetPhoneInfo(PhoneIndex, PhoneInfo));
+    User::LeaveIfError(iPhone.Open(iServer,PhoneInfo.iName));
     RProperty Property;
     CleanupClosePushL( Property );
     err = Property.Set(KPSUidStartup, KStartupSecurityCodeQueryStatus, ESecurityQueryActive);
     User::LeaveIfError( err );
 
     // initialize security ui
-  #if defined(_DEBUG)
+	#if defined(_DEBUG)
     RDebug::Print(_L("CSecurityNotifier::RunL() initialize security ui"));
     #endif
     CSecurityHandler* handler = new(ELeave) CSecurityHandler(iPhone);
@@ -393,11 +388,11 @@ void CSecurityNotifier::RunL()
     // if something went wrong cancel the code request
     if (error)
         {
-    #if defined(_DEBUG)
-    RDebug::Print(_L("CSecurityNotifier::RunL() ERROR: %d"), error);
-    #endif
-    TBool wcdmaSupported(FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma ));
-    TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin ));
+		#if defined(_DEBUG)
+		RDebug::Print(_L("CSecurityNotifier::RunL() ERROR: %d"), error);
+		#endif
+		TBool wcdmaSupported(FeatureManager::FeatureSupported( KFeatureIdProtocolWcdma ));
+		TBool upinSupported(FeatureManager::FeatureSupported( KFeatureIdUpin ));
         switch (iEvent)
             {
             case RMobilePhone::EUniversalPinRequired:
@@ -412,19 +407,19 @@ void CSecurityNotifier::RunL()
                    iPhone.AbortSecurityCode(RMobilePhone::ESecurityUniversalPuk);
                   }
                 break;
-      case RMobilePhone::EPin1Required:
+			case RMobilePhone::EPin1Required:
                 iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePin1);
                 break;
-      case RMobilePhone::EPuk1Required:
+			case RMobilePhone::EPuk1Required:
                 iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePuk1);
                 break;
-      case RMobilePhone::EPin2Required:
+			case RMobilePhone::EPin2Required:
                 iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePin2);
                 break;
-      case RMobilePhone::EPuk2Required:
+			case RMobilePhone::EPuk2Required:
                 iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePuk2);
                 break;
-      case RMobilePhone::EPhonePasswordRequired:
+			case RMobilePhone::EPhonePasswordRequired:
                 iPhone.AbortSecurityCode(RMobilePhone::ESecurityCodePhonePassword);
                 break;
             default:
@@ -454,9 +449,9 @@ void CSecurityNotifier::RunL()
     iReturnVal = KErrNone;
     //Leave the window group to foreground for a short time to absorb key presses so that autolock has time to activate.
     if(!StartUp)
-    User::After(KDelayPeriod);
-  ( CEikonEnv::Static() )->BringForwards(EFalse);
-  #if defined(_DEBUG)
+		User::After(KDelayPeriod);
+	( CEikonEnv::Static() )->BringForwards(EFalse);
+	#if defined(_DEBUG)
     RDebug::Print(_L("CSecurityNotifier::RunL() End"));
     #endif
     }

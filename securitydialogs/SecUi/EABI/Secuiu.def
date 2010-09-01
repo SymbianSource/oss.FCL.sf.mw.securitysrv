@@ -75,29 +75,4 @@ EXPORTS
 	_ZTV23CManualSecuritySettings @ 74 NONAME ; #<VT>#
 	_ZTV5CWait @ 75 NONAME ; #<VT>#
 	_ZN16CSecurityHandler12HandleEventLEN12RMobilePhone25TMobilePhoneSecurityEventEiRi @ 76 NONAME
-	_ZN11CSecQueryUi11LaunchHelpLERK7TDesC16 @ 77 NONAME
-	_ZN11CSecQueryUi11LaunchHelpLERK7TDesC16RK4TUid @ 78 NONAME
-	_ZN11CSecQueryUi13CloseWaitNoteEv @ 79 NONAME
-	_ZN11CSecQueryUi14SecQueryDialogERK7TDesC16R6TDes16iii @ 80 NONAME
-	_ZN11CSecQueryUi16DisplayWaitNoteLERK7TDesC16R14TRequestStatus @ 81 NONAME
-	_ZN11CSecQueryUi17DisplayErrorNoteLERK7TDesC16 @ 82 NONAME
-	_ZN11CSecQueryUi18ClosePermanentNoteEv @ 83 NONAME
-	_ZN11CSecQueryUi18CloseProgressNoteLEv @ 84 NONAME
-	_ZN11CSecQueryUi19DisplayWarningNoteLERK7TDesC16 @ 85 NONAME
-	_ZN11CSecQueryUi20DisplayProgressNoteLERK7TDesC16i @ 86 NONAME
-	_ZN11CSecQueryUi21DisplayPermanentNoteLERK7TDesC16 @ 87 NONAME
-	_ZN11CSecQueryUi23DisplayInformationNoteLERK7TDesC16 @ 88 NONAME
-	_ZN11CSecQueryUi24UpdateProgressNoteValueLEi @ 89 NONAME
-	_ZN11CSecQueryUi25InstallConfirmationQueryLEiR4TBufILi10EE @ 90 NONAME
-	_ZN11CSecQueryUi4NewLEv @ 91 NONAME
-	_ZN11CSecQueryUi5NewLCEv @ 92 NONAME
-	_ZN17CSecuritySettings16ChangePinParamsLE4TBufILi10EES1_iR6TDes16i @ 93 NONAME
-	_ZN17CSecuritySettings17ChangePin2ParamsLE4TBufILi10EES1_iR6TDes16i @ 94 NONAME
-	_ZN17CSecuritySettings17ChangeUPinParamsLE4TBufILi10EES1_iR6TDes16i @ 95 NONAME
-	_ZN17CSecuritySettings20ChangeSecCodeParamsLE4TBufILi10EES1_iR6TDes16i @ 96 NONAME
-	_ZN17CSecuritySettings23ChangePinRequestParamsLEi4TBufILi10EEiR6TDes16i @ 97 NONAME
-	_ZN17CSecuritySettings27ChangeAutoLockPeriodParamsLEi4TBufILi10EEiR6TDes16i @ 98 NONAME
-	_ZTI11CSecQueryUi @ 99 NONAME
-	_ZTV11CSecQueryUi @ 100 NONAME
-	_ZN17CSecuritySettings17AskSecCodeParamsLER4TBufILi10EEiR6TDes16i @ 101 NONAME
 

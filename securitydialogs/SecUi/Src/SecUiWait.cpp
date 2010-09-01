@@ -77,8 +77,10 @@ CWait::~CWait()
 //
 TInt CWait::WaitForRequestL()
     {    
+    CWaitAbsorbingControl* absorbing = CWaitAbsorbingControl::NewLC();
     SetActive();
     iWait.Start();
+    CleanupStack::PopAndDestroy(absorbing);
     return iStatus.Int();
     }
 //
@@ -126,33 +128,6 @@ TInt CWait::GetRequestType()
     return iRequestType;
 }
 //
-// class CAutolockQuery
-//
-CAutolockQuery::CAutolockQuery()
-    {
-    }
-
-CAutolockQuery::~CAutolockQuery()
-    {
-    
-    }
-
-CAutolockQuery* CAutolockQuery::NewLC()
-    {
-    return NULL;
-    }
-
-void CAutolockQuery::ConstructL()
-    {
-    
-    }
-
-TKeyResponse CAutolockQuery::OfferKeyEventL(const TKeyEvent& /*aKeyEvent*/,TEventCode /*aType*/)
-    {
-    return EKeyWasConsumed; 
-    }
-/***********/
-//
 // class CWaitAbsorbingControl
 //
 CWaitAbsorbingControl::CWaitAbsorbingControl()
@@ -161,22 +136,32 @@ CWaitAbsorbingControl::CWaitAbsorbingControl()
 
 CWaitAbsorbingControl::~CWaitAbsorbingControl()
     {
-    
+    if (iCoeEnv && iAppUi)
+        iAppUi->RemoveFromStack(this);
     }
 
 CWaitAbsorbingControl* CWaitAbsorbingControl::NewLC()
     {
-    return NULL;
+    CWaitAbsorbingControl* self= new(ELeave) CWaitAbsorbingControl();
+    CleanupStack::PushL(self);
+    self->ConstructL();
+    return self;
     }
 
 void CWaitAbsorbingControl::ConstructL()
     {
-    
+    CreateWindowL();
+    SetExtent(TPoint(0,0), TSize(0,0));
+    ActivateL();
+    SetPointerCapture(ETrue);
+    ClaimPointerGrab(ETrue);
+    iAppUi=iEikonEnv->EikAppUi();
+    iAppUi->AddToStackL(this, ECoeStackPriorityEnvironmentFilter);
     }
 
 TKeyResponse CWaitAbsorbingControl::OfferKeyEventL(const TKeyEvent& /*aKeyEvent*/,TEventCode /*aType*/)
     {
-    return EKeyWasConsumed; 
+    return EKeyWasConsumed;
     }
 
 // End of file

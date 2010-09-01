@@ -298,7 +298,7 @@ MScardReaderLauncher* CScardReaderRegistry::LoadFactoryModuleL(
     TLauncherStruct launcher;
     launcher.iGroupID = KGroupID; //This is always 1
     launcher.iReaderID = KReaderID; //This is always 1
-    User::LeaveIfError( launcher.iSession.Connect() );
+    launcher.iSession.Connect();
 
     User::LeaveIfError( launcher.iLibrary.Load( KSwimReaderDLL ) );
 

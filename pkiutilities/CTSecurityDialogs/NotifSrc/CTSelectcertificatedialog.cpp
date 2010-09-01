@@ -18,7 +18,6 @@
 
 
 // INCLUDE FILES
-#include <platform/e32notif.h>
 #include "CTSelectCertificateDialog.h"
 #include "CTSecurityDialogDefs.h"
 #include <CTSecDlgs.rsg>

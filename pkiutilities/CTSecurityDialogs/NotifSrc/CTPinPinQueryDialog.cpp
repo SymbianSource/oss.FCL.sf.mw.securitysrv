@@ -17,7 +17,6 @@
 
 
 // INCLUDE FILES
-#include <platform/e32notif.h>
 #include "CTPinPinQueryDialog.h"
 #include <CTSecDlgs.rsg>
 #include <eikenv.h>

@@ -77,6 +77,12 @@ class CCertSaverModel : public CBase
         void SavePKCS12L();
 
 
+        /**
+        * Shows a error note with given text.
+        * @param aResourceID Id of the resource text to be shown.
+        */
+        void ShowErrorNoteL( TInt aResourceID ) const;
+
     private:  // New functions
 
         /**
@@ -192,6 +198,11 @@ class CCertSaverModel : public CBase
         */
         void AddNewlinesToMessage( TDes& aMessage ) const;
 
+        /**
+        * Shows a confirmation note with given text.
+        * @param aResourceID Id of the resource text to be shown.
+        */
+        void ShowConfirmationNoteL( TInt aResourceID ) const;
 
         /**
         * Shows a information note with given text.
@@ -299,12 +310,10 @@ class CCertSaverModel : public CBase
         */
         void DivideToBlocks( const TDesC8& aInput, TDes& aOutput ) const;
 
-/*
-        TBool DoMessageQueryL( 
-            TInt aDialogResId, 
+        TBool DoMessageQueryL(
+            TInt aDialogResId,
             TInt aHeadingResId,
-            TDesC& aMessage ); 
-*/
+            TDesC& aMessage );
 
     private: //data
         TCertificateOwnerType     iCertOwnerType;
@@ -327,8 +336,6 @@ class CCertSaverModel : public CBase
         TInt  iSavedUserCertsCount;
         TInt  iSelectedKeyStore;
         TBool iKeyAlreadyExists;
-
-        CEikonEnv*        iEikEnv;
     };
 
 #endif

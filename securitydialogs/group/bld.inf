@@ -24,14 +24,14 @@ PRJ_EXPORTS
 PRJ_MMPFILES
 
 #include "../keylockpolicyapi/group/bld.inf"
-// Autolock is now a QT project built from Autolock.pro
-// #include "../Autolock/group/bld.inf"
+#include "../Autolock/group/bld.inf"
 #include "../SecUi/group/bld.inf"
 #include "../Securitynotifier/Group/bld.inf"
 #include "../Securityobserver/Group/bld.inf"
-// As far as I know, lockclient is also a QT project. I wonder why it's left as   .inf
 #include "../lockclient/group/bld.inf"
 #include "../lockapp/group/bld.inf"
+#include "../simlockui/group/bld.inf"
+
 
 PRJ_TESTMMPFILES
 

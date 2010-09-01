@@ -30,7 +30,6 @@
 //l:control_pane_t1/opt7
 #define text_wmls_list_disc_recvd_cert    "Discard"
 
-
 //d:Item in save-confirmation query pop up.
 //d:This represents to whom the certificate
 //d:has been issued to.

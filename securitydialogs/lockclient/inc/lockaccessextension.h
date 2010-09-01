@@ -21,12 +21,6 @@
 
 #include <e32base.h>
 
-#if defined(_DEBUG)
-#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
-#else
-#define RDEBUG( x, y )
-#endif
-
 class RWsSession;
 
 /**
