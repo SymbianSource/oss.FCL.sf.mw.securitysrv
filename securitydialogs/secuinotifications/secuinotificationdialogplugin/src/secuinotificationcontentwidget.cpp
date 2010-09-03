@@ -191,7 +191,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
  		    if (queryType & ESecUiSecretSupported)
 		    	{
 					RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
- 	    		codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
+ 	    		codeTop->setEchoMode(HbLineEdit::Password);	// instead of PasswordEchoOnEdit
 		  		}
 				RDEBUG("lMaxLength", lMaxLength);
         if(lMaxLength>2)
@@ -286,7 +286,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 	 		    if (queryType & ESecUiSecretSupported)
 			    	{
 			    	RDEBUG("ESecUiSecretSupported", 0);
-	 	    		codeBottom->setEchoMode(HbLineEdit::PasswordEchoOnEdit);	// this will also remove predictive, which is what we want
+	 	    		codeBottom->setEchoMode(HbLineEdit::Password);	// this will also remove predictive, which is what we want 	(don't use PasswordEchoOnEdit)
 			  		}
 		    	RDEBUG("connecting", 0);
 	        connect(codeBottom, SIGNAL(textChanged(const QString &)), this, SIGNAL(codeBottomChanged(const QString &)));

@@ -11,17 +11,18 @@
 *
 * Contributors:
 *
-* Description:  Build info file for GBA components
+* Description:  Build info file for GBA exports
 *
 */
 
+
 #include <platform_paths.hrh>
 
-#include "../rom/bld.inf"
+PRJ_EXPORTS
 
-#include "../uicc/group/bld.inf"
-#include "../gbaserver/group/bld.inf"
-#include "../gbaapi/group/bld.inf"
-#include "../gbafilter/group/bld.inf"
+// export iby files
+gba.iby  CORE_MW_LAYER_IBY_EXPORT_PATH( gba.iby )
+../sis/gba_stub.sis   /epoc32/data/z/system/install/gba_stub.sis
+
         
 //EOF

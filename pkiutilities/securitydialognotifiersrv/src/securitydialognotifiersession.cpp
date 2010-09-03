@@ -19,6 +19,7 @@
 #include "securitydialognotifierserver.h"   // CSecurityDialogNotifierServer
 #include "securitydialognotifierservername.h" // KSecurityDialogsCancelOperation
 #include "securitydialogoperserverauthfail.h" // CServerAuthFailOperation
+#include "securitydialogoperbasicpinquery.h" // CBasicPinQueryOperation
 #include "securitydialogstrace.h"           // TRACE macro
 #include <secdlgimpldefs.h>                 // TSecurityDialogOperation
 
@@ -139,14 +140,20 @@ void CSecurityDialogNotifierSession::DispatchMessageL( const RMessage2& aMessage
             {
             case ESecureConnection:
             case ESignText:
+                // TODO: implement
+                User::Leave( KErrNotSupported );
+                break;
             case EEnterPIN:
             case EEnablePIN:
             case EDisablePIN:
             case EChangePIN:
+                BasicPinOperationL( aMessage );
+                break;
             case EUnblockPIN:
             case EPINBlocked:
             case ETotalBlocked:
             case EUnblockPINInClear:
+                // TODO: implement
                 User::Leave( KErrNotSupported );
                 break;
             case EServerAuthenticationFailure:
@@ -183,22 +190,6 @@ TBool CSecurityDialogNotifierSession::IsOperationCancelled( const RMessage2& aMe
     }
 
 // ---------------------------------------------------------------------------
-// CSecurityDialogNotifierSession::ServerAuthenticationFailureL()
-// ---------------------------------------------------------------------------
-//
-void CSecurityDialogNotifierSession::ServerAuthenticationFailureL( const RMessage2& aMessage )
-    {
-    TRACE( "CSecurityDialogNotifierSession::ServerAuthenticationFailureL, begin" );
-    GetInputBufferL( aMessage );
-
-    __ASSERT_DEBUG( iOperationHandler == NULL, User::Invariant() );
-    iOperationHandler = CServerAuthFailOperation::NewL( *this, aMessage, KOutputParam );
-    iOperationHandler->StartL( *iInputBuffer );
-
-    TRACE( "CSecurityDialogNotifierSession::ServerAuthenticationFailureL, end" );
-    }
-
-// ---------------------------------------------------------------------------
 // CSecurityDialogNotifierSession::GetInputBufferL()
 // ---------------------------------------------------------------------------
 //
@@ -216,5 +207,37 @@ void CSecurityDialogNotifierSession::GetInputBufferL( const RMessage2& aMessage 
     TPtr8 inputBufferPtr( iInputBuffer->Des() );
     aMessage.ReadL( KInputParam, inputBufferPtr );
     TRACE( "CSecurityDialogNotifierSession::GetInputBufferL, read complete" );
+    }
+
+// ---------------------------------------------------------------------------
+// CSecurityDialogNotifierSession::ServerAuthenticationFailureL()
+// ---------------------------------------------------------------------------
+//
+void CSecurityDialogNotifierSession::ServerAuthenticationFailureL( const RMessage2& aMessage )
+    {
+    TRACE( "CSecurityDialogNotifierSession::ServerAuthenticationFailureL, begin" );
+    GetInputBufferL( aMessage );
+
+    ASSERT( iOperationHandler == NULL );
+    iOperationHandler = CServerAuthFailOperation::NewL( *this, aMessage, KOutputParam );
+    iOperationHandler->StartL( *iInputBuffer );
+
+    TRACE( "CSecurityDialogNotifierSession::ServerAuthenticationFailureL, end" );
+    }
+
+// ---------------------------------------------------------------------------
+// CSecurityDialogNotifierSession::BasicPinOperationL()
+// ---------------------------------------------------------------------------
+//
+void CSecurityDialogNotifierSession::BasicPinOperationL( const RMessage2& aMessage )
+    {
+    TRACE( "CSecurityDialogNotifierSession::BasicPinOperationL, begin" );
+    GetInputBufferL( aMessage );
+
+    ASSERT( iOperationHandler == NULL );
+    iOperationHandler = CBasicPinQueryOperation::NewL( *this, aMessage, KOutputParam );
+    iOperationHandler->StartL( *iInputBuffer );
+
+    TRACE( "CSecurityDialogNotifierSession::BasicPinOperationL, end" );
     }
 

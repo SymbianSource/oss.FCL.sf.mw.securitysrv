@@ -25,10 +25,10 @@ class MSecurityDialogOperationObserver;
 
 /**
  * CSecurityDialogOperation is a base class for different kinds of operations
- * defined for security dialogs in /epoc32/include/platform/secdlgimpldefs.h.
- * TSecurityDialogOperation lists the possible operations. A derived class
- * implements each operation separately. This base class works as common API
- * between different operation classes and the main CSecurityDialog class.
+ * defined for security dialogs in secdlgimpldefs.h. TSecurityDialogOperation
+ * lists the possible operations. A derived class implements each operation
+ * separately. This base class works as common API between different operation
+ * classes and the main CSecurityDialog class.
  */
 NONSHARABLE_CLASS( CSecurityDialogOperation ) : public CActive
     {
@@ -45,6 +45,9 @@ NONSHARABLE_CLASS( CSecurityDialogOperation ) : public CActive
 
     protected:  // from CActive
         TInt RunError( TInt aError );
+
+    protected:  // new functions
+        void ShowWarningNoteL( const TDesC& aMessage );
 
     protected:  // data
         MSecurityDialogOperationObserver& iObserver;

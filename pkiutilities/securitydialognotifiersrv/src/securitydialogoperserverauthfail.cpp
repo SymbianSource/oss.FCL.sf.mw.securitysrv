@@ -83,14 +83,14 @@ CServerAuthFailOperation::~CServerAuthFailOperation()
 void CServerAuthFailOperation::StartL( const TDesC8& aBuffer )
     {
     TRACE( "CServerAuthFailOperation::StartL, begin" );
-    __ASSERT_DEBUG( iInput == NULL, User::Invariant() );
+    ASSERT( iInput == NULL );
     iInput = CServerAuthenticationFailureInput::NewL( aBuffer );
 
     iInput->GetEncodedCert( iEncodedServerCert );
 
     TPtrC8 serverName;
     iInput->GetServerName( serverName );
-    __ASSERT_DEBUG( iServerName == NULL, User::Invariant() );
+    ASSERT( iServerName == NULL );
     iServerName = HBufC::NewL( serverName.Length() );
     iServerName->Des().Copy( serverName );
     TRACE( "CServerAuthFailOperation::StartL, iServerName=%S", iServerName );
@@ -311,10 +311,10 @@ TBool CServerAuthFailOperation::IsAlreadyTrustedSiteL()
 void CServerAuthFailOperation::StartFetchingTrustedSiteCertsL()
     {
     TRACE( "CServerAuthFailOperation::StartFetchingTrustedSiteCertsL" );
-    __ASSERT_DEBUG( iCertAttributeFilter == NULL, User::Invariant() );
+    ASSERT( iCertAttributeFilter == NULL );
     iCertAttributeFilter = CCertAttributeFilter::NewL();
     iCertAttributeFilter->SetOwnerType( EPeerCertificate );
-    __ASSERT_DEBUG( iTrustedSiteCertStore != NULL, User::Invariant() );
+    ASSERT( iTrustedSiteCertStore != NULL );
     iTrustedSiteCertStore->List( iCertInfos, *iCertAttributeFilter, iStatus );
     iMode = EListTrustedSiteCerts;
     SetActive();
@@ -333,7 +333,7 @@ void CServerAuthFailOperation::ShowUntrustedCertificateDialogL()
     // displayed if trusted site certstore open has failed. Other restrictions for
     // permanent accept are defined in device dialog (UntrustedCertificateWidget).
     TBool isTrustedSiteCertStoreOpened = ( iTrustedSiteCertStore != NULL );
-    __ASSERT_DEBUG( iUntrustedCertQuery == NULL, User::Invariant() );
+    ASSERT( iUntrustedCertQuery == NULL );
     iUntrustedCertQuery = CUntrustedCertQuery::NewL( iAuthFailReason, iEncodedServerCert,
             *iServerName, isTrustedSiteCertStoreOpened );
 
@@ -364,7 +364,7 @@ void CServerAuthFailOperation::SaveServerCertToTrustedSiteCertStoreL()
     {
     TRACE( "CServerAuthFailOperation::SaveServerCertToTrustedSiteCertStoreL" );
 
-    __ASSERT_DEBUG( iCertLabel == NULL, User::Invariant() );
+    ASSERT( iCertLabel == NULL );
     CX509Certificate* serverCert = CX509Certificate::NewLC( iEncodedServerCert );
     const CX500DistinguishedName& dName = serverCert->SubjectName();
     HBufC* commonName = dName.ExtractFieldL( KX520CommonName );
@@ -434,7 +434,7 @@ void CServerAuthFailOperation::ReturnResultL( TServerAuthenticationFailureDialog
 void CServerAuthFailOperation::RetrieveFirstTrustedSiteCertL()
     {
     TRACE( "CServerAuthFailOperation::RetrieveFirstTrustedSiteCertL" );
-    __ASSERT_DEBUG( iRetrievedCertBuffer == NULL, User::Invariant() );
+    ASSERT( iRetrievedCertBuffer == NULL );
     iRetrieveCertIndex = 0;
 
     RetrieveNextTrustedSiteCertL();

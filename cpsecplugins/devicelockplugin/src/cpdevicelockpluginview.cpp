@@ -428,6 +428,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                     mPrevRemLockData
                             = mDeviceRemoteLockItem->contentWidgetData(
                                     QString("text"));
+										mRemoteLockMessageItem->setEnabled(true);                                    
                     }
                 else
                     {

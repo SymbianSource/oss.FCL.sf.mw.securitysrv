@@ -40,7 +40,7 @@
 #include <StringLoader.h>
 #include <RemoteLockSettings.h>
 #include <featmgr.h>
-
+#include <hb/hbwidgets/restricted/hbdevicedialogsextensionsymbian_r.h>
 #include "SecQueryUi.h"
 #include <hb/hbwidgets/hbdevicemessageboxsymbian.h>
 
@@ -398,6 +398,22 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
     RMobilePhone::TMobilePassword securityCode;
     RMobilePhone::TMobilePassword unblockCode; // Required here only as a dummy parameter 
 
+
+		/* TODO not sure if needs to check against the typed, or the hashed */
+		/*
+    RArray<TDevicelockPolicies> aFailedPolicies;
+    TDevicelockPolicies failedPolicy;
+    TInt retLockcode = KErrNone;
+    RMobilePhone::TMobilePassword aISACode;
+    TInt scpFlags = 0;
+    RDEBUG("scpClient.VerifyCurrentLockcode", 0);
+    // this validate on ISA . No need to do iPhone.VerifySecurityCode
+    retLockcode = scpClient.VerifyCurrentLockcode(aRemoteLockCode, aISACode, aFailedPolicies, scpFlags);
+    RDEBUG("retLockcode", retLockcode);
+
+    RDEBUG("aISACode", 0);
+    RDEBUGSTR(aISACode);
+		*/
 
     securityCode = aRemoteLockCode;
     RDEBUG( "EMobilePhoneVerifySecurityCode", EMobilePhoneVerifySecurityCode );
@@ -1220,6 +1236,10 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
     RDEBUG("aResourceID", aResourceID);
 
     CHbDeviceMessageBoxSymbian* messageBox = CHbDeviceMessageBoxSymbian::NewL(CHbDeviceMessageBoxSymbian::EWarning);
+    const TInt KCriticalLevel = 2;
+    RDEBUG("KCriticalLevel", KCriticalLevel);
+    HbDeviceDialogsExtensionSymbian::SetShowLevel(messageBox, KCriticalLevel);
+    RDEBUG("done KCriticalLevel", KCriticalLevel);
     CleanupStack::PushL(messageBox);
     TInt satisfactoryIcon = 0;	// might change later, in some scenarios
     _LIT(KText, "ShowResultNoteL: ");
@@ -1429,6 +1449,10 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
         case KErrTDevicelockPolicies+EDevicelockTotalPolicies:
             titleTr.Append(_L("EDevicelockTotalPolicies"));
             title.Append(_L("EDevicelockTotalPolicies"));
+            break;
+        case KErrTDevicelockPolicies+EDevicelockTotalPolicies+1:
+            titleTr.Append(_L("SCP server doesn't support this UID"));
+            title.Append(_L("SCP server doesn't support this UID"));
             break;
 
         default: // " "
@@ -2284,10 +2308,29 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
         }
 
     // check current code before proceeding
+    RSCPClient scpCurrClient;
+    TInt tCurrRet = scpCurrClient.Connect();
+    RDEBUG("tCurrRet", tCurrRet);
+    CleanupClosePushL(scpCurrClient);
+    RArray<TDevicelockPolicies> aCurrFailedPolicies;
+    TInt retCurrLockcode = KErrNone;
+    RMobilePhone::TMobilePassword aCurrISACode;
+    TInt scpCurrFlags = 0;
+    RDEBUG("scpClient.VerifyCurrentLockcode", 0);
+    // this validate on ISA . No need to do iPhone.VerifySecurityCode
+    retCurrLockcode = scpCurrClient.VerifyCurrentLockcode(oldPassword, aCurrISACode, aCurrFailedPolicies, scpCurrFlags);
+    RDEBUG("retCurrLockcode", retCurrLockcode);
+
+    RDEBUG("aCurrISACode", 0);
+    RDEBUGSTR(aCurrISACode);
+    scpCurrClient.Close();
+    RDEBUG("PopAndDestroy", 0);
+    CleanupStack::PopAndDestroy(); //scpCurrClient
+
     RDEBUG("EMobilePhoneVerifySecurityCode", EMobilePhoneVerifySecurityCode);
     iWait->SetRequestType(EMobilePhoneVerifySecurityCode);	// 0x59F1
     RDEBUG("VerifySecurityCode", 0);
-    iPhone.VerifySecurityCode(iWait->iStatus, secCodeType, oldPassword, required_fourth);
+    iPhone.VerifySecurityCode(iWait->iStatus, secCodeType, aCurrISACode /* not oldPassword !!! */, required_fourth);
     RDEBUG("WaitForRequestL", 0);
     res = iWait->WaitForRequestL();
     RDEBUG("WaitForRequestL res", res);
@@ -2349,6 +2392,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
        if(retLockcode == KErrNone )
        	{
 	       RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
+	       RDEBUGSTR( newPassword );
 	       retLockcode = scpClient.VerifyNewLockcodeAgainstPolicies( newPassword, aFailedPolicies );
 	       RDEBUG( "retLockcode", retLockcode );
 	       RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
@@ -2423,6 +2467,10 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
                     RArray<TDevicelockPolicies> aFailedPolicies;
                     TDevicelockPolicies failedPolicy;
                     TInt retLockcode = KErrNone;
+                    RDEBUG("newScpCode", 0);
+                    RDEBUGSTR( newScpCode );
+                    RDEBUG("oldScpCode", 0);
+                    RDEBUGSTR( oldScpCode );
                     retLockcode = scpClient.StoreLockcode(newScpCode, oldScpCode, aFailedPolicies);
                     RDEBUG( "retLockcode", retLockcode );
                     RDEBUG( "KErrAccessDenied", KErrAccessDenied );
@@ -2438,6 +2486,8 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
                     if(retLockcode!=KErrNone)
                     	{
                     	RDEBUG("Undo password change because retLockcode", retLockcode);
+                    	if(retLockcode==KErrAccessDenied)	// this happens if CSCPSession::HandleAuthenticationMessageL doesn't include the UID
+                    		retLockcode = KErrTDevicelockPolicies+EDevicelockTotalPolicies+1;
                     	ShowResultNoteL(retLockcode, CAknNoteDialog::EConfirmationTone);
                     	
                     	// go back to previous password.

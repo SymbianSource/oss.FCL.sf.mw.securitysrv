@@ -281,9 +281,40 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
             return ret;
             }
 
+		// Validate the code using SCP. This is needed to get hash
+    RDEBUG("AbortSecurityCode", 0);
+    RSCPClient scpClient;
+    RDEBUG("scpClient.Connect", 0);
+    TInt tRet = scpClient.Connect();
+    RDEBUG("tRet", tRet);
+
+    CleanupClosePushL(scpClient);
+
+    RArray<TDevicelockPolicies> aFailedPolicies;
+    TInt retLockcode = KErrNone;
+    RMobilePhone::TMobilePassword aISACode;
+    TInt scpFlags = 0;
+    RDEBUG("scpClient.VerifyCurrentLockcode", 0);
+    // this validate on ISA . No need to do iPhone.VerifySecurityCode
+    retLockcode = scpClient.VerifyCurrentLockcode(iSecUi_password, aISACode, aFailedPolicies, scpFlags);
+    RDEBUG("retLockcode", retLockcode);
+
+    RDEBUG("aISACode", 0);
+    RDEBUGSTR(aISACode);
+
+    RDEBUG("aFailedPolicies.Count()", aFailedPolicies.Count());
+    RDEBUG("Close", 0);
+    scpClient.Close();
+    RDEBUG("PopAndDestroy", 0);
+    CleanupStack::PopAndDestroy(); //scpClient
+
         CWait* wait = CWait::NewL();
+        RDEBUG("iSecUi_password", 0);
+        RDEBUGSTR(iSecUi_password);
+        RDEBUG("aISACode", 0);
+        RDEBUGSTR(aISACode);
         RDEBUG("VerifySecurityCode", 0);
-        iPhone.VerifySecurityCode(wait->iStatus, secCodeType, iSecUi_password, required_fourth);
+        iPhone.VerifySecurityCode(wait->iStatus, secCodeType, aISACode /* not iSecUi_password !!! */, required_fourth);
         RDEBUG("WaitForRequestL", 0);
         status = wait->WaitForRequestL();
         RDEBUG("status", status);
@@ -296,7 +327,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
             }
 #endif
 
-        ret = ETrue;
+        ret = EFalse;
         queryAccepted = KErrCancel; // because it's not yet validated
         switch (status)
             {
@@ -345,9 +376,11 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                 CSecuritySettings::ShowResultNoteL(status, CAknNoteDialog::EErrorTone);
                 }
             }
+        RDEBUG("while AskSecCodeL", 1);
         } // while
 
     iQueryCanceled = ETrue;
+    RDEBUG("ret", ret);
     return ret;
     }
 //
@@ -751,10 +784,10 @@ TInt CSecurityHandler::PassPhraseRequiredL()
     TDevicelockPolicies failedPolicy;
     TInt retLockcode = KErrNone;
     RMobilePhone::TMobilePassword aISACode;
-    TInt aFlags = 0;
+    TInt scpFlags = 0;
     RDEBUG("scpClient.VerifyCurrentLockcode", 0);
     // this validate on ISA . No need to do iPhone.VerifySecurityCode
-    retLockcode = scpClient.VerifyCurrentLockcode(iSecUi_password, aISACode, aFailedPolicies, aFlags);
+    retLockcode = scpClient.VerifyCurrentLockcode(iSecUi_password, aISACode, aFailedPolicies, scpFlags);
     RDEBUG("retLockcode", retLockcode);
 
     RDEBUG("aISACode", 0);
@@ -809,9 +842,13 @@ TInt CSecurityHandler::PassPhraseRequiredL()
     else
         {
         RDEBUG( "wait", 0 );
+        RDEBUG("iSecUi_password", 0);
+        RDEBUGSTR(iSecUi_password);
+        RDEBUG("aISACode", 0);
+        RDEBUGSTR(aISACode);
         wait = CWait::NewL();
         RDEBUG("VerifySecurityCode", 0);
-        iPhone.VerifySecurityCode(wait->iStatus, secCodeType, iSecUi_password, required_fourth);
+        iPhone.VerifySecurityCode(wait->iStatus, secCodeType, aISACode /* not iSecUi_password !!! */, required_fourth);
         RDEBUG("WaitForRequestL",
                 0);
         status = wait->WaitForRequestL();
@@ -993,6 +1030,8 @@ TInt CSecurityHandler::PassPhraseRequiredL()
             }
             break;
         case KErrGsmSSPasswordAttemptsViolation:
+    				RDEBUG("KErrGsmSSPasswordAttemptsViolation", KErrGsmSSPasswordAttemptsViolation);
+    				// and continue
         case KErrLocked:
         		{
             // security code blocked!
@@ -1002,6 +1041,8 @@ TInt CSecurityHandler::PassPhraseRequiredL()
           	}
             break;
         case KErrGsm0707IncorrectPassword:
+    				RDEBUG("KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword);
+    				// and continue
         case KErrAccessDenied:
         		{
             RDEBUG("KErrAccessDenied", KErrAccessDenied);
@@ -1096,6 +1137,7 @@ TInt CSecurityHandler::Pin1RequiredL()
     res = KErrNone;
     codeInfo.iRemainingEntryAttempts = 3;
 #endif
+		RDEBUG("KErrPermissionDenied", KErrPermissionDenied);
     User::LeaveIfError(res);
 
     RDEBUG("codeInfo.iRemainingEntryAttempts",
@@ -1169,6 +1211,7 @@ TInt CSecurityHandler::Pin1RequiredL()
         case KErrAccessDenied:
             // code was entered erroneously
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+           	RDEBUG("StartUp", StartUp);
             if (StartUp)
                 {
                 returnValue = Pin1RequiredL();
@@ -1178,6 +1221,7 @@ TInt CSecurityHandler::Pin1RequiredL()
         case KErrLocked:
             // code blocked; show error note and terminate.
             // what if not during Startup? Probably it's Ok since the SIM would had also failed at StartUp
+           	RDEBUG("StartUp", StartUp);
             if (StartUp)
                 CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
             break;
@@ -1271,8 +1315,12 @@ TInt CSecurityHandler::Puk1RequiredL()
     title.Append(_L("$"));
     title.AppendNum(attempts);
     TInt lSecUiCancelSupported = ESecUiCancelSupported | ESecUiEmergencyNotSupported;
+    RDEBUG("StartUp", 0);
     if (StartUp) // how to know whether PUK comes from failing at Starter, or failing at any other PIN (i.e. changing PIN, or changing PIN-request) ???
+    		{
         lSecUiCancelSupported = ESecUiCancelNotSupported | ESecUiEmergencySupported;
+        RDEBUG("new ", lSecUiCancelSupported);
+      	}
     queryAccepted = iSecQueryUi->SecQueryDialog(title, puk1_password, SEC_C_PUK_CODE_MIN_LENGTH, SEC_C_PUK_CODE_MAX_LENGTH, ESecUiSecretNotSupported | ESecUiAlphaNotSupported
             | lSecUiCancelSupported | ESecUiPukRequired);
     RDEBUG("puk1_password", 0);
@@ -1344,7 +1392,13 @@ TInt CSecurityHandler::Puk1RequiredL()
         HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_verify_new_pin_code"));
         title.Append(stringHolder2->Des());
         CleanupStack::PopAndDestroy(stringHolder2);
-        queryAccepted = iSecQueryUi->SecQueryDialog(title, aNewPinPassword, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported
+        lSecUiCancelSupported = ESecUiCancelSupported;
+        RDEBUG("StartUp", 0);
+		    if (StartUp) // how to know whether PUK comes from failing at Starter, or failing at any other PIN (i.e. changing PIN, or changing PIN-request) ???
+		    		{
+		    		lSecUiCancelSupported = ESecUiCancelNotSupported;
+		    		}
+        queryAccepted = iSecQueryUi->SecQueryDialog(title, aNewPinPassword, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | lSecUiCancelSupported
                 | ESecUiPukRequired);
         RDEBUG("aNewPinPassword", 0);
         RDEBUGSTR(aNewPinPassword);

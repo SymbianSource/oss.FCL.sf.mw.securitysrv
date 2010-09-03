@@ -79,6 +79,8 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
 		RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
+    RDEBUG("err", err);
+    RDEBUG("value", value);
     if ( err == KErrNone )
         {
         switch( value )
@@ -105,6 +107,8 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeyguardEnabled()
     RDEBUG("0", 0);
     TInt value;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
+    RDEBUG("err", err);
+    RDEBUG("value", value);
     if ( err == KErrNone )
         {
         switch( value )

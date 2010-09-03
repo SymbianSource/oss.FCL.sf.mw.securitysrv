@@ -32,6 +32,7 @@ SOURCE          securitydialognotifierserver.cpp
 SOURCE          securitydialognotifiersession.cpp
 SOURCE          securitydialogoperation.cpp
 SOURCE          securitydialogoperserverauthfail.cpp
+SOURCE          securitydialogoperbasicpinquery.cpp
 SOURCE          untrustedcertquery.cpp
 
 LIBRARY         euser.lib           // Base classes
@@ -42,6 +43,8 @@ LIBRARY         x500.lib            // CX500DistinguishedName
 LIBRARY         crypto.lib          // CSignedObject
 LIBRARY         certstore.lib       // CUnifiedCertStore
 LIBRARY         DevTokenClient.lib  // CTrustSitesStore 
-LIBRARY         HbCore.lib          // CHbDeviceDialog
+LIBRARY         HbCore.lib          // CHbDeviceDialogSymbian
+LIBRARY         HbWidgets.lib       // CHbDeviceMessageBoxSymbian
+LIBRARY         secui.lib           // CSecQueryUi
 
 SMPSAFE

@@ -17,6 +17,7 @@
 
 #include "securitydialogoperation.h"    // CSecurityDialogOperation
 #include "securitydialogoperationobserver.h" // MSecurityDialogOperationObserver
+#include <hb/hbwidgets/hbdevicemessageboxsymbian.h> // CHbDeviceMessageBoxSymbian
 #include "securitydialogstrace.h"       // TRACE macro
 
 
@@ -61,5 +62,19 @@ TInt CSecurityDialogOperation::RunError( TInt aError )
         iMessage.Complete( aError );
         }
     return KErrNone;
+    }
+
+// ---------------------------------------------------------------------------
+// CSecurityDialogOperation::ShowWarningNoteL()
+// ---------------------------------------------------------------------------
+//
+void CSecurityDialogOperation::ShowWarningNoteL( const TDesC& aMessage )
+    {
+    CHbDeviceMessageBoxSymbian *note =
+            CHbDeviceMessageBoxSymbian::NewL( CHbDeviceMessageBoxSymbian::EWarning );
+    CleanupStack::PushL( note );
+    note->SetTextL( aMessage );
+    (void)note->ExecL();    // waits for response or timeout
+    CleanupStack::PopAndDestroy( note );
     }
 

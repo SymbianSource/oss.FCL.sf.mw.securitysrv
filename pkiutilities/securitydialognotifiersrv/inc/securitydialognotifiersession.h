@@ -49,8 +49,9 @@ NONSHARABLE_CLASS( CSecurityDialogNotifierSession ) : public CSession2,
         CSecurityDialogNotifierServer& Server();
         void DispatchMessageL( const RMessage2& aMessage );
         TBool IsOperationCancelled( const RMessage2& aMessage );
-        void ServerAuthenticationFailureL( const RMessage2& aMessage );
         void GetInputBufferL( const RMessage2& aMessage );
+        void ServerAuthenticationFailureL( const RMessage2& aMessage );
+        void BasicPinOperationL( const RMessage2& aMessage );
 
     private:    // data
         HBufC8* iInputBuffer;
