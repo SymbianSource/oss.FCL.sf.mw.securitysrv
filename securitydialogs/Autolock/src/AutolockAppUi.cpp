@@ -1374,6 +1374,7 @@ TBool CAutolockAppUi::IsPinBlocked()
 void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestination )
     {
       const TInt type = aEvent.Type();
+	  TInt skipEvent = 0;
     #if defined(_DEBUG)
       RDebug::Printf( "%s %s (%u) type=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, type );
       #endif
@@ -1441,6 +1442,7 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
                     }
               if ( callState != EPSCTsyCallStateNone && callState != EPSCTsyCallStateUninitialized )
                 {
+				skipEvent=1;
                 if(pointer->iType==TPointerEvent::EButton1Down)
                   {
                   TPoint iPosition = pointer->iPosition;
@@ -1509,9 +1511,10 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 				                        RMobileCall mCall;
 				                        User::LeaveIfError(mCall.OpenExistingCall(mLine, cinfo.iCallName));
 									    #if defined(_DEBUG)
-									    RDebug::Printf( "%s %s (%u) calling mCall.HangUp 0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+									    RDebug::Printf( "%s %s (%u) not calling mCall.HangUp 0=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
 									    #endif   
-				                        mCall.HangUp(); // this gives an error, but succeeds
+									    					// end call only by EStdKeyNo and not by HangUp
+				                        // mCall.HangUp(); // this gives an error, but succeeds
 				                        }
 				                    CleanupStack::PopAndDestroy(&mLine);
 				                    CleanupStack::PopAndDestroy(&mPhone);
@@ -1577,7 +1580,13 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
       }
       
       // All events are sent to base class.
-      CAknViewAppUi::HandleWsEventL( aEvent, aDestination );
+				#if defined(_DEBUG)
+				RDebug::Printf( "%s %s (%u) skipEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, skipEvent );
+				#endif
+    	if(!skipEvent)
+    		{
+    		CAknViewAppUi::HandleWsEventL( aEvent, aDestination );
+    		}
         
         // part of emergency call handling when telephony+devicelock is active
         // this solution is meant only for 3.1 and 3.2

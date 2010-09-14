@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -474,4 +474,45 @@ RESOURCE TBUF r_certsaver_one_personal_certificate { buf = qtn_cm_one_personal_c
 RESOURCE TBUF r_certsaver_one_authority_certificate { buf = qtn_cm_one_authority_certificate; }
 RESOURCE TBUF r_certsaver_trustedsite_warning { buf = qtn_cm_save_trustedsite_certificate_warning_text; }
 
-// End of File
+
+//----------------------------------------------------
+//
+//    r_certsaver_protect_with_password
+//
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_certsaver_protect_with_password
+    {
+    flags = EGeneralQueryFlags;
+    buttons = r_certsaver_softkeys_no_yes_no;
+    items=
+        {
+        DLG_LINE
+            {
+            type=EAknCtQuery;
+            id=EGeneralQuery;
+            control= AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationLayout;
+                label = qtn_certsaver_protect_with_password_query;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//    r_certsaver_softkeys_no_yes_no
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_certsaver_softkeys_no_yes_no
+    {
+    buttons =
+        {
+        CBA_BUTTON { id=EAknSoftkeyNo; txt=text_softkey_no; },
+        CBA_BUTTON { id=EAknSoftkeyYes; txt=text_softkey_yes; },
+        CBA_BUTTON { id=EAknSoftkeyNo; txt=text_softkey_no; }
+        };
+    }
+

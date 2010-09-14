@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -75,7 +75,12 @@ _LIT( KDoubleEnter, "\n\n" );
 _LIT( KEnter, "\n" );
 
 const TUid KTrustedServerTokenUid = { 0x101FB66F };
-const TUid KFileTokensUid = { 0x101F501A };
+const TUid KFileCertStoreTokenUid = { 0x101F501A };
+const TUid KDeviceCertStoreTokenUid = { 0x101FB668 };
+const TUid KFileKeyStoreTokenUid = { KTokenTypeFileKeystore };  // 0x101F7333
+const TUid KDeviceKeyStoreTokenUid = { 0x101FB66A };
+
+const TInt64 KZeroTime = 0;
 
 _LIT_SECURITY_POLICY_V1( KSymbianKeyStoreMgmtPolicy,
                          VID_DEFAULT, ECapabilityWriteUserData );
@@ -94,16 +99,16 @@ CCertSaverModel::~CCertSaverModel()
     }
 
 // ----------------------------------------------------------
-// CCertSaverModel::CCertSaverModel(
-//    const CCertSaverDocument* aDocument, CCertSaverAppUi* aAppUi)
+// CCertSaverModel::CCertSaverModel()
 // ----------------------------------------------------------
 //
-CCertSaverModel::CCertSaverModel(
-    CCertSaverAppUi* aAppUi,
-    const CCertParser& aParser ):
+CCertSaverModel::CCertSaverModel( CCertSaverAppUi* aAppUi, const CCertParser& aParser ) :
     iAppUi( aAppUi ), iFs( iAppUi->CoeEnv()->FsSession() ), iParser( aParser ),
     iSavedCACertsCount( 0 ), iSavedKeysCount( 0 ),
-    iSavedUserCertsCount( 0 ), iKeyAlreadyExists( EFalse )
+    iSavedUserCertsCount( 0 ), iKeyAlreadyExists( EFalse ),
+    iSelectedKeyStoreToken( KFileKeyStoreTokenUid ),
+    iSelectedCertStoreToken( KFileCertStoreTokenUid ),
+    iSelectedKeyStoreIndex( KErrNotFound )
     {
     }
 
@@ -119,6 +124,8 @@ void CCertSaverModel::SaveCertificateL(
     iCertOwnerType = aOwnerType;
     iCertFormat = aCertFormat;
     iNewCert = &aCertificate;
+    iSelectedKeyStoreToken = KFileKeyStoreTokenUid;
+    iSelectedCertStoreToken = KFileCertStoreTokenUid;
 
     if ( aOwnerType == EPeerCertificate )
         {
@@ -147,8 +154,8 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
     MPKCS8DecodedKeyPairData* keyPairData = pkcs8Data->KeyPairData();
     keyPairData->GetKeyIdentifierL( keyIdentifier );
 
-    TTime startDate;
-    TTime endDate;
+    TTime startDate( KZeroTime );
+    TTime endDate( KZeroTime );
     GetKeyValidityPeriodL( startDate, endDate, keyIdentifier );
 
     TInt err = KErrNone;
@@ -156,9 +163,9 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
     TBuf<KPrivaKeyLabelLength> keyLabel( KPrivateKeyLabel );
     TKeyUsagePKCS15 keyUsage = KeyUsageL( keyIdentifier, pkcs8Data->Algorithm() );
     CleanupStack::PopAndDestroy( pkcs8Data );
-    if (KeyAlreadyExistsL( startDate, endDate, keyIdentifier, keyUsage) )
+    if ( KeyAlreadyExistsL( startDate, endDate, keyIdentifier, keyUsage) )
         {
-        User::Leave( KErrNone );
+        return;
         }
 
     TInt accessType( 0 );
@@ -168,8 +175,7 @@ void CCertSaverModel::DoSavePrivateKeyL( const TDesC8& aKey )
     for ( TInt i = 0; i < KAttempts; i++ )
         {
         CreateKeyLabelL( keyLabel );
-        // Should not use hardcoded index
-        err = iWrapper->AddKey( 0, aKey, keyUsage, keyLabel,
+        err = iWrapper->AddKey( iSelectedKeyStoreIndex, aKey, keyUsage, keyLabel,
             accessType, startDate, endDate, keyInfo );
         if ( err != KErrAlreadyExists )
             {
@@ -298,29 +304,38 @@ TBool CCertSaverModel::KeyAlreadyExistsL(
 //
 // ----------------------------------------------------------
 //
-void CCertSaverModel::GetKeyValidityPeriodL(
-    TTime& aStartDate,
-    TTime& aEndDate,
-    const TKeyIdentifier& aKeyIdentifier )
+void CCertSaverModel::GetKeyValidityPeriodL( TTime& aStartDate, TTime& aEndDate,
+        const TKeyIdentifier& aKeyIdentifier, const CArrayPtr<CX509Certificate>& aCertArray )
     {
+    const TTime timeNotSet( KZeroTime );
 
-    for ( TInt i = 0; i < iParser.UserCertificates().Count(); i++ )
+    for( TInt index = 0; index < aCertArray.Count(); index++ )
         {
-        const CX509Certificate* cert = iParser.UserCertificates().At( i );
-        if ( cert->KeyIdentifierL() == aKeyIdentifier )
+        const CX509Certificate* cert = aCertArray.At( index );
+        if( cert->KeyIdentifierL() == aKeyIdentifier )
             {
-            // Associated certificate found
-            // In the first round aStartDate and aEndDate is initialised.
-            if ( i == 0 || aStartDate > cert->ValidityPeriod().Start() )
+            if ( aStartDate == timeNotSet || aStartDate > cert->ValidityPeriod().Start() )
                 {
                 aStartDate = cert->ValidityPeriod().Start();
                 }
-            if ( i == 0 || aEndDate < cert->ValidityPeriod().Finish() )
+            if ( aEndDate == timeNotSet || aEndDate < cert->ValidityPeriod().Finish() )
                 {
                 aEndDate = cert->ValidityPeriod().Finish();
                 }
             }
         }
+    }
+
+// ----------------------------------------------------------
+// CCertSaverModel::GetKeyValidityPeriodL()
+//
+// ----------------------------------------------------------
+//
+void CCertSaverModel::GetKeyValidityPeriodL( TTime& aStartDate, TTime& aEndDate,
+        const TKeyIdentifier& aKeyIdentifier )
+    {
+    GetKeyValidityPeriodL( aStartDate, aEndDate, aKeyIdentifier, iParser.UserCertificates() );
+    GetKeyValidityPeriodL( aStartDate, aEndDate, aKeyIdentifier, iParser.CACertificates() );
     }
 
 // ----------------------------------------------------------
@@ -370,11 +385,11 @@ void CCertSaverModel::SavePrivateKeyL()
             {
             TUid uid =
             iWrapper->UnifiedKeyStore().KeyStoreManager(i).Token().TokenType().Type();
-            if ( uid == TUid::Uid( KTokenTypeFileKeystore ) )
+            if ( uid == iSelectedKeyStoreToken )
                 // if this is not found, we use the first one,
                 // which is already initialised
                 {
-                iSelectedKeyStore = i;
+                iSelectedKeyStoreIndex = i;
                 }
             }
         }
@@ -514,7 +529,6 @@ void CCertSaverModel::SaveCertL()
     CleanupStack::PopAndDestroy( message );
     CleanupStack::PushL( dlg );
 
-
     dlg->PrepareLC( R_MESSAGE_QUERY_DOSAVE );
 
     HBufC* header = StringLoader::LoadLC( R_CERTSAVER_DETAILS_HEADING );
@@ -620,7 +634,7 @@ void CCertSaverModel::DoSaveCertL()
         // If the certificate is already in CACerts.dat,
         // then don't save it
         if ( iNewCert->Fingerprint() == certificate->Fingerprint() &&
-            (( *iEntries[i]).Handle().iTokenHandle.iTokenTypeUid == KFileTokensUid ) )
+            (( *iEntries[i]).Handle().iTokenHandle.iTokenTypeUid == iSelectedCertStoreToken ) )
             {
             found = ETrue;
             }
@@ -666,8 +680,26 @@ void CCertSaverModel::DoSaveCertL()
             }
         }
 
+    // Select which store to use
+    TUid certstoreToken;
+    switch( iCertOwnerType )
+        {
+        case ECACertificate:
+            certstoreToken = KFileCertStoreTokenUid;
+            break;
+        case EUserCertificate:
+            certstoreToken = iSelectedCertStoreToken;
+            break;
+        case EPeerCertificate:
+            certstoreToken = KTrustedServerTokenUid;
+            break;
+        default:
+            certstoreToken = KFileCertStoreTokenUid;
+            break;
+        }
+
     // Get interface to writable store.
-    TInt certstoreIndex( -1 );
+    TInt certstoreIndex = -1;
     TInt count = iUnifiedCertStore->WritableCertStoreCount();
     if ( count > 0 )
         {
@@ -678,9 +710,7 @@ void CCertSaverModel::DoSaveCertL()
 
             MCTToken& token = writableCertStore.Token();
             TUid tokenuid = token.Handle().iTokenTypeUid;
-            if ( ( tokenuid == KTrustedServerTokenUid ) && ( iCertOwnerType == EPeerCertificate ) ||
-                 ( tokenuid == KFileTokensUid ) && ( iCertOwnerType == ECACertificate ) ||
-                 ( tokenuid == KFileTokensUid ) && ( iCertOwnerType == EUserCertificate ) )
+            if ( tokenuid == certstoreToken )
                 {
                 certstoreIndex = i;
                 break;
@@ -758,7 +788,8 @@ void CCertSaverModel::DoSaveCertL()
 
         // takes ownership of trusterUids
         status = iWrapper->SetApplicability(
-            iUnifiedCertStore->WritableCertStore( certstoreIndex ), *(iEntries[0]), iTrusterUids );
+            iUnifiedCertStore->WritableCertStore( certstoreIndex ),
+            *( iEntries[ 0 ] ), iTrusterUids );
 
         // If error happened, show error note and give up. Otherwise, continue
         if ( status )
@@ -769,7 +800,8 @@ void CCertSaverModel::DoSaveCertL()
 
         // Downloaded certificate is trusted by default
         status = iWrapper->SetTrust(
-            iUnifiedCertStore->WritableCertStore(certstoreIndex), *(iEntries[0]), ETrue );
+            iUnifiedCertStore->WritableCertStore( certstoreIndex ),
+            *( iEntries [ 0 ] ), ETrue );
         if ( status )
             {
             HandleSaveErrorL( status );
@@ -1108,7 +1140,7 @@ void CCertSaverModel::AddValidityPeriodL(
     // format the date to user readable format. The format is locale dependent
     finishValue.FormatL( finishString, *dateFormatString );
     AknTextUtils::DisplayTextLanguageSpecificNumberConversion( finishString );
-    CleanupStack::PopAndDestroy(); // dateFormatString
+    CleanupStack::PopAndDestroy( dateFormatString );
     aMessage.Append( finishString );
     AddNewlinesToMessage( aMessage );
     }
@@ -1494,12 +1526,12 @@ void CCertSaverModel::SavePKCS12L()
     {
     HBufC* message = HBufC::NewLC( KMaxLengthTextMeassageBody );
     TPtr msgPtr = message->Des();
-    ConstructPKCS12QueryMsgL(msgPtr, iParser.Keys().Count(),
-                            iParser.UserCertificates().Count(),
-                            iParser.CACertificates().Count() );
-    TBool save = DoMessageQueryL(
-        R_MESSAGE_QUERY_DOSAVE, R_CERTSAVER_HEADER_PKCS12_FILE_CONTAINS,
-        *message );
+	TInt keysCount = iParser.Keys().Count();
+    TInt userCertificateCount = iParser.UserCertificates().Count();
+    TInt caCertificateCount = iParser.CACertificates().Count();
+    ConstructPKCS12QueryMsgL( msgPtr, keysCount, userCertificateCount, caCertificateCount );
+    TBool save = DoMessageQueryL( R_MESSAGE_QUERY_DOSAVE,
+            R_CERTSAVER_HEADER_PKCS12_FILE_CONTAINS, *message );
     CleanupStack::PopAndDestroy( message );
     message = NULL;
     if ( !save )
@@ -1507,14 +1539,31 @@ void CCertSaverModel::SavePKCS12L()
         ShowInformationNoteL( R_CERTSAVER_PKCS12_DISCARDED );
         User::Leave( KErrExitApp );
         }
+
+    if ( keysCount )
+        {
+        CAknQueryDialog* protectWithPasswordQuery = CAknQueryDialog::NewL();
+        TInt buttonId = protectWithPasswordQuery->ExecuteLD( R_CERTSAVER_PROTECT_WITH_PASSWORD );
+        if ( buttonId == EAknSoftkeyYes )
+            {
+            iSelectedKeyStoreToken = KFileKeyStoreTokenUid;
+            iSelectedCertStoreToken = KFileCertStoreTokenUid;
+            }
+        else
+            {
+            iSelectedKeyStoreToken = KDeviceKeyStoreTokenUid;
+            iSelectedCertStoreToken = KDeviceCertStoreTokenUid;
+            }
+        }
+
     TInt status = KErrNone;
     // save private keys
     TRAP( status, SavePrivateKeyL() );
 
     // save user certificates if private key was saved.
-    if ( ( iSavedKeysCount > 0 || iKeyAlreadyExists ) && iParser.UserCertificates().Count() > 0 )
+    if ( ( iSavedKeysCount > 0 || iKeyAlreadyExists ) && userCertificateCount > 0 )
         {
-        for ( TInt i = 0; i < iParser.UserCertificates().Count(); i++ )
+        for ( TInt i = 0; i < userCertificateCount; i++ )
             {
             const CX509Certificate* cert = iParser.UserCertificates().At(i);
             iCertOwnerType = EUserCertificate;
@@ -1527,10 +1576,11 @@ void CCertSaverModel::SavePKCS12L()
                 }
             }
         }
+
     // save CA certificates
-    if ( iParser.CACertificates().Count() > 0 )
+    if ( caCertificateCount > 0 )
         {
-        for ( TInt i = 0; i < iParser.CACertificates().Count(); i++ )
+        for ( TInt i = 0; i < caCertificateCount; i++ )
             {
             const CX509Certificate* cert = iParser.CACertificates().At( i );
             iCertOwnerType = ECACertificate;
@@ -1543,6 +1593,7 @@ void CCertSaverModel::SavePKCS12L()
                 }
             }
         }
+
     if ( iSavedCACertsCount != 0 || iSavedKeysCount != 0
         || iSavedUserCertsCount != 0 )
         {
@@ -1550,8 +1601,7 @@ void CCertSaverModel::SavePKCS12L()
         TPtr msgPtr2 = message->Des();
         ConstructPKCS12QueryMsgL(
             msgPtr2, iSavedKeysCount, iSavedUserCertsCount, iSavedCACertsCount );
-        DoMessageQueryL(
-            R_MESSAGE_QUERY_SAVED, R_CERTSAVER_HEADER_SAVED, *message );
+        DoMessageQueryL( R_MESSAGE_QUERY_SAVED, R_CERTSAVER_HEADER_SAVED, *message );
         CleanupStack::PopAndDestroy( message );
         }
     else

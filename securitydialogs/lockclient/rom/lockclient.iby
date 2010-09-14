@@ -19,7 +19,6 @@
 
 #include <data_caging_paths_for_iby.hrh>
  
-//file=ABI_DIR\BUILD_DIR\lockclient.dll SHARED_LIB_DIR\lockclient.dll
-file=ABI_DIR\UDEB\lockclient.dll SHARED_LIB_DIR\lockclient.dll
+file=ABI_DIR\BUILD_DIR\lockclient.dll SHARED_LIB_DIR\lockclient.dll
 
 #endif // __LOCKCLIENT_IBY__

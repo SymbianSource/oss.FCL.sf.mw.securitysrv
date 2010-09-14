@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -104,6 +104,12 @@ class CCertSaverModel : public CBase
 
         void CreateKeyLabelL( TDes& aLabel );
 
+        void GetKeyValidityPeriodL(
+            TTime& aStartDate,
+            TTime& aEndDate,
+            const TKeyIdentifier& aKeyIdentifier,
+            const CArrayPtr<CX509Certificate>& aCertArray );
+        
         void GetKeyValidityPeriodL(
             TTime& aStartDate,
             TTime& aEndDate,
@@ -334,8 +340,11 @@ class CCertSaverModel : public CBase
         TInt  iSavedCACertsCount;
         TInt  iSavedKeysCount;
         TInt  iSavedUserCertsCount;
-        TInt  iSelectedKeyStore;
         TBool iKeyAlreadyExists;
+        
+        TUid  iSelectedKeyStoreToken;
+        TUid  iSelectedCertStoreToken;
+        TInt  iSelectedKeyStoreIndex;
     };
 
 #endif
