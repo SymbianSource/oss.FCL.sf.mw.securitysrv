@@ -566,7 +566,7 @@ void CWimCertHandler::CopyCertExtrasInfoL(
         pushedItemCount++;
 
         TPtrC8 undecodedUsage;
-        undecodedUsage.Set( ptTrustedUsage.pb_buf );
+        undecodedUsage.Set( ptTrustedUsage.pb_buf, ptTrustedUsage.ui_buf_length );
 
         if ( ptTrustedUsage.ui_buf_length == 0 ) // No OIDs
             {
