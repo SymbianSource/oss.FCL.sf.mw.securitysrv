@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="CRepository" uidValue="0x101F877C">
+    <key int="0x7e000001" ref="/KCRUidPersonalizationSettings/KSettingsScreenSaverPeriod"></key>
+</repository>

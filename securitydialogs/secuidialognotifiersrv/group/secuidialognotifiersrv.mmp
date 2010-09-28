@@ -1,0 +1,55 @@
+/*
+* Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies). 
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Secui dialog notifier server
+*
+*/
+
+#include <platform_paths.hrh>
+
+TARGET          secuidialognotifiersrv.exe
+CAPABILITY      CAP_SERVER NetworkControl
+TARGETTYPE      EXE
+UID             0x0 0x10000938
+VENDORID        VID_DEFAULT
+
+MW_LAYER_SYSTEMINCLUDE /epoc32/include/mw/hb/hbcore /epoc32/include/mw/hb/hbwidgets
+USERINCLUDE     ../inc
+
+SOURCEPATH      ../src
+SOURCE          secuidialognotifierservermain.cpp
+SOURCE          secuidialognotifierserver.cpp
+SOURCE          secuidialognotifiersession.cpp
+SOURCE          secuidialogoperation.cpp
+// SOURCE          secuidialogoperserverauthfail.cpp
+SOURCE          secuidialogoperbasicpinquery.cpp
+SOURCE          untrustedcertquery.cpp
+
+LIBRARY         euser.lib           // Base classes
+LIBRARY         efsrv.lib           // RFs
+LIBRARY         ctframework.lib     // CServerAuthenticationFailureInput
+LIBRARY         x509.lib            // CX509Certificate
+LIBRARY         x500.lib            // CX500DistinguishedName
+LIBRARY         crypto.lib          // CSignedObject
+LIBRARY         certstore.lib       // CUnifiedCertStore
+LIBRARY         DevTokenClient.lib  // CTrustSitesStore 
+LIBRARY         HbCore.lib          // CHbDeviceDialogSymbian
+LIBRARY         HbWidgets.lib       // CHbDeviceMessageBoxSymbian
+LIBRARY         secui.lib           // CSecQueryUi
+LIBRARY		   etelmm.lib 
+LIBRARY		   etel.lib 
+LIBRARY		   customapi.lib 
+LIBRARY lockclient.lib
+LIBRARY featmgr.lib
+
+SMPSAFE

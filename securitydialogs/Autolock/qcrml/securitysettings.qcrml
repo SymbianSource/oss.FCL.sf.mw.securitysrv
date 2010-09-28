@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="CRepository" uidValue="0x101F877A">
+    <key int="0x00000001" ref="/KCRUidSecuritySettings/KSettingsAutoLockTime"></key>
+    <key int="0x00000002" ref="/KCRUidSecuritySettings/KSettingsAutolockStatus"></key>
+    <key int="0x00000003" ref="/KCRUidSecuritySettings/KSettingsLockOnPowerUp"></key>
+    <key int="0x00000005" ref="/KCRUidSecuritySettings/KSettingsAutomaticKeyguardTime"></key>
+    <key int="0x00000006" ref="/KCRUidSecuritySettings/KSettingsMaxAutomaticKeyguardTime"></key>
+</repository>
+
+

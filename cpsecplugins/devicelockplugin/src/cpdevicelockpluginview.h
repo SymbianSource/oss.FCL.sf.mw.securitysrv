@@ -95,6 +95,7 @@ private:
      * Need to remove this variabl once fix available from orbit team
      */
     TInt mHack;
+    TInt processingRequest;
 };
 
 #endif

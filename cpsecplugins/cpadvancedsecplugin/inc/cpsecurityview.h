@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  
+* Description:
 *
 */
 
@@ -28,13 +28,15 @@ class CSecModUIModel;
 class QModelIndex;
 class CpSecmoduleInfoView;
 class HbMessageBox;
+class HbAction;
+
 class CpSecurityView : public CpBaseSettingView
 {
     Q_OBJECT
 public:
     explicit CpSecurityView(QGraphicsItem *parent = 0);
     virtual ~CpSecurityView();
-		
+
 public slots:
     void viewDone();
     void showWIMview();
@@ -48,7 +50,7 @@ public slots:
     void displayPreviousFromModInfo();
     void dialogClosed(HbAction* action);
 private:
-    CSecModUIModel* mSecModUIModel;  
+    CSecModUIModel* mSecModUIModel;
     CpSecModView* mSecModView;
 	HbView* mPreView;
 	CpCertView* mCertView;
@@ -56,6 +58,7 @@ private:
 	HbView* mCurrentView;
 	TInt mPos;
 	HbMessageBox* mNote;
+	HbAction* mOkAction;
 	HbMenu* mContextMenu;
 
 };

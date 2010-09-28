@@ -1,0 +1,26 @@
+/*
+* Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Test application for untrusted certificate dialog.
+*
+*/
+
+
+#ifndef __SRVAUTHFAILDLGLAUNCHER_IBY__
+#define __SRVAUTHFAILDLGLAUNCHER_IBY__
+
+file=ABI_DIR/BUILD_DIR/srvauthfaildlglauncher.exe SHARED_LIB_DIR/srvauthfaildlglauncher.exe
+HB_UPGRADABLE_APP_REG_RSC( srvauthfaildlglauncher )
+S60_APP_RESOURCE( srvauthfaildlglauncher )
+
+#endif  // __SRVAUTHFAILDLGLAUNCHER_IBY__

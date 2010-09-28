@@ -28,6 +28,7 @@
 #include <e32property.h>
 #include <secuisecuritysettings.h>
 #include <coreapplicationuisdomainpskeys.h>
+#include <keyguardaccessapi.h>
 
 // ----------------------------------------------------------------------------------------
 // Server startup code
@@ -72,8 +73,16 @@ static void RunServerL()
     commandLine->SetExecutableNameL(_L("autolock.exe"));
     commandLine->SetCommandL(EApaCommandRun);
     // Try to launch the application.        
-    TInt err = ls.StartApp(*commandLine); // this migh fail
+    TInt err = 0 ;	// ls.StartApp(*commandLine); // this migh fail
     RDebug::Printf("%s %s (%u) Start: autolock.exe err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err);
+
+						// alternate way of starting Autolock
+            CKeyguardAccessApi* iKeyguardAccess = CKeyguardAccessApi::NewL( );
+           	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+						ret = iKeyguardAccess->ShowKeysLockedNote( );
+						RDebug::Printf( "%s %s (%u) ret=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ret );
+						delete iKeyguardAccess;
+
 
     CleanupStack::PopAndDestroy(2); // commandLine, ls
 

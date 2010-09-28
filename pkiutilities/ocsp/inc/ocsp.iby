@@ -20,9 +20,8 @@
 
 // Online Certificate Status Protocol( OCSP ) implementation
 
-file=ABI_DIR\BUILD_DIR\ocsp.dll		System\Libs\ocsp.dll
+#include <ocsp_ncp.iby>
 file=ABI_DIR\BUILD_DIR\ocsptransport.dll		System\Libs\ocsptransport.dll
-file=ABI_DIR\BUILD_DIR\ocspcommon.dll			System\Libs\ocspcommon.dll
 
 #endif
 

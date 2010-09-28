@@ -364,7 +364,7 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
             _LIT(KInvalidNewLockCode0, "invalidNewLockCode$-1");
             AddParamL(KInvalidNewLockCode, KInvalidNewLockCode0); // for starter
             RSCPClient scpClient;
-            TSCPSecCode newCode;
+            TBuf<32> newCode;	// can't be TSCPSecCode=8 . Must use SEC_C_SECURITY_CODE_MAX_LENGTH=10
             newCode.Copy(acceptedValueTop);
             RDEBUG("scpClient.Connect", 0);
             if (scpClient.Connect() == KErrNone)

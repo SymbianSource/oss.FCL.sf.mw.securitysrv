@@ -121,10 +121,10 @@ TInt RLockAccessExtension::EnsureConnected( )
 		
 
 
-	TInt value = -1;
+	TInt value = 0;
 	err = KErrNone;
 	numAttempts = 0;
-	while( value<1 && numAttempts++ <10 )	// wait max 5 seconds
+	while( value==0 && numAttempts++ <10 )	// wait max 5 seconds
 		{
 		// process was started, but still not fully running. Give a bit more time
 		err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, value);

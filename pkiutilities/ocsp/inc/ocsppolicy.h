@@ -26,7 +26,7 @@
 #include <e32base.h>
 
 // Security settings.
-#include <SecSettings/SecSettingsclient.h>
+#include <secsettings/secsettingsclient.h>
 
 #include <securityerr.h>
 

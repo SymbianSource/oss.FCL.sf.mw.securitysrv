@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  
+* Description:
 *
 */
 
@@ -57,25 +57,25 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 	  mCertView(NULL),
 	  mCurrentView(NULL),
 	  mPos(0),
-	  mNote(NULL)
+	  mNote(NULL), mOkAction(NULL)
 	{
 	RDEBUG("0", 0);
 	setTitle(hbTrId("txt_certificate_manager_setlabel_advanced_security"));
-	
+
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
-    HbListWidget* listCertView = q_check_ptr(new HbListWidget(this)); 
+    HbListWidget* listCertView = q_check_ptr(new HbListWidget(this));
 
     std::auto_ptr<HbListWidgetItem> authcert(q_check_ptr(new HbListWidgetItem()));
     authcert->setText(hbTrId("txt_certificate_manager_list_authority_certificate"));
-    
+
     std::auto_ptr<HbListWidgetItem> trustedsitecert(q_check_ptr(new HbListWidgetItem()));
     trustedsitecert->setText(hbTrId("txt_certificate_manager_list_trusted_site_certific"));
-    
+
     std::auto_ptr<HbListWidgetItem> personalcert(q_check_ptr(new HbListWidgetItem()));
     personalcert->setText(hbTrId("txt_certificate_manager_list_personal_certificates"));
-    
+
     std::auto_ptr<HbListWidgetItem> devicecert(q_check_ptr(new HbListWidgetItem()));
-    devicecert->setText(hbTrId("txt_certificate_manager_list_device_certificates"));    
+    devicecert->setText(hbTrId("txt_certificate_manager_list_device_certificates"));
 
     listCertView->addItem(authcert.get());
     authcert.release();
@@ -87,8 +87,8 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
     devicecert.release();
 
     connect(listCertView, SIGNAL(released(QModelIndex)), this, SLOT(displayCert(QModelIndex)));
-        
-    HbListWidget* listSecView = q_check_ptr(new HbListWidget(this)); 
+
+    HbListWidget* listSecView = q_check_ptr(new HbListWidget(this));
     QMap<QString,QString> keystoreLabels;
     RDEBUG("0", 0);
     try
@@ -103,7 +103,7 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 		HbMessageBox::information(error);
 		QT_RETHROW;
     	}
-    
+
     QMapIterator<QString, QString> labelIter(keystoreLabels);
     if(keystoreLabels.count() != 0)
     	{
@@ -116,8 +116,8 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 			listSecView->addItem(widget.get());
 			widget.release();
 			}
-		connect(listSecView, SIGNAL(activated(QModelIndex)), this, SLOT(showCodeView(QModelIndex)));   
-		connect(listSecView, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF))); 
+		connect(listSecView, SIGNAL(activated(QModelIndex)), this, SLOT(showCodeView(QModelIndex)));
+		connect(listSecView, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF)));
     	}
     else
     	{
@@ -133,23 +133,23 @@ CpSecurityView::CpSecurityView(QGraphicsItem *parent /*= 0*/)
 	certificatesList->setCollapsed(true);
 	layout->addItem(certificatesList.get());
 	certificatesList.release();
-	
+
 	std::auto_ptr<HbGroupBox> protectedContentList(q_check_ptr(new HbGroupBox()));
 	protectedContentList->setHeading("Protected Content");
 	protectedContentList->setCollapsed(true);
 	layout->addItem(protectedContentList.get());
 	protectedContentList.release();
-	
+
 	std::auto_ptr<HbGroupBox> securityModuleList(q_check_ptr(new HbGroupBox()));
 	securityModuleList->setHeading("Security Module");
 	securityModuleList->setContentWidget(listSecView);
 	securityModuleList->setCollapsed(true);
 	layout->addItem(securityModuleList.get());
 	securityModuleList.release();
-	
+
 	mContextMenu = q_check_ptr(new HbMenu());
-	
-	setLayout(layout.get()); 
+
+	setLayout(layout.get());
 	layout.release();
 	}
 
@@ -160,24 +160,24 @@ CpSecurityView::~CpSecurityView()
 		{
 		mSecModView->deleteLater();
 		}
-	
+
 	if(mPreView)
 		{
 		mPreView->deleteLater();
 		}
-	
+
 	if(mCertView)
 		{
 		mCertView->deleteLater();
 		}
-	
+
 	if(mCurrentView)
 		{
 		mCurrentView->deleteLater();
 		}
-	
-	delete mSecModUIModel;  
-	
+
+	delete mSecModUIModel;
+
 	delete mNote;
 	delete mContextMenu;
 	}
@@ -187,7 +187,7 @@ void CpSecurityView::showCodeView()
 	RDEBUG("0", 0);
 	try
 		{
-		mSecModView = q_check_ptr(new CpSecModView(mPos, *mSecModUIModel));    
+		mSecModView = q_check_ptr(new CpSecModView(mPos, *mSecModUIModel));
 		QObject::connect(mSecModView , SIGNAL(aboutToClose()), this, SLOT(viewDone()));
 		mPreView = mainWindow()->currentView();   //suppose mPreView  is member variable of CpSecurityView
 		mainWindow()->addView(mSecModView);
@@ -202,7 +202,7 @@ void CpSecurityView::showCodeView()
 void CpSecurityView::showCodeView( const QModelIndex& aModelIndex)
 	{
 	mPos = aModelIndex.row();
-	showCodeView();	
+	showCodeView();
 	}
 
 void CpSecurityView::showWIMview()
@@ -213,7 +213,7 @@ void CpSecurityView::showWIMview()
 		QObject::connect(mSecModView , SIGNAL(aboutToClose()), this, SLOT(viewDone()));
 		mPreView = mainWindow()->currentView();   //suppose mPreView  is member variable of CpSecurityView
 		mainWindow()->addView(mSecModView);
-		mainWindow()->setCurrentView(mSecModView);  
+		mainWindow()->setCurrentView(mSecModView);
 		}
 	catch(const std::exception& exception)
 		{
@@ -221,11 +221,11 @@ void CpSecurityView::showWIMview()
 		}
 	}
 
-void CpSecurityView::viewDone()  
+void CpSecurityView::viewDone()
 	{
 	try
 		{
-		mainWindow()->removeView(mSecModView);    
+		mainWindow()->removeView(mSecModView);
 		mSecModView->deleteLater();
 		mSecModView= NULL;
 		mainWindow()->setCurrentView(mPreView);
@@ -241,9 +241,9 @@ void CpSecurityView::displayCert(const QModelIndex& modelIndex)
 	RDEBUG("0", 0);
 	try
 	{
-	mCertView = q_check_ptr(new CpCertView(modelIndex));    
+	mCertView = q_check_ptr(new CpCertView(modelIndex));
 	connect(mCertView , SIGNAL(aboutToClose()), this, SLOT(displayPrevious()));
-	mPreView = mainWindow()->currentView();   
+	mPreView = mainWindow()->currentView();
 	mainWindow()->addView(mCertView);
 	mainWindow()->setCurrentView(mCertView);
 	}
@@ -253,12 +253,12 @@ void CpSecurityView::displayCert(const QModelIndex& modelIndex)
 		}
 	}
 
-void CpSecurityView::displayPrevious()  
+void CpSecurityView::displayPrevious()
 	{
 	RDEBUG("0", 0);
 	try
 		{
-		mainWindow()->removeView(mCertView);    
+		mainWindow()->removeView(mCertView);
 		mCertView->deleteLater();
 		mCertView= NULL;
 		mainWindow()->setCurrentView(mPreView);
@@ -275,26 +275,26 @@ void CpSecurityView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	try
 		{
 		mContextMenu->clearActions();
-		mPos = item->modelIndex().row();   
-		
-		std::auto_ptr<HbAction> openModule(q_check_ptr(new HbAction("Open")));     
-		connect(openModule.get(), SIGNAL(triggered()), this, SLOT( showCodeView()));    
+		mPos = item->modelIndex().row();
+
+		std::auto_ptr<HbAction> openModule(q_check_ptr(new HbAction("Open")));
+		connect(openModule.get(), SIGNAL(triggered()), this, SLOT( showCodeView()));
 		mContextMenu->addAction(openModule.get());
 		openModule.release();
-		
+
 		if(mSecModUIModel->IsTokenDeletable(mPos))
 			{
-			std::auto_ptr<HbAction> deleteModule(q_check_ptr(new HbAction("Delete")));     
-			connect(deleteModule.get(), SIGNAL(triggered()), this, SLOT( deleteModule()));    
+			std::auto_ptr<HbAction> deleteModule(q_check_ptr(new HbAction("Delete")));
+			connect(deleteModule.get(), SIGNAL(triggered()), this, SLOT( deleteModule()));
 			mContextMenu->addAction(deleteModule.get());
 			deleteModule.release();
 			}
-		
-		std::auto_ptr<HbAction> moduleInfo(q_check_ptr(new HbAction("Module Info")));     
-		connect(moduleInfo.get(), SIGNAL(triggered()), this, SLOT( moduleDetails()));    
+
+		std::auto_ptr<HbAction> moduleInfo(q_check_ptr(new HbAction("Module Info")));
+		connect(moduleInfo.get(), SIGNAL(triggered()), this, SLOT( moduleDetails()));
 		mContextMenu->addAction(moduleInfo.get());
 		moduleInfo.release();
-				
+
 		mContextMenu->setPreferredPos(coords);
 		mContextMenu->open();
 		}
@@ -309,15 +309,18 @@ void CpSecurityView::deleteModule()
 	RDEBUG("0", 0);
 	try
 		{
-		
+
 		delete mNote;
 		mNote = NULL;
-		
+
 		mNote = new HbMessageBox(HbMessageBox::MessageTypeQuestion);
 		mNote->setHeadingWidget(q_check_ptr(new HbLabel(tr("Delete..."))));
 		mNote->setText("Delete keystore and password?");
-		mNote->setPrimaryAction(q_check_ptr(new HbAction("Yes")));
-		mNote->setSecondaryAction(q_check_ptr(new HbAction("No")));
+		mNote->clearActions();
+		mOkAction = q_check_ptr(new HbAction("Yes"));
+		mNote->addAction(mOkAction);
+		HbAction* cancelAction = q_check_ptr(new HbAction("No"));
+		mNote->addAction(cancelAction);
 		mNote->setTimeout(HbPopup::NoTimeout);
 		mNote->setIconVisible (EFalse);
 		mNote->open(this,SLOT(dialogClosed(HbAction*)));
@@ -326,22 +329,22 @@ void CpSecurityView::deleteModule()
 		{
 	    HbMessageBox *box = new HbMessageBox(exception.what());
     	box->setAttribute(Qt::WA_DeleteOnClose);
-    	box->open();	
+    	box->open();
 		}
 
 }
 void CpSecurityView::dialogClosed(HbAction* action)
 {
 	RDEBUG("0", 0);
-	if (action != mNote->primaryAction())
+	if (action != mOkAction)
 		{
 		return;
 		}
-		
+
 	try
 		{
 		QT_TRAP_THROWING(mSecModUIModel->DeleteKeysL(mPos));
-   		}		
+   		}
 	catch(const std::exception& exception)
 		{
 	    HbMessageBox *box = new HbMessageBox(exception.what());
@@ -358,9 +361,9 @@ void CpSecurityView::moduleDetails()
 		QVector< QPair<QString,QString> > securityDetails;
 		QT_TRAP_THROWING(securityDetails = mSecModUIModel->SecModDetailsL(mPos));
 		mModuleinfoView = q_check_ptr(new CpSecmoduleInfoView(securityDetails));
-		
+
 		connect(mModuleinfoView , SIGNAL(aboutToClose()), this, SLOT(displayPreviousFromModInfo()));
-		mPreView = mainWindow()->currentView();   
+		mPreView = mainWindow()->currentView();
 		mainWindow()->addView(mModuleinfoView);
 		mainWindow()->setCurrentView(mModuleinfoView);
 		}
@@ -370,12 +373,12 @@ void CpSecurityView::moduleDetails()
 		}
 	}
 
-void CpSecurityView::displayPreviousFromModInfo()  
+void CpSecurityView::displayPreviousFromModInfo()
 	{
 	RDEBUG("0", 0);
 	try
 		{
-		mainWindow()->removeView(mModuleinfoView);    
+		mainWindow()->removeView(mModuleinfoView);
 		mCertView->deleteLater();
 		mCertView= NULL;
 		mainWindow()->setCurrentView(mPreView);

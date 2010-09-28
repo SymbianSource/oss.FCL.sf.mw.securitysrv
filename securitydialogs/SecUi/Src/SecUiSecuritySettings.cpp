@@ -400,22 +400,23 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
 
 
 		/* TODO not sure if needs to check against the typed, or the hashed */
-		/*
     RArray<TDevicelockPolicies> aFailedPolicies;
-    TDevicelockPolicies failedPolicy;
     TInt retLockcode = KErrNone;
     RMobilePhone::TMobilePassword aISACode;
     TInt scpFlags = 0;
     RDEBUG("scpClient.VerifyCurrentLockcode", 0);
-    // this validate on ISA . No need to do iPhone.VerifySecurityCode
+    // get hashed code, to verify that message is different than code
+    RSCPClient scpClient;
+    TInt ret = scpClient.Connect();
+    RDEBUG("ret", ret);
     retLockcode = scpClient.VerifyCurrentLockcode(aRemoteLockCode, aISACode, aFailedPolicies, scpFlags);
     RDEBUG("retLockcode", retLockcode);
+ 	  scpClient.Close();
 
     RDEBUG("aISACode", 0);
     RDEBUGSTR(aISACode);
-		*/
 
-    securityCode = aRemoteLockCode;
+    securityCode = aISACode;	// aRemoteLockCode;
     RDEBUG( "EMobilePhoneVerifySecurityCode", EMobilePhoneVerifySecurityCode );
     iWait->SetRequestType(EMobilePhoneVerifySecurityCode);
     RDEBUG( "VerifySecurityCode", 0 );
@@ -600,19 +601,23 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
         case KErrAccessDenied:
             {
             // code was entered erroneously
+    				RDEBUG("KErrAccessDenied", KErrAccessDenied);
             return ChangeSimSecurityL();
             }
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
             {
+    				RDEBUG("KErrLocked", KErrLocked);
             return ChangeSimSecurityL();
             }
         case KErrAbort:
             {
+    				RDEBUG("KErrAbort", KErrAbort);
             return EFalse;
             }
         default:
             {
+    				RDEBUG("default", status);
             ShowErrorNoteL(status);
             return ChangeSimSecurityL();
             }
@@ -1454,6 +1459,10 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
             titleTr.Append(_L("SCP server doesn't support this UID"));
             title.Append(_L("SCP server doesn't support this UID"));
             break;
+        case KErrGsm0707SIMPuk1Required:
+            titleTr.Append(_L("KErrGsm0707SIMPuk1Required"));
+            title.Append(_L("Puk 1 Required"));
+            break;
 
         default: // " "
             titleTr.Append(_L("Specific Error"));
@@ -1590,6 +1599,7 @@ EXPORT_C TBool CSecuritySettings::IsUpinActive()
 EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption,
         TInt aShowError)
     {
+    askChangePinParamsL:
     RDEBUG("aFlags", aFlags);
     RDEBUG("aOldPassword", 0);
     RDEBUGSTR(aOldPassword);
@@ -1650,7 +1660,13 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         res = KErrNone;
         }
 #endif
-
+		if(res==KErrGsm0707SIMPuk1Required)
+				{
+        CSecurityHandler* handler = new (ELeave) CSecurityHandler(iPhone);
+        CleanupStack::PushL(handler);
+        handler->HandleEventL(RMobilePhone::EPuk1Required);
+        CleanupStack::PopAndDestroy(handler); // handler    
+				}
     User::LeaveIfError(res);
 
     if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
@@ -1720,7 +1736,9 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         if (res != KErrNone)
             {
             ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
-            return res; // not sure if it's wise to exit now.
+		        newPassword = _L("");
+		        oldPassword = _L("");
+            goto askChangePinParamsL;
             }
 
         newPassword = _L("");
@@ -1800,8 +1818,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
             {
             // code was entered erroneously. This is strange, because it was verified before
             ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            ChangePinParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
-            break;
+            goto askChangePinParamsL;
             }
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
@@ -1821,9 +1838,9 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
             }
         default:
             {
+            RDEBUG("default", res);
             ShowErrorNoteL(res);
-            ChangePinParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
-            break;
+            goto askChangePinParamsL;
             }
         }
     return res;
@@ -2226,6 +2243,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
 EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassword aOldPassword, RMobilePhone::TMobilePassword aNewPassword, TInt aFlags, TDes& aCaption,
         TInt aShowError)
     {
+    askChangeSecCodeParamsL:
     RDEBUG("aFlags", aFlags);
     RDEBUG("aShowError", aShowError);
     /*****************************************************
@@ -2246,17 +2264,19 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 		{
        RArray<TDevicelockPolicies> aFailedPolicies;
        TDevicelockPolicies failedPolicy;
-       TInt retLockcode = KErrNone;
        RSCPClient scpClient;
-       retLockcode = scpClient.Connect();
-       RDEBUG( "retLockcode", retLockcode );
-       if(retLockcode == KErrNone )
+       res = scpClient.Connect();
+       RDEBUG( "res", res );
+       if(res == KErrNone )
        	{
 	       RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
-	       retLockcode = scpClient.IsLockcodeChangeAllowedNow( aFailedPolicies );
-	       RDEBUG( "retLockcode", retLockcode );
+	       TBool changeAllowed = scpClient.IsLockcodeChangeAllowedNow( aFailedPolicies );
+	       RDEBUG( "bool changeAllowed", changeAllowed );
 	       RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
-	       res = retLockcode;
+	       if(changeAllowed)
+	       	res = KErrNone;
+	       else
+	       	res = KErrAccessDenied;
 	       for(TInt i=0; i<aFailedPolicies.Count(); i++)
 		       {
 		       failedPolicy = aFailedPolicies[i];
@@ -2265,7 +2285,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 		       res = KErrTDevicelockPolicies + failedPolicy;
 		       }
 	     	 scpClient.Close();
-	     	 if(retLockcode!=KErrNone)
+	     	 if(res!=KErrNone)
 	     	 		{
 	     	 		ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
      	 	 		return res;
@@ -2273,7 +2293,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 				}
 			else
 				{
-					RDEBUG( "failed connecting to SCP", retLockcode );
+					RDEBUG( "failed connecting to SCP", res );
 					// what to do? let's assume that we don't need special policies.
 				}
 		}
@@ -2385,16 +2405,15 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 			 // In fact this is needed for the case when newPassword is provided.
        RArray<TDevicelockPolicies> aFailedPolicies;
        TDevicelockPolicies failedPolicy;
-       TInt retLockcode = KErrNone;
        RSCPClient scpClient;
-       retLockcode = scpClient.Connect();
-       RDEBUG( "retLockcode", retLockcode );
-       if(retLockcode == KErrNone )
+       res = scpClient.Connect();
+       RDEBUG( "res", res );
+       if(res == KErrNone )
        	{
 	       RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
 	       RDEBUGSTR( newPassword );
-	       retLockcode = scpClient.VerifyNewLockcodeAgainstPolicies( newPassword, aFailedPolicies );
-	       RDEBUG( "retLockcode", retLockcode );
+	       res = scpClient.VerifyNewLockcodeAgainstPolicies( newPassword, aFailedPolicies );
+	       RDEBUG( "res", res );
 	       RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
 	       for(TInt i=0; i<aFailedPolicies.Count(); i++)
 		       {
@@ -2407,140 +2426,96 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 				}
 			else
 				{
-					RDEBUG( "failed connecting to SCP", retLockcode );
+					RDEBUG( "failed connecting to SCP", res );
 					// what to do? let's assume that we don't need special policies.
 				}
 
     // change code
     RDEBUG("res", res);
-    if (res == KErrNone)
-        {
-        passwords.iOldPassword = oldPassword;
-        passwords.iNewPassword = newPassword;
-        iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
-        RDEBUG("ChangeSecurityCode", 0);
-        iPhone.ChangeSecurityCode(iWait->iStatus, secCodeType, passwords);
-        RDEBUG("WaitForRequestL", 0);
-        res = iWait->WaitForRequestL();
-        RDEBUG("WaitForRequestL res", res);
-#ifdef __WINS__
-        if (res == KErrNotSupported)
-            res = KErrNone;
-#endif
+    // let's see if TARM rejects it
+    if(res==KErrNone)
+	    {
+	    // Send the changed code to the SCP server, even with device lock enhancements.
+	    RDEBUG("scpClient.Connect", 0);
+	    RSCPClient scpClient;
+	    TBuf<32> newScpCode;
+	    TBuf<32> oldScpCode;
+	    newScpCode.Copy(newPassword);
+	    oldScpCode.Copy(oldPassword);
+	    if (scpClient.Connect() == KErrNone)
+	        {
+	        RDEBUG("scpClient.StoreLockcode", 0);
+	        // this is the old method. Obsolete now
+	        // scpClient.StoreCode( newCode );
+	        RArray<TDevicelockPolicies> aFailedPolicies;
+	        TDevicelockPolicies failedPolicy;
+	        RDEBUG("newScpCode", 0);
+	        RDEBUGSTR( newScpCode );
+	        RDEBUG("oldScpCode", 0);
+	        RDEBUGSTR( oldScpCode );
+	        RDEBUG( "StoreLockcode", 0 );
+	        res = scpClient.StoreLockcode(newScpCode, oldScpCode, aFailedPolicies);	// this does iPhone.ChangeSecurityCode
+	        RDEBUG( "res", res );
+	        RDEBUG( "KErrAccessDenied", KErrAccessDenied );
+					#ifdef __WINS__
+	        if (res == KErrNotSupported)
+	            res = KErrNone;
+					#endif
+	        RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
+	        for (TInt i = 0; i < aFailedPolicies.Count(); i++)
+	            {
+	            failedPolicy = aFailedPolicies[i];
+	            RDEBUG( "failedPolicy", failedPolicy );
+	            }
+	        scpClient.Close();
+	        // Don't know what to do if TARM fails. Hopefully it was stopped at typing, as well as VerifyNewLockcodeAgainstPolicies
+	      	switch (res)
+		        {
+		        case KErrNone:
+		            {
+	            	RDEBUG( "showing R_SECURITY_CODE_CHANGED_NOTE", R_SECURITY_CODE_CHANGED_NOTE );
+	            	ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+		            break;
+		          	}
+		        case KErrAccessDenied:	// TARM has wrong UID
+		            {
+	          		res = KErrTDevicelockPolicies+EDevicelockTotalPolicies+1;
+	          		RDEBUG( "res", res );
+	          		ShowResultNoteL(res, CAknNoteDialog::EConfirmationTone);
+	          		res = KErrAccessDenied;	// no reason for retry, as it will fail again and again
+	          		break;
+	          		}
+		        case KErrGsmSSPasswordAttemptsViolation:
+		        case KErrLocked:
+		            {
+	          		RDEBUG( "KErrLocked", KErrLocked );
+		            ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
+		            goto askChangeSecCodeParamsL;
+		            // break;
+		            }
+		        case KErrGsm0707IncorrectPassword:
+		            {
+		            // code was entered erroneously
+	          		RDEBUG( "KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword );
+		            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+		            goto askChangeSecCodeParamsL;
+		            // break;
+		            }
+		        case KErrAbort:
+		            {
+	          		RDEBUG( "KErrAbort", KErrAbort );
+		            break;
+		            }
+		        default:
+		            {
+		            ShowErrorNoteL(res);
+		            goto askChangeSecCodeParamsL;
+		            // break;
+		            }
+		          }	// switch
+	        }	// scpClient.Connect
+	    }
 
-        if (res == KErrNone && 1 == 0) // TODO not possible to enable because it asks code again
-            {
-            RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
-            RMobilePhone::TMobilePhoneLockSetting lockChangeSetting = RMobilePhone::ELockSetEnabled;
-            iWait->SetRequestType(EMobilePhoneSetLockSetting);
-            RDEBUG("SetLockSetting", 0);
-            iPhone.SetLockSetting(iWait->iStatus, lockType, lockChangeSetting);
-            RDEBUG("WaitForRequestL", 0);
-            res = iWait->WaitForRequestL();
-            RDEBUG("WaitForRequestL res", res);
-#ifdef __WINS__
-            if (res == KErrNotSupported || res == KErrTimedOut)
-                res = KErrNone;
-#endif
-            }
-        }
-
-    RDEBUG("res", res);
-    switch (res)
-        {
-        case KErrNone:
-            {
-            // code changed ... unless TARM rejects it
-                {
-                // Send the changed code to the SCP server, even with device lock enhancements.
-                RDEBUG("scpClient.Connect", 0);
-                RSCPClient scpClient;
-                TSCPSecCode newScpCode;
-                TSCPSecCode oldScpCode;
-                newScpCode.Copy(newPassword);
-                oldScpCode.Copy(oldPassword);
-                if (scpClient.Connect() == KErrNone)
-                    {
-                    RDEBUG("scpClient.StoreLockcode", 0);
-                    // this is the old method. Obsolete now
-                    // scpClient.StoreCode( newCode );
-                    RArray<TDevicelockPolicies> aFailedPolicies;
-                    TDevicelockPolicies failedPolicy;
-                    TInt retLockcode = KErrNone;
-                    RDEBUG("newScpCode", 0);
-                    RDEBUGSTR( newScpCode );
-                    RDEBUG("oldScpCode", 0);
-                    RDEBUGSTR( oldScpCode );
-                    retLockcode = scpClient.StoreLockcode(newScpCode, oldScpCode, aFailedPolicies);
-                    RDEBUG( "retLockcode", retLockcode );
-                    RDEBUG( "KErrAccessDenied", KErrAccessDenied );
-                    RDEBUG( "aFailedPolicies.Count()", aFailedPolicies.Count() );
-                    for (TInt i = 0; i < aFailedPolicies.Count(); i++)
-                        {
-                        failedPolicy = aFailedPolicies[i];
-                        RDEBUG( "failedPolicy", failedPolicy );
-                        }
-                    // Don't know what to do if TARM fails. Hopefully it was stopped at typing, as well as VerifyNewLockcodeAgainstPolicies
-                    // The code is already changed in iPhone !
-                    // For now, just undo the changed password
-                    if(retLockcode!=KErrNone)
-                    	{
-                    	RDEBUG("Undo password change because retLockcode", retLockcode);
-                    	if(retLockcode==KErrAccessDenied)	// this happens if CSCPSession::HandleAuthenticationMessageL doesn't include the UID
-                    		retLockcode = KErrTDevicelockPolicies+EDevicelockTotalPolicies+1;
-                    	ShowResultNoteL(retLockcode, CAknNoteDialog::EConfirmationTone);
-                    	
-                    	// go back to previous password.
-	           	        passwords.iOldPassword = newPassword;
-							        passwords.iNewPassword = oldPassword;
-							        iWait->SetRequestType(EMobilePhoneChangeSecurityCode);
-							        RDEBUG("ChangeSecurityCode", 0);
-							        iPhone.ChangeSecurityCode(iWait->iStatus, secCodeType, passwords);
-							        RDEBUG("WaitForRequestL", 0);
-							        res = iWait->WaitForRequestL();	// this can't fail. ISA is always allowing to undo the password change.
-							        RDEBUG("WaitForRequestL res", res);
-											#ifdef __WINS__
-							        if (res == KErrNotSupported)
-							            res = KErrNone;
-											#endif
-	                    res = retLockcode;
-	                    }
-                    scpClient.Close();
-                    }
-                if(res==KErrNone)
-                	{
-                	RDEBUG( "showing R_SECURITY_CODE_CHANGED_NOTE", R_SECURITY_CODE_CHANGED_NOTE );
-                	ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
-                	}
-                }
-            break;
-            }
-        case KErrGsmSSPasswordAttemptsViolation:
-        case KErrLocked:
-            {
-            ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
-            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
-            break;
-            }
-        case KErrGsm0707IncorrectPassword:
-        case KErrAccessDenied:
-            {
-            // code was entered erroneously
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
-            break;
-            }
-        case KErrAbort:
-            {
-            break;
-            }
-        default:
-            {
-            ShowErrorNoteL(res);
-            ChangeSecCodeParamsL(aOldPassword, aNewPassword, aFlags, aCaption, aShowError);
-            break;
-            }
-        } // switch
     RDEBUG("return res", res);
     return res;
     }
@@ -2550,6 +2525,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 // the params are changed in the settings,. This only asks for password.
 EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError)
     {
+    askChangeAutoLockPeriodParamsL:
     RDEBUG("aPeriod", aPeriod);
     RDEBUG("aFlags", aFlags);
     /*****************************************************
@@ -2678,22 +2654,26 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
             RDEBUG("KErrLocked", KErrLocked)
             ;
             ShowResultNoteL(KErrLocked, CAknNoteDialog::EErrorTone); // the old code didn't show messages
-            return ChangeAutoLockPeriodParamsL(oldPeriod, aOldPassword, aFlags, aCaption, aShowError); // ask again
+            goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrGsm0707IncorrectPassword:
+            RDEBUG("KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword)
+            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone); // the old code didn't show messages
+            goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrAccessDenied:
             RDEBUG("KErrAccessDenied", KErrAccessDenied)
             ;
             // code was entered erroneously
             ShowResultNoteL(KErrAccessDenied, CAknNoteDialog::EErrorTone); // the old code didn't show messages
-            return ChangeAutoLockPeriodParamsL(oldPeriod, aOldPassword, aFlags, aCaption, aShowError); // ask again
+            goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrAbort:
             // User pressed "cancel" in the code query dialog.
-            return oldPeriod;
+            RDEBUG("KErrAbort", KErrAbort)
+            return KErrAbort;
         default:
             RDEBUG("default", status)
             ;
             ShowResultNoteL(status, CAknNoteDialog::EErrorTone); // the old code didn't show messages
-            return ChangeAutoLockPeriodParamsL(oldPeriod, aOldPassword, aFlags, aCaption, aShowError); // ask again
+            goto askChangeAutoLockPeriodParamsL; // ask again
         }
     RDEBUG("aPeriod", aPeriod);
     return aPeriod;

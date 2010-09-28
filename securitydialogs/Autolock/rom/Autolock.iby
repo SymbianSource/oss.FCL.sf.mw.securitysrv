@@ -26,6 +26,16 @@ S60_APP_RESOURCE(Autolock)
 
 file=ABI_DIR\BUILD_DIR\autolockuseractivityservice.dll             SHARED_LIB_DIR\autolockuseractivityservice.dll
 data=\epoc32\data\z\resource\qt\crml\autolock.qcrml \resource\qt\crml\autolock.qcrml
+data=\epoc32\data\z\resource\qt\crml\callstate.qcrml \resource\qt\crml\callstate.qcrml
+data=\epoc32\data\z\resource\qt\crml\dismissdialog.qcrml \resource\qt\crml\dismissdialog.qcrml
+data=\epoc32\data\z\resource\qt\crml\grip.qcrml \resource\qt\crml\grip.qcrml
+data=\epoc32\data\z\resource\qt\crml\keyguard.qcrml \resource\qt\crml\keyguard.qcrml
+data=\epoc32\data\z\resource\qt\crml\lights.qcrml \resource\qt\crml\lights.qcrml
+data=\epoc32\data\z\resource\qt\crml\profile.qcrml \resource\qt\crml\profile.qcrml
+data=\epoc32\data\z\resource\qt\crml\screensaver.qcrml \resource\qt\crml\screensaver.qcrml
+data=\epoc32\data\z\resource\qt\crml\securitysettings.qcrml \resource\qt\crml\securitysettings.qcrml
+// This is only for test purposes
+data=\epoc32\data\z\resource\qt\crml\TestCode.qcrml \resource\qt\crml\TestCode.qcrml
 
 // this is already done in IndicatorAutolockPlugin.iby
 // file=ABI_DIR\BUILD_DIR\IndicatorAutolockPlugin.dll             SHARED_LIB_DIR\IndicatorAutolockPlugin.dll

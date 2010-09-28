@@ -22,18 +22,6 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_EXPORTS
-// specify the source file followed by its destination here
-// copy will be used to copy the source file to its destination
-// If there's no destination then the source file will be copied
-// to the same name in /epoc32/include
-
-../inc/ocsppolicy.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsppolicy.h)
-../inc/ocsp_v2.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsp.h)
-../inc/ocsptransport_v2.h				SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsptransport.h)
-../inc/ocsprequestandresponse.h     			SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsprequestandresponse.h)
-
-// ROMKIT includes
-../inc/ocsp.iby					/epoc32/rom/include/ocsp.iby
 
 PRJ_MMPFILES
 
@@ -42,8 +30,6 @@ PRJ_MMPFILES
 
 
 #ifndef WINC
-ocspcommon.mmp
-ocsp.mmp
 ../transport/ocsptransport.mmp
 #endif	//	WINC
 

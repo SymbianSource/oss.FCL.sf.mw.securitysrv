@@ -19,7 +19,7 @@
 #include <hblabel.h>
 #include <QGraphicsSceneMouseEvent>
 #include <../../inc/cpsecplugins.h>
-
+#include <QGesture>
 
 /*
  *****************************************************************
@@ -116,6 +116,12 @@ HbWidget *CpRemoteLockDataFormViewItem::createCustomWidget()
 CpLockEdit::CpLockEdit(const QString &text, QGraphicsItem *parent /*= 0*/)
 : HbLineEdit(text,parent)
 {
+		RDEBUG("0", 0);
+    grabGesture(Qt::TapGesture);
+    grabGesture(Qt::PanGesture);
+    grabGesture(Qt::PinchGesture);
+    grabGesture(Qt::SwipeGesture);
+
 }
 
 
@@ -144,6 +150,11 @@ CpLockEdit::~CpLockEdit()
 void CpLockEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 		RDEBUG("0", 0);
+		RDEBUG("Nothing to do because QTapGesture did it", 0);
+		event->ignore();
+    return;
+
+		/*
     if (event->button() != Qt::LeftButton) {
         event->ignore();
         return;
@@ -155,5 +166,21 @@ void CpLockEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     else {
         event->ignore();
-    } 
+    }
+    */
+}
+
+void CpLockEdit::gestureEvent(QGestureEvent *event)
+{
+		RDEBUG("0", 0);
+    if (QTapGesture *tap = (QTapGesture*)event->gesture(Qt::TapGesture)) {
+        switch(tap->state()) {
+            case Qt::GestureStarted:
+           			RDEBUG("0", 0);
+                emit clicked();
+                break;
+            default:
+                break;
+        }
+    }
 }

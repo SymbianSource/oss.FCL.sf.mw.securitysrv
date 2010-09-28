@@ -88,22 +88,25 @@ class CDevicelockAccessApi : public CBase
          * @return KErrNone if succeeded
          *         KErrAlreadyExists if already enabled
          *         KErrPermissionDenied if no required capabilities
+         *         Other errors
          */
         IMPORT_C TInt EnableDevicelock( TDevicelockReason aReason = EDevicelockManual );
 
         /**
-         * Currently not implemented !
-         * Offer to enable devicelock. Shows a query note to user.
+         * Offer to enable devicelock. Shows a query note to user, and then a unlock-query.
+         * @return KErrNone if succeeded
+         *         KErrAlreadyExists if already enabled
+         *         KErrPermissionDenied if no required capabilities
+         *         Other errors
          */
         IMPORT_C TInt OfferDevicelock( );
 
         /**
-         * Remove this method eventually!
-         *
-         * Disable devicelock.
+         * Disable devicelock. Shows a unlock-query to user.
          * @return KErrNone if succeeded
          *         KErrAlreadyExists if already enabled
          *         KErrPermissionDenied if no required capabilities
+         *         Other errors
          */
         IMPORT_C TInt DisableDevicelock( );
 

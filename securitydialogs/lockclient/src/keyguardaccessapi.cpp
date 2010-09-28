@@ -78,6 +78,7 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
 
 		RDEBUG("0", 0);
     TInt value;
+    TBool ret = EFalse;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     RDEBUG("err", err);
     RDEBUG("value", value);
@@ -87,16 +88,18 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
             {
             case EKeyguardLocked:
             case EKeyguardAutolockEmulation:
-                return ETrue;
+                ret = ETrue;
             case EKeyguardNotActive:
             default:
-                return EFalse;
+                ret = EFalse;
             }
         }
     else
         {
-        return EFalse;
+        ret = EFalse;
         }
+    RDEBUG("bool ret", ret);
+    return ret;
     }
 
 // ---------------------------------------------------------------------------
@@ -106,6 +109,7 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeyguardEnabled()
     {
     RDEBUG("0", 0);
     TInt value;
+    TBool ret = EFalse;
     TInt err = RProperty::Get(KPSUidAvkonDomain, KAknKeyguardStatus, value);
     RDEBUG("err", err);
     RDEBUG("value", value);
@@ -114,17 +118,19 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeyguardEnabled()
         switch( value )
             {
             case EKeyguardLocked:
-                return ETrue;
+                ret = ETrue;
             case EKeyguardAutolockEmulation:
             case EKeyguardNotActive:
             default:
-                return EFalse;
+                ret = EFalse;
             }
         }
     else
         {
-        return EFalse;
+        ret = EFalse;
         }
+    RDEBUG("bool ret", ret);
+    return ret;
     }
 
 // ---------------------------------------------------------------------------

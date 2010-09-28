@@ -47,6 +47,7 @@ LIBRARY	sysutil.lib
 LIBRARY centralrepository.lib
 LIBRARY eikcore.lib
 LIBRARY scpclient.lib // SCP server
+LIBRARY lockclient.lib
 
 #if defined(WINSCW)
 DEFFILE ../BWinsCw/SecurityNotifierU.def

@@ -21,7 +21,7 @@ include(common.pri)
 DEFINES += AUTOLOCKUSERACTIVITYSERVICE_LIB
 
 symbian: {
-TARGET.UID3 = 0x2002704D
+TARGET.UID3 = 0x2002704C
 LIBS += -lactivitymanager
 
 include(autolockuseractivityservice_s60.pri)
@@ -30,3 +30,5 @@ include(autolockuseractivityservice_stub.pri)
 }
 
 include(autolockuseractivityservice.pri)
+
+symbian:MMP_RULES += SMPSAFE

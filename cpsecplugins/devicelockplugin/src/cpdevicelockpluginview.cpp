@@ -58,6 +58,8 @@
 CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
 : CpBaseSettingView(0,parent)
     {
+		RDEBUG("0", 0);
+    processingRequest=0;
     QTranslator *translator = new QTranslator();
     QString lang = QLocale::system().name();
     QString path = "Z:/resource/qt/translations/";
@@ -81,6 +83,7 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
     HbDataForm *form = qobject_cast<HbDataForm*> (widget());
     if (form)
         {
+				RDEBUG("0", 0);
         QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(
                 Qt::Vertical);
         QList<HbAbstractViewItem *> protoTypeList = form->itemPrototypes();
@@ -103,6 +106,7 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
         form->addConnection(lockCodeItem, SIGNAL(clicked()), this,
                 SLOT(onLockCodeClicked()));
         formModel->appendDataFormItem(lockCodeItem);
+				RDEBUG("0", 0);
 
         //Autolock period
         mAutolockPeriodItem = new HbDataFormModelItem(
@@ -207,6 +211,7 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
                 HbLineEdit::Password);
         mRemoteLockMessageItem->setContentWidgetData("text", "1111");
         mRemoteLockMessageItem->setContentWidgetData("readOnly", true);
+				RDEBUG("0", 0);
 
         if (mPrevRemLockData.toString() == hbTrId(
                 "txt_devicelocking_button_remote_on"))
@@ -221,7 +226,9 @@ CpDeviceLockPluginView::CpDeviceLockPluginView(QGraphicsItem *parent /*= 0*/)
         form->setModel(formModel);
         layout->addItem(form);
         setLayout(layout);
+				RDEBUG("0", 0);
         }
+		RDEBUG("99", 0x99);
     }
 
 
@@ -250,8 +257,10 @@ CpDeviceLockPluginView::~CpDeviceLockPluginView()
 void CpDeviceLockPluginView::onLockCodeClicked()
     {
     Dprint(_L("CpDeviceLockPluginView::onLockCodeClicked()..Enter"));
-    RDEBUG("0", 0);
-    mUiSecuSettings->ChangeSecCodeL();
+    RDEBUG("processingRequest", processingRequest);
+    if(!processingRequest)
+    	mUiSecuSettings->ChangeSecCodeL();
+    processingRequest=0;
     Dprint(_L("CpDeviceLockPluginView::onLockCodeClicked()..Exit"));
 }
 
@@ -268,6 +277,7 @@ void CpDeviceLockPluginView::onAutoLockChanged(int index)
     {
     Dprint(_L("CpDeviceLockPluginView::onAutoLockChanged()..Enter"));
     RDEBUG("index", index);
+    RDEBUG("processingRequest", processingRequest);
     if (index != mThemeComboPrevIndex)
         {
         //TODO: need to set user entered/selected value
@@ -295,7 +305,7 @@ void CpDeviceLockPluginView::onAutoLockChanged(int index)
 
         }
     Dprint(_L("CpDeviceLockPluginView::onAutoLockChanged()..Exit"));
-    RDEBUG("0", 0);
+		RDEBUG("99", 0x99);
 }
 
 
@@ -311,7 +321,7 @@ void CpDeviceLockPluginView::onAutoLockChanged(int index)
 void CpDeviceLockPluginView::onLockMessageClicked()
     {
     Dprint(_L("CpDeviceLockPluginView::onLockMessageClicked()..Exit"));
-    RDEBUG("0", 0);
+    RDEBUG("processingRequest", processingRequest);
     TBuf<KRLockMaxLockCodeLength> remoteLockCode;
     TBool remoteLockStatus(EFalse);
     TInt retVal = KErrNone;
@@ -352,10 +362,10 @@ void CpDeviceLockPluginView::onLockMessageClicked()
 void CpDeviceLockPluginView::onAutoTextChanged(const QString& aText)
     {
     Dprint(_L("CpDeviceLockPluginView::onAutoTextChanged()..Enter"));
-    RDEBUG("0", 0);
+    RDEBUG("processingRequest", processingRequest);
     //TBool ret = DisplaySecurityDialog(); 
     Dprint(_L("CpDeviceLockPluginView::onAutoTextChanged()..Exit"));
-    RDEBUG("0", 0);
+		RDEBUG("99", 0x99);
     }
 #endif
 
@@ -371,7 +381,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
     {
     Q_UNUSED(aEndIn);
     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..Enter"));
-    RDEBUG("0", 0);
+    RDEBUG("processingRequest", processingRequest);
     HbDataFormModelItem *item = formModel->itemFromIndex(aStartIn);
 
     if ((item->type() == HbDataFormModelItem::ToggleValueItem)
@@ -390,7 +400,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
             {
             mHack++;
             }
-        /****************************************************************************************************************/
+        ****************************************************************************************************************/
         TInt autoLockVal;
         TInt retVal = KErrNone;
         TBuf<KRLockMaxLockCodeLength> remoteLockCode;
@@ -423,17 +433,18 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                 {
                 if (remoteLockSetting->SetEnabledL(remoteLockCode))
                     {
-                    Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL success"));
+                    RDEBUG("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL success",1);
                     RDEBUG("success", 1);
                     mPrevRemLockData
                             = mDeviceRemoteLockItem->contentWidgetData(
                                     QString("text"));
-										mRemoteLockMessageItem->setEnabled(true);                                    
+                    RDEBUG("calling setEnabled", 0);
+                    mRemoteLockMessageItem->setEnabled(true);
                     }
                 else
                     {
                     RollbackRemoteLockSettingState();
-                    Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL failed"));
+                    RDEBUG("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetEnabledL failed",0);
                     RDEBUG("failed", 0);
                     }
                 }
@@ -441,16 +452,18 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
                 {
                 if (mRemoteLockSettings->SetDisabled())
                     {
-                    Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled success"));
+                    RDEBUG("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled success",1);
                     RDEBUG("success", 1);
                     mPrevRemLockData
                             = mDeviceRemoteLockItem->contentWidgetData(
                                     QString("text"));
+                    RDEBUG("calling setEnabled", 0);
+                    mRemoteLockMessageItem->setEnabled(false);	// this calls onSIMLockDataChanged ?
                     }
                 else
                     {
                     RollbackRemoteLockSettingState();
-                    Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled failed"));
+                    RDEBUG("CpDeviceLockPluginView::onRemoteLockDataChanged..remoteLockSetting->SetDisabled failed",0);
                     RDEBUG("failed", 0);
                     }
                 }
@@ -464,7 +477,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
         delete remoteLockSetting;
         }
     Dprint(_L("CpDeviceLockPluginView::onRemoteLockDataChanged..Exit"));
-    RDEBUG("0", 0);
+		RDEBUG("99", 0x99);
 }
 
 
@@ -480,6 +493,7 @@ void CpDeviceLockPluginView::onRemoteLockDataChanged(QModelIndex aStartIn,QModel
 void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIndex aEndIn)
     {
     Q_UNUSED(aEndIn);
+    RDEBUG("processingRequest", processingRequest);
     HbDataFormModelItem *item = formModel->itemFromIndex(aStartIn);
 
     if ((item->type() == HbDataFormModelItem::ToggleValueItem)
@@ -489,7 +503,7 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
         {
         RDEBUG("mHack", mHack);
         //The following If-Else condition should be removed once orbit team fix the issue with datachanged() signal
-        /****************************************************************************************************************/
+        /****************************************************************************************************************
         if ((mHack % 2) == 0) //need to capture second datachanged() signal , not first one.
             {
             mHack++;
@@ -499,7 +513,7 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
             {
             mHack++;
             }
-        /****************************************************************************************************************/
+        ****************************************************************************************************************/
 
         TBool ret = mUiSecuSettings->ChangeSimSecurityL();
         RDEBUG("ret", ret);
@@ -529,6 +543,11 @@ void CpDeviceLockPluginView::onSIMLockDataChanged(QModelIndex aStartIn, QModelIn
                     this, SLOT(onSIMLockDataChanged(QModelIndex,QModelIndex)));
             }
         }
+    else
+	     	{
+	     	RDEBUG("Nothing to do", 0);
+	     	}
+		RDEBUG("99", 0x99);
 }
 
 
@@ -639,10 +658,12 @@ void CpDeviceLockPluginView::RollbackRemoteLockSettingState()
     connect(formModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this,
             SLOT(onRemoteLockDataChanged(QModelIndex,QModelIndex)));
 
+    RDEBUG("0", 0);
     if (mPrevRemLockData.toString() == hbTrId(
             "txt_devicelocking_button_remote_on"))
         mRemoteLockMessageItem->setEnabled(true);
     else
         mRemoteLockMessageItem->setEnabled(false);
-		RDEBUG("0", 0);
+		RDEBUG("99", 0x99);
     }
+	

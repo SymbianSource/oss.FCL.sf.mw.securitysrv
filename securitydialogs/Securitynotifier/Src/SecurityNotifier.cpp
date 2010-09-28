@@ -32,6 +32,7 @@
 #include <featmgr.h>
 #include <SCPClient.h>
 #include <apgcli.h>
+#include <keyguardaccessapi.h>
 
 //  LOCAL CONSTANTS AND MACROS
   /*****************************************************
@@ -225,35 +226,7 @@ void CSecurityNotifier::StartL(const TDesC8& aBuffer, TInt aReturnVal,const RMes
 //
 void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const RMessagePtr2& aMessage)
     {
-  #if defined(_DEBUG)
-  RDebug::Printf( "%s %s (%u) searching for autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x0 );
-  #endif
     
-  TApaTaskList taskList( CCoeEnv::Static()->WsSession() );
-  const TUid KAutolockUid = { 0x100059B5 };
-  TApaTask task( taskList.FindApp( KAutolockUid ) );
-  if ( !task.Exists() )
-    {
-    #if defined(_DEBUG)
-    RDebug::Printf( "%s %s (%u) autolock.exe not running. Starting now=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0x1 );
-    #endif
-    RApaLsSession ls;                   
-    User::LeaveIfError(ls.Connect());   
-    CleanupClosePushL(ls);         
-    
-    CApaCommandLine* commandLine = CApaCommandLine::NewLC();
-    commandLine->SetExecutableNameL( _L("autolock.exe" ) );     
-    commandLine->SetCommandL( EApaCommandRun );
-    
-    // Try to launch the application.        
-    TInt err = ls.StartApp(*commandLine);
-    #if defined(_DEBUG)
-    RDebug::Printf( "%s %s (%u) autolock.exe err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
-    #endif
-    
-    CleanupStack::PopAndDestroy(2); // commandLine, ls
-    }
-
   /*****************************************************
   * Series 60 Customer / ETel
   * Series 60  ETel API
@@ -270,8 +243,38 @@ void CSecurityNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReturnVal, const
     TSecurityNotificationPckg pckg;
     pckg.Copy( aBuffer );
     iStartup = pckg().iStartup;
-    iEvent = static_cast<RMobilePhone::TMobilePhoneSecurityEvent>(pckg().iEvent);
-    
+    TInt lEvent = pckg().iEvent;
+    iEvent = static_cast<RMobilePhone::TMobilePhoneSecurityEvent>(lEvent);
+    if(lEvent==100+RMobilePhone::EPhonePasswordRequired)
+    	{
+    	// from AskSecCodeInAutoLockL
+    	iEvent = RMobilePhone::EPhonePasswordRequired;
+    	}
+
+  #if defined(_DEBUG)
+  RDebug::Printf( "%s %s (%u) iStartup =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iStartup );
+  RDebug::Printf( "%s %s (%u) lEvent =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, lEvent );
+  RDebug::Printf( "%s %s (%u) iEvent =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iEvent );
+  RDebug::Printf( "%s %s (%u) iReturnVal =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iReturnVal );
+  #endif
+
+    // Forces Autolock to load
+    TInt err = KErrNone;
+
+		if(iEvent == RMobilePhone::EPhonePasswordRequired && lEvent==100+RMobilePhone::EPhonePasswordRequired)
+			{
+		  #if defined(_DEBUG)
+		  RDebug::Printf( "%s %s (%u) query from AskSecCodeInAutoLockL . No need to start Autolock.exe =%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+		  #endif
+			}
+		else
+			{
+	    CKeyguardAccessApi* iKeyguardAccess = CKeyguardAccessApi::NewL( );
+	   	RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+			err = iKeyguardAccess->ShowKeysLockedNote( );
+			RDebug::Printf( "%s %s (%u) err=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, err );
+			delete iKeyguardAccess;
+			}
 
 if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
     {

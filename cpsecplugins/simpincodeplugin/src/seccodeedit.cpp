@@ -21,6 +21,7 @@
 // User includes
 #include "seccodeedit.h"
 #include <../../inc/cpsecplugins.h>
+#include <QGesture>
 
 // ======== MEMBER FUNCTIONS ========
 
@@ -45,6 +46,10 @@ SecCodeEdit::~SecCodeEdit()
 void SecCodeEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 		RDEBUG("0", 0);
+		RDEBUG("Nothing to do because QTapGesture did it", 0);
+		event->ignore();
+    return;
+		/*
     if (event->button() != Qt::LeftButton) {
         event->ignore();
         return;
@@ -55,5 +60,21 @@ void SecCodeEdit::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->accept();
     } else {
         event->ignore();
+    }
+    */
+}
+
+void SecCodeEdit::gestureEvent(QGestureEvent *event)
+{
+		RDEBUG("0", 0);
+    if (QTapGesture *tap = (QTapGesture*)event->gesture(Qt::TapGesture)) {
+        switch(tap->state()) {
+            case Qt::GestureStarted:
+           			RDEBUG("0", 0);
+                emit clicked();
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -68,7 +68,7 @@ LIBRARY       Scard.lib             // Smart Card Server
 LIBRARY       Asn1.lib              // Used to decode trusted usage OID's
 LIBRARY       Customapi.lib         // CustomAPI (used in SIM file reading)
 LIBRARY       Etel.lib Etelmm.lib   // RTelServer, RMobilePhone
-LIBRARY       Estlib.lib Euser.lib  // Symbian basic libraries
+LIBRARY       Estlib.lib euser.lib  // Symbian basic libraries
 LIBRARY       Ctframework.lib       // Crypto token framework
 LIBRARY       Efsrv.lib             // File server
 LIBRARY       Edbms.lib             // Database server

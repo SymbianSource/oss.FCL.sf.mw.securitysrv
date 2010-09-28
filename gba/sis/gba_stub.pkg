@@ -17,7 +17,7 @@
 &EN
 
 ; Header
-#{"GBA"}, (0x20029F08), 1, 1, 0, TYPE=SA
+#{"GBA"}, (0x20029F08), 1, 2, 0, TYPE=SA
 
 ; Localised Vendor name
 %{"Nokia"}
@@ -31,6 +31,7 @@
 ""-"z:\sys\bin\gbauicc2.dll"
 ""-"z:\resource\plugins\gbauicc2.rsc"
 ""-"z:\sys\bin\gba2.dll"
+""-"z:\sys\bin\gbautility.dll"
 ""-"z:\sys\bin\httpfiltergba2.dll"
 ""-"z:\resource\plugins\httpfiltergba2.rsc"
 

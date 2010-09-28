@@ -26,5 +26,11 @@ PRJ_EXPORTS
 
 
 ../inc/GbaUtility.h                 MW_LAYER_PLATFORM_EXPORT_PATH(GbaUtility.h)
+../inc/gbautility_qt.h              MW_LAYER_PLATFORM_EXPORT_PATH(gbautility_qt.h)
+../inc/gbauilityexport.h            MW_LAYER_PLATFORM_EXPORT_PATH(gbauilityexport.h)
+
+
+
+
 
 

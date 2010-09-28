@@ -23,6 +23,7 @@
 
 
 FILE=ABI_DIR\BUILD_DIR\gba2.dll	        SHARED_LIB_DIR\gba2.dll
+FILE=ABI_DIR\BUILD_DIR\gbautility.dll	  SHARED_LIB_DIR\gbautility.dll
 FILE=ABI_DIR\BUILD_DIR\gbaserver2.exe	PROGRAMS_DIR\gbaserver2.exe
 
 data=ZSYSTEM\install\gba_stub.sis    	System\Install\gba_stub.sis

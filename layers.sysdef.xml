@@ -9,6 +9,9 @@
       <module name="securitysrv">
         <unit name="securitysrv" unitID="sedo.securitysrv" bldFile="&layer_real_source_path;/group" mrp="" />
       </module>
+      <module name="from_package_definition">
+        <unit name="sedo.ocsp" unitID="sedo.ocsp" bldFile="&layer_real_source_path;/pkiutilities/ocsp/group" mrp="" />
+      </module>
       <module name="">
         <unit unitID="sedoQT.securitysrv" bldFile="&layer_real_source_path;" mrp="" name="sedoQT_securitysrv" proFile="securitysrv.pro" qmakeArgs="-r" />
       </module>

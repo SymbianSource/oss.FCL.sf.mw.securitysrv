@@ -11,11 +11,15 @@
 *
 * Contributors:
 *
-* Description:   Translation string details
+* Description: Advanced security settings resources
 *
 */
 
+#ifndef ADVANCEDSECPLUGIN_RESOURCES_IBY
+#define ADVANCEDSECPLUGIN_RESOURCES_IBY
 
 #include <data_caging_paths_for_iby.hrh>
 
-data=DATAZ_\QT_TRANSLATIONS_DIR\certificate_management.qm QT_TRANSLATIONS_DIR\certificate_management.qm 
+data=DATAZ_\QT_TRANSLATIONS_DIR\certificate_manager.qm QT_TRANSLATIONS_DIR\certificate_manager.qm
+
+#endif // ADVANCEDSECPLUGIN_RESOURCES_IBY

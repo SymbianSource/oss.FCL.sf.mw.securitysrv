@@ -40,6 +40,7 @@ LIBS += -lcone -lws32 -lkeylockpolicyapi
 LIBS += -lpower_save_display_mode
 LIBS += -ltstaskmonitorclient		# for TsTaskSettings
 LIBS += -lavkon									# for KeySounds
+LIBS += -lapgrfx								# for CApaWindowGroupName
 
 SERVICE.FILE = service_conf.xml
 SERVICE.OPTIONS = embeddable
@@ -54,7 +55,17 @@ RESOURCES += Autolock.qrc
 symbian*: {
 				TARGET.CAPABILITY = CAP_APPLICATION
 				TARGET.UID3 = 0x100059B5
-				crmlFiles.sources = autolock.qcrml
+				crmlFiles.sources = ./qcrml/autolock.qcrml
+				crmlFiles.sources += ./qcrml/callstate.qcrml
+				crmlFiles.sources += ./qcrml/dismissdialog.qcrml
+				crmlFiles.sources += ./qcrml/grip.qcrml
+				crmlFiles.sources += ./qcrml/keyguard.qcrml
+				crmlFiles.sources += ./qcrml/lights.qcrml
+				crmlFiles.sources += ./qcrml/profile.qcrml
+				crmlFiles.sources += ./qcrml/screensaver.qcrml
+				crmlFiles.sources += ./qcrml/securitysettings.qcrml
+				crmlFiles.sources += ./qcrml/TestCode.qcrml
+				
 				crmlFiles.path = /resource/qt/crml
 				DEPLOYMENT += crmlFiles
 }
@@ -68,3 +79,5 @@ BLD_INF_RULES.prj_exports += "./rom/AutolockSrv.iby         CORE_APP_LAYER_IBY_E
 BLD_INF_RULES.prj_exports += "./PubSub/SecurityUIsPrivatePSKeys.h |../../inc/securityuisprivatepskeys.h"
 
 BLD_INF_RULES.prj_exports += "./conf/lock_10283322.crml 	     MW_LAYER_CRML(lock_10283322.crml)"
+
+symbian:MMP_RULES += SMPSAFE

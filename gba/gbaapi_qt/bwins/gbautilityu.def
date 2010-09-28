@@ -1,0 +1,18 @@
+EXPORTS
+	?bootstrap@GbaUtility@@QAE?AW4GbaErrorStatus@1@PBUGbaBootstrapInputData@@PAUGbaBootstrapOutputData@@@Z @ 1 NONAME ; enum GbaUtility::GbaErrorStatus GbaUtility::bootstrap(struct GbaBootstrapInputData const *, struct GbaBootstrapOutputData *)
+	??0GbaUtility@@QAE@PAVQObject@@@Z @ 2 NONAME ; GbaUtility::GbaUtility(class QObject *)
+	?trUtf8@GbaUtility@@SA?AVQString@@PBD0H@Z @ 3 NONAME ; class QString GbaUtility::trUtf8(char const *, char const *, int)
+	?trUtf8@GbaUtility@@SA?AVQString@@PBD0@Z @ 4 NONAME ; class QString GbaUtility::trUtf8(char const *, char const *)
+	?qt_metacall@GbaUtility@@UAEHW4Call@QMetaObject@@HPAPAX@Z @ 5 NONAME ; int GbaUtility::qt_metacall(enum QMetaObject::Call, int, void * *)
+	??1GbaUtility@@UAE@XZ @ 6 NONAME ; GbaUtility::~GbaUtility(void)
+	??_EGbaUtility@@UAE@I@Z @ 7 NONAME ; GbaUtility::~GbaUtility(unsigned int)
+	?bootstrapCompleted@GbaUtility@@IAEXW4GbaErrorStatus@1@@Z @ 8 NONAME ; void GbaUtility::bootstrapCompleted(enum GbaUtility::GbaErrorStatus)
+	?qt_metacast@GbaUtility@@UAEPAXPBD@Z @ 9 NONAME ; void * GbaUtility::qt_metacast(char const *)
+	?tr@GbaUtility@@SA?AVQString@@PBD0@Z @ 10 NONAME ; class QString GbaUtility::tr(char const *, char const *)
+	?getStaticMetaObject@GbaUtility@@SAABUQMetaObject@@XZ @ 11 NONAME ; struct QMetaObject const & GbaUtility::getStaticMetaObject(void)
+	?setBsfAddress@GbaUtility@@QAE?AW4GbaErrorStatus@1@ABVQString@@@Z @ 12 NONAME ; enum GbaUtility::GbaErrorStatus GbaUtility::setBsfAddress(class QString const &)
+	?cancelBootstrap@GbaUtility@@QAEXXZ @ 13 NONAME ; void GbaUtility::cancelBootstrap(void)
+	?staticMetaObject@GbaUtility@@2UQMetaObject@@B @ 14 NONAME ; struct QMetaObject const GbaUtility::staticMetaObject
+	?metaObject@GbaUtility@@UBEPBUQMetaObject@@XZ @ 15 NONAME ; struct QMetaObject const * GbaUtility::metaObject(void) const
+	?tr@GbaUtility@@SA?AVQString@@PBD0H@Z @ 16 NONAME ; class QString GbaUtility::tr(char const *, char const *, int)
+

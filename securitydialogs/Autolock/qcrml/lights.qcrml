@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="CRepository" uidValue="0x10200C8C">
+    <key int="0x00000006" ref="/KCRUidLightSettings/KDisplayLightsTimeout"></key>
+</repository>
+

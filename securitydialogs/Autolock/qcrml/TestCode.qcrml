@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="RProperty" uidValue="0x100059b5">
+    <key int="0x00000307"  ref="/KPSUidSecurityUIs/TestCode"></key>
+</repository>
+

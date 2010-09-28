@@ -77,6 +77,7 @@ class CKeyguardAccessApi : public CBase
          * @return KErrNone if succeeded
          *         KErrAlreadyExists if already enabled
          *         KErrPermissionDenied if devicelock is activated
+         *         Other errors
          */
         IMPORT_C TInt EnableKeyguard( TBool aWithNote );
 
@@ -86,6 +87,7 @@ class CKeyguardAccessApi : public CBase
          * @return KErrNone if succeeded
          *         KErrAlreadyExists if already disabled
          *         KErrPermissionDenied if devicelock is activated
+         *         Other errors
          */
         IMPORT_C TInt DisableKeyguard( TBool aWithNote );
 
@@ -93,14 +95,17 @@ class CKeyguardAccessApi : public CBase
          * Offer to enable keyguard. Shows a query note to user.
          * @return KErrNone if succeeded
          *         KErrPermissionDenied if keyguard/devicelock already activated
+         *         KErrCancel if user replies "No"
+         *         Other errors
          */
         IMPORT_C TInt OfferKeyguard();
 
         /**
          * Shows note informing that keys are locked.
          * Only works if keyguard is already enabled.
-         * @return KErrNone if succeeded '
+         * @return KErrNone if succeeded
          *         KErrPermissionDenied if keyguard is not activated
+         *         Other errors
          */
         IMPORT_C TInt ShowKeysLockedNote();
 

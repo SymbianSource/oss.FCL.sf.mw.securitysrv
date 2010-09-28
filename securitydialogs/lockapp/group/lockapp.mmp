@@ -46,5 +46,6 @@ LIBRARY	eikcore.lib
 LIBRARY	apgrfx.lib
 LIBRARY	apparc.lib
 LIBRARY	cone.lib
+LIBRARY lockclient.lib
 
 SMPSAFE

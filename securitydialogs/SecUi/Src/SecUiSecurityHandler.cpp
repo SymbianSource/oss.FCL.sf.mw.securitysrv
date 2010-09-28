@@ -129,6 +129,7 @@ EXPORT_C void CSecurityHandler::HandleEventL(RMobilePhone::TMobilePhoneSecurityE
 EXPORT_C void CSecurityHandler::HandleEventL(RMobilePhone::TMobilePhoneSecurityEvent aEvent, TBool aStartup, TInt& aResult)
     {
     RDEBUG("0", 0);
+	RDEBUG("TBool aStartup", aStartup);
 
     iStartup = aStartup;
     HandleEventL(aEvent, aResult);
@@ -186,6 +187,7 @@ EXPORT_C void CSecurityHandler::HandleEventL(RMobilePhone::TMobilePhoneSecurityE
             else
                 aResult = KErrNotSupported;
             break;
+        case RMobilePhone::EPhonePasswordRequired+0x100:	// from Autolock
         case RMobilePhone::EPhonePasswordRequired:
             aResult = PassPhraseRequiredL();
             break;
@@ -343,7 +345,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                     TSCPSecCode newCode;
                     RDEBUG("iSecUi_password", 1);
                     RDEBUGSTR(iSecUi_password);
-                    newCode.Copy(iSecUi_password);
+                    newCode.Copy(iSecUi_password);	// this might fail if lenght=10 , because TSCPSecCode=8, while SEC_C_SECURITY_CODE_MAX_LENGTH=10
                     RDEBUG(
                             "!!!!!!! ***** deprecated **** !!!!! scpClient.StoreCode",
                             0);
@@ -377,6 +379,7 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeL()
                 }
             }
         RDEBUG("while AskSecCodeL", 1);
+        iSecUi_password.Copy(_L(""));	// clear password so that the next time, it shows empty
         } // while
 
     iQueryCanceled = ETrue;
@@ -535,12 +538,13 @@ EXPORT_C TBool CSecurityHandler::AskSecCodeInAutoLockL()
             User::LeaveIfError(codeQueryNotifier.Connect());
             CWait* wait = CWait::NewL();
             CleanupStack::PushL(wait);
-            TInt queryResponse = 0;
+            TInt queryResponse = 0;	// TODO will be changed by SecurityObserver
             TPckg<TInt> response(queryResponse);
             RDEBUG("0", 0);
             TSecurityNotificationPckg params;
-            params().iEvent = static_cast<TInt> (RMobilePhone::EPhonePasswordRequired);
+            params().iEvent = static_cast<TInt> (0x100+RMobilePhone::EPhonePasswordRequired);
             params().iStartup = EFalse;
+            RDEBUG("queryResponse", queryResponse);
 
             RDEBUG("StartNotifierAndGetResponse", 0);
             codeQueryNotifier.StartNotifierAndGetResponse(wait->iStatus, KSecurityNotifierUid, params, response);
@@ -666,10 +670,12 @@ TInt CSecurityHandler::PassPhraseRequiredL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
+    askPassPhraseRequiredL:
     RDEBUG("0", 0);
     TBool StartUp = iStartup;
 
     RMobilePhone::TMobilePassword iSecUi_password;
+    iSecUi_password.Copy(_L(""));
     RMobilePhone::TMobilePassword required_fourth;
     TInt queryAccepted = KErrCancel;
 
@@ -916,7 +922,7 @@ TInt CSecurityHandler::PassPhraseRequiredL()
                     RDEBUG("scpClient.Connect", 1);
                     CleanupClosePushL(scpClient);
                     TSCPSecCode newCode;
-                    newCode.Copy(iSecUi_password);
+                    newCode.Copy(iSecUi_password);	// this might fail if lenght=10 , because TSCPSecCode=8, while SEC_C_SECURITY_CODE_MAX_LENGTH=10
                     RDEBUG(
                             "!!!!!!! ***** TODO deprecated **** !!!!! scpClient.StoreCode",
                             0);
@@ -1041,7 +1047,14 @@ TInt CSecurityHandler::PassPhraseRequiredL()
           	}
             break;
         case KErrGsm0707IncorrectPassword:
+        		{
     				RDEBUG("KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword);
+            // The Settings caller might retry
+            CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            if(StartUp)
+            	goto askPassPhraseRequiredL;
+          	}
+            break;
     				// and continue
         case KErrAccessDenied:
         		{
@@ -1255,6 +1268,7 @@ TInt CSecurityHandler::Puk1RequiredL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
+		askPuk1RequiredL:
     RDEBUG("0", 0);
     TInt queryAccepted = KErrCancel;
     RMobilePhone::TMobilePassword puk1_password;
@@ -1356,8 +1370,9 @@ TInt CSecurityHandler::Puk1RequiredL()
         case KErrAccessDenied:
             // wrong PUK code -> note -> ask PUK code again        
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            returnValue = Puk1RequiredL();
-            break;
+           	RDEBUG("goto askPuk1RequiredL", 0);
+            goto askPuk1RequiredL;
+            // break;
         case KErrGsm0707SimWrong:
             // sim lock active
             // no message ?
@@ -1368,8 +1383,9 @@ TInt CSecurityHandler::Puk1RequiredL()
             break;
         default:
             CSecuritySettings::ShowErrorNoteL(res);
-            returnValue = Puk1RequiredL();
-            break;
+           	RDEBUG("goto askPuk1RequiredL", 0);
+            goto askPuk1RequiredL;
+            // break;
         }
 
     // Now the PUK1 is validated. It's time for asking the new PIN1
@@ -1392,7 +1408,9 @@ TInt CSecurityHandler::Puk1RequiredL()
         HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_verify_new_pin_code"));
         title.Append(stringHolder2->Des());
         CleanupStack::PopAndDestroy(stringHolder2);
-        lSecUiCancelSupported = ESecUiCancelSupported;
+        lSecUiCancelSupported = ESecUiCancelNotSupported; 	// initialy it was ESecUiCancelSupported , but an error said "Becaouse, if it is can be canceled, why desigh this step about newpincode confirm"
+        																										// Somehow both scenarios make sense: User should not cancel because the code has been already changed to PUK.
+        																										// On the other hand, this happened because user forgot the PIN. Now you know it: same as PUK. So user can cancel.
         RDEBUG("StartUp", 0);
 		    if (StartUp) // how to know whether PUK comes from failing at Starter, or failing at any other PIN (i.e. changing PIN, or changing PIN-request) ???
 		    		{
@@ -1415,12 +1433,13 @@ TInt CSecurityHandler::Puk1RequiredL()
 
     // send code again, now with the user pin
     RDEBUG("VerifySecurityCode", 0);
-    iPhone.VerifySecurityCode(wait->iStatus, blockCodeType, aNewPinPassword, puk1_password);
+    iPhone.VerifySecurityCode(wait->iStatus, blockCodeType, aNewPinPassword, puk1_password);	// TODO why not ChangeSecurityCode ?
     RDEBUG("WaitForRequestL", 0);
     res = wait->WaitForRequestL();
     RDEBUG("WaitForRequestL res", res);
     CleanupStack::PopAndDestroy(wait);
 
+		// this can't fail, because PUK1 was just verified
     returnValue = res;
     switch (res)
         {
@@ -1557,6 +1576,7 @@ void CSecurityHandler::Puk2RequiredL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
+    askPuk2RequiredL:
     RDEBUG("0", 0);
     TInt queryAccepted = KErrCancel;
     RMobilePhone::TMobilePassword iSecUi_password;
@@ -1636,8 +1656,9 @@ void CSecurityHandler::Puk2RequiredL()
         case KErrAccessDenied:
             // wrong PUK2 code -> note -> ask PUK2 code again        
             CSecuritySettings::ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
-            Puk2RequiredL();
-            break;
+            RDEBUG("goto askPuk2RequiredL", 0);
+            goto askPuk2RequiredL;
+            // break;
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
             // Pin2 features blocked permanently!
@@ -1645,8 +1666,9 @@ void CSecurityHandler::Puk2RequiredL()
             break;
         default:
             CSecuritySettings::ShowErrorNoteL(res);
-            Puk2RequiredL();
-            break;
+            RDEBUG("goto askPuk2RequiredL", 0);
+            goto askPuk2RequiredL;
+            // break;
         }
 
     // now the PUK2 is valid. Time to get the new PIN2
@@ -1693,6 +1715,7 @@ void CSecurityHandler::Puk2RequiredL()
     RDEBUG("WaitForRequestL res", res);
     CleanupStack::PopAndDestroy(wait);
 
+		// this can't fail, as PUK2 was just verified
     switch (res)
         {
         case KErrNone:

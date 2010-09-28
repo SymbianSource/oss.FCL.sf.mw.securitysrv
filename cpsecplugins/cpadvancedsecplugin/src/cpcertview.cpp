@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  
+* Description:
 *
 */
 
@@ -52,7 +52,7 @@
 
 CpCertView::CpCertView(const QModelIndex& modelIndex, QGraphicsItem *parent /*= 0*/)
 	: CpBaseSettingView(0,parent),
-	  mPopup(NULL),
+	  mPopup(NULL), mOkAction(NULL),
 	  mPrevView(NULL),
 	  mCurrentView(NULL),
 	  mRefreshedView(NULL),
@@ -63,23 +63,23 @@ CpCertView::CpCertView(const QModelIndex& modelIndex, QGraphicsItem *parent /*= 
 	{
 	RDEBUG("0", 0);
 	mOriginalView = mainWindow()->currentView();
-	
-	HbMenu* menu = this->menu();   
+
+	HbMenu* menu = this->menu();
 	std::auto_ptr<HbAction> deleteAction(new HbAction(hbTrId("txt_common_menu_delete")));
-	connect(deleteAction.get(), SIGNAL(triggered()), this, SLOT(deleteList()));    
+	connect(deleteAction.get(), SIGNAL(triggered()), this, SLOT(deleteList()));
 	menu->addAction(deleteAction.get());
 	deleteAction.release();
-	
+
 	std::auto_ptr<QGraphicsLinearLayout> layout(new QGraphicsLinearLayout(Qt::Vertical));
-	
+
 	HbDataForm *form = q_check_ptr(new HbDataForm(this));
 	std::auto_ptr<HbDataFormModel> formModel(q_check_ptr(new HbDataFormModel()));
 	form->setModel(formModel.get());
 	formModel.release();
-	
-	HbListWidget* certificateList = q_check_ptr(new HbListWidget(this)); 
-		
-	CpCertView::TCertificateViews currentView = (CpCertView::TCertificateViews)modelIndex.row(); 
+
+	HbListWidget* certificateList = q_check_ptr(new HbListWidget(this));
+
+	CpCertView::TCertificateViews currentView = (CpCertView::TCertificateViews)modelIndex.row();
 	QString title;
 	if(currentView == EPersonalView)
 		{
@@ -87,17 +87,17 @@ CpCertView::CpCertView(const QModelIndex& modelIndex, QGraphicsItem *parent /*= 
 		}
 	else if(currentView == EDeviceView)
 		{
-		title = "Move to Personal";  
+		title = "Move to Personal";
 		}
 	RDEBUG("0", 0);
 	if(currentView == EPersonalView || currentView == EDeviceView)
 		{
-		std::auto_ptr<HbAction> moveToDeviceAction(q_check_ptr(new HbAction(title)));   
-		connect(moveToDeviceAction.get(), SIGNAL(triggered()), this, SLOT(moveCert()));    
+		std::auto_ptr<HbAction> moveToDeviceAction(q_check_ptr(new HbAction(title)));
+		connect(moveToDeviceAction.get(), SIGNAL(triggered()), this, SLOT(moveCert()));
 		menu->addAction(moveToDeviceAction.get());
 		moveToDeviceAction.release();
-		}	
-	
+		}
+
 	setDetails(currentView);
 	TInt count = 0;
 	try
@@ -119,17 +119,17 @@ CpCertView::CpCertView(const QModelIndex& modelIndex, QGraphicsItem *parent /*= 
 		certificateList->addItem(singleCert.get());
 		singleCert.release();
 		}  // End of FOR loop
-	
-	connect(certificateList, SIGNAL(activated(QModelIndex)), this, SLOT(openCertFromList(QModelIndex)));   
-	connect(certificateList, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF))); 
-	
+
+	connect(certificateList, SIGNAL(activated(QModelIndex)), this, SLOT(openCertFromList(QModelIndex)));
+	connect(certificateList, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF)));
+
 	layout->addItem(certificateList);
 	setLayout(layout.get());
 	layout.release();
-	
+
 	mPopup = q_check_ptr(new HbDialog());
 	mContextMenu = q_check_ptr(new HbMenu());
-	
+
 	RDEBUG("0", 0);
 	}
 
@@ -158,26 +158,26 @@ CpCertView::~CpCertView()
 		mListView->deleteLater();
 		mListView= NULL;
 		}
-		
+
 	if(mSelectAllView)
 	{
 	mSelectAllView->deleteLater();
 	mSelectAllView = NULL;
 	}
-	
+
 	mSelectionIndex.Close();
-	
+
 	mIndexList.Close();
-	
+
 	delete mPopup;
-	
+
 	delete mNote;
 	mNote = NULL;
-	
+
 	delete mContextMenu;
-	
+
 	}
-	
+
 void CpCertView::setDetails(CpCertView::TCertificateViews currentView)
 	{
 	RDEBUG("0", 0);
@@ -187,17 +187,17 @@ void CpCertView::setDetails(CpCertView::TCertificateViews currentView)
 		setTitle(hbTrId("txt_certificate_manager_list_authority_certificate"));
 		mCertView = EAuthorityView;
 		break;
-		
+
 		case ETrustedView:
 		setTitle(hbTrId("txt_certificate_manager_list_trusted_site_certific"));
 		mCertView = ETrustedView;
 		break;
-		
+
 		case EPersonalView:
 		setTitle(hbTrId("txt_certificate_manager_list_personal_certificates"));
 		mCertView = EPersonalView;
 		break;
-		
+
 		case EDeviceView:
 		setTitle(hbTrId("txt_certificate_manager_list_device_certificates"));
 		mCertView = EDeviceView;
@@ -209,19 +209,19 @@ void CpCertView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	{
 	RDEBUG("0", 0);
 	mPos = item->modelIndex().row();   // Pos will tell you what is the certificate clicked in particular view.
-	
+
 	mContextMenu->clearActions();
 	std::auto_ptr<HbAction> open(q_check_ptr(new HbAction(hbTrId("txt_common_menu_open"))));
 	connect(open.get(), SIGNAL(triggered()), this, SLOT( openCertificate()));
-	mContextMenu->addAction(open.get());			
+	mContextMenu->addAction(open.get());
 	open.release();
-	
+
 	QString moveTitle;
-	
+
 	if(mCertView == EAuthorityView)
 		{
-		std::auto_ptr<HbAction> trustSettings(q_check_ptr(new HbAction(hbTrId("txt_certificate_manager_menu_trust_settings")))); 
-		connect(trustSettings.get(), SIGNAL(triggered()), this, SLOT(showTrustSettings()));    
+		std::auto_ptr<HbAction> trustSettings(q_check_ptr(new HbAction(hbTrId("txt_certificate_manager_menu_trust_settings"))));
+		connect(trustSettings.get(), SIGNAL(triggered()), this, SLOT(showTrustSettings()));
 		mContextMenu->addAction(trustSettings.get());
 		trustSettings.release();
 		}
@@ -232,21 +232,21 @@ void CpCertView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	else if(mCertView == EDeviceView)
 		{
 		moveTitle = hbTrId("txt_certificate_manager_menu_move_to_personal_cert");
-		}	
-	
+		}
+
 	if(mCertView == EPersonalView || mCertView == EDeviceView )
 		{
-		std::auto_ptr<HbAction> moveCert(q_check_ptr(new HbAction(moveTitle)));     
-		connect(moveCert.get(), SIGNAL(triggered()), this, SLOT(moveSelectedCert()));    
+		std::auto_ptr<HbAction> moveCert(q_check_ptr(new HbAction(moveTitle)));
+		connect(moveCert.get(), SIGNAL(triggered()), this, SLOT(moveSelectedCert()));
 		mContextMenu->addAction(moveCert.get());
 		moveCert.release();
 		}
-	
+
 	RDEBUG("0", 0);
 	if( certAt(mPos)->IsDeletable() )
 		{
-		std::auto_ptr<HbAction> menuDelete(q_check_ptr(new HbAction(hbTrId("txt_common_menu_delete")))); 
-		connect(menuDelete.get(), SIGNAL(triggered()), this, SLOT(deleteCertificate()));    
+		std::auto_ptr<HbAction> menuDelete(q_check_ptr(new HbAction(hbTrId("txt_common_menu_delete"))));
+		connect(menuDelete.get(), SIGNAL(triggered()), this, SLOT(deleteCertificate()));
 		mContextMenu->addAction(menuDelete.get());
 		menuDelete.release();
 		}
@@ -255,40 +255,40 @@ void CpCertView::indicateLongPress(HbAbstractViewItem *item,QPointF coords)
 	}
 
 void CpCertView::openCertFromList(const QModelIndex& modelIndex)
-	{	
+	{
 	RDEBUG("0", 0);
 	// Pos will tell you what is the certificate clicked in particular view.
-	mPos = modelIndex.row();   
+	mPos = modelIndex.row();
 	openCertificate();
 	}
 
 void CpCertView::openCertificate()
 	{
 	RDEBUG("0", 0);
-	mCurrentView = q_check_ptr(new CpCertDetailView(mCertView,mPos,*mCertDataContainer));    
+	mCurrentView = q_check_ptr(new CpCertDetailView(mCertView,mPos,*mCertDataContainer));
 	connect(mCurrentView, SIGNAL(aboutToClose()), this, SLOT(displayPreviousView()));
-	mPrevView = mainWindow()->currentView();   
+	mPrevView = mainWindow()->currentView();
 	mainWindow()->addView(mCurrentView);
-	mainWindow()->setCurrentView(mCurrentView);  		
+	mainWindow()->setCurrentView(mCurrentView);
 	}
-	
-void CpCertView::displayPreviousView()  
+
+void CpCertView::displayPreviousView()
 	{
 	RDEBUG("0", 0);
-	mainWindow()->removeView(mCurrentView);    
+	mainWindow()->removeView(mCurrentView);
 	mCurrentView->deleteLater();
 	mCurrentView= NULL;
-	mainWindow()->setCurrentView(mPrevView);  	
+	mainWindow()->setCurrentView(mPrevView);
 	}
-	
+
 void CpCertView::deleteCertificate()
 	{
 	RDEBUG("0", 0);
 	RArray<TInt> pos;
 	pos.Append(mPos);
 	QT_TRAP_THROWING(deleteCertsL(pos));
-	}		
-	
+	}
+
 void CpCertView::deleteList()
 	{
 	RDEBUG("0", 0);
@@ -296,9 +296,9 @@ void CpCertView::deleteList()
 	mPopup->setDismissPolicy(HbDialog::NoDismiss);
 	// Set the label as heading widget
 	mPopup->setHeadingWidget(q_check_ptr(new HbLabel(hbTrId("txt_certificate_manager_setlabel_certificates"))));
-	
+
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
-		
+
 	mSelectAllView = q_check_ptr(new HbListView(this));
 	QStandardItemModel* selectAllModel = q_check_ptr(new QStandardItemModel(this));
 	// Populate the model with content
@@ -306,16 +306,16 @@ void CpCertView::deleteList()
 	selectAllItem->setData(QString("Select All"),Qt::DisplayRole);
 	selectAllModel->appendRow(selectAllItem.get());
 	selectAllItem.release();
-	
+
 	connect(mSelectAllView, SIGNAL(activated(QModelIndex)), this, SLOT(selectAll()));
 	mSelectAllView->setModel(selectAllModel);
 	mSelectAllView->setSelectionMode(HbListView::MultiSelection);
 	layout->addItem(mSelectAllView);
-	
+
 	mListView = q_check_ptr(new HbListView(this));
 	// Connect to "activated" signal
 	connect(mListView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
-	
+
 	// Create a model
 	QStandardItemModel* model = q_check_ptr(new QStandardItemModel(this));
 	TInt count=0;
@@ -334,20 +334,23 @@ void CpCertView::deleteList()
 			mSelectionIndex.Append(index);
 			certItem.release();
 			}
-		}	
+		}
 	// Set the model to the list view
 	mListView->setModel(model);
 	mListView->setSelectionMode(HbListView::MultiSelection);
 	layout->addItem(mListView);
-	
+
 	std::auto_ptr<HbWidget> widget( q_check_ptr(new HbWidget()));
 	widget->setLayout(layout.get());
 	layout.release();
 	mPopup->setContentWidget(widget.get());
 	widget.release();
-	
-	mPopup->setPrimaryAction(q_check_ptr(new HbAction(hbTrId("txt_common_opt_delete"))));
-	mPopup->setSecondaryAction(q_check_ptr(new HbAction(hbTrId("txt_common_button_cancel"))));
+
+    mPopup->clearActions();
+	mOkAction = q_check_ptr(new HbAction(hbTrId("txt_common_opt_delete")));
+	mPopup->addAction(mOkAction);
+	HbAction *cancelAction = q_check_ptr(new HbAction(hbTrId("txt_common_button_cancel")));
+	mPopup->addAction(cancelAction);
 	mPopup->setTimeout(HbPopup::NoTimeout);
 	RDEBUG("0", 0);
 	// Launch popup syncronously
@@ -358,7 +361,7 @@ void CpCertView::deleteList()
 void CpCertView::handleMultipleDelete(HbAction* action)
 {
 	RDEBUG("0", 0);
-	if(action == mPopup->primaryAction())
+	if(action == mOkAction)
 		{
 		QItemSelectionModel *selectionModel = mListView->selectionModel();
 		QModelIndexList mWidgetItemsToRemove = selectionModel->selectedIndexes();
@@ -369,7 +372,7 @@ void CpCertView::handleMultipleDelete(HbAction* action)
 		QT_TRAP_THROWING
 			(
 			CleanupClosePushL(actualIndex);
-			for (TInt index = deleteCount-1; index>= 0 ; --index) 
+			for (TInt index = deleteCount-1; index>= 0 ; --index)
 				{
 				TInt selectedItemIndex = mWidgetItemsToRemove[index].row();
 				actualIndex.Append( mSelectionIndex[selectedItemIndex] );
@@ -382,7 +385,7 @@ void CpCertView::handleMultipleDelete(HbAction* action)
 	mListView->deleteLater();
 	mListView = NULL;
 	mSelectAllView->deleteLater();
-	mSelectAllView = NULL; 
+	mSelectAllView = NULL;
 	}
 
 void CpCertView::moveCert()
@@ -399,9 +402,9 @@ void CpCertView::moveCert()
 		{
 		mPopup->setHeadingWidget(q_check_ptr(new HbLabel(tr("Move To Personal"))));
 		}
-		
+
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
-			
+
 	mSelectAllView = q_check_ptr(new HbListView(this));
 	QStandardItemModel* selectAllModel = q_check_ptr(new QStandardItemModel(this));
 	// Populate the model with content
@@ -413,11 +416,11 @@ void CpCertView::moveCert()
 	mSelectAllView->setModel(selectAllModel);
 	mSelectAllView->setSelectionMode(HbListView::MultiSelection);
 	layout->addItem(mSelectAllView);
-	
+
 	mListView = q_check_ptr(new HbListView(this));
 	// Connect to "activated" signal
 	connect(mListView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
-	
+
 	// Create a model
 	QStandardItemModel* model = q_check_ptr(new QStandardItemModel(this));
 	TInt count =0;
@@ -432,32 +435,35 @@ void CpCertView::moveCert()
 		model->appendRow(certItem.get());
 		mSelectionIndex.Append(index);
 		certItem.release();
-		}	
-	
+		}
+
 	// Set the model to the list view
 	mListView->setModel(model);
 	mListView->setSelectionMode(HbListView::MultiSelection);
 	layout->addItem(mListView);
-	
+
 	std::auto_ptr<HbWidget> widget(q_check_ptr(new HbWidget()));
-	widget->setLayout(layout.get());	
+	widget->setLayout(layout.get());
 	layout.release();
 	mPopup->setContentWidget(widget.get());
 	widget.release();
 	RDEBUG("0", 0);
-	mPopup->setPrimaryAction(q_check_ptr(new HbAction(tr("Yes"))));
-	mPopup->setSecondaryAction(q_check_ptr(new HbAction(tr("No"))));
+    mPopup->clearActions();
+	mOkAction = q_check_ptr(new HbAction(tr("Yes")));
+	mPopup->addAction(mOkAction);
+	HbAction *noAction = q_check_ptr(new HbAction(tr("No")));
+	mPopup->addAction(noAction);
 	mPopup->setTimeout(HbPopup::NoTimeout);
-	
+
 	// Launch popup syncronously
 	 mPopup->open(this, SLOT(handleMoveCertDialog(HbAction*)));
 	 RDEBUG("0", 0);
 }
 
 void CpCertView::handleMoveCertDialog(HbAction* action)
-{	
+{
 	RDEBUG("0", 0);
-	if(action == mPopup->primaryAction())
+	if(action == mOkAction)
 		{
 		QItemSelectionModel *selectionModel = mListView->selectionModel();
 		QModelIndexList mWidgetItemsToRemove = selectionModel->selectedIndexes();
@@ -469,17 +475,17 @@ void CpCertView::handleMoveCertDialog(HbAction* action)
 		QT_TRAP_THROWING
 			(
 			CleanupClosePushL(actualIndex);
-			 for (TInt index = deleteCount-1; index>= 0 ; --index) 
+			 for (TInt index = deleteCount-1; index>= 0 ; --index)
 				 {
 				 TInt selectedItemIndex = mWidgetItemsToRemove[index].row();
-				 actualIndex.Append(mSelectionIndex[selectedItemIndex]);	 
+				 actualIndex.Append(mSelectionIndex[selectedItemIndex]);
 				 }
 			 moveCertList(actualIndex);
 			 CleanupStack::PopAndDestroy(&actualIndex);
 			 )
 		}
 	mListView->deleteLater();
-	mListView = NULL;	
+	mListView = NULL;
 	mSelectAllView->deleteLater();
 	mSelectAllView = NULL;
 	RDEBUG("0", 0);
@@ -508,7 +514,7 @@ void CpCertView::deleteCertsL( RArray<TInt>& indexList )
     	{
 		mIndexList.Append(indexList[index]);
     	}
-    
+
   	mNote = new HbMessageBox(HbMessageBox::MessageTypeQuestion);
 	QString deleteMsg;
 	QString sCount;
@@ -535,35 +541,35 @@ void CpCertView::handleDeleteDialog(HbAction* action)
 {
 	RDEBUG("0", 0);
 	TInt count = mIndexList.Count();
-	
+
 	if (action != mNote->primaryAction() || count == 0 )
 		{
 		return;
 		}
-		
+
     RPointerArray<CCTCertInfo> errCerts;
     QT_TRAP_THROWING(
     		CleanupClosePushL(errCerts);
-    
+
 		for(TInt index = 0; index < count; ++index)
 			{
 			const CCTCertInfo* entry = certAt(mIndexList[index]);
-			
+
 			if( mCertView == EPersonalView || mCertView == EAuthorityView )
 				{
-				mCertDataContainer->iWrapper->DeleteCertL( 
+				mCertDataContainer->iWrapper->DeleteCertL(
 							mCertDataContainer->CertManager(), *entry );
 				}
 			else if( mCertView == ETrustedView )
 				{
-				mCertDataContainer->iWrapper->DeleteCertL( 
+				mCertDataContainer->iWrapper->DeleteCertL(
 							mCertDataContainer->CertManager(),*entry, KCMTrustedServerTokenUid );
 				}
 			else if( mCertView == EDeviceView )
 				{
 				mCertDataContainer->iWrapper->DeleteCertL(
 							mCertDataContainer->CertManager(), *entry, KCMDeviceCertStoreTokenUid );
-				}	
+				}
 			errCerts.AppendL(entry);
 			}
 		RDEBUG("0", 0);
@@ -581,10 +587,10 @@ void CpCertView::handleDeleteDialog(HbAction* action)
 			}
 		count = refreshListL();
 		refreshView(count);
-		
+
 		CleanupStack::PopAndDestroy(&errCerts);
 		) // QT_TRAP_THROWING
-    
+
 	delete mNote;
 	mNote = NULL;
 	RDEBUG("0", 0);
@@ -696,7 +702,7 @@ void CpCertView::refreshView( TInt count )
 		mRefreshedView = NULL;
 		}
 
-	mRefreshedView = q_check_ptr(new CpBaseSettingView());  
+	mRefreshedView = q_check_ptr(new CpBaseSettingView());
 	switch(mCertView)
 		{
 		case EAuthorityView:
@@ -706,45 +712,45 @@ void CpCertView::refreshView( TInt count )
 			}
 		case ETrustedView:
 			{
-			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_trusted_site_certific"));				
+			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_trusted_site_certific"));
 			break;
 			}
 		case EPersonalView:
 			{
-			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_personal_certificates"));				
+			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_personal_certificates"));
 			break;
 			}
 		case EDeviceView:
 			{
-			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_device_certificates"));				
+			mRefreshedView->setTitle(hbTrId("txt_certificate_manager_list_device_certificates"));
 			break;
 			}
-		}	
-	
-	HbMenu* menu = mRefreshedView->menu();   
+		}
+
+	HbMenu* menu = mRefreshedView->menu();
 	RDEBUG("0", 0);
 	std::auto_ptr<HbAction> endAction( q_check_ptr(new HbAction(hbTrId("txt_common_opt_delete"))) );
-	connect(endAction.get(), SIGNAL(triggered()), this, SLOT(deleteList()));    
+	connect(endAction.get(), SIGNAL(triggered()), this, SLOT(deleteList()));
 	menu->addAction(endAction.get());
 	endAction.release();
-	
+
 	QString title;
 	if(mCertView == EPersonalView)
 		{
-		title = "Move to Device";   
+		title = "Move to Device";
 		}
 	else if(mCertView == EDeviceView)
 		{
-		title = "Move to Personal";  
+		title = "Move to Personal";
 		}
 	std::auto_ptr<HbAction> moveAction(q_check_ptr(new HbAction(title)));
-	connect(moveAction.get(), SIGNAL(triggered()), this, SLOT(moveCert()));    
+	connect(moveAction.get(), SIGNAL(triggered()), this, SLOT(moveCert()));
 	menu->addAction(moveAction.get());
 	moveAction.release();
 	RDEBUG("0", 0);
 	std::auto_ptr<QGraphicsLinearLayout> layout(q_check_ptr(new QGraphicsLinearLayout(Qt::Vertical)));
-			
-	HbListWidget* mCertificateList = q_check_ptr(new HbListWidget(this)); 
+
+	HbListWidget* mCertificateList = q_check_ptr(new HbListWidget(this));
 
 	for(int index = 0; index< count; index++)
 		{
@@ -754,40 +760,40 @@ void CpCertView::refreshView( TInt count )
 		mCertificateList->addItem(singleCert.get());
 		singleCert.release();
 		}  // end of for loop
-	
-	connect(mCertificateList, SIGNAL(activated(QModelIndex)), this, SLOT(openCertFromList(QModelIndex)));   
-	connect(mCertificateList, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF))); 
-	
+
+	connect(mCertificateList, SIGNAL(activated(QModelIndex)), this, SLOT(openCertFromList(QModelIndex)));
+	connect(mCertificateList, SIGNAL(longPressed(HbAbstractViewItem*, QPointF )), this, SLOT(indicateLongPress(HbAbstractViewItem*, QPointF)));
+
 	layout->addItem(mCertificateList);
 	RDEBUG("0", 0);
 	// Refresh current view
 	QObject::connect(mRefreshedView , SIGNAL(aboutToClose()), this, SLOT(viewDone()));
-	mPrevView = mainWindow()->currentView();   
+	mPrevView = mainWindow()->currentView();
 	mainWindow()->addView(mRefreshedView);
-	mainWindow()->setCurrentView(mRefreshedView); 
+	mainWindow()->setCurrentView(mRefreshedView);
 	mRefreshedView->setLayout(layout.get());
 	layout.release();
 	RDEBUG("0", 0);
 	}
 
 
-void CpCertView::viewDone()  
+void CpCertView::viewDone()
 	{
 	RDEBUG("0", 0);
 	mCurrentView = mainWindow()->currentView();
 	mCurrentView->deleteLater();
 	mCurrentView= NULL;
-	mainWindow()->setCurrentView(mOriginalView);  	
+	mainWindow()->setCurrentView(mOriginalView);
 	}
 void CpCertView::showTrustSettings()
 	{
 	RDEBUG("0", 0);
-	mCurrentView = q_check_ptr(new CpCertTrustView(mPos, *mCertDataContainer));    
+	mCurrentView = q_check_ptr(new CpCertTrustView(mPos, *mCertDataContainer));
 	connect(mCurrentView , SIGNAL(aboutToClose()), this, SLOT(saveTrustSettings()));
-	mPrevView = mainWindow()->currentView();   
+	mPrevView = mainWindow()->currentView();
 	mainWindow()->addView(mCurrentView);
-	mainWindow()->setCurrentView(mCurrentView); 
-	}	
+	mainWindow()->setCurrentView(mCurrentView);
+	}
 
 void CpCertView::saveTrustSettings()
 	{
@@ -817,7 +823,7 @@ void CpCertView::moveCertList(RArray<TInt>& indexList)
 		{
 		mNote->setText("Use of Personal certificates may require user confirmation. Proceed?");
 		}
-	
+
 	mNote->setTimeout(HbPopup::NoTimeout);
 	mNote->setIconVisible (EFalse);
 	mNote->open(this,SLOT(handleMoveDialog(HbAction*)));
@@ -831,9 +837,9 @@ void CpCertView::handleMoveDialog(HbAction* action)
 	    {
 		return;
 	    }
-	
+
 	TInt count = mIndexList.Count();
-	
+
 	for(TInt index = 0 ; index < count; ++index)
 		{
 		CCTCertInfo* entry = NULL;
@@ -845,7 +851,7 @@ void CpCertView::handleMoveDialog(HbAction* action)
 			{
 			entry = mCertDataContainer->iDeviceLabelEntries[ mIndexList[index] ]->iDeviceEntry;
 			}
-			
+
 		// Move key first
 		TCTKeyAttributeFilter keyFilter;
 		keyFilter.iKeyId = entry->SubjectKeyId();
@@ -855,7 +861,7 @@ void CpCertView::handleMoveDialog(HbAction* action)
 		TUid targetCertStoreUid = TUid::Uid(0);
 		TUid sourceKeyStoreUid = TUid::Uid(0);
 		TUid targetKeyStoreUid = TUid::Uid(0);
-				
+
 		if(mCertView == EPersonalView)
 			{
 			sourceKeyStoreUid = KCMFileKeyStoreTokenUid;
@@ -873,12 +879,12 @@ void CpCertView::handleMoveDialog(HbAction* action)
 		RDEBUG("0", 0);
 		try
 			{
-			
-			QT_TRAP_THROWING( mCertDataContainer->iWrapper->MoveKeyL( 
+
+			QT_TRAP_THROWING( mCertDataContainer->iWrapper->MoveKeyL(
 					mCertDataContainer->KeyManager(), keyFilter, sourceKeyStoreUid, targetKeyStoreUid ));
-			
+
 			// Move certificate
-			QT_TRAP_THROWING( mCertDataContainer->iWrapper->MoveCertL( 
+			QT_TRAP_THROWING( mCertDataContainer->iWrapper->MoveCertL(
 					mCertDataContainer->CertManager(), *entry, sourceCertStoreUid, targetCertStoreUid ) );
 
 			}
@@ -910,11 +916,11 @@ void CpCertView::handleMoveDialog(HbAction* action)
 				}
 			// have to call straight away the Exit
 			// showing any error notes would corrupt the display
-			User::Exit( error.toInt() );	
+			User::Exit( error.toInt() );
 			}
 		} // for
 	// Refresh current view
-	QT_TRAP_THROWING(refreshView(refreshListL()));	
+	QT_TRAP_THROWING(refreshView(refreshListL()));
 	delete mNote;
 	mNote = NULL;
 	RDEBUG("0", 0);

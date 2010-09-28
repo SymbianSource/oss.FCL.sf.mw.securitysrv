@@ -55,6 +55,13 @@ public:
     virtual ~CpLockEdit();
     /* handles mouse events*/
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+protected:
+    /*
+           Reimplemented from HbWidgetBase. Called by the framework when 
+           a gesture event has been received.
+           @param event The received event
+       */
+       void gestureEvent(QGestureEvent *event);
 signals:
     /* signal when edit box is clicked*/
     void clicked();

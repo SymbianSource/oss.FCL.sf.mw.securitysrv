@@ -31,6 +31,13 @@ public:
     virtual ~SecCodeEdit();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
+protected:
+    /*
+           Reimplemented from HbWidgetBase. Called by the framework when 
+           a gesture event has been received.
+           @param event The received event
+       */
+       void gestureEvent(QGestureEvent *event);
 signals:
     void clicked();
 };

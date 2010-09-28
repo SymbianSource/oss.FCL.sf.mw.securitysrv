@@ -44,10 +44,17 @@ CpCertPluginLoader::~CpCertPluginLoader()
 	}
 
 QList<CpSettingFormItemData*> CpCertPluginLoader::createSettingFormItemData(CpItemDataHelper &itemDataHelper) const
-		{
-		RDEBUG("0", 0);
-  return QList<CpSettingFormItemData*>() 
-           << new CpSettingFormEntryItemDataImpl<CpSecurityView>(itemDataHelper,tr("Advanced Security"), QString());			
-		}
+	{
+	RDEBUG("0", 0);
+	CpSettingFormEntryItemData *advancedSecuritySettingsItem =
+            new CpSettingFormEntryItemDataImpl<CpSecurityView>(
+                    CpSettingFormEntryItemData::ButtonEntryItem,
+                    itemDataHelper, hbTrId("txt_certificate_manager_setlabel_advanced_security"));
+    advancedSecuritySettingsItem->setContentWidgetData("textAlignment",
+            QVariant( Qt::AlignHCenter | Qt::AlignVCenter) );
+    advancedSecuritySettingsItem->setContentWidgetData("objectName",
+            "advancedSecuritySettingsButton" );
+    return QList<CpSettingFormItemData *>() << advancedSecuritySettingsItem;
+	}
 
 Q_EXPORT_PLUGIN2(cpcertpluginloader, CpCertPluginLoader);

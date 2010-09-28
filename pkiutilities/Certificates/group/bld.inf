@@ -21,8 +21,8 @@ PRJ_PLATFORMS
 DEFAULT -ARMI
 
 PRJ_EXPORTS
-../data/certclients.dat  /epoc32/release/winscw/udeb/Z/Private/101f72a6/certclients.dat
-../data/certclients.dat  /epoc32/release/winscw/urel/Z/Private/101f72a6/certclients.dat
+../data/certclients.dat  /epoc32/release/winscw/udeb/z/Private/101f72a6/certclients.dat
+../data/certclients.dat  /epoc32/release/winscw/urel/z/Private/101f72a6/certclients.dat
 ../data/certclients.dat  /epoc32/data/z/private/101f72a6/certclients.dat
 
 

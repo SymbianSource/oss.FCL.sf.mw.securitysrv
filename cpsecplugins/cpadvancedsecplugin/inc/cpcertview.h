@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  
+* Description:
 *
 */
 
@@ -27,39 +27,41 @@ class HbListView;
 class HbAction;
 class HbDialog;
 class HbMessageBox;
+class HbAction;
+
 class CpCertView : public CpBaseSettingView
 	{
 	Q_OBJECT
-	
+
 	public:
 		explicit CpCertView(const QModelIndex& index, QGraphicsItem *parent = 0);
 		virtual ~CpCertView();
-	
+
 	public:
 		enum TCertificateViews
 			{
 			EAuthorityView=0,
 			ETrustedView,
 			EPersonalView,
-			EDeviceView			
+			EDeviceView
 			};
-		
+
 	public slots:
 		void displayPreviousView();
-		
+
 	private slots:
 		void openCertificate();
 		void openCertFromList(const QModelIndex& modelIndex);
 		void showTrustSettings();
 		void saveTrustSettings();
 		void indicateLongPress(HbAbstractViewItem*, QPointF);
-			
+
 		void deleteCertificate();
 		TInt refreshListL();
 		void refreshView( TInt aCount );
-		
+
 		void moveSelectedCert();
-		void deleteList();  
+		void deleteList();
 		void selectAll();
 		void moveCert();
 		void viewDone();
@@ -81,13 +83,14 @@ class CpCertView : public CpBaseSettingView
 		TBool mSelectAll;
 		RArray<TInt> mSelectionIndex;
 		RArray<TInt> mIndexList;
-		
+
 		HbDialog* mPopup;
+		HbAction* mOkAction;
 		HbView* mPrevView;
 		HbView* mCurrentView;
 		CpBaseSettingView* mRefreshedView;
-		HbListView* mListView;	
-		HbListView* mSelectAllView;	
+		HbListView* mListView;
+		HbListView* mSelectAllView;
 		HbView* mOriginalView;
 		HbMessageBox* mNote;
 		HbMenu* mContextMenu;

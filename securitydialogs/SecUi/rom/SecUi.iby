@@ -23,10 +23,12 @@
 file=ABI_DIR\BUILD_DIR\SecUi.dll                        SHARED_LIB_DIR\SecUi.dll
 
 //Security Notifier
-file=ABI_DIR\BUILD_DIR\SecurityNotifier.dll             SHARED_LIB_DIR\SecurityNotifier.dll
+// Not used any more. Now secuidialognotifier takes the role
+// file=ABI_DIR\BUILD_DIR\SecurityNotifier.dll             SHARED_LIB_DIR\SecurityNotifier.dll
 
 //Notifier wrapper
-ECOM_PLUGIN(Securitynotifierwrapper.dll,102071FA.rsc)
+// Not used any more. Now secuidialognotifier takes the role
+// ECOM_PLUGIN(Securitynotifierwrapper.dll,102071FA.rsc)
 
 //Security Observer
 #ifndef RD_STARTUP_CHANGE

@@ -1,0 +1,52 @@
+// Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description: Online Certificate Status Protocol ( OCSP )
+// 
+//
+
+/**
+ @file
+*/
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+// specify the source file followed by its destination here
+// copy will be used to copy the source file to its destination
+// If there's no destination then the source file will be copied
+// to the same name in /epoc32/include
+
+../inc/ocsppolicy.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsppolicy.h)
+../inc/ocsp_v2.h					SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsp.h)
+../inc/ocsptransport_v2.h				SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsptransport.h)
+../inc/ocsprequestandresponse.h     			SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsprequestandresponse.h)
+
+// ROMKIT includes
+../inc/ocsp.iby					/epoc32/rom/include/ocsp.iby
+../inc/ocsp_ncp.iby					/epoc32/rom/include/ocsp_ncp.iby
+
+PRJ_MMPFILES
+
+#ifndef TOOLS
+#ifndef TOOLS2
+
+
+#ifndef WINC
+../group/ocspcommon.mmp
+../group/ocsp.mmp
+#endif	//	WINC
+
+#endif	//	TOOLS2
+#endif	//	TOOLS
+
