@@ -33,9 +33,8 @@ PRJ_EXPORTS
 ../inc/ocsprequestandresponse.h     			SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(ocsprequestandresponse.h)
 
 // ROMKIT includes
-../inc/ocsp.iby					/epoc32/rom/include/ocsp.iby
-../inc/ocsp_ncp.iby					/epoc32/rom/include/ocsp_ncp.iby
-
+../inc/ocsp.iby		CORE_MW_LAYER_IBY_EXPORT_PATH(ocsp.iby)
+../inc/ocsp_ncp.iby	CORE_MW_LAYER_IBY_EXPORT_PATH(ocsp_ncp.iby)
 PRJ_MMPFILES
 
 #ifndef TOOLS
