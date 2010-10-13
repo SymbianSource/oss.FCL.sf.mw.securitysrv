@@ -206,6 +206,7 @@ void CValueObserver::RunL()
 void CValueObserver::DoCancel()
     {
     iProperty.Cancel();
+    iProperty.Close();
     }
 
 // End of file

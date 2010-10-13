@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies). 
+* Copyright (c) 2003-2007 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -243,19 +243,4 @@
 //
 #define qtn_cm_save_trustedsite_certificate_warning_text    "Certificate will be added as a Trusted site certificate. Future connections to site %U will be made without certificate warning. Save anyway?"
 
-//d:Confirmation query for selecting the certificate store
-//d:where new certificate will be saved. Alternatives are
-//d:device certificate store and personal certificate store.
-//d:Difference is that personal certificate store is password
-//d:protected, and password is prompted when certificates are
-//d:used. The default is to save in device certificate store
-//d:that can be used without passwords (no protection). Left
-//d:softkey is text_softkey_no, and right is text_softkey_yes.
-//d:User can move the certs between device and personal
-//d:certificate stores later by using Certificate Manager
-//d:(in Control Panel).
-//l:popup_note_window
-//r:9.2
-//
-#define qtn_certsaver_protect_with_password_query           "Protect with password?"
-
+// End of File

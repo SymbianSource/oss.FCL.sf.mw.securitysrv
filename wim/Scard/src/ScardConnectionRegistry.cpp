@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -105,8 +105,16 @@ void CScardConnectionRegistry::ConnectToReaderL(
     TConnectionHandle handle;
     handle.iClient = aClient;
     CScardConnector* conn = NULL;
+    RThread thread;
+    
+    TInt err1 = thread.Open( KScardServerName );
+    
+    if ( err1 != KErrNone )
+        {
+        _WIMTRACE(_L("WIM|Scard|CScardConnectionRegistry::ConnectToReaderL|Thread open failed"));
+        }
 
-    TRAPD( err, conn = CScardConnector::NewL( this, aMessage ) );
+    TRAPD( err, conn = CScardConnector::NewL( this, thread, aMessage ) );
     if ( err )
         {
 #ifdef _DEBUG

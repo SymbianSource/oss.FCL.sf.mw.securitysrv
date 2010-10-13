@@ -399,40 +399,44 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
     RDebug::Print(_L("(SECUI)CManualSecuritySettings::LockSimL(): Param length: %d"), length);
     #endif
 
-    if (aType.CompareF(Operator) == 0)
+    // make sure aLockCode's length won't exceed KSimLockMaxPasswordSize
+    if( aLockCode.Length() <= KSimLockMaxPasswordSize )
         {
-        aLockType = RMmCustomAPI::EOperator;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
-        }
+        if ( aType.CompareF( Operator ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EOperator;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
 
-    if (aType.CompareF(Gid1) == 0)
-        {
-        aLockType = RMmCustomAPI::EGid1;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
-        }
+        if ( aType.CompareF( Gid1 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EGid1;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
 
-    if (aType.CompareF(Gid2) == 0)
-        {
-        aLockType = RMmCustomAPI::EGid2;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
-        }
+        if ( aType.CompareF( Gid2 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EGid2;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
 
-    if (aType.CompareF(Imsi) == 0)
-        {
-        aLockType = RMmCustomAPI::EImsi;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
-        }
+        if ( aType.CompareF( Imsi ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EImsi;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
 
-    if (aType.CompareF(Operator_Gid1) == 0)
-        {    
-        aLockType = RMmCustomAPI::EOperator_Gid1;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
-        }
+        if ( aType.CompareF( Operator_Gid1 ) == 0 )
+            {    
+            aLockType = RMmCustomAPI::EOperator_Gid1;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
 
-    if (aType.CompareF(Operator_Gid2) == 0)
-        {
-        aLockType = RMmCustomAPI::EOperator_Gid2;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        if ( aType.CompareF( Operator_Gid2 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EOperator_Gid2;
+            ret = iCustomPhone.ActivateSimLock( aLockCode, aLockType );
+            }
         }
 
     #if defined(_DEBUG)
@@ -500,48 +504,51 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnLockSimL(): Param length: %d"), length);
     #endif
-    
-    if (aType.CompareF(Operator) == 0)
-        {
-        aLockType = RMmCustomAPI::EOperator;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }
 
-    if (aType.CompareF(Gid1) == 0)
+    // make sure aUnlockCode's length won't exceed KSimLockMaxPasswordSize
+    if( aUnlockCode.Length() <= KSimLockMaxPasswordSize )
         {
-        aLockType = RMmCustomAPI::EGid1;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }
+        if ( aType.CompareF( Operator ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EOperator;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
 
-    if (aType.CompareF(Gid2) == 0)
-        {
-        aLockType = RMmCustomAPI::EGid2;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }
+        if ( aType.CompareF( Gid1 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EGid1;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
 
-    if (aType.CompareF(Imsi) == 0)
-        {
-        aLockType = RMmCustomAPI::EImsi;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }
+        if ( aType.CompareF( Gid2 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EGid2;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
 
-    if (aType.CompareF(Operator_Gid1) == 0)
-        {    
-        aLockType = RMmCustomAPI::EOperator_Gid1;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }
+        if ( aType.CompareF( Imsi ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EImsi;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
 
-    if (aType.CompareF(Operator_Gid2) == 0)
-        {
-        aLockType = RMmCustomAPI::EOperator_Gid2;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        if ( aType.CompareF( Operator_Gid1 ) == 0 )
+            {    
+            aLockType = RMmCustomAPI::EOperator_Gid1;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
+
+        if ( aType.CompareF( Operator_Gid2 ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EOperator_Gid2;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
+        if ( aType.CompareF( GlobalUnlock ) == 0 )
+            {
+            aLockType = RMmCustomAPI::EGlobalUnlock;
+            ret = iCustomPhone.DeActivateSimLock( aUnlockCode, aLockType );
+            }
         }
-    if (aType.CompareF(GlobalUnlock) == 0)
-        {
-        aLockType = RMmCustomAPI::EGlobalUnlock;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
-        }    
-        
     #if defined(_DEBUG)
     RDebug::Print(_L("(SECUI)CManualSecuritySettings::UnLockSimL() RESULT: %d"), ret);
     #endif

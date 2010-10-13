@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies). 
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -89,11 +89,16 @@ TBool operator==(
 // might leave.
 // -----------------------------------------------------------------------------
 //
-CScardConnector::CScardConnector( CScardConnectionRegistry* aConnRegistry ) :
-        CScardSession(), iConnectionRegistry( aConnRegistry ), iState( EActive )
+CScardConnector::CScardConnector(
+    CScardConnectionRegistry* aConnRegistry, 
+    RThread& /*aClient*/ )
+    : CScardSession(),
+      iConnectionRegistry( aConnRegistry ),
+      iState( EActive )
     {
     _WIMTRACE(_L("WIM|Scard|CScardConnector::CScardConnector|Begin"));
     }
+
 
 // -----------------------------------------------------------------------------
 // CScardConnector::ConstructL
@@ -115,12 +120,14 @@ void CScardConnector::ConstructL( const RMessage2& aMessage )
 // -----------------------------------------------------------------------------
 //
 CScardConnector* CScardConnector::NewL(
-    CScardConnectionRegistry* aConnRegistry,
+    CScardConnectionRegistry* aConnRegistry, 
+    RThread& aClient, 
     const RMessage2& aMessage )
     {
     _WIMTRACE(_L("WIM|Scard|CScardConnector::NewL|Begin"));
-    CScardConnector* self = new( ELeave ) CScardConnector( aConnRegistry );
-
+    CScardConnector* self = new( ELeave ) CScardConnector( aConnRegistry, 
+        aClient );
+    
     CleanupStack::PushL( self );
     self->ConstructL( aMessage );
     CleanupStack::Pop( self );
