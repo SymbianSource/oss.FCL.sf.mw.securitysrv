@@ -44,13 +44,13 @@ RSecuiDialogNotifierSrv::~RSecuiDialogNotifierSrv()
 //
 TInt RSecuiDialogNotifierSrv::Connect()
     {
-    TRACE( "RSecuiDialogNotifierSrv::Connect" );
+    RDEBUG("0", 0);
     const TInt KMaxCreateSessionAttepmts = 2;
     TInt retry = KMaxCreateSessionAttepmts;
     FOREVER
         {
         TInt err = CreateSession( KSecuiDialogNotifierServerName, Version() );
-        TRACE( "RSecuiDialogNotifierSrv::Connect, create session err=%d", err );
+        RDEBUG("err", err);
         if( err != KErrNotFound && err != KErrServerTerminated )
             {
             return err;
@@ -89,7 +89,7 @@ void RSecuiDialogNotifierSrv::SecuiDialogOperation(
         const TDesC8& aInputBuffer, TDes8& aOutputBuffer,
         TRequestStatus& aStatus )
     {
-    TRACE( "RSecuiDialogNotifierSrv::SecuiDialogOperation" );
+    RDEBUG("0", 0);
     iArgs = TIpcArgs( &aInputBuffer, &aOutputBuffer );
     SendReceive( aOperation, iArgs, aStatus );
     }
@@ -100,7 +100,7 @@ void RSecuiDialogNotifierSrv::SecuiDialogOperation(
 //
 void RSecuiDialogNotifierSrv::CancelOperation()
     {
-    TRACE( "RSecuiDialogNotifierSrv::CancelOperation" );
+    RDEBUG("0", 0);
     SendReceive( KSecuiDialogCancelOperation );
     }
 
@@ -110,12 +110,12 @@ void RSecuiDialogNotifierSrv::CancelOperation()
 //
 TInt RSecuiDialogNotifierSrv::StartServer()
 {
-    TRACE( "RSecuiDialogNotifierSrv::StartServer, begin" );
+    RDEBUG("0", 0);
     RProcess server;
     TInt err = server.Create( KSecuiDialogNotifierServerName, KNullDesC );
     if( err )
         {
-        TRACE( "RSecuiDialogNotifierSrv::StartServer, create failed, err=%d", err );
+        RDEBUG("err", err);
         return err;
         }
 
@@ -130,7 +130,7 @@ TInt RSecuiDialogNotifierSrv::StartServer()
         server.Kill( KErrNone );
         }
 
-    TRACE( "RSecuiDialogNotifierSrv::StartServer, waiting rendezvous" );
+    RDEBUG("WaitForRequest", 0);
     User::WaitForRequest( status );
     if( server.ExitType() == EExitPanic )
         {
@@ -142,7 +142,7 @@ TInt RSecuiDialogNotifierSrv::StartServer()
         }
     server.Close();
 
-    TRACE( "RSecuiDialogNotifierSrv::StartServer, end err=%d", err );
+    RDEBUG("err", err);
     return err;
 }
 

@@ -31,20 +31,10 @@ SOURCE          secuidialognotifierservermain.cpp
 SOURCE          secuidialognotifierserver.cpp
 SOURCE          secuidialognotifiersession.cpp
 SOURCE          secuidialogoperation.cpp
-// SOURCE          secuidialogoperserverauthfail.cpp
 SOURCE          secuidialogoperbasicpinquery.cpp
-SOURCE          untrustedcertquery.cpp
 
 LIBRARY         euser.lib           // Base classes
 LIBRARY         efsrv.lib           // RFs
-LIBRARY         ctframework.lib     // CServerAuthenticationFailureInput
-LIBRARY         x509.lib            // CX509Certificate
-LIBRARY         x500.lib            // CX500DistinguishedName
-LIBRARY         crypto.lib          // CSignedObject
-LIBRARY         certstore.lib       // CUnifiedCertStore
-LIBRARY         DevTokenClient.lib  // CTrustSitesStore 
-LIBRARY         HbCore.lib          // CHbDeviceDialogSymbian
-LIBRARY         HbWidgets.lib       // CHbDeviceMessageBoxSymbian
 LIBRARY         secui.lib           // CSecQueryUi
 LIBRARY		   etelmm.lib 
 LIBRARY		   etel.lib 

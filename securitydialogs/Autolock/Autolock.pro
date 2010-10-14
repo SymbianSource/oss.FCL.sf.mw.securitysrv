@@ -41,6 +41,7 @@ LIBS += -lpower_save_display_mode
 LIBS += -ltstaskmonitorclient		# for TsTaskSettings
 LIBS += -lavkon									# for KeySounds
 LIBS += -lapgrfx								# for CApaWindowGroupName
+LIBS += -lscpclient							# SCP server         
 
 SERVICE.FILE = service_conf.xml
 SERVICE.OPTIONS = embeddable

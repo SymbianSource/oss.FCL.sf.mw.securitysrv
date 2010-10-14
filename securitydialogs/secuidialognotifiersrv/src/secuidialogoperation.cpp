@@ -32,8 +32,7 @@ CSecuiDialogOperation::CSecuiDialogOperation(
         TInt aReplySlot ) : CActive( CActive::EPriorityStandard ), iObserver( aObserver ),
         iMessage( aMessage ), iReplySlot( aReplySlot )
     {
-    TRACE( "CSecuiDialogOperation::CSecuiDialogOperation, iMessage 0x%08x",
-            iMessage.Handle() );
+    RDEBUG("aMessage.Handle()", aMessage.Handle());
     CActiveScheduler::Add( this );
     }
 
@@ -43,9 +42,9 @@ CSecuiDialogOperation::CSecuiDialogOperation(
 //
 CSecuiDialogOperation::~CSecuiDialogOperation()
     {
-    TRACE( "CSecuiDialogOperation::~CSecuiDialogOperation, begin" );
+    RDEBUG("0", 0);
     Cancel();
-    TRACE( "CSecuiDialogOperation::~CSecuiDialogOperation, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -54,13 +53,13 @@ CSecuiDialogOperation::~CSecuiDialogOperation()
 //
 TInt CSecuiDialogOperation::RunError( TInt aError )
     {
-    TRACE( "CSecuiDialogOperation::RunError, aError=%d", aError );
+    RDEBUG("aError", aError);
     if( !iMessage.IsNull() )
         {
-        TRACE( "CSecuiDialogOperation::RunError, completing message 0x%08x",
-                iMessage.Handle() );
+        RDEBUG("completing message iMessage.Handle()", iMessage.Handle());
         iMessage.Complete( aError );
         }
+    RDEBUG("0x99", 0x99);
     return KErrNone;
     }
 
@@ -68,13 +67,8 @@ TInt CSecuiDialogOperation::RunError( TInt aError )
 // CSecuiDialogOperation::ShowWarningNoteL()
 // ---------------------------------------------------------------------------
 //
-void CSecuiDialogOperation::ShowWarningNoteL( const TDesC& aMessage )
+void CSecuiDialogOperation::ShowWarningNoteL( const TDesC& /* aMessage */ )
     {
-    CHbDeviceMessageBoxSymbian *note =
-            CHbDeviceMessageBoxSymbian::NewL( CHbDeviceMessageBoxSymbian::EWarning );
-    CleanupStack::PushL( note );
-    note->SetTextL( aMessage );
-    (void)note->ExecL();    // waits for response or timeout
-    CleanupStack::PopAndDestroy( note );
+    RDEBUG("not used 0", 0);
     }
 

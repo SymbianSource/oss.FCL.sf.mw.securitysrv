@@ -20,31 +20,11 @@
 
 #include <e32debug.h>                   // RDebug
 
-
-// TODO: replace with OST tracing
 #ifdef _DEBUG
-#define TRACE( a, ARGS... ) { RDebug::Printf( "%s %s (%u) value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );     DebugPrint( _L( a ), ##ARGS ) ; };
+		#define RDEBUG( x, y ) RDebug::Printf( "%s %s (%u) %s=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, x, y );
 #else
-#define TRACE( a, ARGS... )
+    #define RDEBUG( x, y )
 #endif
-
-
-// ---------------------------------------------------------------------------
-// DebugPrint()
-// ---------------------------------------------------------------------------
-//
-#ifdef _DEBUG
-const TInt KMaxPrintSize = 256;
-inline void DebugPrint( TRefByValue<const TDesC> aFmt, ... )
-    {
-    VA_LIST list;
-    VA_START( list, aFmt );
-    TBuf<KMaxPrintSize> buf;
-    buf.AppendFormatList( aFmt, list );
-    RDebug::Print( buf );
-    }
-#endif
-
 
 #endif  // SECUIDIALOGSTRACE_H
 

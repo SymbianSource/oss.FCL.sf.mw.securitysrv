@@ -538,6 +538,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
      *****************************************************/
+    askChangeSimSecurityL:
     RDEBUG("0", 0);
     RMobilePhone::TMobilePhoneLockInfoV1 lockInfo;
     RMobilePhone::TMobilePhoneLockInfoV1Pckg lockInfoPkg(lockInfo);
@@ -577,6 +578,19 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
         }
     RDEBUG("lockChangeSetting", lockChangeSetting);
 
+    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
+				CWait* newWait = NULL;
+        newWait = CWait::NewL();
+    RDEBUG("newWait SetLockSetting", 0);
+    iPhone.SetLockSetting(newWait->iStatus, lockType, lockChangeSetting); // this invokes the handler
+        RDEBUG("newWait WaitForRequestL",
+                0);
+        status = newWait->WaitForRequestL();
+        RDEBUG("newWait WaitForRequestL status",
+                status);
+        delete newWait;
+
+/*
     iWait->SetRequestType(EMobilePhoneSetLockSetting);
     RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
     RDEBUG("SetLockSetting", 0);
@@ -584,6 +598,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
     RDEBUG("WaitForRequestL", 0);
     status = iWait->WaitForRequestL();
     RDEBUG("WaitForRequestL status", status);
+*/
 #ifdef __WINS__
     if (status == KErrNotSupported || status == KErrTimedOut)
         status = KErrNone;
@@ -598,17 +613,22 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
             break;
             }
         case KErrGsm0707IncorrectPassword:
+            {
+            // code was entered erroneously
+    				RDEBUG("KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword);
+            goto askChangeSimSecurityL;
+            }
         case KErrAccessDenied:
             {
             // code was entered erroneously
     				RDEBUG("KErrAccessDenied", KErrAccessDenied);
-            return ChangeSimSecurityL();
+            goto askChangeSimSecurityL;
             }
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
             {
     				RDEBUG("KErrLocked", KErrLocked);
-            return ChangeSimSecurityL();
+            goto askChangeSimSecurityL;
             }
         case KErrAbort:
             {
@@ -619,7 +639,7 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
             {
     				RDEBUG("default", status);
             ShowErrorNoteL(status);
-            return ChangeSimSecurityL();
+            goto askChangeSimSecurityL;
             }
         }
 
@@ -2576,19 +2596,13 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
     RDEBUG("maxPeriod", maxPeriod);
     if (FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw))
         {
-        TBool allow = ETrue;
-
         if ((aPeriod == 0) && (maxPeriod > 0))
             {
             RDEBUG("The period is not allowed by TARM", aPeriod);
             RDEBUG( "maxPeriod", maxPeriod );
-            allow = EFalse;
             ShowResultNoteL(R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE, CAknNoteDialog::EErrorTone);
-            }
-        if (!allow)
-            {
-            return ChangeAutoLockPeriodParamsL(aPeriod, aOldPassword, aFlags, aCaption, aShowError); // ask again
-            }
+            return R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE; // don't ask again. Settings will roll-back
+          	}
         }
 
     if (aPeriod == 0)

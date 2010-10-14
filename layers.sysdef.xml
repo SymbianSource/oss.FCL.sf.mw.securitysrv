@@ -18,9 +18,6 @@
       <module name="">
         <unit unitID="sedo.securitysrv.pkiutilities.Certificates" bldFile="&layer_real_source_path;/pkiutilities/Certificates/group" mrp="" filter="sf_build" name="sedo_securitysrv_pkiutilities_Certificates" />
       </module>
-      <module name="">
-        <unit unitID="sedo.securitysrv.pkiutilities.Certificates_OEM" bldFile="&layer_real_source_path;/pkiutilities/Certificates_OEM/group" mrp="" filter="oem_build" name="sedo_securitysrv_pkiutilities_Certificates_OEM" />
-      </module> 
     </layer>
     <layer name="api_test_layer">
       <module name="securitysrv_test">

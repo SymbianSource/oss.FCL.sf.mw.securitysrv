@@ -716,6 +716,17 @@ TInt CSecurityHandler::PassPhraseRequiredL()
             isConditionSatisfied = ETrue;
         }
 
+	// call TARM so that it verifies that configuration is in sync. This might internally accept the (default) lock code, but doesn't dismiss the query.
+	RDEBUG("isConditionSatisfied", isConditionSatisfied);
+	RSCPClient scpClientConfiguration;
+	User::LeaveIfError( scpClientConfiguration.Connect() );
+  CleanupClosePushL( scpClientConfiguration );
+	RDEBUG("call CheckConfiguration KSCPComplete", KSCPComplete);
+	TInt finalConfStatus = scpClientConfiguration.CheckConfiguration( KSCPComplete );
+	RDEBUG("finalConfStatus", finalConfStatus);
+	RDEBUG("isConditionSatisfied", isConditionSatisfied);
+	CleanupStack::PopAndDestroy();	// scpClientConfiguration
+
     // Security code at bootup: No "cancel" softkey; Emergency calls enabled.
     RMobilePhone::TMobilePhoneSecurityCode secCodeTypeToAsk = RMobilePhone::ESecurityCodePhonePassword;
     RDEBUG("isConditionSatisfied", isConditionSatisfied);

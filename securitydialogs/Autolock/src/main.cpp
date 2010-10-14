@@ -24,25 +24,62 @@
 
 #include <QApplication>
 #include "Autolock.h"
+#include "../PubSub/securityuisprivatepskeys.h"
 
 #include <hbapplication.h>
 #include <hbmainwindow.h>
+#include <apgwgnam.h>
+#include <eikenv.h>
 
 int main(int argc, char **argv)
 {
     // qInstallMsgHandler(XQSERVICEMESSAGEHANDLER);
     // XQSERVICE_DEBUG_PRINT(" ================== xxxx Autolock::main");
     qDebug() << "================== xxxx QApplication Autolock::main";
+    
+    
+    // Need to check whether process is already running. This happens if it's started from Stater, and 
+    // before fully initialized, it's started by API through QtHighway
+    TSecurityPolicy readPolicy(ECapabilityReadDeviceData);
+    TSecurityPolicy writePolicy(ECapabilityWriteDeviceData);
+    int ret = RProperty::Define(KPSUidSecurityUIs,
+            KSecurityUIsLockInitiatorUID, RProperty::EInt, TSecurityPolicy(TSecurityPolicy::EAlwaysPass),
+            writePolicy);
+		qDebug() << "KSecurityUIsLockInitiatorUID ret=" << ret;
+    int myInitiatorUID = 0;
+    int err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, myInitiatorUID);
+		qDebug() << "KSecurityUIsLockInitiatorUID err=" << err;
+		qDebug() << "KSecurityUIsLockInitiatorUID myInitiatorUID=" << myInitiatorUID;
+		err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, 0);
+
+    // it takes about 3 seconds to start it, on device
     QApplication a( argc, argv );
+    // hide server from TaskSwitcher
+    CEikonEnv * env = CEikonEnv::Static();
+    if(env) {
+        env->RootWin().SetOrdinalPosition(0, ECoeWinPriorityNeverAtFront);
+
+        CApaWindowGroupName *wgName = CApaWindowGroupName::NewLC(env->WsSession());    
+        wgName->SetHidden(ETrue); // hides us from FSW and protects us from OOM FW etc.
+        wgName->SetSystem(ETrue); // Allow only application with PowerManagement cap to shut us down    
+        // wgName->SetCaptionL(KRunningAppServerName);
+        wgName->SetWindowGroupName(env->RootWin());
+        CleanupStack::PopAndDestroy(wgName);
+    }
+
     Autolock *cl = new Autolock();
-    // qDebug() << " ================== xxxx cl->show";
+    // qDebug() << " Autolock::main cl->show";
     // cl->show();
-    // qDebug() << " ================== xxxx cl->hide";
+    // qDebug() << " Autolock::main cl->hide";
     cl->hide();
-    // qDebug() << " ================== xxxx cl->lower";
+    // qDebug() << " Autolock::main cl->lower";
     cl->lower();
+    qDebug() << " Autolock::main cl->lower";
+    err = RProperty::Set(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, 1);
     int rv = a.exec();
+    qDebug() << " Autolock::main cl->exec";
     delete cl;
+    qDebug() << " Autolock::main cl->delete";
     return rv;
 }
 

@@ -86,6 +86,7 @@ NONSHARABLE_CLASS( CServerAuthFailOperation ) : public CSecurityDialogOperation
         RMPointerArray<CCTCertInfo> iCertInfos;
         TInt iRetrieveCertIndex;
         HBufC8* iRetrievedCertBuffer;
+        TPtr8 iRetrievedCertBufPtr;
 
         enum {
             EInitialiseCertStore,

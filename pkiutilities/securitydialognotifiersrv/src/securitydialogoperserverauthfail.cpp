@@ -212,7 +212,8 @@ void CServerAuthFailOperation::DoCancel()
 //
 CServerAuthFailOperation::CServerAuthFailOperation(
         MSecurityDialogOperationObserver& aObserver, const RMessage2& aMessage,
-        TInt aReplySlot ) : CSecurityDialogOperation( aObserver, aMessage, aReplySlot )
+        TInt aReplySlot ) : CSecurityDialogOperation( aObserver, aMessage, aReplySlot ),
+        iRetrievedCertBufPtr(0, 0)
     {
     TRACE( "CServerAuthFailOperation::CServerAuthFailOperation" );
     }
@@ -457,9 +458,9 @@ void CServerAuthFailOperation::RetrieveNextTrustedSiteCertL()
             iRetrievedCertBuffer = NULL;
             }
         iRetrievedCertBuffer = HBufC8::NewL( cert.Size() );
-        TPtr8 buffer = iRetrievedCertBuffer->Des();
+        iRetrievedCertBufPtr.Set( iRetrievedCertBuffer->Des() );
 
-        iTrustedSiteCertStore->Retrieve( cert, buffer, iStatus );
+        iTrustedSiteCertStore->Retrieve( cert, iRetrievedCertBufPtr, iStatus );
         iMode = ERetrieveTrustedSiteCert;
         SetActive();
         }

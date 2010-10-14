@@ -18,10 +18,8 @@
 #include "secuidialognotifiersession.h"  // CSecuiDialogNotifierSession
 #include "secuidialognotifierserver.h"   // CSecuiDialogNotifierServer
 #include "secuidialognotifierservername.h" // KSecuiDialogsCancelOperation
-// #include "secuidialogoperserverauthfail.h" // CServerAuthFailOperation
 #include "secuidialogoperbasicpinquery.h" // CBasicPinQueryOperation
 #include "secuidialogstrace.h"           // TRACE macro
-#include <secdlgimpldefs.h>                 // TSecurityDialogOperation
 #include <keyguardaccessapi.h>
 
 const TInt KInputParam = 0;
@@ -36,7 +34,7 @@ const TInt KOutputParam = 1;
 //
 CSecuiDialogNotifierSession* CSecuiDialogNotifierSession::NewL()
     {
-		TRACE( "CBasicPinQueryOperation::RunL, 1 =%d", 1 );
+		RDEBUG("0", 0);
     CSecuiDialogNotifierSession* self = new( ELeave ) CSecuiDialogNotifierSession;
     CleanupStack::PushL( self );
     self->ConstructL();
@@ -50,13 +48,13 @@ CSecuiDialogNotifierSession* CSecuiDialogNotifierSession::NewL()
 //
 CSecuiDialogNotifierSession::~CSecuiDialogNotifierSession()
     {
-    TRACE( "CSecuiDialogNotifierSession::~CSecuiDialogNotifierSession, begin" );
+    RDEBUG("0", 0);
     Server().RemoveSession();
     delete iOperationHandler;
     iOperationHandler = NULL;
     delete iInputBuffer;
     iInputBuffer = NULL;
-    TRACE( "CSecuiDialogNotifierSession::~CSecuiDialogNotifierSession, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -65,7 +63,7 @@ CSecuiDialogNotifierSession::~CSecuiDialogNotifierSession()
 //
 void CSecuiDialogNotifierSession::CreateL()
     {
-    TRACE( "CSecuiDialogNotifierSession::~CSecuiDialogNotifierSession" );
+    RDEBUG("0", 0);
     Server().AddSession();
     }
 
@@ -75,13 +73,12 @@ void CSecuiDialogNotifierSession::CreateL()
 //
 void CSecuiDialogNotifierSession::ServiceL( const RMessage2& aMessage )
     {
-    TRACE( "CSecuiDialogNotifierSession::ServiceL, message 0x%08x", aMessage.Handle() );
+    RDEBUG("aMessage.Handle()", aMessage.Handle());
     TRAPD( error, DispatchMessageL( aMessage ) );
-    TRACE( "CSecuiDialogNotifierSession::ServiceL, dispatched, error %d", error );
+    RDEBUG("error", error);
     if( error && !aMessage.IsNull() )
         {
-        TRACE( "CSecuiDialogNotifierSession::ServiceL, completing msg 0x%08x",
-                aMessage.Handle() );
+        RDEBUG("Complete aMessage.Handle()", aMessage.Handle());
         aMessage.Complete( error );
         }
     }
@@ -92,10 +89,10 @@ void CSecuiDialogNotifierSession::ServiceL( const RMessage2& aMessage )
 //
 void CSecuiDialogNotifierSession::OperationComplete()
     {
-    TRACE( "CSecuiDialogNotifierSession::OperationComplete, begin" );
+    RDEBUG("0", 0);
     delete iOperationHandler;
     iOperationHandler = NULL;
-    TRACE( "CSecuiDialogNotifierSession::OperationComplete, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -104,7 +101,7 @@ void CSecuiDialogNotifierSession::OperationComplete()
 //
 CSecuiDialogNotifierSession::CSecuiDialogNotifierSession()
     {
-    TRACE( "CSecuiDialogNotifierSession::CSecuiDialogNotifierSession" );
+    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -113,7 +110,7 @@ CSecuiDialogNotifierSession::CSecuiDialogNotifierSession()
 //
 void CSecuiDialogNotifierSession::ConstructL()
     {
-    TRACE( "CSecuiDialogNotifierSession::ConstructL" );
+    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -132,42 +129,39 @@ CSecuiDialogNotifierServer& CSecuiDialogNotifierSession::Server()
 //
 void CSecuiDialogNotifierSession::DispatchMessageL( const RMessage2& aMessage )
     {
-    TRACE( "CSecuiDialogNotifierSession::DispatchMessageL, begin" );
+    RDEBUG("0", 0);
     if( !IsOperationCancelled( aMessage ) )
         {
         TInt lOperation = aMessage.Function();
-        TSecurityDialogOperation operation =
-                static_cast< TSecurityDialogOperation >( lOperation );
-        TRACE( "CSecuiDialogNotifierSession::DispatchMessageL, operation=%d", operation );
 
 		// from AskSecCodeInAutoLockL
 		if(lOperation==0x100+6 /*RMobilePhone::EPhonePasswordRequired*/)
 			{
-		  TRACE( "CSecuiDialogNotifierSession::DispatchMessageL, query from AskSecCodeInAutoLockL . No need to start Autolock.exe =%d", 0 );
+			RDEBUG("query from AskSecCodeInAutoLockL . No need to start Autolock.exe", 0);
 			}
 		else
 			{
 	    CKeyguardAccessApi* iKeyguardAccess = CKeyguardAccessApi::NewL( );
-	   	TRACE( "CBasicPinQueryOperation::RunL, 1 =%d", 1 );
+	   	RDEBUG("0", 0);
 			TInt err = iKeyguardAccess->ShowKeysLockedNote( );
-			TRACE( "CBasicPinQueryOperation::RunL, err =%d", err );
+			RDEBUG("err", err);
 			delete iKeyguardAccess;
 			}
-			TRACE( "CBasicPinQueryOperation::RunL, lOperation =%d", lOperation );
+			RDEBUG("lOperation", lOperation);
 				if( lOperation >= 0x1000 )	// flag for iStartup
 					lOperation -= 0x1000;
-			TRACE( "CBasicPinQueryOperation::RunL, new lOperation =%d", lOperation );
+			RDEBUG("new lOperation", lOperation);
         if( lOperation < 0x200 )
             {
             BasicPinOperationL( aMessage );
             }
         else
 	        	{
-	  				TRACE( "CBasicPinQueryOperation::RunL, lOperation =%d", lOperation );
+						RDEBUG("KErrNotSupported", KErrNotSupported);
 	          User::Leave( KErrNotSupported );
 	          }
         }
-    TRACE( "CSecuiDialogNotifierSession::DispatchMessageL, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -181,11 +175,10 @@ TBool CSecuiDialogNotifierSession::IsOperationCancelled( const RMessage2& aMessa
         {
         if( iOperationHandler )
             {
-            TRACE( "CSecuiDialogNotifierSession::CheckIfOperationCancelledL, cancelling" );
+            RDEBUG("0", 0);
             iOperationHandler->CancelOperation();
             }
-        TRACE( "CSecuiDialogNotifierSession::CheckIfOperationCancelledL, completing msg 0x%08x",
-                aMessage.Handle() );
+        RDEBUG("completing aMessage.Handle()", aMessage.Handle());
         aMessage.Complete( KErrNone );
         isCancelled = ETrue;
         }
@@ -199,7 +192,7 @@ TBool CSecuiDialogNotifierSession::IsOperationCancelled( const RMessage2& aMessa
 void CSecuiDialogNotifierSession::GetInputBufferL( const RMessage2& aMessage )
     {
     TInt inputLength = aMessage.GetDesLength( KInputParam );
-    TRACE( "CSecuiDialogNotifierSession::GetInputBufferL, inputLength=%d", inputLength );
+    RDEBUG("inputLength", inputLength);
     __ASSERT_ALWAYS( inputLength > 0, User::Leave( KErrCorrupt ) );
     if( iInputBuffer )
         {
@@ -209,23 +202,16 @@ void CSecuiDialogNotifierSession::GetInputBufferL( const RMessage2& aMessage )
     iInputBuffer = HBufC8::NewL( inputLength );
     TPtr8 inputBufferPtr( iInputBuffer->Des() );
     aMessage.ReadL( KInputParam, inputBufferPtr );
-    TRACE( "CSecuiDialogNotifierSession::GetInputBufferL, read complete" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
 // CSecuiDialogNotifierSession::ServerAuthenticationFailureL()
 // ---------------------------------------------------------------------------
 //
-void CSecuiDialogNotifierSession::ServerAuthenticationFailureL( const RMessage2& aMessage )
+void CSecuiDialogNotifierSession::ServerAuthenticationFailureL( const RMessage2& /* aMessage */ )
     {
-    TRACE( "CSecuiDialogNotifierSession::ServerAuthenticationFailureL, begin" );
-    GetInputBufferL( aMessage );
-
-    ASSERT( iOperationHandler == NULL );
-    // iOperationHandler = CServerAuthFailOperation::NewL( *this, aMessage, KOutputParam );
-    // iOperationHandler->StartL( *iInputBuffer );
-
-    TRACE( "CSecuiDialogNotifierSession::ServerAuthenticationFailureL, end" );
+    RDEBUG("not used 0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -234,13 +220,13 @@ void CSecuiDialogNotifierSession::ServerAuthenticationFailureL( const RMessage2&
 //
 void CSecuiDialogNotifierSession::BasicPinOperationL( const RMessage2& aMessage )
     {
-    TRACE( "CSecuiDialogNotifierSession::BasicPinOperationL, begin" );
+    RDEBUG("0", 0);
     GetInputBufferL( aMessage );
 
     ASSERT( iOperationHandler == NULL );
     iOperationHandler = CBasicPinQueryOperation::NewL( *this, aMessage, KOutputParam );
     iOperationHandler->StartL( *iInputBuffer );
 
-    TRACE( "CSecuiDialogNotifierSession::BasicPinOperationL, end" );
+    RDEBUG("0x99", 0x99);
     }
 

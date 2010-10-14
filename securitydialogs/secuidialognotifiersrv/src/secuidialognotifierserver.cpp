@@ -69,7 +69,7 @@ CSecuiDialogNotifierServer* CSecuiDialogNotifierServer::NewLC()
 //
 CSecuiDialogNotifierServer::~CSecuiDialogNotifierServer()
     {
-    TRACE( "CSecuiDialogNotifierServer::~CSecuiDialogNotifierServer" );
+    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ CSecuiDialogNotifierServer::~CSecuiDialogNotifierServer()
 //
 void CSecuiDialogNotifierServer::AddSession()
     {
-    TRACE( "CSecuiDialogNotifierServer::AddSession" );
+    RDEBUG("iSessionCount", iSessionCount);
     ++iSessionCount;
     }
 
@@ -88,11 +88,11 @@ void CSecuiDialogNotifierServer::AddSession()
 //
 void CSecuiDialogNotifierServer::RemoveSession()
     {
-    TRACE( "CSecuiDialogNotifierServer::RemoveSession" );
+    RDEBUG("iSessionCount", iSessionCount);
     --iSessionCount;
     if( iSessionCount == 0 )
         {
-        TRACE( "CSecuiDialogNotifierServer::RemoveSession, shutting down" );
+        RDEBUG("CActiveScheduler::Stop 0", 0);
         CActiveScheduler::Stop();
         }
     }
@@ -104,13 +104,13 @@ void CSecuiDialogNotifierServer::RemoveSession()
 CSession2* CSecuiDialogNotifierServer::NewSessionL( const TVersion &aVersion,
         const RMessage2& /*aMessage*/ ) const
     {
-    TRACE( "CSecuiDialogNotifierServer::NewSessionL" );
+    RDEBUG("0", 0);
     TVersion version( KSecuiDialogNotifierServerMajorVersionNumber,
             KSecuiDialogNotifierServerMinorVersionNumber,
             KSecuiDialogNotifierServerBuildVersionNumber );
     if( !User::QueryVersionSupported( version, aVersion ) )
         {
-        TRACE( "CSecuiDialogNotifierServer::NewSessionL, version not supported" );
+        RDEBUG("KErrNotSupported", KErrNotSupported);
         User::Leave( KErrNotSupported );
         }
 
@@ -124,7 +124,7 @@ CSession2* CSecuiDialogNotifierServer::NewSessionL( const TVersion &aVersion,
 CSecuiDialogNotifierServer::CSecuiDialogNotifierServer() :
         CPolicyServer( CActive::EPriorityStandard, KSecuiDialogNotifierServerPolicy )
     {
-    TRACE( "CSecuiDialogNotifierServer::CSecuiDialogNotifierServer" );
+    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------

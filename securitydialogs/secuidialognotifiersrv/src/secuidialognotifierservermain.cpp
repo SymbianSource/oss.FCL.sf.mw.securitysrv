@@ -26,22 +26,23 @@
 //
 LOCAL_C void MainL()
     {
-    TRACE( "SecuiDialogNotifierServer: MainL" );
+    RDEBUG("0", 0);
     CActiveScheduler* scheduler = new( ELeave ) CActiveScheduler;
     CleanupStack::PushL( scheduler );
     CActiveScheduler::Install( scheduler );
 
     CSecuiDialogNotifierServer* server = CSecuiDialogNotifierServer::NewLC();
     User::LeaveIfError( User::RenameThread( KSecuiDialogNotifierServerName ) );
-    TRACE( "SecuiDialogNotifierServer: MainL, rendezvous" );
+    RDEBUG("Rendezvous 0", 0);
 
     RProcess::Rendezvous( KErrNone );
-    TRACE( "SecuiDialogNotifierServer: MainL, activescheduler start" );
+    RDEBUG("CActiveScheduler 0", 0);
     CActiveScheduler::Start();
 
-    TRACE( "SecuiDialogNotifierServer: MainL, cleanup" );
+    RDEBUG("PopAndDestroy 0", 0);
     CleanupStack::PopAndDestroy( server );
     CleanupStack::PopAndDestroy( scheduler );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------

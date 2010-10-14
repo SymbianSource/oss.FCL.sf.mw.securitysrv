@@ -37,7 +37,7 @@ CSecuiDialogs* CSecuiDialogs::NewL(  TBool& aIsDeleted )
 //
 CSecuiDialogs::~CSecuiDialogs()
     {
-    TRACE( "CSecuiDialogs::~CSecuiDialogs, begin" );
+    RDEBUG("0", 0);
     Cancel();
     iServer.Close();
     delete iInputBuffer;
@@ -45,7 +45,7 @@ CSecuiDialogs::~CSecuiDialogs()
     delete iOutputBuffer;
     iOutputBuffer = NULL;
     iIsDeleted = ETrue;
-    TRACE( "CSecuiDialogs::~CSecuiDialogs, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -55,32 +55,32 @@ CSecuiDialogs::~CSecuiDialogs()
 void CSecuiDialogs::StartLD( const TDesC8& aBuffer, TInt aReplySlot,
         const RMessagePtr2& aMessage )
     {
-    TRACE( "CSecuiDialogs::StartLD, begin" );
+    RDEBUG("0", 0);
     User::LeaveIfError( iServer.Connect() );
 
     const TInt* ptr = reinterpret_cast< const TInt* >( aBuffer.Ptr() );
     iOperation = static_cast< TSecurityDialogOperation >( *ptr & KSecurityDialogOperationMask );
     iReplySlot = aReplySlot;
-    TRACE( "CSecuiDialogs::StartLD, iReplySlot 0x%08x", iReplySlot );
+    RDEBUG("iReplySlot", iReplySlot);
 
-    TRACE( "CSecuiDialogs::StartLD, message 0x%08x", iMessagePtr.Handle() );
+    RDEBUG("iMessagePtr.Handle()", iMessagePtr.Handle());
     iMessagePtr = aMessage;
 
-    TRACE( "CSecuiDialogs::StartLD, iOperation=%d", iOperation );
+    RDEBUG("iOperation", iOperation);
 
     TSecurityNotificationPckg pckg;
     pckg.Copy( aBuffer );
-    TRACE( "CSecuiDialogs::StartLD, Copy=%d", 1 );
+    RDEBUG("0", 0);
     TInt iStartup = pckg().iStartup;
-    TRACE( "CSecuiDialogs::StartLD, iStartup=%d", iStartup );
+    RDEBUG("iStartup", iStartup);
     TInt iEvent = pckg().iEvent;
-    TRACE( "CSecuiDialogs::StartLD, iEvent=%d", iEvent );
+    RDEBUG("iEvent", iEvent);
 		TInt lOperation = 0x0000;
     if(iStartup)
 			lOperation = 0x1000;
 		lOperation += iEvent;
     iOperation = static_cast< TSecurityDialogOperation >( lOperation );
-    TRACE( "CSecuiDialogs::StartLD, new iOperation=%d", iOperation );
+    RDEBUG("new iOperation", iOperation);
 
     __ASSERT_DEBUG( iOutputBuffer == NULL, User::Invariant() );
     TInt outputBufLen = 0;
@@ -91,7 +91,7 @@ void CSecuiDialogs::StartLD( const TDesC8& aBuffer, TInt aReplySlot,
         }
     else
     		{
-        		TRACE( "CSecuiDialogs::StartLD, not allowed iOperation =%d", iOperation );
+        		RDEBUG("not allowed iOperation", iOperation);
             User::Leave( KErrNotSupported );
         }
 
@@ -100,17 +100,17 @@ void CSecuiDialogs::StartLD( const TDesC8& aBuffer, TInt aReplySlot,
 
     if( iOutputBuffer )
         {
-        TRACE( "CSecuiDialogs::StartLD, iOutputPtr.Set outputBufLen=%d", outputBufLen );
+        RDEBUG("outputBufLen", outputBufLen);
         iOutputPtr.Set( static_cast< TUint8* >( iOutputBuffer ), outputBufLen, outputBufLen );
         iServer.SecuiDialogOperation( iOperation, *iInputBuffer, iOutputPtr, iStatus );
         }
     else
         {
-        TRACE( "CSecuiDialogs::StartLD, Leave KErrNotSupported=%d", KErrNotSupported );
+        RDEBUG("KErrNotSupported", KErrNotSupported);
         User::Leave( KErrNotSupported );
         }
     SetActive();
-    TRACE( "CSecuiDialogs::StartLD, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -119,26 +119,26 @@ void CSecuiDialogs::StartLD( const TDesC8& aBuffer, TInt aReplySlot,
 //
 void CSecuiDialogs::RunL()
     {
-    TRACE( "CSecuiDialogs::RunL, iStatus.Int()=%d", iStatus.Int() );
+    RDEBUG("0", 0);
     TInt error = iStatus.Int();
+    RDEBUG("error", error);
     User::LeaveIfError( error );
     __ASSERT_DEBUG( iOutputPtr.Ptr(), User::Invariant() );
-    TRACE( "CSecuiDialogs::RunL, calling iMessagePtr.WriteL" );
-    TRACE( "CSecuiDialogs::RunL, iReplySlot 0x%08x", iReplySlot );
+    RDEBUG("iReplySlot", iReplySlot);
     TInt maxx = iMessagePtr.GetDesMaxLength(iReplySlot);
-    TRACE( "CSecuiDialogs::RunL, maxx 0x%08x", maxx );
+    RDEBUG("maxx", maxx);
     TInt curr = iMessagePtr.GetDesLength(iReplySlot);
-    TRACE( "CSecuiDialogs::RunL, curr 2 0x%08x", curr );
+    RDEBUG("curr", curr);
     // no need to copy. Besides, it seems to crash because it's too long
     // iMessagePtr.WriteL( iReplySlot, iOutputPtr );
-    TRACE( "CSecuiDialogs::RunL, called iMessagePtr.WriteL" );
+    RDEBUG("not called WriteL", 0);
 
-    TRACE( "CSecuiDialogs::RunL, completing message 0x%08x", iMessagePtr.Handle() );
+    RDEBUG("completing iMessagePtr.Handle()", iMessagePtr.Handle());
     iMessagePtr.Complete( error );
 
-    TRACE( "CSecuiDialogs::RunL, deleting this" );
+    RDEBUG("0", 0);
     delete this;
-    TRACE( "CSecuiDialogs::RunL, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -147,14 +147,14 @@ void CSecuiDialogs::RunL()
 //
 void CSecuiDialogs::DoCancel()
     {
-    TRACE( "CSecuiDialogs::DoCancel, begin" );
+    RDEBUG("0", 0);
     iServer.CancelOperation();
     if( !iMessagePtr.IsNull() )
         {
-        TRACE( "CSecuiDialogs::DoCancel, completing message 0x%08x", iMessagePtr.Handle() );
+        RDEBUG("completing iMessagePtr.Handle()", iMessagePtr.Handle());
         iMessagePtr.Complete( KErrCancel );
         }
-    TRACE( "CSecuiDialogs::DoCancel(), end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -163,17 +163,17 @@ void CSecuiDialogs::DoCancel()
 //
 TInt CSecuiDialogs::RunError( TInt aError )
     {
-    TRACE( "CSecuiDialogs::RunError, aError=%d", aError );
+    RDEBUG("aError", aError);
     if( !iMessagePtr.IsNull() )
         {
-        TRACE( "CSecuiDialogs::RunError, completing message 0x%08x", iMessagePtr.Handle() );
+        RDEBUG("completing iMessagePtr.Handle()", iMessagePtr.Handle());
         iMessagePtr.Complete( aError );
         }
 
-    TRACE( "CSecuiDialogs::RunError, deleting this" );
+    RDEBUG("0", 0);
     delete this;
 
-    TRACE( "CSecuiDialogs::RunError, end" );
+    RDEBUG("0x99", 0x99);
     return KErrNone;
     }
 
@@ -184,7 +184,7 @@ TInt CSecuiDialogs::RunError( TInt aError )
 CSecuiDialogs::CSecuiDialogs( TBool& aIsDeleted ) : CActive( CActive::EPriorityLow ),
         iIsDeleted( aIsDeleted ), iOutputPtr( NULL, 0, 0 )
     {
-    TRACE( "CSecuiDialogs::CSecuiDialogs" );
+    RDEBUG("0", 0);
     CActiveScheduler::Add( this );
     iIsDeleted = EFalse;
     }

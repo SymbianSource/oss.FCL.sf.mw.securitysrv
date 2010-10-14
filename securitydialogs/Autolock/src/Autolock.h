@@ -34,7 +34,6 @@
 #include <QMap>
 #include <QStringList>
 #include <xqserviceprovider.h>
-#include <xqsharablefile.h>
 #include <QToolButton>
 #include <qmobilityglobal.h>
 
@@ -65,8 +64,24 @@ enum TDevicelockReason
 	EDevicelockTimer
 	};
 
+enum TDeviceDialogCreated
+	{
+	EDeviceDialogUninitialized = -1,
+	EDeviceDialogDestroyed = 0,
+	EDeviceDialogCreated = 1,
+	EDeviceDialogRaised = 2,
+	EDeviceDialogScreenSaverHidden = 0x10,
+	EDeviceDialogScreenSaverReDisplay = 0x11,
+	EDeviceDialogScreenSaver = 0x12,
+	EDeviceDialogLockIcon= 0x20,
+	EDeviceDialogLastValue
+	};
+
+class QTimer;
 
 class AutolockService;
+// handled now directly but screensaver
+// class CPowerSaveDisplayMode;
 
 class Autolock : public QWidget
 {
@@ -84,11 +99,13 @@ public:
     void DebugStatus(int value);
     void adjustInactivityTimers(int aReason);
     int updateIndicator(int aReason);
+    int TurnLights(int aMode, int aReason, int aCaller);
     int AskValidSecCode(int aReason);
     int publishStatus(int aReason);
     int TryChangeStatus(int aReason);
     int setLockDialog(int aReason, int status);
     int showNoteIfRequested(int aReason);
+    int setDeviceDialogStatus(int aStatus);
 
     bool event(QEvent *event);    
     bool eventFilter(QObject *, QEvent *);
@@ -109,12 +126,21 @@ public slots:
     void subscriberKAknKeyguardStatusChanged();
     void subscriberKCoreAppUIsAutolockStatusChanged();
     void subscriberKHWRMGripStatusChanged();
+    void subscriberKCTsyCallStateChanged();
+    void subscriberKSecurityUIsDismissDialogChanged();
+    void subscriberKSecurityUIsTestCodeChanged();
 
 private slots:
     void activeKeyguard();
     void notActiveKeyguard();
     void activeDevicelock();
     void notActiveDevicelock();
+    void switchScreensaverMode( int mode );
+    void switchScreensaverToPowerSaveMode();
+    void handleMessageFromScreensaver( const QVariantMap &data );
+    void handleScreensaverClosed();
+private:
+    int handleLockSwitch();
 
 private:
     AutolockService* mService;
@@ -128,6 +154,9 @@ private:
     QValueSpaceSubscriber *subscriberKAknKeyguardStatus;
     QValueSpaceSubscriber *subscriberKCoreAppUIsAutolockStatus;
     QValueSpaceSubscriber *subscriberKHWRMGripStatus;
+    QValueSpaceSubscriber *subscriberKCTsyCallState;
+    QValueSpaceSubscriber *subscriberKSecurityUIsDismissDialog;
+    QValueSpaceSubscriber *subscriberKSecurityUIsTestCode;
 
 		AutolockUserActivityService* serviceKeyguard;
 		AutolockUserActivityService* serviceDevicelock;
@@ -135,9 +164,23 @@ private:
 		int iLockStatus;
 		int iLockStatusPrev;
 		CSecQueryUi *iSecQueryUi;
-		int iSecQueryUiCreated;
+		int iSecQueryUiCreated;	// not used
 		HbDeviceDialog *iDeviceDialog;
-		int iDeviceDialogCreated;
+		int iDeviceDialogStatus;
+    TInt32 mPowerKeyCaptureHandle;
+    TInt32 mApplicationKeyCaptureHandle;
+    TInt32 mApplicationLongKeyCaptureHandle;
+    TInt32 mEKeyDeviceFCaptureHandle;
+    TInt32 mEKeyBellCaptureHandle;
+    TInt32 mEKeyYesCaptureHandle;
+    TInt32 mEKeyNoCaptureHandle;
+    TBool iLockCodeQueryInDisplay;
+    QTimer *mScreensaverModeTimer;
+    // these two are handled now directly by screensaver
+    // CPowerSaveDisplayMode *mScreensaverPowerSave;
+    // HBufC16 *mScreensaverPowerSavePixelBuffer;
+    TInt32 iProcessingEvent;
+		int iTempDisableOnlyKeyguardBecauseIncomingCall;
 };
 
 class AutolockService : public XQServiceProvider

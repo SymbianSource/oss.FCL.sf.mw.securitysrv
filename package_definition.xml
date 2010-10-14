@@ -134,6 +134,12 @@
    <component id="securitynotifier" filter="s60,build_as_app" name="Security Notifier">
     <unit bldFile="securitydialogs/securitynotifier/group"/>
    </component>
+   <component id="secuidialognotifier" filter="s60,build_as_app" introduced="^4" name="SecUi Dialog Notifier">
+    <unit bldFile="securitydialogs/secuidialognotifier/group"/>
+   </component>
+   <component id="secuidialognotifiersrv" filter="s60,build_as_app" introduced="^4" name="SecUi Dialog Notifier Server">
+    <unit bldFile="securitydialogs/secuidialognotifiersrv/group"/>
+   </component>
    <component id="lockclient" filter="s60,build_as_app" name="Lock Client" introduced="^3">
     <unit bldFile="securitydialogs/lockclient/group" qt:proFile="lockclient.pro"/>
    </component>
@@ -162,8 +168,8 @@
    <component id="simpincodeplugin" name="SIM PIN Code Plugin" introduced="^4" filter="s60,build_as_app" class="plugin">
       <unit bldFile="cpsecplugins/simpincodeplugin" qt:proFile="pincodeplugin.pro"/>
    </component>
-   <component id="cpadvancedsecplugin" name="Advanced Security Plugin" introduced="^4" filter="s60,build_as_app" class="plugin">
-      <unit bldFile="cpsecplugins/cpadvancedsecplugin/group" qt:proFile="advancedsecplugin.pro"/>
+   <component id="cpadvancedsecplugin" name="Advanced Security Settings Plugin" introduced="^4" filter="s60,build_as_app" class="plugin">
+      <unit bldFile="cpsecplugins/cpadvancedsecplugin" qt:proFile="cpadvancedsecplugin.pro"/>
    </component>
   </collection>
   <collection id="boottimeintegritycheck" name="Boot Time Integrity Check" level="plugin">

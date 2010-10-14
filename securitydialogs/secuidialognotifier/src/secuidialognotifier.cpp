@@ -28,7 +28,7 @@
 //
 CSecuiDialogNotifier::~CSecuiDialogNotifier()
     {
-    TRACE( "CSecuiDialogNotifier::~CSecuiDialogNotifier" );
+    RDEBUG("0", 0);
     Cancel();
     }
 
@@ -38,7 +38,7 @@ CSecuiDialogNotifier::~CSecuiDialogNotifier()
 //
 CSecuiDialogNotifier* CSecuiDialogNotifier::NewL()
     {
-		TRACE( "CSecuiDialogNotifier::NewL, 1 =%d", 1 );
+		RDEBUG("0", 0);
     CSecuiDialogNotifier* self = new( ELeave ) CSecuiDialogNotifier;
     CleanupStack::PushL( self );
     self->ConstructL();
@@ -52,7 +52,7 @@ CSecuiDialogNotifier* CSecuiDialogNotifier::NewL()
 //
 void CSecuiDialogNotifier::Release()
     {
-    TRACE( "CSecuiDialogNotifier::Release" );
+    RDEBUG("0", 0);
     delete this;
     }
 
@@ -62,7 +62,7 @@ void CSecuiDialogNotifier::Release()
 //
 CSecuiDialogNotifier::TNotifierInfo CSecuiDialogNotifier::RegisterL()
     {
-		TRACE( "CSecuiDialogNotifier::RegisterL, 1 =%d", 1 );
+		RDEBUG("0", 0);
     return Info();
     }
 
@@ -72,7 +72,7 @@ CSecuiDialogNotifier::TNotifierInfo CSecuiDialogNotifier::RegisterL()
 //
 CSecuiDialogNotifier::TNotifierInfo CSecuiDialogNotifier::Info() const
     {
-		TRACE( "CSecuiDialogNotifier::Info, 1 =%d", 1 );
+		RDEBUG("0", 0);
 
     TNotifierInfo info;
     static const TUid KUidSecuiDialogNotifier = { 0x10005988 };
@@ -90,26 +90,26 @@ CSecuiDialogNotifier::TNotifierInfo CSecuiDialogNotifier::Info() const
 void CSecuiDialogNotifier::StartL( const TDesC8& aBuffer, TInt aReplySlot,
         const RMessagePtr2& aMessage )
     {
-    TRACE( "CSecuiDialogNotifier::StartL, begin" );
+    RDEBUG("0", 0);
 
     TRAPD( err, DoStartL( aBuffer, aReplySlot, aMessage ) );
-    TRACE( "CSecuiDialogNotifier::StartL, DoStartL err=%d", err );
+    RDEBUG("err", err);
     if( err )
         {
         if( iSecuiDialogs && !iIsSecuiDialogsDeleted )
             {
-            TRACE( "CSecuiDialogNotifier::StartL, deleting iSecuiDialogs" );
+            RDEBUG("0", 0);
             delete iSecuiDialogs;
             iSecuiDialogs = NULL;
             }
         if( !aMessage.IsNull() )
             {
-            TRACE( "CSecuiDialogNotifier::StartL, completing message" );
+            RDEBUG("0", 0);
             aMessage.Complete( err );
             }
         }
 
-    TRACE( "CSecuiDialogNotifier::StartL, end" );
+    RDEBUG("0x99", 0x99);
     }
 
 // ---------------------------------------------------------------------------
@@ -127,10 +127,10 @@ TPtrC8 CSecuiDialogNotifier::StartL( const TDesC8& /*aBuffer*/ )
 //
 void CSecuiDialogNotifier::Cancel()
     {
-    TRACE( "CSecuiDialogNotifier::Cancel" );
+    RDEBUG("0", 0);
     if( iSecuiDialogs && !iIsSecuiDialogsDeleted )
         {
-        TRACE( "CSecuiDialogNotifier::Cancel, deleting iSecuiDialogs" );
+        RDEBUG("0", 0);
         delete iSecuiDialogs;
         iSecuiDialogs = NULL;
         }
@@ -151,7 +151,7 @@ TPtrC8 CSecuiDialogNotifier::UpdateL( const TDesC8& /*aBuffer*/ )
 //
 CSecuiDialogNotifier::CSecuiDialogNotifier()
     {
-    TRACE( "CSecuiDialogNotifier::CSecuiDialogNotifier" );
+    RDEBUG("0", 0);
     }
 
 // ---------------------------------------------------------------------------
@@ -169,7 +169,7 @@ void CSecuiDialogNotifier::ConstructL()
 void CSecuiDialogNotifier::DoStartL( const TDesC8& aBuffer, TInt aReplySlot,
         const RMessagePtr2& aMessage )
     {
-		TRACE( "CSecuiDialogNotifier::DoStartL, 1 =%d", 1 );
+		RDEBUG("0", 0);
 
     iSecuiDialogs = CSecuiDialogs::NewL( iIsSecuiDialogsDeleted );
     iSecuiDialogs->StartLD( aBuffer, aReplySlot, aMessage );
