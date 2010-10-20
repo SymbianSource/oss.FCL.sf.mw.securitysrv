@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+
+<qresource prefix="/demo">
+    <file alias="empty" >resources/empty.png</file>
+    <file alias="generic" >resources/generic.png</file>
+    <file alias="list1" >resources/list1.png</file>
+</qresource>
+</RCC>

@@ -43,6 +43,7 @@ TVersion RLockAccessExtension::GetVersion( )
 // ---------------------------------------------------------------------------
 TInt RLockAccessExtension::TryConnect( RWsSession& aWsSession )
 	{
+	(void)aWsSession;
 	TInt ret(KErrNone);
 	/*
 	this is the old methd. Now we use QtHighway
@@ -83,6 +84,7 @@ TInt RLockAccessExtension::EnsureConnected( )
 	// This is done because Autolock.exe should start at the beginning, but it might not be ready yet.
 	// As Qthighway will start it, it's better to give time for the first one to prepare itself.
 	TInt err = KErrNone;
+	err = err;
 	TInt numAttempts = 0;
 	TInt numberOfInstances = 0;
 	do
@@ -130,7 +132,7 @@ TInt RLockAccessExtension::EnsureConnected( )
 		err = RProperty::Get(KPSUidSecurityUIs, KSecurityUIsLockInitiatorUID, value);
 		RDEBUG("err", err);
 		RDEBUG("value", value);
-		if(value<1)
+		if(value==0 || value==-1)
 			{
 			RDEBUG("Autolock.exe has started but it's not fully running", value);
 			User::After(5*100*1000);	// half a second

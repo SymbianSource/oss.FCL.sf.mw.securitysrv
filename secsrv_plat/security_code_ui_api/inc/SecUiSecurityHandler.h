@@ -25,9 +25,9 @@
 
 #include <etelmm.h>
 #include <rmmcustomapi.h>
-#include <aknquerydialog.h>
-#include <aknnotedialog.h>
-
+#include <e32base.h>
+#define EErrorTone 1
+#define EConfirmationTone 2
 
 // FORWARD DECLARATIONS
 class RTASecuritySession;
@@ -120,6 +120,7 @@ class CSecurityHandler : public CBase
         *  CancelOpenQuery
         */
 			TInt CancelOpenQuery(TInt aStatus);
+		  HBufC* TranslateLC(const TDesC& aMessageId, TInt aFlags);
 
 	private: // DATA
 		/*****************************************************
@@ -129,7 +130,6 @@ class CSecurityHandler : public CBase
 		RMobilePhone& iPhone;
 		TBool iQueryCanceled;
 		CCodeQueryDialog* iSecurityDlg;
-		CAknNoteDialog* iNoteDlg;
 		TBool* iDestroyedPtr;
         RMmCustomAPI iCustomPhone;
         RTASecuritySession* iSecuritySession;

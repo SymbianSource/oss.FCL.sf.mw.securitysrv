@@ -374,45 +374,48 @@ EXPORT_C TBool CManualSecuritySettings::LockSimL(const TDesC& aLockCode,const TD
     RMmCustomAPI::TLockNumber aLockType;
     TInt ret = KErrGsm0707IncorrectPassword;
     TInt length = aLockCode.Length();
+    aLockType = RMmCustomAPI::EOperator;
+    aLockType = aLockType;
 
     RDEBUG("length", length);
 		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+		// On 07/10/2010, this API is non-existent. Temporarilly remove the offendig code until a solution is found.
     if(aLockCode.Length() <= KSimLockMaxPasswordSize)
     {
     if (aType.CompareF(Operator) == 0)
         {
         aLockType = RMmCustomAPI::EOperator;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
 
     if (aType.CompareF(Gid1) == 0)
         {
         aLockType = RMmCustomAPI::EGid1;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
 
     if (aType.CompareF(Gid2) == 0)
         {
         aLockType = RMmCustomAPI::EGid2;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
 
     if (aType.CompareF(Imsi) == 0)
         {
         aLockType = RMmCustomAPI::EImsi;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
 
     if (aType.CompareF(Operator_Gid1) == 0)
         {    
         aLockType = RMmCustomAPI::EOperator_Gid1;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
 
     if (aType.CompareF(Operator_Gid2) == 0)
         {
         aLockType = RMmCustomAPI::EOperator_Gid2;
-        ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
+        // ret = iCustomPhone.ActivateSimLock( aLockCode,aLockType );
         }
     }
 
@@ -469,52 +472,55 @@ EXPORT_C TBool CManualSecuritySettings::UnlockSimL(const TDesC& aUnlockCode,cons
     *****************************************************/
     RDEBUG("0", 0);
     RMmCustomAPI::TLockNumber aLockType;
+    aLockType = RMmCustomAPI::EOperator;
+    aLockType = aLockType;
     TInt ret = KErrGsm0707IncorrectPassword;
     TInt length = aUnlockCode.Length();
 
     RDEBUG("length", length);
 		// from now on, it accepts restricted lengths, although some locks are 20, others are 13
+		// On 07/10/2010, this API is non-existent. Temporarilly remove the offendig code until a solution is found.
     if(aUnlockCode.Length() <= KSimLockMaxPasswordSize)
     {
     if (aType.CompareF(Operator) == 0)
         {
         aLockType = RMmCustomAPI::EOperator;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
 
     if (aType.CompareF(Gid1) == 0)
         {
         aLockType = RMmCustomAPI::EGid1;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
 
     if (aType.CompareF(Gid2) == 0)
         {
         aLockType = RMmCustomAPI::EGid2;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
 
     if (aType.CompareF(Imsi) == 0)
         {
         aLockType = RMmCustomAPI::EImsi;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
 
     if (aType.CompareF(Operator_Gid1) == 0)
         {    
         aLockType = RMmCustomAPI::EOperator_Gid1;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
 
     if (aType.CompareF(Operator_Gid2) == 0)
         {
         aLockType = RMmCustomAPI::EOperator_Gid2;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }
     if (aType.CompareF(GlobalUnlock) == 0)
         {
         aLockType = RMmCustomAPI::EGlobalUnlock;
-        ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
+        // ret = iCustomPhone.DeActivateSimLock( aUnlockCode,aLockType );
         }    
         
     }

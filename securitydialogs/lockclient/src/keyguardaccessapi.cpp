@@ -89,6 +89,7 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeylockEnabled()
             case EKeyguardLocked:
             case EKeyguardAutolockEmulation:
                 ret = ETrue;
+                break;
             case EKeyguardNotActive:
             default:
                 ret = EFalse;
@@ -119,6 +120,7 @@ EXPORT_C TBool CKeyguardAccessApi::IsKeyguardEnabled()
             {
             case EKeyguardLocked:
                 ret = ETrue;
+                break;
             case EKeyguardAutolockEmulation:
             case EKeyguardNotActive:
             default:
@@ -257,5 +259,22 @@ EXPORT_C TInt CKeyguardAccessApi::TestPanicClient( )
 #endif
     }
 
+// ---------------------------------------------------------------------------
+// Confirms that the server is running.
+// Returns KErrNone / Error
+// ---------------------------------------------------------------------------
+EXPORT_C TInt CKeyguardAccessApi::AutolockStatus( TInt aCommand, TInt aParam)
+    {
+		RDEBUG("aCommand", aCommand);
+		RDEBUG("aParam", aParam);
+    if ( iLockAccessExtension )
+        {
+        return iLockAccessExtension->SendMessage( aCommand, aParam );
+        }
+    else
+        {
+        return KErrNotFound;
+        }
+    }
 
 // End of File

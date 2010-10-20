@@ -683,10 +683,10 @@ void C3GPPBootstrapHttpHandler::MHFRunL( RHTTPTransaction aTransaction, const TH
 // C3GPPBootstrapHttpHandler::MHFRunError()
 // -----------------------------------------------------------------------------
 // 
-TInt C3GPPBootstrapHttpHandler::MHFRunError(TInt aError, RHTTPTransaction /*aTransaction*/, const THTTPEvent& aEvent)
+TInt C3GPPBootstrapHttpHandler::MHFRunError(TInt aError, RHTTPTransaction /*aTransaction*/, const THTTPEvent& /*aEvent*/)
     {
     GBA_TRACE_DEBUG_NUM(("MHFRunError called with error code = %d"), aError);    
-    GBA_TRACE_DEBUG_NUM(("MHFRunError called with http event = %d"),aEvent.iStatus );
+    //GBA_TRACE_DEBUG_NUM(("MHFRunError called with http event = %d"),aEvent.iStatus );
     // tell caller that there was an error
     TRAPD(err, iEventSink->EventRequestCompletedL(aError));
     return err;
@@ -959,7 +959,7 @@ TInt C3GPPBootstrapHttpHandler::FindHeaderPartToUseL( RHTTPTransaction aTransact
 // -----------------------------------------------------------------------------
 //
 void C3GPPBootstrapHttpHandler::EncodeDigestAuthL( const RString& aUsername, 
-            const RString& aPW, 
+            const RString& /*aPW*/, 
             RHTTPTransaction& aTransaction,
             TInt aHeaderPart,
             const THTTPHdrVal& aRequestUri )
@@ -972,8 +972,8 @@ void C3GPPBootstrapHttpHandler::EncodeDigestAuthL( const RString& aUsername,
     GBA_TRACE_DEBUG(("Username:"));
     GBA_TRACE_DEBUG(aUsername.DesC());
 
-    GBA_TRACE_DEBUG(("Passwd:"));
-    GBA_TRACE_DEBUG_BINARY(aPW.DesC());
+    //GBA_TRACE_DEBUG(("Passwd:"));
+    //GBA_TRACE_DEBUG_BINARY(aPW.DesC());
   
     TBuf8<KHashLength> hash;
     TBuf8<KHashLength> cnonce;

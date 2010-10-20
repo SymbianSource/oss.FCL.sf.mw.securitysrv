@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+
+<qresource prefix="/resources">
+    <file alias="qtg_fr_list_new_item_b" >resources/qtg_fr_list_new_item_b.svg</file>
+    <file alias="qtg_fr_list_new_item_c" >resources/qtg_fr_list_new_item_c.svg</file>
+    <file alias="qtg_fr_list_new_item_t" >resources/qtg_fr_list_new_item_t.svg</file>
+    <file alias="qtg_nmailui_minus_sign" >resources/qtg_nmailui_minus_sign.svg</file>
+    <file alias="qtg_nmailui_plus_sign" >resources/qtg_nmailui_plus_sign.svg</file>
+</qresource>
+</RCC>

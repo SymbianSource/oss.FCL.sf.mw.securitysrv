@@ -593,7 +593,13 @@ TBool CRemoteLock::ActivateDeviceLock()
 void CRemoteLock::CheckSettingsL()
     {
     RL_TRACE_PRINT(" [ rl.exe ] CheckSettingsL () "); 
-    iRemoteLockSetting->GetEnabled( iIsEnabled );
+    TBool remoteLockStatus( EFalse );
+
+    remoteLockStatus = iRemoteLockSetting->GetEnabled( iIsEnabled );
+    if(!remoteLockStatus)
+    	{
+    	RL_TRACE_PRINT(" [ rl.exe ] !remoteLockStatus "); 
+    	}
     
     delete iStoredCode;
     iStoredCode = NULL;

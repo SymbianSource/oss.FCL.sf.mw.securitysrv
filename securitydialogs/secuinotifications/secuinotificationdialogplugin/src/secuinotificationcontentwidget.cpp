@@ -186,7 +186,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
  		    if (queryType & ESecUiAlphaSupported)
 		    	{
 					RDEBUG("ESecUiAlphaSupported", ESecUiAlphaSupported);
- 	    		codeTop->setInputMethodHints(Qt::ImhNone);
+ 	    		codeTop->setInputMethodHints(Qt::ImhPreferNumbers);	// all queries start with numbers, even if allow alpha. (old value was ImhNone)
 		  		}
  		    if (queryType & ESecUiSecretSupported)
 		    	{
@@ -281,7 +281,7 @@ void SecUiNotificationContentWidget::constructFromParameters(const QVariantMap &
 	 		    if (queryType & ESecUiAlphaSupported)
 			    	{
 			    	RDEBUG("setInputMethodHints", 0);
-	 	    		codeBottom->setInputMethodHints(Qt::ImhNone);
+	 	    		codeBottom->setInputMethodHints(Qt::ImhPreferNumbers);	// all queries start with numbers, even if allow alpha. (old value was ImhNone)
 			  		}
 	 		    if (queryType & ESecUiSecretSupported)
 			    	{

@@ -24,7 +24,6 @@
 //  INCLUDES
 #include <etelmm.h>
 #include <rmmcustomapi.h>
-#include <aknnotedialog.h>
 
 #define KSecUiAskNever 1
 #define KSecUiAskOnlyIfInvalid 2
@@ -172,7 +171,7 @@ class CSecuritySettings : public CBase
         *
 		* @return Void
 		*/			
-		static void ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone aTone);
+		static void ShowResultNoteL(TInt aResourceID, TInt aTone);
 
         IMPORT_C TInt ChangeRemoteLockStatusL( TBool& aRemoteLockStatus, TDes& aRemoteLockCode, TInt aAutoLockPeriod );
         
@@ -198,6 +197,7 @@ class CSecuritySettings : public CBase
 		*/
 		IMPORT_C TInt  AskSecCodeParamsL(RMobilePhone::TMobilePassword &aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
 		IMPORT_C TInt  ChangePinRequestParamsL(TInt aEnable, RMobilePhone::TMobilePassword aOldPassword, TInt aFlags, TDes& aCaption, TInt aShowError);
+		IMPORT_C static HBufC* TranslateLC(const TDesC& aMessageId, TInt aFlags);
 
     private:
     

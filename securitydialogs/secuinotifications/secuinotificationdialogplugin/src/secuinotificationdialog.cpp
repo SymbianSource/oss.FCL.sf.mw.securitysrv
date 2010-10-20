@@ -255,6 +255,7 @@ void SecUiNotificationDialog::showEvent(QShowEvent *event)
 
 // ----------------------------------------------------------------------------
 // SecUiNotificationDialog::constructDialog()
+// This is be called many times, because every key is sent (for checking Emergency and TARM repeat-characters policy). In these cases, the dialog is not created. It returns half-way.
 // ----------------------------------------------------------------------------
 //
 bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
@@ -265,21 +266,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
     setDismissPolicy(HbPopup::NoDismiss);
     setModal(true);
     mShowEventReceived = false;
-    subscriberKSecurityUIsDismissDialog = NULL;
     titleWidget = NULL;
-		RDEBUG("subscriberKSecurityUIsDismissDialog NULL", 0);
-
-    subscriberKSecurityUIsDismissDialog = new QValueSpaceSubscriber("/KPSUidSecurityUIs/KSecurityUIsDismissDialog", this);
-    if(subscriberKSecurityUIsDismissDialog)
-    	{
-    	RDEBUG("subscriberKSecurityUIsDismissDialog created", 1);
-    	}
-    else
-    	{
-    	RDEBUG("subscriberKSecurityUIsDismissDialog not created", 0);
-    	}
-    connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
-		RDEBUG("subscriberKSecurityUIsDismissDialog", 1);
 
     // Title
     // this is also done later in the widget
@@ -305,7 +292,7 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
         // This is created only if needed (i.e. errors for NewLockCode)
         // titleWidget = new HbLabel(titleText);
         // setHeadingWidget(titleWidget);
-    }
+    }	// KDialogTitle
 
 	    if (parameters.contains(KEmergency)) {
 					RDEBUG("KEmergency", 1);
@@ -317,6 +304,15 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	isEmergency = 1;
 	        	okAction->setEnabled(true);
 	        	okAction->setText(hbTrId("Call"));
+		 		    if (queryType & ESecUiSecretSupported)
+				    	{
+							RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
+		 	    		codeTop->setEchoMode(HbLineEdit::Normal);
+		 	    		QString codeTopText = codeTop->text();
+    					RDEBUGQT("codeTop->text()", codeTop->text());
+    					codeTop->setText(codeTopText);	// this time, display the characters . Not use "Emergency" because 1123 will need to restore from 112.
+								    					// note that this is not needed. 112 will soh. However, this will move the cursor to the end, as expected.
+				  		}
     				return true;
 	        	}
 	        if(!emergencyText.compare("emergencyNo"))
@@ -325,9 +321,19 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	isEmergency = 0;
 	        	okAction->setEnabled(false);	// 112 -> 1122 (=password) . This is handled by   < lMinLength 
 	        	okAction->setText(hbTrId("Ok"));
+		 		    if (queryType & ESecUiSecretSupported)
+				    	{
+							RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
+		 	    		codeTop->setEchoMode(HbLineEdit::Password);
+				  		}
+				  	else
+				    	{
+							RDEBUG("ESecUiSecretNotSupported", ESecUiSecretNotSupported);
+		 	    		codeTop->setEchoMode(HbLineEdit::Normal);
+				  		}
     				return true;
 	        	}
-	    }
+	    }	// KEmergency
 	    // after TARM validation.
 	    if (parameters.contains(KInvalidNewLockCode)) {
 					RDEBUG("KInvalidNewLockCode", 0);
@@ -457,8 +463,23 @@ bool SecUiNotificationDialog::constructDialog(const QVariantMap &parameters)
 	        	}
 	        // need to return because all objects are already created
    				return true;
-	    }
+	    }	// KInvalidNewLockCode
 	
+    subscriberKSecurityUIsDismissDialog = NULL;
+		RDEBUG("subscriberKSecurityUIsDismissDialog NULL", 0);
+
+    subscriberKSecurityUIsDismissDialog = new QValueSpaceSubscriber("/KPSUidSecurityUIs/KSecurityUIsDismissDialog", this);
+    if(subscriberKSecurityUIsDismissDialog)
+    	{
+    	RDEBUG("subscriberKSecurityUIsDismissDialog created", 1);
+    	}
+    else
+    	{
+    	RDEBUG("subscriberKSecurityUIsDismissDialog not created", 0);
+    	}
+    connect(subscriberKSecurityUIsDismissDialog, SIGNAL(contentsChanged()), this, SLOT(subscriberKSecurityUIsDismissDialogChanged()));
+		RDEBUG("subscriberKSecurityUIsDismissDialog", 1);
+
     // Content
     SecUiNotificationContentWidget *content = new SecUiNotificationContentWidget();
     content->constructFromParameters(parameters);
@@ -654,6 +675,14 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     {
 		RDEBUG("0", 0);
     	RDEBUGQT("text", text);
+    	RDEBUGQT("codeTop->text()", codeTop->text());
+    	RDEBUGQT("codeTopTextPrev", codeTopTextPrev);
+    	if(!codeTopTextPrev.compare(text))
+    		{
+    		RDEBUG("Strings are same. Nothing to do. return", 0);
+    		return;
+    		}
+    	codeTopTextPrev = text;
     	if(queryDual)
     		{
     		codeBottom->setText("");	// any change resets the verification.
@@ -669,7 +698,15 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     		RDEBUGQT("too short text", text);
     		okAction->setEnabled(false);
 				RDEBUG("lEmergencySupported", lEmergencySupported);
-				if( lEmergencySupported && text.length() > 2 )	// emergency numbers need at least 3 digits
+				if( lEmergencySupported && text.length() <= 2 )
+					{
+	 		    if (queryType & ESecUiSecretSupported)
+			    	{
+						RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
+	 	    		codeTop->setEchoMode(HbLineEdit::Password);
+			  		}
+					}
+				else if( lEmergencySupported && text.length() > 2 )	// emergency numbers need at least 3 digits
 					{	// check whether it's a emergency number
 					QVariant codeTopVar(text);
   				mResultMap.insert(KCodeTopIndex, codeTopVar);
@@ -681,8 +718,28 @@ void SecUiNotificationDialog::handleCodeTopChanged(const QString &text)
     		// might use a flag to avoid re-setting. But this complicates things if there's another initial verification
     		RDEBUGQT("long enough text", text);
     		okAction->setText(hbTrId("Ok"));
+    		RDEBUG("queryDual", queryDual);
+    		RDEBUG("isEmergency", isEmergency);
     		if(queryDual==0)	// only if Bottom is not used
-    			okAction->setEnabled(true);
+    			{
+	    		if (isEmergency == 1)	// transition emergencyYes->emergencyNo
+		        	{
+		        	RDEBUG("new isEmergency", isEmergency);
+			 		    if (queryType & ESecUiSecretSupported)
+					    	{
+								RDEBUG("ESecUiSecretSupported", ESecUiSecretSupported);
+			 	    		codeTop->setEchoMode(HbLineEdit::Password);
+					  		}
+					  	else
+					    	{
+								RDEBUG("ESecUiSecretNotSupported", ESecUiSecretNotSupported);
+			 	    		codeTop->setEchoMode(HbLineEdit::Normal);
+					  		}
+					   }
+        	isEmergency = 0;
+        	okAction->setEnabled(true);	// 112 -> 1122 (=password) . This is handled by   < lMinLength 
+        	okAction->setText(hbTrId("Ok"));
+					}
     		}
     QVariant codeTopVar(text);
     mResultMap.insert(KCodeTopIndex, codeTopVar);
@@ -787,7 +844,7 @@ void SecUiNotificationDialog::handlebut3Changed()
     	RDEBUGQT("codeTopText", codeTopText);
     	codeTopText = codeTopText + "5" ;
     	RDEBUGQT("codeTopText+5", codeTopText);
-    	codeTop->setEchoMode(HbLineEdit::PasswordEchoOnEdit);
+    	codeTop->setEchoMode(HbLineEdit::Password);
     	RDEBUGQT("codeTopText", codeTopText);
     	codeTop->setText(codeTopText);
     	RDEBUG("setFocus", 0);

@@ -20,8 +20,8 @@
 #ifndef     __CAUTOLOCKSETTINGPAHGE_H
 #define     __CAUTOLOCKSETTINGPAHGE_H
 
-#include    <aknradiobuttonsettingpage.h>
 #include    <eikmobs.h>
+#include <e32base.h>
 
 class CAutoLockSettingPage : public CBase
 	{

@@ -19,7 +19,6 @@
 #include <etelmm.h>
 #include <exterror.h>
 #include <textresolver.h>
-#include <aknnotedialog.h>
 #include <mmtsy_names.h>
 #include <centralrepository.h> 
 #include <gsmerror.h>
@@ -36,7 +35,6 @@
 #include "secuicodequerydialog.h"
 #include "SecUiWait.h"
 #include <hb/hbcore/hbtextresolversymbian.h>
-#include <aknnotewrappers.h>
 #include <StringLoader.h>
 #include <RemoteLockSettings.h>
 #include <featmgr.h>
@@ -132,12 +130,12 @@ EXPORT_C void CSecuritySettings::ConstructL()
     User::LeaveIfError(iCustomPhone.Open(iPhone));
 
     iSecurityHandler = new (ELeave) CSecurityHandler(iPhone);
+
     _LIT(KFileName, "secui_");
     _LIT(KPath, "z:/resource/qt/translations/");
     RDEBUG("HbTextResolverSymbian", 0);
     TBool result = HbTextResolverSymbian::Init(KFileName, KPath);
     RDEBUG("result", result);
-
     }
 //
 // ----------------------------------------------------------
@@ -377,11 +375,11 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
     // this queries both, and verifies itself
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_rem_code"));
+    HBufC* stringHolder = TranslateLC(_L("txt_device_dialog_new_locking_message"),0);	// old txt_pin_code_dialog_new_rem_code
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("|"));
-    HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("Verify"));
+    HBufC* stringHolder2 = TranslateLC(_L("txt_device_dialog_retype_locking_message"),0);
     title.Append(stringHolder2->Des());
     CleanupStack::PopAndDestroy(stringHolder2);
     queryAccepted = iSecQueryUi->SecQueryDialog(title, aRemoteLockCode, SEC_REMOTELOCK_CODE_MIN_LENGTH, SEC_REMOTELOCK_CODE_MAX_LENGTH, ESecUiAlphaSupported
@@ -411,6 +409,7 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
     RDEBUG("ret", ret);
     retLockcode = scpClient.VerifyCurrentLockcode(aRemoteLockCode, aISACode, aFailedPolicies, scpFlags);
     RDEBUG("retLockcode", retLockcode);
+    retLockcode=retLockcode;
  	  scpClient.Close();
 
     RDEBUG("aISACode", 0);
@@ -435,7 +434,7 @@ TInt CSecuritySettings::RemoteLockCodeQueryL(TDes& aRemoteLockCode)
         // remote lock code matches the security code 
         // and that is not allowed
         RDEBUG( "return KErrCancel because msg matches code", KErrCancel );
-        ShowResultNoteL(R_REMOTELOCK_INVALID_CODE, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_REMOTELOCK_INVALID_CODE, EErrorTone);
         return KErrCancel;
         }
 
@@ -521,7 +520,7 @@ TInt CSecuritySettings::RemoteLockSetLockSettingL(TBool aLockSetting)
         default:
             break;
         }
-
+		// This doesn't loop
     RDEBUG( "retValue", retValue );
     return retValue;
     }
@@ -583,22 +582,10 @@ EXPORT_C TBool CSecuritySettings::ChangeSimSecurityL()
         newWait = CWait::NewL();
     RDEBUG("newWait SetLockSetting", 0);
     iPhone.SetLockSetting(newWait->iStatus, lockType, lockChangeSetting); // this invokes the handler
-        RDEBUG("newWait WaitForRequestL",
-                0);
+        RDEBUG("newWait WaitForRequestL", 0);
         status = newWait->WaitForRequestL();
-        RDEBUG("newWait WaitForRequestL status",
-                status);
+        RDEBUG("newWait WaitForRequestL status", status);
         delete newWait;
-
-/*
-    iWait->SetRequestType(EMobilePhoneSetLockSetting);
-    RProperty::Set(KPSUidSecurityUIs, KSecurityUIsQueryRequestCancel, ESecurityUIsQueryRequestOk);
-    RDEBUG("SetLockSetting", 0);
-    iPhone.SetLockSetting(iWait->iStatus, lockType, lockChangeSetting); // this invokes the handler
-    RDEBUG("WaitForRequestL", 0);
-    status = iWait->WaitForRequestL();
-    RDEBUG("WaitForRequestL status", status);
-*/
 #ifdef __WINS__
     if (status == KErrNotSupported || status == KErrTimedOut)
         status = KErrNone;
@@ -692,7 +679,7 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
 
         if (simRemoved)
             {
-            ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_INSERT_SIM, EErrorTone);
             return EFalse;
             }
 
@@ -759,7 +746,7 @@ EXPORT_C TBool CSecuritySettings::ChangeUPinRequestL()
             case KErrGsm0707OperationNotAllowed:
                 {
                 // not allowed with this sim
-                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
                 return EFalse;
                 }
             case KErrGsm0707IncorrectPassword:
@@ -814,7 +801,7 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
 
         if (simRemoved)
             {
-            ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_INSERT_SIM, EErrorTone);
             return EFalse;
             }
 
@@ -863,11 +850,11 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
 
             if (activeCode != RMobilePhone::ESecurityUniversalPin)
                 {
-                ShowResultNoteL(R_UPIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_UPIN_NOT_ALLOWED, EErrorTone);
                 }
             else
                 {
-                ShowResultNoteL(R_PIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_PIN_NOT_ALLOWED, EErrorTone);
                 }
             return EFalse;
             }
@@ -918,7 +905,7 @@ EXPORT_C TBool CSecuritySettings::SwitchPinCodesL()
             case KErrGsm0707OperationNotAllowed:
                 {
                 // not allowed with this sim
-                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
                 return EFalse;
                 }
             case KErrGsm0707IncorrectPassword:
@@ -1032,11 +1019,11 @@ EXPORT_C TBool CSecuritySettings::AskPin2L()
             case KErrGsmSSPasswordAttemptsViolation:
             case KErrLocked:
                 // Pin2 features blocked permanently!
-                ShowResultNoteL(R_PIN2_REJECTED, CAknNoteDialog::EConfirmationTone);
+                ShowResultNoteL(R_PIN2_REJECTED, EConfirmationTone);
                 break;
             case KErrGsm0707SimNotInserted:
                 // not allowed with this sim
-                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
                 break;
             default:
                 ShowErrorNoteL(retPhone);
@@ -1071,7 +1058,7 @@ EXPORT_C TBool CSecuritySettings::AskPin2L()
     iSecQueryUi = CSecQueryUi::NewL();
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_pin2_code"));
+    HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_pin2_code"),0);
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("$"));
@@ -1105,16 +1092,16 @@ EXPORT_C TBool CSecuritySettings::AskPin2L()
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             // code was entered erroneously
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
             return AskPin2L();
         case KErrGsm0707OperationNotAllowed:
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             return EFalse;
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
             // code was blocked
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
             return EFalse;
         default:
             ShowErrorNoteL(retPhone);
@@ -1155,11 +1142,11 @@ EXPORT_C void CSecuritySettings::SetFdnModeL()
             case KErrGsmSSPasswordAttemptsViolation:
             case KErrLocked:
                 // Pin2 features blocked permanently!
-                ShowResultNoteL(R_PIN2_REJECTED, CAknNoteDialog::EConfirmationTone);
+                ShowResultNoteL(R_PIN2_REJECTED, EConfirmationTone);
                 break;
             case KErrGsm0707SimNotInserted:
                 // not allowed with this sim
-                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
                 break;
             default:
                 ShowErrorNoteL(ret);
@@ -1214,7 +1201,7 @@ EXPORT_C void CSecuritySettings::SetFdnModeL()
             break;
         case KErrGsm0707OperationNotAllowed:
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             break;
         default:
             ShowErrorNoteL(status);
@@ -1247,7 +1234,7 @@ void CSecuritySettings::ShowErrorNoteL(TInt aError)
     {
     RDEBUG("aError", aError);
 
-    ShowResultNoteL(aError, CAknNoteDialog::EErrorTone);
+    ShowResultNoteL(aError, EErrorTone);
     }
 
 //
@@ -1256,7 +1243,7 @@ void CSecuritySettings::ShowErrorNoteL(TInt aError)
 // Shows result note
 // ----------------------------------------------------------
 // qtdone
-void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone aTone)
+void CSecuritySettings::ShowResultNoteL(TInt aResourceID, TInt aTone)
     {
     RDEBUG("aResourceID", aResourceID);
 
@@ -1312,7 +1299,7 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
             title.Append(_L("Not Supported"));
             break;
         case R_SEC_BLOCKED:
-            titleTr.Append(_L("txt_pin_code_dpopinfo_security_blocked"));
+            titleTr.Append(_L("txt_devicelocking_dpophead_lock_code_is_blocked"));	// txt_pin_code_dpopinfo_security_blocked
             title.Append(_L("BLOCKED"));
             break;
         case R_CODE_ERROR:
@@ -1329,7 +1316,7 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
             satisfactoryIcon = 1;
             break;
         case R_CODES_DONT_MATCH:
-            titleTr.Append(_L("R_CODES_DONT_MATCH"));
+            titleTr.Append(_L("txt_devicelocking_dpophead_codes_do_not_match"));
             title.Append(_L("CODES DONT MATCH"));
             break;
         case R_PIN_CODE_CHANGED_NOTE:
@@ -1496,11 +1483,21 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
 
     HBufC* stringHolder;
     RDEBUG("titleTr", 1);
-    stringHolder = HbTextResolverSymbian::LoadLC(titleTr); // titleTr  should I    TRAP( err,    ?
-    RDEBUG("got stringHolder", 1);
+    stringHolder = TranslateLC(titleTr,0); // titleTr  should I    TRAP( err,    ?
+    if(!stringHolder)
+    	{
+    	RDEBUG("not got stringHolder", 0);
+    	}
+  	else
+  		{
+    	RDEBUG("got stringHolder", 1);
+  		}
     messageBox->SetTextL(stringHolder->Des()); // title
     RDEBUG("aResourceID", aResourceID);
+    RDEBUG("titleTr", 0);
     RDEBUGSTR(titleTr);
+    RDEBUG("stringHolder->Des()", 0);
+    RDEBUGSTR(stringHolder->Des());
     _LIT(KIconNameWondering, "qtg_small_smiley_wondering");
     _LIT(KIconNameSmile, "qtg_small_smiley_smile");
     if (satisfactoryIcon==1)
@@ -1508,7 +1505,7 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
     else
         messageBox->SetIconNameL(KIconNameWondering);
 
-    if (aTone == CAknNoteDialog::EErrorTone) // another case is EConfirmationTone
+    if (aTone == EErrorTone) // another case is EConfirmationTone
         {
         messageBox->SetTimeout(messageBox->Timeout() * 2); // errors are displayed double time
         }
@@ -1516,9 +1513,11 @@ void CSecuritySettings::ShowResultNoteL(TInt aResourceID, CAknNoteDialog::TTone 
     RDEBUG("calling ExecL", 0);
     CHbDeviceMessageBoxSymbian::TButtonId selection = messageBox->ExecL();	// this guarantees that it waits for the dismiss/timeout
     RDEBUG("called ExecL.selection", selection);
+
     CleanupStack::PopAndDestroy(stringHolder);
     CleanupStack::PopAndDestroy(); // messageBox
 
+		RDEBUG("0x99", 0x99);
     }
 
 //
@@ -1628,6 +1627,9 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
     RDEBUG("aCaption", 0);
     RDEBUGSTR(aCaption);
     RDEBUG("aShowError", aShowError);
+    (void)aFlags;
+    (void)aCaption;
+    (void)aShowError;
 
     /*****************************************************
      *    Series 60 Customer / ETel
@@ -1643,7 +1645,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
     RDEBUG("simRemoved", simRemoved);
     if (simRemoved)
         {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_INSERT_SIM, EErrorTone);
         return KErrAccessDenied;
         }
     RMobilePhone::TMobilePhoneSecurityCode secCodeType;
@@ -1693,7 +1695,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         {
         RDEBUG("RMobilePhone::ELockSetDisabled",
                 RMobilePhone::ELockSetDisabled);
-        ShowResultNoteL(R_PIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_PIN_NOT_ALLOWED, EErrorTone);
         return KErrAccessDenied;
         }
 
@@ -1728,7 +1730,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         iSecQueryUi = CSecQueryUi::NewL();
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_pin_code"));
+        HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_pin_code"),0);
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         title.Append(_L("$"));
@@ -1755,7 +1757,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
 #endif
         if (res != KErrNone)
             {
-            ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(res, EErrorTone);
 		        newPassword = _L("");
 		        oldPassword = _L("");
             goto askChangePinParamsL;
@@ -1775,7 +1777,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         // this is not needed because the dialog won't allow to close, unless codes match
         // codes do not match -> note -> ask new pin and verification codes again
         // if(newPassword.Length()>0)
-        //  ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
+        //  ShowResultNoteL(R_CODES_DONT_MATCH, EErrorTone);
 
         newPassword = _L("");
 
@@ -1788,11 +1790,11 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
             // this queries both, and verifies itself
             TBuf<0x100> title;
             title.Zero();
-            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin_code"));
+            HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_new_pin_code"),0);
             title.Append(stringHolder->Des());
             CleanupStack::PopAndDestroy(stringHolder);
             title.Append(_L("|"));
-            HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_verify_new_pin_code"));
+            HBufC* stringHolder2 = TranslateLC(_L("txt_pin_code_dialog_verify_new_pin_code"),0);
             title.Append(stringHolder2->Des());
             CleanupStack::PopAndDestroy(stringHolder2);
             queryAccepted = iSecQueryUi->SecQueryDialog(title, newPassword, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported
@@ -1830,14 +1832,14 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         case KErrNone:
             {
             // code changed 
-            ShowResultNoteL(R_PIN_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+            ShowResultNoteL(R_PIN_CODE_CHANGED_NOTE, EConfirmationTone);
             break;
             }
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             {
             // code was entered erroneously. This is strange, because it was verified before
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
             goto askChangePinParamsL;
             }
         case KErrGsmSSPasswordAttemptsViolation:
@@ -1849,7 +1851,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinParamsL(RMobilePhone::TMobilePassword 
         case KErrGsm0707OperationNotAllowed:
             {
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             return KErrGsm0707OperationNotAllowed;
             }
         case KErrAbort:
@@ -1897,7 +1899,7 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
 
     if (simRemoved)
         {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_INSERT_SIM, EErrorTone);
         return KErrAccessDenied;
         }
 
@@ -1936,7 +1938,7 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
     RDEBUG("RMobilePhone::ELockSetDisabled", RMobilePhone::ELockSetDisabled);
     if (lockInfo.iSetting == RMobilePhone::ELockSetDisabled)
         {
-        ShowResultNoteL(R_UPIN_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_UPIN_NOT_ALLOWED, EErrorTone);
         return KErrAccessDenied;
         }
 
@@ -1965,7 +1967,7 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
     iSecQueryUi = CSecQueryUi::NewL();
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_upin_code"));
+    HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_upin_code"),0);
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("$"));
@@ -1988,11 +1990,11 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
         TBuf<0x100> title;
         title.Zero();
 
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_upin_code"));
+        HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_new_upin_code"),0);
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         title.Append(_L("|"));
-        HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_retype_upin_code"));
+        HBufC* stringHolder2 = TranslateLC(_L("txt_pin_code_dialog_retype_upin_code"),0);
         title.Append(stringHolder2->Des());
         CleanupStack::PopAndDestroy(stringHolder2);
         queryAccepted = iSecQueryUi->SecQueryDialog(title, newPassword, SEC_C_PIN_CODE_MIN_LENGTH, SEC_C_PIN_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported
@@ -2022,14 +2024,14 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
         case KErrNone:
             {
             // code changed 
-            ShowResultNoteL(R_UPIN_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+            ShowResultNoteL(R_UPIN_CODE_CHANGED_NOTE, EConfirmationTone);
             break;
             }
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             {
             // code was entered erroneously
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
             ChangeUPinParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
             break;
             }
@@ -2041,7 +2043,7 @@ EXPORT_C TInt CSecuritySettings::ChangeUPinParamsL(RMobilePhone::TMobilePassword
         case KErrGsm0707OperationNotAllowed:
             {
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             return KErrGsm0707OperationNotAllowed;
             }
         case KErrAbort:
@@ -2080,7 +2082,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
 
     if (simRemoved)
         {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_INSERT_SIM, EErrorTone);
         return KErrAccessDenied;
         }
 
@@ -2118,11 +2120,11 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
             case KErrGsmSSPasswordAttemptsViolation:
             case KErrLocked:
                 // Pin2 features blocked permanently!
-                ShowResultNoteL(R_PIN2_REJECTED, CAknNoteDialog::EConfirmationTone);
+                ShowResultNoteL(R_PIN2_REJECTED, EConfirmationTone);
                 break;
             case KErrGsm0707SimNotInserted:
                 // not allowed with this sim
-                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+                ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
                 break;
             default:
                 ShowErrorNoteL(ret);
@@ -2160,7 +2162,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
     iSecQueryUi = CSecQueryUi::NewL();
     TBuf<0x100> title;
     title.Zero();
-    HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_pin2_code"));
+    HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_pin2_code"),0);
     title.Append(stringHolder->Des());
     CleanupStack::PopAndDestroy(stringHolder);
     title.Append(_L("$"));
@@ -2183,11 +2185,11 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
         // this queries both, and verifies itself
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_pin2_code"));
+        HBufC* stringHolder = TranslateLC(_L("txt_pin_code_dialog_new_pin2_code"),0);
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         title.Append(_L("|"));
-        HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("Verify"));
+        HBufC* stringHolder2 = TranslateLC(_L("Verify"),0);
         title.Append(stringHolder2->Des());
         CleanupStack::PopAndDestroy(stringHolder2);
         queryAccepted = iSecQueryUi->SecQueryDialog(title, newPassword, SEC_C_PIN2_CODE_MIN_LENGTH, SEC_C_PIN2_CODE_MAX_LENGTH, ESecUiAlphaNotSupported | ESecUiCancelSupported
@@ -2218,13 +2220,13 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
         case KErrNone:
             {
             // code changed 
-            ShowResultNoteL(R_PIN2_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+            ShowResultNoteL(R_PIN2_CODE_CHANGED_NOTE, EConfirmationTone);
             break;
             }
         case KErrGsm0707IncorrectPassword:
         case KErrAccessDenied:
             {
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
             ChangePin2ParamsL(_L(""), _L(""), aFlags, aCaption, aShowError);
             break;
             }
@@ -2232,7 +2234,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
         case KErrLocked:
             {
             // Pin2 blocked!
-            ShowResultNoteL(KErrLocked, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(KErrLocked, EErrorTone);
             CSecurityHandler* handler = new (ELeave) CSecurityHandler(iPhone);
             CleanupStack::PushL(handler);
             handler->HandleEventL(RMobilePhone::EPuk2Required);
@@ -2242,7 +2244,7 @@ EXPORT_C TInt CSecuritySettings::ChangePin2ParamsL(RMobilePhone::TMobilePassword
         case KErrGsm0707OperationNotAllowed:
             {
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             return KErrGsm0707OperationNotAllowed;
             }
         case KErrAbort:
@@ -2266,6 +2268,9 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
     askChangeSecCodeParamsL:
     RDEBUG("aFlags", aFlags);
     RDEBUG("aShowError", aShowError);
+    (void)aCaption;
+    (void)aFlags;
+    (void)aShowError;
     /*****************************************************
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
@@ -2307,7 +2312,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 	     	 scpClient.Close();
 	     	 if(res!=KErrNone)
 	     	 		{
-	     	 		ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
+	     	 		ShowResultNoteL(res, EErrorTone);
      	 	 		return res;
      	 	 		}
 				}
@@ -2327,7 +2332,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
         iSecQueryUi = CSecQueryUi::NewL();
         TBuf<0x100> title;
         title.Zero();
-        HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_sec_code"));
+        HBufC* stringHolder = TranslateLC(_L("txt_devicelocking_dialog_lock_code"),0);
         title.Append(stringHolder->Des());
         CleanupStack::PopAndDestroy(stringHolder);
         queryAccepted = iSecQueryUi->SecQueryDialog(title, oldPassword, SEC_C_SECURITY_CODE_MIN_LENGTH, SEC_C_SECURITY_CODE_MAX_LENGTH, ESecUiAlphaSupported
@@ -2360,7 +2365,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
     // this validate on ISA . No need to do iPhone.VerifySecurityCode
     retCurrLockcode = scpCurrClient.VerifyCurrentLockcode(oldPassword, aCurrISACode, aCurrFailedPolicies, scpCurrFlags);
     RDEBUG("retCurrLockcode", retCurrLockcode);
-
+		retCurrLockcode=retCurrLockcode;
     RDEBUG("aCurrISACode", 0);
     RDEBUGSTR(aCurrISACode);
     scpCurrClient.Close();
@@ -2381,7 +2386,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 
     if (res != KErrNone)
         {
-        ShowResultNoteL(res, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(res, EErrorTone);
         return res;
         }
 
@@ -2390,7 +2395,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
         // codes do not match -> note -> ask new pin and verification codes again  
         // note that this never happens because the dialog doesn't dismiss until both codes match
         if (newPassword.Length() > 0)
-            ShowResultNoteL(R_CODES_DONT_MATCH, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_CODES_DONT_MATCH, EErrorTone);
 
             {
             queryAccepted = KErrCancel;
@@ -2402,11 +2407,11 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
             RDEBUG("lType", lType);
             TBuf<0x100> title;
             title.Zero();
-            HBufC* stringHolder = HbTextResolverSymbian::LoadLC(_L("txt_pin_code_dialog_new_sec_code"));
+            HBufC* stringHolder = TranslateLC(_L("txt_devicelocking_dialog_new_lock_code"),0);
             title.Append(stringHolder->Des());
             CleanupStack::PopAndDestroy(stringHolder);
             title.Append(_L("|"));
-            HBufC* stringHolder2 = HbTextResolverSymbian::LoadLC(_L("Verify"));
+            HBufC* stringHolder2 = TranslateLC(_L("txt_devicelocking_dialog_retype_new_lock_code"),0);
             title.Append(stringHolder2->Des());
             CleanupStack::PopAndDestroy(stringHolder2);
             queryAccepted = iSecQueryUi->SecQueryDialog(title, newPassword, SEC_C_SECURITY_CODE_MIN_LENGTH, SEC_C_SECURITY_CODE_MAX_LENGTH, lType);
@@ -2469,6 +2474,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 	        // scpClient.StoreCode( newCode );
 	        RArray<TDevicelockPolicies> aFailedPolicies;
 	        TDevicelockPolicies failedPolicy;
+	        failedPolicy = failedPolicy;
 	        RDEBUG("newScpCode", 0);
 	        RDEBUGSTR( newScpCode );
 	        RDEBUG("oldScpCode", 0);
@@ -2494,14 +2500,14 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 		        case KErrNone:
 		            {
 	            	RDEBUG( "showing R_SECURITY_CODE_CHANGED_NOTE", R_SECURITY_CODE_CHANGED_NOTE );
-	            	ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, CAknNoteDialog::EConfirmationTone);
+	            	ShowResultNoteL(R_SECURITY_CODE_CHANGED_NOTE, EConfirmationTone);
 		            break;
 		          	}
 		        case KErrAccessDenied:	// TARM has wrong UID
 		            {
 	          		res = KErrTDevicelockPolicies+EDevicelockTotalPolicies+1;
 	          		RDEBUG( "res", res );
-	          		ShowResultNoteL(res, CAknNoteDialog::EConfirmationTone);
+	          		ShowResultNoteL(res, EConfirmationTone);
 	          		res = KErrAccessDenied;	// no reason for retry, as it will fail again and again
 	          		break;
 	          		}
@@ -2509,7 +2515,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 		        case KErrLocked:
 		            {
 	          		RDEBUG( "KErrLocked", KErrLocked );
-		            ShowResultNoteL(R_SEC_BLOCKED, CAknNoteDialog::EErrorTone);
+		            ShowResultNoteL(R_SEC_BLOCKED, EErrorTone);
 		            goto askChangeSecCodeParamsL;
 		            // break;
 		            }
@@ -2517,7 +2523,7 @@ EXPORT_C TInt CSecuritySettings::ChangeSecCodeParamsL(RMobilePhone::TMobilePassw
 		            {
 		            // code was entered erroneously
 	          		RDEBUG( "KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword );
-		            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone);
+		            ShowResultNoteL(R_CODE_ERROR, EErrorTone);
 		            goto askChangeSecCodeParamsL;
 		            // break;
 		            }
@@ -2548,6 +2554,10 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
     askChangeAutoLockPeriodParamsL:
     RDEBUG("aPeriod", aPeriod);
     RDEBUG("aFlags", aFlags);
+    (void)aOldPassword;
+    (void)aCaption;
+    (void)aShowError;
+    (void)aFlags;
     /*****************************************************
      *    Series 60 Customer / ETel
      *    Series 60  ETel API
@@ -2556,6 +2566,7 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
     RMobilePhone::TMobilePhoneLockSetting lockChange(RMobilePhone::ELockSetDisabled);
     RMobilePhone::TMobilePhoneLock lockType = RMobilePhone::ELockPhoneDevice;
     TInt oldPeriod = aPeriod;
+    oldPeriod=oldPeriod;
 
     TInt maxPeriod = 0;
     if (FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw))
@@ -2600,7 +2611,7 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
             {
             RDEBUG("The period is not allowed by TARM", aPeriod);
             RDEBUG( "maxPeriod", maxPeriod );
-            ShowResultNoteL(R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE, EErrorTone);
             return R_SECUI_TEXT_AUTOLOCK_MUST_BE_ACTIVE; // don't ask again. Settings will roll-back
           	}
         }
@@ -2665,19 +2676,18 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
             break;
         case KErrGsmSSPasswordAttemptsViolation:
         case KErrLocked:
-            RDEBUG("KErrLocked", KErrLocked)
-            ;
-            ShowResultNoteL(KErrLocked, CAknNoteDialog::EErrorTone); // the old code didn't show messages
+            RDEBUG("KErrLocked", KErrLocked);
+            // ShowResultNoteL(KErrLocked, EErrorTone); // the old code didn't show messages. PassPhraseRequiredL does it.
             goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrGsm0707IncorrectPassword:
             RDEBUG("KErrGsm0707IncorrectPassword", KErrGsm0707IncorrectPassword)
-            ShowResultNoteL(R_CODE_ERROR, CAknNoteDialog::EErrorTone); // the old code didn't show messages
+            // ShowResultNoteL(R_CODE_ERROR, EErrorTone); // the old code didn't show messages. PassPhraseRequiredL does it.
             goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrAccessDenied:
             RDEBUG("KErrAccessDenied", KErrAccessDenied)
             ;
             // code was entered erroneously
-            ShowResultNoteL(KErrAccessDenied, CAknNoteDialog::EErrorTone); // the old code didn't show messages
+            // ShowResultNoteL(KErrAccessDenied, EErrorTone); // the old code didn't show messages. PassPhraseRequiredL does it.
             goto askChangeAutoLockPeriodParamsL; // ask again
         case KErrAbort:
             // User pressed "cancel" in the code query dialog.
@@ -2686,7 +2696,7 @@ EXPORT_C TInt CSecuritySettings::ChangeAutoLockPeriodParamsL(TInt aPeriod, RMobi
         default:
             RDEBUG("default", status)
             ;
-            ShowResultNoteL(status, CAknNoteDialog::EErrorTone); // the old code didn't show messages
+            // ShowResultNoteL(status, EErrorTone); // the old code didn't show messages. PassPhraseRequiredL does it.
             goto askChangeAutoLockPeriodParamsL; // ask again
         }
     RDEBUG("aPeriod", aPeriod);
@@ -2707,7 +2717,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable, RMobilePh
 
     if (simRemoved)
         {
-        ShowResultNoteL(R_INSERT_SIM, CAknNoteDialog::EErrorTone);
+        ShowResultNoteL(R_INSERT_SIM, EErrorTone);
         return KErrAccessDenied;
         }
 
@@ -2782,7 +2792,7 @@ EXPORT_C TInt CSecuritySettings::ChangePinRequestParamsL(TInt aEnable, RMobilePh
         case KErrGsm0707OperationNotAllowed:
             {
             // not allowed with this sim
-            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, CAknNoteDialog::EErrorTone);
+            ShowResultNoteL(R_OPERATION_NOT_ALLOWED, EErrorTone);
             return KErrGsm0707OperationNotAllowed;
             }
         case KErrGsm0707IncorrectPassword:
@@ -2821,12 +2831,104 @@ EXPORT_C TBool CSecuritySettings::AskSecCodeParamsL(RMobilePhone::TMobilePasswor
     RDEBUG("aShowError", aShowError);
     RDEBUG("This doesn't do anything", 0);
     RDEBUG("aFlags", aFlags);
+    (void)aCaption;
+    (void)aFlags;
+    (void)aShowError;
 
     // the password parameters are not used
     if (aOldPassword.Length() > 0)
         RDEBUGSTR(aOldPassword);
 
     return EFalse;
+    }
+//
+// ----------------------------------------------------------
+// CSecuritySettings::TranslateLC()
+// ----------------------------------------------------------
+// qtdone
+HBufC* CSecuritySettings::TranslateLC(const TDesC& aMessageId, TInt aFlags)
+    {
+    RDEBUG("aFlags", aFlags);
+    RDEBUG("aMessageId", 1);
+    (void)aFlags;
+
+    _LIT(KPath, "z:/resource/qt/translations/");
+
+		TBool result=EFalse;
+		result=result;
+    TBuf<0x100> title;
+    title.Zero();
+		HBufC* stringHolder;
+    RDEBUG("before stringHolder", 0);
+		stringHolder = HbTextResolverSymbian::LoadLC(aMessageId);
+    RDEBUG("got stringHolder", 1);
+		title.Append(stringHolder->Des());
+    RDEBUG("title", 0);
+    RDEBUGSTR(title);
+		RDEBUG("searched in default", 1);
+		// this doesn't work because an error in HbTextResolverSymbian::Init
+		int doDoubleTranslations = 0;
+		RDEBUG("doDoubleTranslations", doDoubleTranslations);
+		if(doDoubleTranslations && !title.CompareF(aMessageId))
+			{
+			// not translated. Now check in common
+			// CleanupStack::PopAndDestroy(stringHolder);
+				RDEBUG("1", 1);
+			title.Zero();
+				RDEBUG("1", 1);
+    	_LIT(KFileNameSecUi, "secui_");
+				RDEBUG("1", 1);
+	    result = HbTextResolverSymbian::Init(KFileNameSecUi, KPath);
+				RDEBUG("1", 1);
+	    RDEBUG("bool result", result);
+				RDEBUG("1", 1);
+			stringHolder = HbTextResolverSymbian::LoadLC(aMessageId);
+				RDEBUG("1", 1);
+			title.Append(stringHolder->Des());
+				RDEBUG("1", 1);
+			RDEBUG("searched in KFileNameSecUi", 1);
+			// RDEBUGSTR(aMessageId);
+			}
+				RDEBUG("1", 1);
+		if(doDoubleTranslations && !title.CompareF(aMessageId))
+			{
+				RDEBUG("1", 1);
+			// not translated. Now check in common
+			// CleanupStack::PopAndDestroy(stringHolder);
+				RDEBUG("1", 1);
+			title.Zero();
+				RDEBUG("1", 1);
+    	_LIT(KFileNameCommon, "common_");
+				RDEBUG("1", 1);
+	    result = HbTextResolverSymbian::Init(KFileNameCommon, KPath);
+	    RDEBUG("bool result", result);
+			stringHolder = HbTextResolverSymbian::LoadLC(aMessageId);
+				RDEBUG("1", 1);
+			title.Append(stringHolder->Des());
+			RDEBUG("searched in KFileNameCommon", 1);
+			// RDEBUGSTR(aMessageId);
+			}
+		if(doDoubleTranslations && !title.CompareF(aMessageId))
+			{
+			// not translated. Now check in devicelocking
+				RDEBUG("1", 1);
+			CleanupStack::PopAndDestroy(stringHolder);
+				RDEBUG("1", 1);
+			title.Zero();
+				RDEBUG("1", 1);
+    	_LIT(KFileNameDevicelocking, "devicelocking_");
+				RDEBUG("1", 1);
+	    result = HbTextResolverSymbian::Init(KFileNameDevicelocking, KPath);
+	    RDEBUG("bool result", result);
+			stringHolder = HbTextResolverSymbian::LoadLC(aMessageId);
+				RDEBUG("1", 1);
+			title.Append(stringHolder->Des());
+			RDEBUG("searched in KFileNameDevicelocking", 1);
+			// RDEBUGSTR(aMessageId);
+			}
+		// this is done by the caller: CleanupStack::PopAndDestroy(stringHolder);
+		RDEBUG("0x99", 0x99);
+		return stringHolder;
     }
 
 // End of file

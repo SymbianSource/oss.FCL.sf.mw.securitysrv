@@ -332,7 +332,7 @@ void C3GPPBootstrap::DoBootstrapL( )
 void C3GPPBootstrap::GetBootstrappingMaterialL(
                                     const TDesC8& aBSFAddress, 
                                     const TDesC8& aNAFURL,
-                                    const TDesC8& aUICC_LABEL,
+                                    const TDesC8& /*aUICC_LABEL*/,
                                     const TUint8& aFlags,
                                     const TDesC8& aKeyUsage,
                                     TDes8 &aKsNAF, 
@@ -384,10 +384,9 @@ void C3GPPBootstrap::GetBootstrappingMaterialL(
     
     GBA_TRACE_DEBUG(("NAF ID ="));
     GBA_TRACE_DEBUG(*iNAFID);
-    
-    
-    GBA_TRACE_DEBUG(("UICC label is:"));
-    GBA_TRACE_DEBUG(aUICC_LABEL);
+	
+    //GBA_TRACE_DEBUG(("UICC label is:"));
+    //GBA_TRACE_DEBUG(aUICC_LABEL);
   
     // Get IMPI   
     TPtr8 ptrIdentity = iIdentity->Des();

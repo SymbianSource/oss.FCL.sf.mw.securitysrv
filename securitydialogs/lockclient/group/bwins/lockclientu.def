@@ -17,4 +17,5 @@ EXPORTS
 	??1CDevicelockAccessApi@@UAE@XZ @ 16 NONAME ; CDevicelockAccessApi::~CDevicelockAccessApi(void)
 	?OfferDevicelock@CDevicelockAccessApi@@QAEHXZ @ 17 NONAME ; int CDevicelockAccessApi::OfferDevicelock(void)
 	?NewL@CKeyguardAccessApi@@SAPAV1@XZ @ 18 NONAME ; class CKeyguardAccessApi * CKeyguardAccessApi::NewL(void)
+	?AutolockStatus@CKeyguardAccessApi@@QAEHHH@Z @ 19 NONAME ; int CKeyguardAccessApi::AutolockStatus(int, int)
 

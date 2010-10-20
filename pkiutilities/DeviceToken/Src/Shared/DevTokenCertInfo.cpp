@@ -73,8 +73,10 @@ EXPORT_C CDevTokenCertInfo* CDevTokenCertInfo::NewL(const TDesC& aLabel,
         aSize, 
         aSubjectKeyId, 
         aIssuerKeyId,
-        aCertificateId);
+        aCertificateId);    
+    CleanupStack::PushL( self );
     self->ConstructL(NULL);
+    CleanupStack::Pop( self );    
     return self;
     }
 
@@ -101,7 +103,9 @@ EXPORT_C CDevTokenCertInfo* CDevTokenCertInfo::NewL(const TDesC& aLabel,
         aIssuerKeyId,
         aCertificateId, 
         aDeletable);
+    CleanupStack::PushL( self );
     self->ConstructL(NULL);
+    CleanupStack::Pop( self );    
     return self;
     }
 

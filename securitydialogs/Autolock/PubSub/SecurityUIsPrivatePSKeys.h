@@ -72,12 +72,15 @@ const TUint32 KSecurityUIsLockInitiatorTimeLow  = 0x00000305;
 const TUint32 KSecurityUIsScreenSaverStatus  = 0x00000306;
 enum TSecurityUIsScreenSaverValues
     {
-    ESecurityUIsScreenSaverUninitialized = 0,
-    ESecurityUIsScreenSaverOn,
-    ESecurityUIsScreenSaverOff,
-    ESecurityUIsScreenSaverOffWhileUnguardQuery,
-    ESecurityUIsScreenSaverOffWhileUnlockQuery,
-    ESecurityUIsScreenSaverLastValue
+		EDeviceDialogUninitialized = -1,
+		EDeviceDialogDestroyed = 0,
+		EDeviceDialogCreated = 1,
+		EDeviceDialogRaised = 2,
+		EDeviceDialogScreenSaverHidden = 0x10,
+		EDeviceDialogScreenSaverReDisplay = 0x11,
+		EDeviceDialogScreenSaver = 0x12,
+		EDeviceDialogLockIcon= 0x20,
+		EDeviceDialogLastValue
     };
 
 /**

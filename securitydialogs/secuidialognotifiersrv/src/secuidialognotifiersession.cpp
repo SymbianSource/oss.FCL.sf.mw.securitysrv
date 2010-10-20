@@ -143,7 +143,7 @@ void CSecuiDialogNotifierSession::DispatchMessageL( const RMessage2& aMessage )
 			{
 	    CKeyguardAccessApi* iKeyguardAccess = CKeyguardAccessApi::NewL( );
 	   	RDEBUG("0", 0);
-			TInt err = iKeyguardAccess->ShowKeysLockedNote( );
+			TInt err = iKeyguardAccess->AutolockStatus( 0x100, lOperation );	// start server, if needed 
 			RDEBUG("err", err);
 			delete iKeyguardAccess;
 			}

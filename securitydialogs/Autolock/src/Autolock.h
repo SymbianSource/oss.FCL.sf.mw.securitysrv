@@ -64,19 +64,6 @@ enum TDevicelockReason
 	EDevicelockTimer
 	};
 
-enum TDeviceDialogCreated
-	{
-	EDeviceDialogUninitialized = -1,
-	EDeviceDialogDestroyed = 0,
-	EDeviceDialogCreated = 1,
-	EDeviceDialogRaised = 2,
-	EDeviceDialogScreenSaverHidden = 0x10,
-	EDeviceDialogScreenSaverReDisplay = 0x11,
-	EDeviceDialogScreenSaver = 0x12,
-	EDeviceDialogLockIcon= 0x20,
-	EDeviceDialogLastValue
-	};
-
 class QTimer;
 
 class AutolockService;
@@ -181,6 +168,7 @@ private:
     // HBufC16 *mScreensaverPowerSavePixelBuffer;
     TInt32 iProcessingEvent;
 		int iTempDisableOnlyKeyguardBecauseIncomingCall;
+    int iSCPConfigured;
 };
 
 class AutolockService : public XQServiceProvider

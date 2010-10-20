@@ -119,6 +119,11 @@ class CKeyguardAccessApi : public CBase
 
         IMPORT_C TInt TestPanicClient( );
 
+        /**
+         * Confirms that the server is running
+         * @return KErrNone if succeeded
+         */
+        IMPORT_C TInt AutolockStatus( TInt aCommand, TInt aParam);
 
     private:
 

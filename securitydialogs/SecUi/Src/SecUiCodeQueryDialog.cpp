@@ -16,7 +16,7 @@
 *
 */
 
-#include <AknQueryDialog.h>
+// #include <AknQueryDialog.h>
 #include "secuicodequerydialog.h"
 
 // ================= MEMBER FUNCTIONS =======================
@@ -28,6 +28,11 @@
 //
 EXPORT_C CCodeQueryDialog::CCodeQueryDialog(TDes& aDataText,TInt aMinLength,TInt aMaxLength,TInt aMode, TBool aIsRemoteLockQuery) : CBase()
 	{		
+		aDataText = aDataText;
+		aMinLength = aMinLength;
+		aMaxLength = aMaxLength;
+		aMode = aMode;
+		aIsRemoteLockQuery = aIsRemoteLockQuery;
 	}
 //
 // ----------------------------------------------------------

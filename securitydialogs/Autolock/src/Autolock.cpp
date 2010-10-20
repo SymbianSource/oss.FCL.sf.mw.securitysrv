@@ -35,6 +35,7 @@ QTM_USE_NAMESPACE
 #include <hbdevicemessagebox.h>
 
 #include <lockappclientserver.h>
+#include <centralrepository.h>
 
 #include "Autolock.h"
 #include <xqserviceutil.h>
@@ -87,6 +88,7 @@ enum TSnsrViewType
 static const char *KSnsrCmdUnlock = "unlock";
 static const char *KSnsrCmdSwitchLights = "switch_lights";
 static const char *KSnsrCmdSwitchLowPower = "switch_low_power";
+static const char *KSnsrCmdResetActiveModeTimer = "resetActiveModeTimer";
 
 Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
     QWidget(parent, f),
@@ -123,7 +125,7 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
     RDEBUG("autolockState", autolockState);
     if (autolockState == EAutolockStatusUninitialized)
         {
-        autolockState = EAutolockOff; // not-initialized means taht the unlock-query hasn't been displayed. Therefore the device should not stay locked.
+        autolockState = EAutolockOff; // not-initialized means that the unlock-query hasn't been displayed. Therefore the device should not stay locked.
         }
     ret = RProperty::Set(KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, autolockState); // this might re-set it. That's not bad. It will re-notify all listeners.
     RDEBUG("Set KCoreAppUIsAutolockStatus", ret);
@@ -146,22 +148,13 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
             TSecurityPolicy::EAlwaysPass));
     RDEBUG("defined KSecurityUIsDismissDialog", ret);
 
-		// call TARM so that it verifies that configuration is in sync. This might internally accept the (default) lock code, but doesn't dismiss the query.
-		// Note: this is fast : 0.02 seconds
-		RSCPClient scpClientConfiguration;
-		User::LeaveIfError( scpClientConfiguration.Connect() );
-	  CleanupClosePushL( scpClientConfiguration );
-		RDEBUG("call CheckConfiguration KSCPComplete", KSCPComplete);
-		TInt finalConfStatus = scpClientConfiguration.CheckConfiguration( KSCPComplete );
-		RDEBUG("finalConfStatus", finalConfStatus);
-		CleanupStack::PopAndDestroy();	// scpClientConfiguration
+    ret = RProperty::Define(KPSUidSecurityUIs, KSecurityUIsScreenSaverStatus, RProperty::EInt, TSecurityPolicy(TSecurityPolicy::EAlwaysPass), writePolicy);
+    RDEBUG("defined KSecurityUIsScreenSaverStatus", ret);
 
     mService = new AutolockService(this);
 
     /* Adjust the palette */
-#if defined(Q_WS_S60)
-    // this is defined.
-    RDEBUG( "Q_WS_S60", 1 );
+    RDEBUG( "Palette", 1 );
     QPalette p = qApp->palette();
     QColor color(192,192,192);
     QColor bg(201,250,250);
@@ -175,14 +168,13 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
     p.setColor(QPalette::Link, QColor(240,40,40));
 
     qApp->setPalette(p);
-#endif
 
     RDEBUG("connect", 1);
 
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
 		RDEBUG( "Q_WS_X11", 1 );
     setFixedSize(QSize(360,640)); // nHD
-#elif defined(Q_WS_S60)
+#else
     // this doesn't work well
     // showMaximized();
     showFullScreen();
@@ -198,10 +190,12 @@ Autolock::Autolock(QWidget *parent, Qt::WFlags f) :
     iLockCodeQueryInDisplay = EFalse;
     Q_UNUSED(cRresult);
     TInt err = 0;
+    err = err;
 
 		iProcessingEvent = -1;
     iLockStatusPrev = ELockNotActive;
     iLockStatus = ELockNotActive;
+    iSCPConfigured = 0;
     QT_TRAP_THROWING(repository = CRepository::NewL(KCRUidSecuritySettings));
     cRresult = repository->Get(KSettingsAutolockStatus, lockValue);
     RDEBUG("KSettingsAutolockStatus", KSettingsAutolockStatus);
@@ -323,6 +317,7 @@ Autolock::~Autolock()
 void Autolock::adjustInactivityTimers(int aReason)
     {
     RDEBUG("aReason", aReason);
+    aReason = aReason;
     TInt keyguardTime = 0;
     TInt lockTime = 0;
     CRepository* repository = NULL;
@@ -403,7 +398,9 @@ int Autolock::TurnLights(int aMode, int aReason, int aCaller)
     {
     RDEBUG("aMode", aMode);
     RDEBUG("aReason", aReason);
+    aReason = aReason;
     RDEBUG("aCaller", aCaller);
+    aCaller = aCaller;
     TInt err = 0;
     if(aMode!=ESecurityUIsLightsLockOffRequest && aMode!=ELockAppDisableKeyguard)
     	{
@@ -582,6 +579,8 @@ void Autolock::handleAnswerDelivered()
 void Autolock::setLabelNumber(QString label, QString number)
     {
     RDEBUG("0", 0);
+    label = label;
+    number = number;
     }
 
 // Used on debug environment for printing the Request in understandable format
@@ -875,7 +874,7 @@ int Autolock::publishStatus(int aReason)
             	}
             else
             	{
-            	RDEBUG("not set KCoreAppUIsAutolockStatus because already ", EAutolockOff);
+            	RDEBUG("not set KCoreAppUIsAutolockStatus because already EAutolockOff", EAutolockOff);
             	}
 			// Not needed. SysAp turns the lights when keyguard is disabled
             // TurnLights(ESecurityUIsLightsLockOnRequest, aReason, 0x14);
@@ -897,7 +896,7 @@ int Autolock::publishStatus(int aReason)
   	            	}
 		            else
 		            	{
-		            	RDEBUG("not set KCoreAppUIsAutolockStatus because already ", EAutolockOff);
+		            	RDEBUG("not set KCoreAppUIsAutolockStatus because already EAutolockOff", EAutolockOff);
 		            	}
                 TurnLights(ESecurityUIsLightsLockOffRequest, aReason, 0x16);	// same for keyguard and devicelock
                 // cRresult = repositoryDevicelock->Set(KSettingsAutolockStatus, 0);
@@ -915,7 +914,7 @@ int Autolock::publishStatus(int aReason)
   	            	}
 		            else
 		            	{
-		            	RDEBUG("not set KCoreAppUIsAutolockStatus because already ", EManualLocked);
+		            	RDEBUG("not set KCoreAppUIsAutolockStatus because already EManualLocked", EManualLocked);
 		            	}
                 TurnLights(ESecurityUIsLightsQueryOnRequest, aReason, 0x18);
                 // cRresult = repositoryDevicelock->Set(KSettingsAutolockStatus, 1);
@@ -927,6 +926,7 @@ int Autolock::publishStatus(int aReason)
     delete repositoryDevicelock;
     delete repositoryKeyguard;
     // this is the real point where everything is done.
+    RDEBUG("iLockStatusPrev", iLockStatusPrev);
     iLockStatusPrev = iLockStatus;
     iLockStatus = aReason;
     RDEBUG("setting iLockStatus", iLockStatus);
@@ -1178,6 +1178,52 @@ int Autolock::TryChangeStatus(int aReason)
                 }
             }
             break;
+        case 0x100: // Start/confirm server
+            {
+						// call TARM so that it verifies that configuration is in sync. This might internally accept the (default) lock code, but doesn't dismiss the query.
+						// Note: this is fast : 0.02 seconds
+						TInt secuiOperation=mParam1;
+						TInt iStartup=0;	// this comes as a flag, part of secuiOperation
+						iStartup = iStartup;
+						RDEBUG("secuiOperation", secuiOperation);
+						RDEBUG("iSCPConfigured", iSCPConfigured);
+						errorInProcess = KErrNone;
+						if(secuiOperation>=0x1000)
+							{
+							iStartup=1;
+							secuiOperation-=0x1000;
+							}
+						if(secuiOperation==0 /*unknown*/ || secuiOperation==2 /*PIN*/)
+							{
+							// nothing to do. SCP should not be verified on PIN ; only on lock-query at boot
+							RDEBUG("nothing to do because secuiOperation", secuiOperation);
+							RDEBUG("KErrCompletion", KErrCompletion);
+							errorInProcess = KErrCompletion;
+							}
+						else
+							{
+								// usually secuiOperation=6
+							if(!iSCPConfigured)
+								{
+								RSCPClient scpClientConfiguration;
+								User::LeaveIfError( scpClientConfiguration.Connect() );
+							  CleanupClosePushL( scpClientConfiguration );
+								RDEBUG("call CheckConfiguration KSCPComplete", KSCPComplete);
+								TInt finalConfStatus = scpClientConfiguration.CheckConfiguration( KSCPComplete );
+								RDEBUG("finalConfStatus", finalConfStatus);
+								CleanupStack::PopAndDestroy();	// scpClientConfiguration
+								iSCPConfigured=1;
+								errorInProcess = KErrNone;
+								}
+							else
+								{
+								RDEBUG("nothing to do because iSCPConfigured", iSCPConfigured);
+								RDEBUG("KErrAlreadyExists", KErrAlreadyExists);
+								errorInProcess = KErrAlreadyExists;
+								}
+							}
+            }
+            break;
         default:
             {
             RDEBUG("default", ret);
@@ -1204,11 +1250,14 @@ int Autolock::setLockDialog(int aReason, int target)
 
     if (target == EDeviceDialogDestroyed || target == EDeviceDialogScreenSaverHidden) // hide
         {
+        /*
+        This doesn't work since Avkon deprecations
         RDEBUG("ReleaseContext", R_AVKON_DEFAULT_SKEY_LIST);
         static_cast<CAknAppUi*>(CEikonEnv::Static()->EikAppUi())->KeySounds()->ReleaseContext();
         RDEBUG("PopContext", 0x90);
         static_cast<CAknAppUi*>(CEikonEnv::Static()->EikAppUi())->KeySounds()->PopContext();
         RDEBUG("ReleaseContext done", 0x92);
+        */
 
         // aReason is not important here, but let's check nevertheless
         if (aReason != ELockAppDisableKeyguard && aReason != ELockAppDisableDevicelock && aReason != ELockAppOfferDevicelock)
@@ -1277,6 +1326,9 @@ int Autolock::setLockDialog(int aReason, int target)
         }
     else if (target == EDeviceDialogCreated || target == EDeviceDialogScreenSaverReDisplay) // show
         {
+        /*
+        This doesn't work since Avkon deprecations
+
         RDEBUG("PushContextL", R_AVKON_DEFAULT_SKEY_LIST);
         static_cast<CAknAppUi*>(CEikonEnv::Static()->EikAppUi())->KeySounds()->PushContextL(R_AVKON_SILENT_SKEY_LIST);
         RDEBUG("BringToForeground", 0x90);
@@ -1284,10 +1336,12 @@ int Autolock::setLockDialog(int aReason, int target)
         RDEBUG("LockContext", 0x91);
         static_cast<CAknAppUi*>(CEikonEnv::Static()->EikAppUi())->KeySounds()->LockContext();
         RDEBUG("PushContextL Done", 0x92);
+        */
 
         // secUiOriginatedQuery should be ESecurityUIsSecUIOriginatedUninitialized . If not, the validation is not correctly filtering it
         QVariantMap params;
         TBool err=EFalse;
+        err = err;
 
         if (aReason == ELockAppEnableKeyguard)
             params.insert("type", ESecUiTypeKeyguard);
@@ -1538,8 +1592,8 @@ void Autolock::switchScreensaverMode(int mode)
 void Autolock::switchScreensaverToPowerSaveMode()
     {
     RDEBUG("0", 0);
-	// This crashes IVE3. TODO : restore when it works again.
-    //switchScreensaverMode( ESnsrViewTypeStandby);
+	  // This works again and doesn't crash IVE3
+    switchScreensaverMode( ESnsrViewTypeStandby);
     RDEBUG("99", 0x99);
     }
 
@@ -1561,6 +1615,14 @@ void Autolock::handleMessageFromScreensaver(const QVariantMap &data)
         RDEBUG("switching screen lights . lightStatus", lightStatus);
         int err = RProperty::Set(KPSUidCoreApplicationUIs, KLightsSSForcedLightsOn, lightStatus);
         RDEBUG("err", err);
+        }
+
+    it = data.find(KSnsrCmdResetActiveModeTimer);
+    if (it != data.end() && iLockStatus != ELockNotActive)
+        {
+        RDEBUG("calling switchScreensaverMode ESnsrViewTypeActive", ESnsrViewTypeActive);
+        switchScreensaverMode( ESnsrViewTypeActive );
+        RDEBUG("done", 1);
         }
 
     it = data.find(KSnsrCmdSwitchLowPower);
@@ -1604,6 +1666,7 @@ void Autolock::handleScreensaverClosed()
     {
     RDEBUG("0", 0);
     int err(0);
+    err = err;
     // Screensaver (usually) cannot send anymore any commands when
     // it's being closed. Thus, we need to ensure here that screen has lights and
     // full-power mode once screensaver is closed.
@@ -1949,6 +2012,7 @@ int AutolockService::service(const QString& number, const QString& aParam1, cons
     {
     RDEBUG("0", 0);
     TInt err = KErrNone;
+    err = err;
     RDEBUG("number", number.toInt());
     RDEBUG("aParam1", aParam1.toInt());
     RDEBUG("aParam2", aParam2.toInt());

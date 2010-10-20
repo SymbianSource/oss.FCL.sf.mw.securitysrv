@@ -17,9 +17,7 @@
 */
 
 #include <eikmenub.h>
-#include <SecUi.rsg>
 #include <e32base.h>
-#include <AknQueryDialog.h>
 #include "SecUiAutoLockSettingPage.h"
 #include "secui.hrh"
 #include <featmgr.h>
@@ -35,6 +33,10 @@ CAutoLockSettingPage::CAutoLockSettingPage(TInt aResourceId, TInt& aCurrentSelec
 					CBase(),iAutoLockValue(aAutoLockValue)
 
 	{
+		aResourceId = aResourceId;
+		aCurrentSelectionItem = aCurrentSelectionItem;
+		aItemArray = aItemArray;
+		aAutoLockValue = aAutoLockValue;
 	}
 
 //
@@ -65,7 +67,7 @@ CAutoLockSettingPage::~CAutoLockSettingPage()
 // 
 void CAutoLockSettingPage::ProcessCommandL(TInt aCommandId)
 	{
-	
+		aCommandId = aCommandId;
 	}
 //
 // ----------------------------------------------------------
@@ -75,6 +77,7 @@ void CAutoLockSettingPage::ProcessCommandL(TInt aCommandId)
 // 
 void CAutoLockSettingPage::SetPeriodMaximumValue(TInt aMaximumValue)
 	{
+		aMaximumValue = aMaximumValue;
 	}
 	
 //---------------------------------------------------------------------------------------
@@ -86,6 +89,7 @@ void CAutoLockSettingPage::SetPeriodMaximumValue(TInt aMaximumValue)
 
 void CAutoLockSettingPage::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     {
+    	(void)aPointerEvent;
     }
 // End of file
 

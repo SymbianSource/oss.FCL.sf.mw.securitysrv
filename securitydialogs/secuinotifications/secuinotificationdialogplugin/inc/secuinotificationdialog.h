@@ -104,6 +104,7 @@ private:
     int lEmergencySupported;
     int isEmergency;
     QValueSpaceSubscriber *subscriberKSecurityUIsDismissDialog;
+    QString codeTopTextPrev;
 };
 
 #endif // SECUINOTIFICATIONDIALOG_H

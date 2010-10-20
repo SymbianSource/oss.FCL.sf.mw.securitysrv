@@ -106,7 +106,7 @@ void CBasicPinQueryOperation::RunL()
 
     HBufC* caption = NULL;
     TInt minLength = 0;
-    TInt maxLength = 0;
+    TInt maxLength = KPINLabelMaxLength;
     TInt mode = ESecUiAlphaSupported | ESecUiSecretSupported | ESecUiCancelSupported |
             ESecUiEmergencyNotSupported;
     if( iPinInput->iPIN.iPINLabel == KBasicPinQueryKeyStorePassphrase )

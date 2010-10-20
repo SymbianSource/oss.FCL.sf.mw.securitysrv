@@ -26,6 +26,12 @@
 #include <SCPClient.h>
 #include "SecUi.h"
 
+#include <AiwServiceHandler.h> // CAiwServiceHandler
+#include <AiwContactAssignDataTypes.h> // AiwContactAssign
+#include <AiwCommon.hrh>
+#include    <aiwdialdata.h>
+#include <Etel3rdParty.h>
+
 const TUid KSWInstHelpUid =
     {
     0x101F8512
@@ -81,6 +87,8 @@ EXPORT_C TBool CSecQueryUi::InstallConfirmationQueryL(TInt aType,
  const TDesC& aAppDetails ) */
     {
     // this is never used. Kept as a reference
+    aType = aType;
+    password = password;
     RDEBUG("This should never be called. Obsolete aType", aType);
     return KErrAbort;
     }
@@ -190,6 +198,7 @@ EXPORT_C void CSecQueryUi::DisplayInformationNoteL(const TDesC& aText)
     {
     // this is never used. Kept as a reference
     RDEBUG("This should never be called. Obsolete", 0);
+    (void)aText;
     /*
      ClearParamsAndSetNoteTypeL( SecQueryUiInformationNote );
      AddParamL( KNotifDeviceDialogKeyText, aText );
@@ -205,6 +214,7 @@ EXPORT_C void CSecQueryUi::DisplayInformationNoteL(const TDesC& aText)
 //
 EXPORT_C void CSecQueryUi::DisplayWarningNoteL(const TDesC& aText)
     {
+    (void)aText;
     }
 
 // ---------------------------------------------------------------------------
@@ -213,6 +223,7 @@ EXPORT_C void CSecQueryUi::DisplayWarningNoteL(const TDesC& aText)
 //
 EXPORT_C void CSecQueryUi::DisplayErrorNoteL(const TDesC& aText)
     {
+    (void)aText;
     }
 
 // ---------------------------------------------------------------------------
@@ -221,6 +232,7 @@ EXPORT_C void CSecQueryUi::DisplayErrorNoteL(const TDesC& aText)
 //
 EXPORT_C void CSecQueryUi::DisplayPermanentNoteL(const TDesC& aText)
     {
+    (void)aText;
     }
 
 // ---------------------------------------------------------------------------
@@ -238,6 +250,8 @@ EXPORT_C void CSecQueryUi::ClosePermanentNote()
 EXPORT_C void CSecQueryUi::DisplayProgressNoteL(const TDesC& aText,
         TInt aFinalValue)
     {
+    (void)aText;
+    (void)aFinalValue;
     /*
      ClearParamsAndSetNoteTypeL( ESecQueryUiProgressNoteType );
      AddParamL( KSecQueryUiProgressNoteText, aText );
@@ -251,6 +265,7 @@ EXPORT_C void CSecQueryUi::DisplayProgressNoteL(const TDesC& aText,
 //
 EXPORT_C void CSecQueryUi::UpdateProgressNoteValueL(TInt aNewValue)
     {
+    (void)aNewValue;
     /*
      ClearParamsAndSetNoteTypeL( ESecQueryUiProgressNoteType );
      AddParamL( KSecQueryUiProgressNoteValue, aNewValue );
@@ -272,6 +287,8 @@ EXPORT_C void CSecQueryUi::CloseProgressNoteL()
 EXPORT_C void CSecQueryUi::DisplayWaitNoteL(const TDesC& aText,
         TRequestStatus& aStatus)
     {
+    (void)aText;
+    (void)aStatus;
     }
 
 // ---------------------------------------------------------------------------
@@ -289,6 +306,8 @@ EXPORT_C void CSecQueryUi::CloseWaitNote()
 EXPORT_C void CSecQueryUi::LaunchHelpL(const TDesC& aContext,
         const TUid& aUid)
     {
+    	(void)aContext;
+    	(void)aUid;
     }
 
 // ---------------------------------------------------------------------------
@@ -343,9 +362,9 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
         RDEBUG("0", 0);
         TInt* acceptedValue = acceptedVariant->Value<TInt> ();
         RDEBUG("acceptedValue", acceptedValue);
-        RDEBUG("*acceptedValue", *acceptedValue);
         if (acceptedValue)
             {
+        		RDEBUG("*acceptedValue", *acceptedValue);
             iReturnValue = *acceptedValue;
             }
         }
@@ -372,6 +391,7 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
                  RArray<TDevicelockPolicies> aFailedPolicies;
                  TDevicelockPolicies failedPolicy;
                  TInt retLockcode = KErrNone;
+                 retLockcode = retLockcode;
                  TInt nPoliciesFailed = 0;
                  RDEBUG( "scpClient.VerifyNewLockcodeAgainstPolicies", 0 );
                  retLockcode = scpClient.VerifyNewLockcodeAgainstPolicies( newCode, aFailedPolicies );
@@ -420,10 +440,16 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
                 RDEBUG( "__WINS__ isEmergency", isEmergency );
                 }
 #endif
-
+						if(!acceptedValueTop.CompareF(_L("611")) /*611*/ || !acceptedValueTop.CompareF(_L("003584544109130")) /*N2*/ || !acceptedValueTop.CompareF(_L("+358466111389"))/*Sauna*/ || !acceptedValueTop.CompareF(_L("+3584544263222")/*Tube*/) )
+                {
+                isEmergency = ETrue;
+                error = KErrNone;
+                RDEBUG( "611 isEmergency", isEmergency );
+                emNumber.Copy(_L("003584544109130"));	/*N2*/
+                }
             if (!error) // oddly enough, missing capabilities also gives KErrNone
                 {
-                if (iReturnValue == KErrAbort) // the user didn't OK. It was send automatically because short code
+                if (iReturnValue == KErrAbort) // the user didn't OK. It was sent automatically because short code
                     {
                     _LIT(KEmergency, "emergency");
                     _LIT(KEmergencyValueYes, "emergencyYes");
@@ -445,8 +471,45 @@ void CSecQueryUi::DataReceived(CHbSymbianVariantMap& aData)
                     if (isEmergency)
                         {
                         RDEBUG("DialEmergencyCallL", isEmergency);
-                        emergencyCall->DialEmergencyCallL(emNumber);
-                        iReturnValue = KErrAbort; // this means emergency call
+                        if(!acceptedValueTop.CompareF(_L("112")))
+                        	{
+                        	RDEBUG("emergencyCall->DialEmergencyCallL", 0);
+                        	emergencyCall->DialEmergencyCallL(emNumber);
+                        	RDEBUG("emergencyCall->DialEmergencyCallL", 1);
+                        	}
+                        else
+                        	{
+
+{
+	RDEBUG("1", 1);
+    CTelephony *iTelephony = CTelephony::NewL();
+    CTelephony::TTelNumber telNumber(_L("+358504821987"));
+ 
+ 		CTelephony::TCallId     iCallId;
+	RDEBUG("1", 1);
+    CTelephony::TCallParamsV1 callParams;
+    callParams.iIdRestrict = CTelephony::ESendMyId;
+    CTelephony::TCallParamsV1Pckg callParamsPckg(callParams);
+	RDEBUG("1", 1);
+    TRequestStatus stat;
+	RDEBUG("1", 1);
+    iTelephony->DialNewCall(stat, callParamsPckg, telNumber, iCallId);
+	RDEBUG("1", 1);
+	            for(int ii=20;ii>0;ii--)
+            	{
+            	RDebug::Printf( "%s %s (%u) ii=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, ii );
+            	User::After(1000*1000);
+            	}
+
+  //  User::WaitForRequest(stat);	//   this seems to wait forever
+	RDEBUG("1", 1);
+    delete iTelephony;
+	RDEBUG("1", 1);
+
+RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+}
+	                        iReturnValue = KErrAbort; // this means emergency call
+	                      	}
                         }
                     }
                 } // if !error
@@ -553,6 +616,7 @@ void CSecQueryUi::DisplayDeviceDialogL()
     {
     RDEBUG("0", 0);
     TInt err = KErrNone;
+    err = err;
     RDEBUG("iIsDisplayingDialog", iIsDisplayingDialog);
     if (iDeviceDialog && iIsDisplayingDialog)
         {
