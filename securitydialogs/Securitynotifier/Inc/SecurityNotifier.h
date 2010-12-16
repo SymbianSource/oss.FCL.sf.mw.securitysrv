@@ -101,6 +101,8 @@ class CSecurityNotifier : public CActive,public MEikSrvNotifierBase2
         void RunL();
         /** @see CActive::DoCancel() */
         void DoCancel();
+        /** @see CActive::RunError() */
+        TInt RunError( TInt aError );
     private:
         /**
         * C++ default constructor.

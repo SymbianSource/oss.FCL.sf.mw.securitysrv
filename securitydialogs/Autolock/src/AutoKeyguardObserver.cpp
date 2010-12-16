@@ -312,7 +312,21 @@ void CAutoKeyguardObserver::LockKeysL()
     	}
     		
     }
-    
+  {	// prevent automatic keyguard if grip is open
+  	TInt gripValue = 0;
+  	RProperty::Get(KPSUidHWRM,KHWRMGripStatus,gripValue );
+		#if defined(_DEBUG)
+		RDebug::Printf( "%s %s (%u) gripValue=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, gripValue );
+ 		RDebug::Printf( "%s %s (%u) EPSHWRMGripOpen=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EPSHWRMGripOpen );
+		#endif
+		if(gripValue == EPSHWRMGripOpen)
+			{
+    		#if defined(_DEBUG)
+    		RDebug::Printf( "%s %s (%u) avoid keyguard because EPSHWRMGripOpen=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EPSHWRMGripOpen );
+    		#endif
+    		return;
+			}
+  }
 	{	// REQ 414-5466 Prevention of device lock in context of Hands Free Voice UI
 	TInt vuiValue = 0;
 	TUid KHFVuiModePSUid = { 0x102818E7 };

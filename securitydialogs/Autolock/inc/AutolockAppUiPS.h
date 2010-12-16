@@ -83,7 +83,8 @@ class CEcsNote : public CAknNoteDialog
         * aMatchedNumber    text to display (e.g. "112" )
         */
         void SetEmergencyNumber( const TDesC& aMatchedNumber );
-                
+				virtual TBool OkToExitL( TInt aButtonId );
+
     public:
         TBool iNoteOnScreen;        
     };

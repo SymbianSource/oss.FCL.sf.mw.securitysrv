@@ -28,6 +28,7 @@ PRJ_EXPORTS
 ../pubsub/SecurityUIsPrivatePSKeys.h |../../../inc/securityuisprivatepskeys.h
 ../sis/lockapp_stub.sis /epoc32/data/z/system/install/lockapp_stub.sis
 
+
 PRJ_EXTENSIONS
 
 START EXTENSION s60/mifconv

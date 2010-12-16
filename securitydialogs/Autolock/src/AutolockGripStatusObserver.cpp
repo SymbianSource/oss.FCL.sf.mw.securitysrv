@@ -23,6 +23,7 @@
 #include "AutolockApp.h"
 #include "AutolockAppUiInterface.h"
 #include <aknkeylock.h>
+#include <ctsydomainpskeys.h>
 
 
 EXPORT_C CAutolockGripStatusObserver* CAutolockGripStatusObserver::NewL( MAutolockAppUiInterface* aObserver, RWsSession& aSession )
@@ -92,18 +93,37 @@ void CAutolockGripStatusObserver::RunL()
 void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
     {
     #if defined(_DEBUG)
-	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL"));
+	RDebug::Printf( "%s %s (%u) aGripStatus=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aGripStatus );
 	#endif   
-    if( aGripStatus == EPSHWRMGripOpen ) 
+    if( aGripStatus == EPSHWRMGripOpen )
+    	{
+   		iObserver->ForceOrientation(0);
+    	}
+    else
+    	{
+   		iObserver->ForceOrientation(1);
+    	}
+		TInt callState = 0;
+		RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
+		if ( callState != EPSCTsyCallStateNone && callState != EPSCTsyCallStateUninitialized )
+			{
+				#if defined(_DEBUG)
+				RDebug::Printf( "%s %s (%u) avoid sending keys because callState=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, callState );
+				#endif   
+				return;
+			}
+
+    if( aGripStatus == EPSHWRMGripOpen )
     	{
         #if defined(_DEBUG)
-    	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => Grip opened"));
+    	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::GripStatusChangedL => Grip opened"));
+    	RDebug::Printf( "%s %s (%u) iObserver->DeviceLockQueryStatus()=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iObserver->DeviceLockQueryStatus() );
+    	RDebug::Printf( "%s %s (%u) iObserver->DeviceLockStatus()=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iObserver->DeviceLockStatus() );
     	#endif 
-   		iObserver->ForceOrientation(0);
     	if( !iObserver->DeviceLockQueryStatus() && iObserver->DeviceLockStatus() )
     		{
             #if defined(_DEBUG)
-        	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => send command"));
+        	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::GripStatusChangedL => send command"));
         	#endif
     	    //Grip opened
         	TApaTaskList tasklist( iSession );
@@ -138,15 +158,14 @@ void CAutolockGripStatusObserver::GripStatusChangedL( TInt aGripStatus )
     else
         {
         #if defined(_DEBUG)
-    	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => Grip closed"));
+    	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::GripStatusChangedL => Grip closed"));
     	#endif 
-   		iObserver->ForceOrientation(1);
 
         //Grip closed
         if( iObserver->DeviceLockQueryStatus() )
         	{
             #if defined(_DEBUG)
-        	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::::GripStatusChangedL => send key event"));
+        	RDebug::Print(_L("(AUTOLOCK)CAutolockGripStatusObserver::GripStatusChangedL => send key event"));
         	#endif
             //the device lock query is on top
         	//generate cancel key event

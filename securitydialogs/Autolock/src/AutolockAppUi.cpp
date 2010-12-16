@@ -26,10 +26,11 @@
 #include <aknappui.h> 
 #include <centralrepository.h>
 #include <settingsinternalcrkeys.h>
+#include <starterdomaincrkeys.h>
 #include <secuisecurityhandler.h>
 #include <secui.h>
 #include <featmgr.h>
-#include <Autolock.rsg>
+#include <autolock.rsg>
 #include <mmtsy_names.h>
 #include <e32property.h>
 #include <PSVariables.h>   // Property values
@@ -253,12 +254,16 @@ void CAutolockAppUi::ConstructL()
 
     iEcsNote = new (ELeave) CEcsNote();
     iEcsNote->ConstructSleepingNoteL(R_AVKON_EMERGENCY_CALL_NOTE);
+ 		// Set higher priority to bring the buttons more to the front
     iEcsNote->ButtonGroupContainer().ButtonGroup()->AsControl()->DrawableWindow()->SetOrdinalPosition(0,2);
     
     if (AknLayoutUtils::PenEnabled()) // on touch devices, if Autolock is activated from IdleScreen in landscape, the buttons need to be drawn.
   {
-  iEcsNote->ButtonGroupContainer().SetCommandL( 0, _L("") );  // as keyboard is locked, these buttons do nothing. Better to hide their labels.
-    iEcsNote->ButtonGroupContainer().SetCommandL( EAknSoftkeyCancel, _L("") );
+    iEcsNote->ButtonGroupContainer().SetCommandSetL(R_AVKON_SOFTKEYS_CALL_CANCEL);
+  	 // on touch devices, if Autolock is activated from IdleScreen in landscape, the buttons need to be drawn.
+  	 // Not needed anymore, because R_AVKON_SOFTKEYS_CALL_CANCEL handles the labels
+  	// iEcsNote->ButtonGroupContainer().SetCommandL( 0, _L("") );  // as keyboard is locked, these buttons do nothing. Better to hide their labels.
+    // iEcsNote->ButtonGroupContainer().SetCommandL( EAknSoftkeyCancel, _L("") );
   iEcsNote->ButtonGroupContainer().ButtonGroup()->AsControl()->MakeVisible(ETrue);
     }
 
@@ -617,7 +622,8 @@ void CAutolockAppUi::HandleForegroundEventL(TBool aForeground)
     else
       {
       // unlock voice key while there is active call
-      UnLockSideKey();
+      // during active call, keep capturing the keys, so that query can open
+      // UnLockSideKey();
       CAknView* view = View(KAutoLockViewId);
       if(view)
         { 
@@ -780,6 +786,10 @@ void CAutolockAppUi::HandlePointerEventL(const TPointerEvent& aPointerEvent)
 TKeyResponse CAutolockAppUi::HandleKeyEventL(
     const TKeyEvent& aKeyEvent,TEventCode aType)
     {
+    #if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) aKeyEvent.iCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyEvent.iCode);
+    RDebug::Printf( "%s %s (%u) aKeyEvent.iScanCode = %x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aKeyEvent.iScanCode );
+    #endif
         
     if ( aKeyEvent.iCode == EKeyBell || (aType == EEventKeyUp && aKeyEvent.iScanCode == EStdKeyDeviceF)  || (aKeyEvent.iCode == EKeyDeviceF) )
     {
@@ -976,28 +986,40 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 				RDebug::Printf( "%s %s (%u) callState=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, callState );
 				#endif
 
+
 				TInt value(EStartupUiPhaseUninitialized);
 				RProperty::Get(KPSUidStartup, KPSStartupUiPhase, value);
 				#if defined(_DEBUG)
 				RDebug::Printf( "%s %s (%u) KPSStartupUiPhase value=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, value );
 				RDebug::Printf( "%s %s (%u) EStartupUiPhaseSystemWelcomeDone=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, EStartupUiPhaseSystemWelcomeDone );
 				#endif
-				if(value<EStartupUiPhaseSystemWelcomeDone && callState == EPSCTsyCallStateNone)
+				if(value<EStartupUiPhaseSystemWelcomeDone && (callState == EPSCTsyCallStateNone || callState == EPSCTsyCallStateDisconnecting))
 					{
-					callState = EPSCTsyCallStateNone+1;	// so that is unlocks
+					callState = EPSCTsyCallStateNone+1;	// so that is unlocks (allows typing)
 					iLocked = EFalse;
 					#if defined(_DEBUG)
 					RDebug::Printf( "%s %s (%u) iLocked=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iLocked );
 					#endif
-					}
-				else if(value<EStartupUiPhaseSystemWelcomeDone && callState > EPSCTsyCallStateNone)
+		    		    UnLockKeys();
+		    		    iModel->SetLockedL(EManualLocked);
+		    		    iModel->ResetInactivityTimeout();
+
+		    		    return;
+				 }
+				 else if(value<EStartupUiPhaseSystemWelcomeDone && callState > EPSCTsyCallStateNone && callState != EPSCTsyCallStateDisconnecting)
 					{
 					callState = EPSCTsyCallStateNone+0;	// so that is locks
 					#if defined(_DEBUG)
 					RDebug::Printf( "%s %s (%u) new+0 callState=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, callState );
 					#endif
+					iModel->SetLockedL(EManualLocked);
+					
+          #if defined(_DEBUG)
+					RDebug::Printf( "%s %s (%u) calling LockKeysL=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 0 );
+					#endif
+					LockKeysL();					
 					}
-            if (callState != EPSCTsyCallStateNone )
+            if (callState != EPSCTsyCallStateNone && callState != EPSCTsyCallStateDisconnecting )
                 {
                	#if defined(_DEBUG)
 								RDebug::Printf( "%s %s (%u) 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
@@ -1009,8 +1031,7 @@ if(FeatureManager::FeatureSupported(KFeatureIdSapTerminalControlFw ))
 		    		    }   
 	    }
 	    
-	}
-         		
+	}         		
 
   #ifndef __WINS__
 
@@ -1230,6 +1251,23 @@ void CEcsNote::SleepNote()
 TKeyResponse CEcsNote::OfferKeyEventL(const TKeyEvent& /*aKeyEvent*/, TEventCode /*aType*/)
     {
     return EKeyWasConsumed;
+    }
+TBool CEcsNote::OkToExitL( TInt aButtonId )
+    {
+    TBool good = CAknNoteDialog::OkToExitL( aButtonId );
+	#if defined(_DEBUG)
+    RDebug::Printf( "%s %s (%u) aButtonId=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aButtonId );
+    RDebug::Printf( "%s %s (%u) good=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, good );
+	#endif
+    										TRawEvent event;
+												event.Set(TRawEvent::EKeyDown, EStdKeyYes);
+												iEikonEnv->WsSession().SimulateRawEvent(event);
+												User::After(1000);
+												event.Set(TRawEvent::EKeyUp, EStdKeyYes);
+												iEikonEnv->WsSession().SimulateRawEvent(event);
+												User::After(10000);	// give time for the call to start
+
+    return good;
     }
 
 void CEcsNote::SetEmergencyNumber( const TDesC& aMatchedNumber )
@@ -1453,7 +1491,10 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
     	    			RDebug::Printf( "%s %s (%u) aCallButtonRect.iBr.iY=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCallButtonRect.iBr.iY );
     	    			#endif
                   if(aCallButtonRect.iBr.iX<iPosition.iX && iPosition.iX<aCallButtonRect.iBr.iX+aCallButtonRect.iTl.iX &&
-                    ( (gripStatus==EPSHWRMGripClosed && iPosition.iY>400) || (gripStatus!=EPSHWRMGripClosed && aCallButtonRect.iBr.iY<iPosition.iY && iPosition.iY<aCallButtonRect.iBr.iY+aCallButtonRect.iTl.iY ) )
+                       ( (gripStatus==EPSHWRMGripClosed && iPosition.iY>400 && aCallButtonRect.iBr.iY >500) ||
+                         (gripStatus==EPSHWRMGripClosed && iPosition.iY>300 && aCallButtonRect.iBr.iY <500) ||
+                         (gripStatus!=EPSHWRMGripClosed && aCallButtonRect.iBr.iY<iPosition.iY && iPosition.iY<aCallButtonRect.iBr.iY+aCallButtonRect.iTl.iY )
+                       )
                      )
                     {
 	    		        	#if defined(_DEBUG)
@@ -1474,7 +1515,9 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 	    	    			RDebug::Printf( "%s %s (%u) aCallButtonRect.iBr.iY=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, aCallButtonRect.iBr.iY );
    	    					#endif
             if(iGotEventDownDuringCall==1 && aCallButtonRect.iBr.iX<iPosition.iX && iPosition.iX<aCallButtonRect.iBr.iX+aCallButtonRect.iTl.iX && 
-                  ( (gripStatus==EPSHWRMGripClosed && iPosition.iY>400) || (gripStatus!=EPSHWRMGripClosed && aCallButtonRect.iBr.iY<iPosition.iY && iPosition.iY<aCallButtonRect.iBr.iY+aCallButtonRect.iTl.iY ) )
+                     ((gripStatus==EPSHWRMGripClosed && iPosition.iY>400 && aCallButtonRect.iBr.iY >500) || 
+                      (gripStatus==EPSHWRMGripClosed && iPosition.iY>300 && aCallButtonRect.iBr.iY <500) || 
+                      (gripStatus!=EPSHWRMGripClosed && aCallButtonRect.iBr.iY<iPosition.iY && iPosition.iY<aCallButtonRect.iBr.iY+aCallButtonRect.iTl.iY ) )
                      )
                     {
 										// on some devices, simulating End-Key might not end the call. First, try the API
@@ -1520,8 +1563,8 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 				                    CleanupStack::PopAndDestroy(&mPhone);
 		    		        			}
 											User::After(100000);	// give time for the call to end
-											#if defined(_DEBUG)
 											RProperty::Get( KPSUidCtsyCallInformation, KCTsyCallState, callState );
+											#if defined(_DEBUG)
 											RDebug::Printf( "%s %s (%u) callState=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, callState );
 											#endif
 											if ( callState != EPSCTsyCallStateNone && callState != EPSCTsyCallStateUninitialized )
@@ -1555,7 +1598,7 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
                 RDebug::Printf( "%s %s (%u) key->iCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, key->iCode );
                 RDebug::Printf( "%s %s (%u) key->iScanCode=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, key->iScanCode );
                 #endif
-                if ( (key->iScanCode == EStdKeyDeviceF) || (key->iCode == EKeyDeviceF) )
+                if ( (key->iScanCode == EStdKeyDeviceF) || (key->iCode == EKeyDeviceF) || (key->iCode == EKeyBell) )
                   {
                   #if defined(_DEBUG)
                   RDebug::Printf( "%s %s (%u) good key=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
@@ -1583,6 +1626,23 @@ void CAutolockAppUi::HandleWsEventL( const TWsEvent& aEvent,CCoeControl* aDestin
 				#if defined(_DEBUG)
 				RDebug::Printf( "%s %s (%u) skipEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, skipEvent );
 				#endif
+				if(iEcsNote)
+					{
+					#if defined(_DEBUG)
+					RDebug::Printf( "%s %s (%u) iEcsNote 1=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, 1 );
+					RDebug::Printf( "%s %s (%u) iEcsNote->iNoteOnScreen=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, iEcsNote->iNoteOnScreen );
+					#endif
+					if(iEcsNote->iNoteOnScreen)
+						{
+							skipEvent = 0;
+							#if defined(_DEBUG)
+							RDebug::Printf( "%s %s (%u) new skipEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, skipEvent );
+							#endif
+						}
+					}
+			#if defined(_DEBUG)
+			RDebug::Printf( "%s %s (%u) curr skipEvent=%x", __FILE__, __PRETTY_FUNCTION__, __LINE__, skipEvent );
+			#endif
     	if(!skipEvent)
     		{
     		CAknViewAppUi::HandleWsEventL( aEvent, aDestination );

@@ -71,6 +71,7 @@ class   CValueObserver: public CActive
     private: // data
     	CAutolockAppUi*      iAppUi; //not owned!
         RProperty            iProperty;
+        TInt iKCTsyCallState;
     };
 
 #endif 

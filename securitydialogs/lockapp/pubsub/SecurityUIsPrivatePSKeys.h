@@ -29,8 +29,6 @@ const TUid KPSUidSecurityUIs = { 0x100059b5 };
 // Security Code UI Originator API
 // =============================================================================
 
-// Use TUid KPSUidSecurityUIs = { 0x100059b5 } 
-
 /**
  * Used by SecUI to differentiate between ETel API originated and SecUI originated
  * security queries.
